@@ -8,8 +8,24 @@ from jetset.base_model import Model
 from jetset.spectral_shapes import SED
 
 class RadioSpectrum(Model):
+    """Simple analytical radio-spectrum component with SSA turnover.
+
+    Notes
+    -----
+    Implements a smooth synchrotron-like radio shape controlled by spectral
+    slope, self-absorption turnover, high-frequency cutoff, and normalization.
+    """
     def __init__(self,nu_size=100,cosmo=None,**keywords):
-        """
+        """Create a new `RadioSpectrum` instance.
+        
+        Parameters
+        ----------
+        nu_size : int, optional
+            Number of points for frequency grids.
+        cosmo : object, optional
+            Cosmology helper used for frame/luminosity conversions.
+        **keywords : dict
+            Additional keyword arguments.
         """
         
         super(RadioSpectrum,self).__init__(
@@ -39,6 +55,18 @@ class RadioSpectrum(Model):
         return np.power(nu,2.5)*(1.+(nu/nu_ssa))**(-(s2+2.5))*np.exp(-(nu/nu_cut))*nu
     
     def lin_func(self,nu):
+        """Lin func.
+        
+        Parameters
+        ----------
+        nu : object
+            Frequency values in Hz.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         s2=self.parameters.get_par_by_name('alpha_radio').val
         nu_ssa=self.parameters.get_par_by_name('nu_ssa').val
         nuFnu_p=self.parameters.get_par_by_name('nuFnu_p').val

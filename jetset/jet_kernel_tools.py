@@ -22,6 +22,22 @@ __all__=[ 'get_spectral_c_array_read_only','get_emitters_c_array1d','get_emitter
 def get_spectral_c_array_read_only(x_ptr, y_ptr, size):
     
 
+    """Return spectral c array read only.
+    
+    Parameters
+    ----------
+    x_ptr : object
+        Parameter controlling x ptr.
+    y_ptr : object
+        Parameter controlling y ptr.
+    size : object
+        Parameter controlling size.
+    
+    Returns
+    -------
+    object
+        Requested value.
+    """
     x_ctype = (ctypes.c_double * size).from_address(int(x_ptr))
     y_ctype = (ctypes.c_double * size).from_address(int(y_ptr))
 
@@ -54,6 +70,24 @@ def get_spectral_c_array_read_only(x_ptr, y_ptr, size):
 
 
 def get_emitters_c_array1d(gamma_prt, n_ptr, blob_object, size):
+    """Return emitters c array1d.
+    
+    Parameters
+    ----------
+    gamma_prt : object
+        Frequency/energy control value for gamma prt.
+    n_ptr : object
+        Parameter controlling n ptr.
+    blob_object : object
+        Parameter controlling blob object.
+    size : object
+        Parameter controlling size.
+    
+    Returns
+    -------
+    object
+        Requested value.
+    """
     x = np.zeros(size)
     y = np.zeros(size)
     if size != int(blob_object.emitters.gamma_grid_size):
@@ -67,6 +101,24 @@ def get_emitters_c_array1d(gamma_prt, n_ptr, blob_object, size):
 
 def get_emitters_c_array1d_fast(gamma_ptr, n_ptr, blob_object, size):
     
+    """Return emitters c array1d fast.
+    
+    Parameters
+    ----------
+    gamma_ptr : object
+        Frequency/energy control value for gamma ptr.
+    n_ptr : object
+        Parameter controlling n ptr.
+    blob_object : object
+        Parameter controlling blob object.
+    size : object
+        Parameter controlling size.
+    
+    Returns
+    -------
+    object
+        Requested value.
+    """
     if size != int(blob_object.emitters.gamma_grid_size):
         raise RuntimeError("mismatch between expected and actual c-array size")
 
@@ -84,6 +136,19 @@ def get_emitters_c_array1d_fast(gamma_ptr, n_ptr, blob_object, size):
 
 
 def set_emitters_c_array1d(n_ptr, blob_object, size, values):
+    """Set emitters c array1d.
+    
+    Parameters
+    ----------
+    n_ptr : object
+        Parameter controlling n ptr.
+    blob_object : object
+        Parameter controlling blob object.
+    size : object
+        Parameter controlling size.
+    values : object
+        Parameter controlling values.
+    """
     if size != int(blob_object.emitters.gamma_grid_size):
         raise RuntimeError("mismatch between expected and actual c-array size")
     for idx in range(size):
@@ -91,6 +156,19 @@ def set_emitters_c_array1d(n_ptr, blob_object, size, values):
 
 
 def set_emitters_c_array1d_fast(n_ptr, blob_object, size, values):
+    """Set emitters c array1d fast.
+    
+    Parameters
+    ----------
+    n_ptr : object
+        Parameter controlling n ptr.
+    blob_object : object
+        Parameter controlling blob object.
+    size : object
+        Parameter controlling size.
+    values : object
+        Parameter controlling values.
+    """
     if size != int(blob_object.emitters.gamma_grid_size):
         raise RuntimeError("mismatch between expected and actual c-array size")
     if int(n_ptr) == 0:

@@ -18,6 +18,15 @@ class AnalyticalParameter(ModelParameter):
     """
     def __init__(self,polymodel,**keywords):
         
+        """Create a new `AnalyticalParameter` instance.
+        
+        Parameters
+        ----------
+        polymodel : object
+            Parameter controlling polymodel.
+        **keywords : dict
+            Parameter controlling keywords.
+        """
         self.polymodel=polymodel
 
         self.allowed_par_types=['Temperature','peak freq','peak flux']
@@ -31,6 +40,13 @@ class AnalyticalParameter(ModelParameter):
         
         
     def set(self,**keywords):
+        """Set.
+        
+        Parameters
+        ----------
+        **keywords : dict
+            Parameter controlling keywords.
+        """
         super(AnalyticalParameter,self).set(**keywords )
         
         """
@@ -53,8 +69,29 @@ class AnalyticalParameter(ModelParameter):
 
 
 class Disk(Model):
+    """Analytical thermal-disk component parameterized in ``nuFnu`` space.
+
+    Notes
+    -----
+    Implements a blackbody-like accretion-disk spectrum with peak-flux and
+    temperature controls, integrated in the standard :class:`~jetset.base_model.Model`
+    interface.
+    """
     def __init__(self,cosmo,z,nu_size=100,name='disk',**keywords):
-        """
+        """Create a new `Disk` instance.
+        
+        Parameters
+        ----------
+        cosmo : object
+            Cosmology helper used for frame/luminosity conversions.
+        z : object
+            Source redshift.
+        nu_size : int, optional
+            Number of points for frequency grids.
+        name : str, optional
+            Name identifier.
+        **keywords : dict
+            Additional keyword arguments.
         """
         
         super(Disk,self).__init__(  **keywords)
@@ -93,6 +130,15 @@ class Disk(Model):
 
     def set_disk_pars(self,fit_model,model_name):
         
+        """Set disk pars.
+        
+        Parameters
+        ----------
+        fit_model : object
+            Model instance used for fitting.
+        model_name : object
+            Parameter controlling model name.
+        """
         self.L_Disk=self.get_L_D()
           
         self.L_Disk_err=self.L_Disk*(fit_model.parameters.get(model_name,'nuFnu_p','best_fit_err')/
@@ -107,10 +153,24 @@ class Disk(Model):
 
     
     def get_nu_p(self):
+        """Return nu p.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self.T_Disk*(1.39*5.879e10)
 
     
     def get_L_D(self):
+        """Return l d.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return 4*np.pi*self.DL*self.DL*self.nuFnu_p
         
         
@@ -119,6 +179,18 @@ class Disk(Model):
 
     
     def lin_func(self,nu):
+        """Lin func.
+        
+        Parameters
+        ----------
+        nu : object
+            Frequency values in Hz.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         nu=nu*(1+self.z)
         a = 2 * self.HPLANCK * nu*nu*nu*nu / (self.vluce_cm* self.vluce_cm)
         a *= 1.0 / (np.exp((self.HPLANCK * nu) / (self.K_boltz * self.T_Disk)) - 1)
@@ -127,4 +199,16 @@ class Disk(Model):
     
     def log_func(self,log_nu):
         
+        """Log func.
+        
+        Parameters
+        ----------
+        log_nu : object
+            Frequency/energy control value for log nu.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         return np.log10(self.lin_func(np.power(10,log_nu)))

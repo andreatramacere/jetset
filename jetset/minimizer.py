@@ -1,3 +1,5 @@
+"""Model fitting and minimization utilities for JetSeT workflows."""
+
 
 __author__ = "Andrea Tramacere"
 
@@ -48,24 +50,13 @@ __all__ = ['FitResults','fit_SED','Minimizer','LSBMinimizerScipy', 'MinuitMinimi
 
 
 class FitResults(object):
-    """
-    Class to store the fit results 
-    
-    Parameters
-     
-    
-    Members
-    :ivar fit_par: fit_par
-    :ivar info: info
-    :ivar mesg: mesg
-    :ivar success: success
-    :ivar chisq: chisq
-    :ivar dof: dof
-    :ivar chisq_red: chisq_red
-    :ivar null_hyp_sig: null_hyp_sig
-    :ivar fit_report: ivar get_report()
-    -------
-    
+    """Container for fit statistics and parameter-report state.
+
+    Notes
+    -----
+    Instances are produced after minimization and collect convergence
+    information, chi-square metrics (optionally including UL-free variants),
+    and parameter tables used by reporting and serialization helpers.
     """
     
     def __init__(self,
@@ -85,6 +76,41 @@ class FitResults(object):
                  chisq_red_no_UL=None,
                  null_hyp_sig_no_UL=None):
 
+        """Create a new `FitResults` instance.
+        
+        Parameters
+        ----------
+        name : str
+            Name identifier.
+        mm : object
+            Owning minimizer manager instance.
+        parameters : object
+            Parameter container associated with the fit/model.
+        calls : object
+            Number of function evaluations.
+        mesg : object
+            Backend optimizer status message/object.
+        success : object
+            Boolean convergence flag.
+        chisq : object
+            Chi-square value of the fit.
+        dof : object
+            Degrees of freedom.
+        chisq_red : object
+            Reduced chi-square.
+        null_hyp_sig : object
+            Null-hypothesis significance.
+        wd : object
+            Working directory path for outputs.
+        chisq_no_UL : object, optional
+            Chi-square computed excluding upper-limit contribution.
+        dof_no_UL : object, optional
+            Degrees of freedom excluding upper-limit points.
+        chisq_red_no_UL : object, optional
+            Reduced chi-square excluding upper-limit points.
+        null_hyp_sig_no_UL : object, optional
+            Null-hypothesis significance excluding upper-limit points.
+        """
         self.name=name
         self.parameters=parameters
         self.mm=mm
@@ -107,6 +133,12 @@ class FitResults(object):
 
     def update_report(self):
         # self.model_table=self.parameters._par_table
+        """Refresh cached report tables from current parameter state.
+
+        Notes
+        -----
+        This rebuilds both full and best-fit parameter tables.
+        """
         self.parameters._build_best_fit_par_table()
         self.parameters._build_par_table()
 
@@ -148,6 +180,13 @@ class FitResults(object):
 
     @property
     def bestfit_table(self):
+        """Bestfit table.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self.parameters.best_fit_par_table
 
     def _update_asymm_errors(self):
@@ -158,6 +197,12 @@ class FitResults(object):
                     self.mm.fit_par_free[pi].err_m=self.mm.minimizer.asymm_errors[pi][1]
 
     def show_report(self):
+        """Print the formatted fit report to stdout.
+
+        Notes
+        -----
+        Falls back to a plain warning if rich formatting fails.
+        """
         try:
             self._show_report()
         except:
@@ -167,10 +212,29 @@ class FitResults(object):
 
     @classmethod
     def load_report(cls,file_name):
+        """Load object state from disk.
+        
+        Parameters
+        ----------
+        file_name : object
+            Input/output file path.
+        
+        Returns
+        -------
+        object
+            Loaded object.
+        """
         c = pickle.load(open(file_name, "rb"))
         return c
 
     def save_report(self,name=None):
+        """Save object state to disk.
+        
+        Parameters
+        ----------
+        name : object, optional
+            Name identifier.
+        """
         if name is None:
             name = 'best_fit_report.pkl'
         mm =self.mm
@@ -204,7 +268,21 @@ class FitResults(object):
 class ModelMinimizer(object):
 
 
+    """High-level entry point for model fitting workflows.
+
+    Notes
+    -----
+    Handles data preparation, fit-range filtering, backend minimizer selection
+    (SciPy, Minuit, or Sherpa), and packaging of best-fit results.
+    """
     def __init__(self,minimizer_type):
+        """Create a new `ModelMinimizer` instance.
+        
+        Parameters
+        ----------
+        minimizer_type : object
+            Backend minimizer identifier.
+        """
         __accepted__ = ['lsb', 'minuit', 'sherpa']
 
         if minimizer_type=='lsb':
@@ -227,6 +305,13 @@ class ModelMinimizer(object):
         #print('minimizer',minimizer_type)
 
     def save_model(self, file_name):
+        """Save object state to disk.
+        
+        Parameters
+        ----------
+        file_name : object
+            Input/output file path.
+        """
         _m= self.minimizer
         self.minimizer=self.minimizer_type
 
@@ -236,6 +321,18 @@ class ModelMinimizer(object):
     @classmethod
     def load_model(cls, file_name):
 
+        """Load object state from disk.
+        
+        Parameters
+        ----------
+        file_name : object
+            Input/output file path.
+        
+        Returns
+        -------
+        object
+            Loaded object.
+        """
         try:
             c = pickle.load(open(file_name, "rb"))
             if isinstance(c, ModelMinimizer):
@@ -442,6 +539,44 @@ class ModelMinimizer(object):
             skip_minimizer=False,
             repeat=1):
 
+        """Fit.
+        
+        Parameters
+        ----------
+        fit_model : object
+            Model instance used for fitting.
+        sed_data : object
+            Observational SED data container.
+        nu_fit_start : float
+            Lower bound of the fit range in Hz.
+        nu_fit_stop : float
+            Upper bound of the fit range in Hz.
+        fitname : object, optional
+            Name assigned to the fit run.
+        fit_workplace : path, optional
+            Workplace/output configuration object.
+        loglog : bool, optional
+            If ``True``, operate in log10 space.
+        silent : bool, optional
+            If ``True``, suppress informational output.
+        get_conf_int : bool, optional
+            If ``True``, use confidence-interval initialization strategy.
+        max_ev : int, optional
+            Maximum number of optimizer function evaluations.
+        use_fake_err : bool, optional
+            If ``True``, enable fake err.
+        use_UL : bool, optional
+            If ``True``, enable ul.
+        skip_minimizer : bool, optional
+            If ``True``, skip minimizer.
+        repeat : int, optional
+            Number of repeated minimization passes.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         self.silent=silent
 
         self._prepare_fit( fit_model, sed_data, nu_fit_start, nu_fit_stop, fitname=fitname, fit_workplace=fit_workplace,
@@ -488,6 +623,28 @@ class ModelMinimizer(object):
 
     def get_fit_results(self, fit_model, nu_fit_start, nu_fit_stop, fitname, silent=False, loglog=False):
 
+        """Return fit results.
+        
+        Parameters
+        ----------
+        fit_model : object
+            Model instance used for fitting.
+        nu_fit_start : float
+            Lower bound of the fit range in Hz.
+        nu_fit_stop :        nu_fit_start : floa
+            Upper bound of the fit range in Hz.
+        fitname : str
+            Name assigned to the fit run.
+        silent : bool, optional
+            If ``True``, suppress informational output.
+        loglog : bool, optional
+            If ``True``, operate in log10 space.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         self.reset_to_best_fit()
         self.minimizer._fit_stats()
         best_fit = FitResults(fitname,
@@ -538,11 +695,23 @@ class ModelMinimizer(object):
         return best_fit
 
     def show_fit_warnings(self):
+        """Print warnings collected during fitting.
+
+        Notes
+        -----
+        Warnings are stored in ``self.minimizer._post_fit_warnings``.
+        """
         print(self.minimizer._post_fit_warnings)
 
 
     def reset_to_best_fit(self):
 
+        """Reset model parameters to stored best-fit solution.
+
+        Notes
+        -----
+        Also refreshes per-parameter best-fit values and errors.
+        """
         for pi in range(len(self.fit_par_free)):
             self.fit_par_free[pi].set(val=self.pout[pi])
             self.fit_par_free[pi].best_fit_val = self.pout[pi]
@@ -554,6 +723,13 @@ class ModelMinimizer(object):
         self.fit_model.eval()
     
     def plot_corr_matrix(self):
+        """Plot corr matrix.
+        
+        Returns
+        -------
+        object
+            Plot object or generated visualization.
+        """
         if hasattr(self,'corr'):
             if len(self.corr)>0:
                 
@@ -574,7 +750,21 @@ class ModelMinimizer(object):
 
 class Minimizer(object):
 
+    """Base class for concrete minimizer backends.
+
+    Notes
+    -----
+    Provides shared residual and chi-square machinery, progress tracking, and
+    post-fit statistics used by all optimizer implementations.
+    """
     def __init__(self,model):
+        """Create a new `Minimizer` instance.
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        """
         self.model=model
         self._progress_iter = cycle(['|', '/', '-', '\\'])
         self._post_fit_warnings=''
@@ -587,6 +777,21 @@ class Minimizer(object):
             use_UL=False,
             use_dx=False,
             silent=False):
+        """Fit.
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        max_ev : int, optional
+            Maximum number of optimizer function evaluations.
+        use_UL : bool, optional
+            If ``True``, enable ul.
+        use_dx : bool, optional
+            If ``True``, enable dx.
+        silent : bool, optional
+            If ``True``, suppress informational output.
+        """
         if silent is False:
             self.pbar = tqdm(total=None)
         self.use_UL = use_UL
@@ -657,6 +862,32 @@ class Minimizer(object):
                       silent=False):
    
         #_warn=False
+        """Residuals  fit.
+        
+        Parameters
+        ----------
+        p : target_parameters_array
+            parameter.
+        fit_par : object
+            List of free fit-parameter objects.
+        data : object
+            Input data table or array.
+        best_fit_SEDModel : object
+            Model instance evaluated against data during fitting.
+        loglog : object
+            If ``True``, operate in log10 space.
+        chisq : bool, optional
+            Chi-square value of the fit.
+        use_UL : bool, optional
+            If ``True``, enable ul.
+        silent : bool, optional
+            If ``True``, suppress informational output.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         for pi in range(len(fit_par)):
             #_old_v=fit_par[pi].val
              
@@ -695,6 +926,13 @@ class Minimizer(object):
 
 
     def get_chisq(self):
+        """Return chisq.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         sig2_x_term=None
         
         if self.use_dx is True:
@@ -749,6 +987,13 @@ class Minimizer(object):
     
     @property
     def corr(self):
+        """Corr.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         try:
             if self.covar is not None:
                 v = np.sqrt(np.diag(self.covar))
@@ -802,8 +1047,22 @@ def _eval_res_UL(y_UL,y_model,y_err):
 
 class LSBMinimizerScipy(Minimizer):
 
+    """SciPy ``least_squares`` backend for JetSeT fits.
+
+    Notes
+    -----
+    Uses the trust-region reflective algorithm with parameter bounds and
+    computes an approximate covariance matrix from the returned Jacobian.
+    """
     def __init__(self,
                  model):
+        """Create a new `LSBMinimizerScipy` instance.
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        """
         super(LSBMinimizerScipy, self).__init__(model)
         self.conf_dict=dict(
                     xtol=None,
@@ -851,11 +1110,30 @@ class LSBMinimizerScipy(Minimizer):
 
 class MinuitMinimizer(Minimizer):
 
+    """iminuit-based backend for JetSeT fits.
+
+    Notes
+    -----
+    Builds a Minuit function from free model parameters, optionally runs a
+    simplex pre-step, then executes ``migrad`` and extracts fit values and
+    covariance information.
+    """
     def __init__(self,
                  model,
                  add_simplex=True,
                  conf_dict=dict(tol=0.1)):
         
+        """Create a new `MinuitMinimizer` instance.
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        add_simplex : bool, optional
+            If ``True``, run simplex before MIGRAD.
+        conf_dict : object, optional
+            Configuration dictionary for optimizer controls.
+        """
         if minuit_installed==True:
             pass
         else:
@@ -948,6 +1226,18 @@ class MinuitMinimizer(Minimizer):
             self.minuit_fun.errordef = Minuit.LEAST_SQUARES
 
     def chisq_func(self, *p):
+        """Chisq func.
+        
+        Parameters
+        ----------
+        *p : paramters
+            target parameters
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         if iminuit.__version__ < "2":
             self.p = p
         else:
@@ -965,6 +1255,13 @@ class MinuitMinimizer(Minimizer):
 
 
     def minos_errors(self,par=None):
+        """Minos errors.
+        
+        Parameters
+        ----------
+        par : object, optional
+            Parameter object or parameter name.
+        """
         try:
             if par is not None:
                 par=self.minuit_par_name_dict[par]
@@ -977,6 +1274,22 @@ class MinuitMinimizer(Minimizer):
             raise RuntimeWarning('Fit quality not sufficient to run Minos')
 
     def profile(self,par,bound=2,subtract_min=True):
+        """Profile.
+        
+        Parameters
+        ----------
+        par : object
+            Parameter object or parameter name.
+        bound : int, optional
+            Absolute parameter-bound span.
+        subtract_min : bool, optional
+            Minimum value for subtract.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         self._force_silent()
         try:
             self.calls = 0
@@ -1050,6 +1363,20 @@ class MinuitMinimizer(Minimizer):
             raise RuntimeWarning('Fit quality not sufficient to run draw_mnprofile')
 
     def draw_profile(self,par,bound=2):
+        """Draw profile.
+        
+        Parameters
+        ----------
+        par : object
+            Parameter object or parameter name.
+        bound : int, optional
+            Absolute parameter-bound span.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         try:
             self._force_silent()
             self.calls = 0
@@ -1105,6 +1432,26 @@ class MinuitMinimizer(Minimizer):
 
 
     def contour(self,par_1,par_2,bound=2,bins=20,subtract_min=True):
+        """Contour.
+        
+        Parameters
+        ----------
+        par_1 : object
+            First parameter object/name.
+        par_2 : object
+            Second parameter object/name.
+        bound : int, optional
+            Absolute parameter-bound span.
+        bins : int, optional
+            Number of bins used for histograms/grids.
+        subtract_min : bool, optional
+            Minimum value for subtract.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         try:
             self.calls = 0
             if np.shape(bound)==():
@@ -1135,6 +1482,24 @@ class MinuitMinimizer(Minimizer):
 
 
     def draw_contour(self,par_1,par_2,bound=2,levels=np.arange(5)):
+        """Draw contour.
+        
+        Parameters
+        ----------
+        par_1 : object
+            First parameter object/name.
+        par_2 : object
+            Second parameter object/name.
+        bound : int, optional
+            Absolute parameter-bound span.
+        levels : object, optional
+            Contour levels for corner plots.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         try:
             self.calls = 0
             l=self.minuit_fun.errordef*levels
@@ -1150,6 +1515,26 @@ class MinuitMinimizer(Minimizer):
             raise RuntimeWarning('Fit quality not sufficient to run draw_contour')
 
     def mncontour(self,par_1,par_2,bound=2,bins=20,subtract_min=True):
+        """Mncontour.
+        
+        Parameters
+        ----------
+        par_1 : object
+            First parameter object/name.
+        par_2 : object
+            Second parameter object/name.
+        bound : int, optional
+            Absolute parameter-bound span.
+        bins : int, optional
+            Number of bins used for histograms/grids.
+        subtract_min : bool, optional
+            Minimum value for subtract.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         try:
             self.calls = 0
             if np.shape(bound)==():
@@ -1180,6 +1565,24 @@ class MinuitMinimizer(Minimizer):
 
 
     def draw_mncontour(self,par_1,par_2,bound=2,levels=np.arange(5)):
+        """Draw mncontour.
+        
+        Parameters
+        ----------
+        par_1 : object
+            First parameter object/name.
+        par_2 : object
+            Second parameter object/name.
+        bound : int, optional
+            Absolute parameter-bound span.
+        levels : object, optional
+            Contour levels for corner plots.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         try:
             self.calls = 0
             l=self.minuit_fun.errordef*levels
@@ -1222,6 +1625,44 @@ class MinuitMinimizer(Minimizer):
 def fit_SED(fit_model, sed_data, nu_fit_start, nu_fit_stop, fitname=None, fit_workplace=None, loglog=False, silent=False,
             get_conf_int=False, max_ev=0, use_fake_err=False, minimizer='lsb', use_UL=False,repeat=3):
 
+    """Fit sed.
+    
+    Parameters
+    ----------
+    fit_model : object
+        Model instance used for fitting.
+    sed_data : object
+        Observational SED data container.
+    nu_fit_start : float
+        Lower bound of the fit range in Hz.
+    nu_fit_stop : float
+        Upper bound of the fit range in Hz.
+    fitname : str, optional
+        Name assigned to the fit run.
+    fit_workplace : path, optional
+        Workplace/output configuration object.
+    loglog : bool, optional
+        If ``True``, operate in log10 space.
+    silent : bool, optional
+        If ``True``, suppress informational output.
+    get_conf_int : bool, optional
+        If ``True``, use confidence-interval initialization strategy.
+    max_ev : int, optional
+        Maximum number of optimizer function evaluations.
+    use_fake_err : bool, optional
+        If ``True``, enable fake err.
+    minimizer : str, optional
+        Minimizer backend name.
+    use_UL : bool, optional
+        If ``True``, enable ul.
+    repeat : int, optional
+        Number of repeated minimization passes.
+    
+    Returns
+    -------
+    object
+        Computed value.
+    """
     mm = ModelMinimizer(minimizer)
     return mm,mm.fit(fit_model,
                   sed_data,
@@ -1242,6 +1683,36 @@ def fit_SED(fit_model, sed_data, nu_fit_start, nu_fit_stop, fitname=None, fit_wo
 def fit_XY(fit_model, data, x_fit_start,x_fit_stop,fitname=None,silent=False,get_conf_int=False,minimizer='minuit',
            use_UL=False, repeat=1):
 
+    """Fit xy.
+    
+    Parameters
+    ----------
+    fit_model : object
+        Model instance used for fitting.
+    data : object
+        Input data table or array.
+    x_fit_start : float
+        Lower boundary of fit range on x-axis.
+    x_fit_stop : float
+        Upper boundary of fit range on x-axis.
+    fitname : object, optional
+        Name assigned to the fit run.
+    silent : bool, optional
+        If ``True``, suppress informational output.
+    get_conf_int : bool, optional
+        If ``True``, use confidence-interval initialization strategy.
+    minimizer : str, optional
+        Minimizer backend name.
+    use_UL : bool, optional
+        If ``True``, enable ul.
+    repeat : int, optional
+        Number of repeated minimization passes.
+    
+    Returns
+    -------
+    object
+        Computed value.
+    """
     mm = ModelMinimizer(minimizer)
     return mm, mm.fit(fit_model,
                       data,

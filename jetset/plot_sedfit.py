@@ -36,14 +36,39 @@ from .utils import *
 __all__=['PlotSED','BasePlot','PlotPdistr','PlotSpecComp','PlotSeedPhotons','PlotSpectralMultipl','PlotTempEvDiagram','PlotTempEvEmitters']
 
 def y_ev_transf(x):
+    """Y ev transf.
+    
+    Parameters
+    ----------
+    x : object
+        Parameter controlling x.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     return x / 2.417E14
 
 def y_ev_transf_inv(x):
+    """Y ev transf inv.
+    
+    Parameters
+    ----------
+    x : object
+        Parameter controlling x.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     return x * 2.417E14
 
 
 
 def set_mpl():
+    """Set mpl."""
     mpl.rcParams['figure.figsize'] = [12.0, 8.0]
     mpl.rcParams['figure.dpi'] = 100
     mpl.rcParams['savefig.dpi'] = 100
@@ -63,6 +88,14 @@ def _rescale( x_min=None, x_max=None, y_min=None, y_max=None):
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
 class  PlotSED (object):
+    """Main SED plotting utility for data, models, and residuals.
+
+    Notes
+    -----
+    Manages a two-panel Matplotlib figure (spectrum + residuals) and provides
+    helpers to overlay observational data, model curves, and time-dependent
+    snapshots.
+    """
     def __init__(self,
                  sed_data=None,
                  model=None,
@@ -75,6 +108,31 @@ class  PlotSED (object):
                  figsize=(12,8),
                  use_grid=True):
 
+        """Create a new `PlotSED` instance.
+        
+        Parameters
+        ----------
+        sed_data : object, optional
+            Observational SED data container.
+        model : object, optional
+            Model instance.
+        interactive : bool, optional
+            Parameter controlling interactive.
+        plot_workplace : object, optional
+            If ``True``, plot workplace.
+        title : str, optional
+            Parameter controlling title.
+        frame : str, optional
+            Reference frame for data/model values.
+        density : bool, optional
+            Parameter controlling density.
+        dpi : int, optional
+            Parameter controlling dpi.
+        figsize : tuple, optional
+            Parameter controlling figsize.
+        use_grid : bool, optional
+            If ``True``, enable grid.
+        """
         check_frame(frame)
 
         self.frame=frame
@@ -179,20 +237,24 @@ class  PlotSED (object):
         self.add_res_zeroline()
 
     def clean_residuals_lines(self):
+        """Clean residuals lines."""
         for i in range(len(self.lines_res_list)):
             self.del_residuals_line(0)
 
     def clean_data_lines(self):
 
+        """Clean data lines."""
         for i in range(len(self.lines_data_list)):
             self.del_data_line(0)
 
     def clean_model_lines(self):
+        """Clean model lines."""
         for i in range(len(self.lines_model_list)):
             self.del_model_line(0)
 
 
     def list_lines(self):
+        """List lines."""
         if self.lines_data_list==[] and self.lines_model_list==[]:
             pass
         else:
@@ -204,6 +266,13 @@ class  PlotSED (object):
                 print ('model',ID,  plot_line.get_label())
 
     def del_data_line(self,line_ID):
+        """Del data line.
+        
+        Parameters
+        ----------
+        line_ID : object
+            Index/identifier for line id.
+        """
         if self.lines_data_list==[]:
             print  ("no lines to delete ")
         else:
@@ -225,6 +294,13 @@ class  PlotSED (object):
 
     def del_model_line(self,line_ID):
 
+        """Del model line.
+        
+        Parameters
+        ----------
+        line_ID : object
+            Index/identifier for line id.
+        """
         if self.lines_model_list==[]:
             #print  "no lines to delete "
             pass
@@ -240,6 +316,13 @@ class  PlotSED (object):
             #self.update_legend()
 
     def del_residuals_line(self, line_ID):
+        """Del residuals line.
+        
+        Parameters
+        ----------
+        line_ID : object
+            Index/identifier for line id.
+        """
         if self.lines_res_list == []:
             # print  "no lines to delete "
             pass
@@ -254,6 +337,13 @@ class  PlotSED (object):
             #self.update_legend()
 
     def set_plot_axis_labels(self, density=False):
+        """Set plot axis labels.
+        
+        Parameters
+        ----------
+        density : bool, optional
+            Parameter controlling density.
+        """
         self.lx = '$ \\nu $  (Hz)'
 
         if self.frame == 'src' or self.frame == 'blob':
@@ -281,24 +371,65 @@ class  PlotSED (object):
     def add_res_zeroline(self):
         #y0 = np.zeros(2)
         #x0 = [0,30]
+        """Add res zeroline."""
         self.resplot.axhline(0, ls='--', color='black')
         self.update_plot()
 
     
     def rescale(self, x_min=None, x_max=None, y_min=None, y_max=None):
+        """Rescale.
+        
+        Parameters
+        ----------
+        x_min : object, optional
+            Minimum value for x.
+        x_max : object, optional
+            Maximum value for x.
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        """
         _rescale(x_min=x_min,x_max=x_max,y_min=y_min,y_max=y_max)
 
     def setlim(self, x_min=None, x_max=None, y_min=None, y_max=None):
+        """Setlim.
+        
+        Parameters
+        ----------
+        x_min : object, optional
+            Minimum value for x.
+        x_max : object, optional
+            Maximum value for x.
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        """
         self.sedplot.set_xlim(x_min, x_max)
         self.sedplot.set_ylim(y_min, y_max)
     
     def setlim_res(self,x_min=None,x_max=None,y_min=None,y_max=None):
+        """Setlim res.
+        
+        Parameters
+        ----------
+        x_min : object, optional
+            Minimum value for x.
+        x_max : object, optional
+            Maximum value for x.
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        """
         self.resplot.set_xlim(x_min,x_max)
         self.resplot.set_ylim(y_min,y_max)
         self.update_plot()
     
     
     def update_plot(self):
+        """Update plot."""
         self.fig.canvas.draw()
        
         y_s = []
@@ -335,6 +466,13 @@ class  PlotSED (object):
 
     def update_legend(self,label=None):
 
+        """Update legend.
+        
+        Parameters
+        ----------
+        label : object, optional
+            Label used in output or plots.
+        """
         _handles=[]
 
         if self.lines_data_list!=[] and self.lines_data_list is not None:
@@ -358,6 +496,31 @@ class  PlotSED (object):
 
     def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None, update=True, lw=1.0 ,frame=None):
 
+        """Add model plot.
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        label : object, optional
+            Label used in output or plots.
+        color : object, optional
+            Matplotlib color specification.
+        line_style : object, optional
+            Parameter controlling line style.
+        flim : object, optional
+            Parameter controlling flim.
+        auto_label : bool, optional
+            Parameter controlling auto label.
+        fit_range : object, optional
+            Range for fit.
+        update : bool, optional
+            Parameter controlling update.
+        lw : float, optional
+            Parameter controlling lw.
+        frame : object, optional
+            Reference frame for data/model values.
+        """
         frame=self._check_frame(frame=frame)
 
         if hasattr(model,'get_model_points'):
@@ -423,6 +586,39 @@ class  PlotSED (object):
                           density=False,
                           average=False):
 
+        """Plot tempev model.
+        
+        Parameters
+        ----------
+        temp_ev : object
+            Parameter controlling temp ev.
+        region : object
+            Parameter controlling region.
+        comp : str, optional
+            Parameter controlling comp.
+        frame : object, optional
+            Reference frame for data/model values.
+        t1 : object, optional
+            Parameter controlling t1.
+        t2 : object, optional
+            Parameter controlling t2.
+        time_slice : object, optional
+            Time-related value for time slice.
+        time_slice_bin : object, optional
+            Time-related value for time slice bin.
+        time : object, optional
+            Time-related value for time.
+        time_bin : object, optional
+            Time-related value for time bin.
+        use_cached : bool, optional
+            If ``True``, enable cached.
+        sed_data : object, optional
+            Observational SED data container.
+        density : bool, optional
+            Parameter controlling density.
+        average : bool, optional
+            Parameter controlling average.
+        """
         frame=self._check_frame(frame)
 
 
@@ -506,6 +702,27 @@ class  PlotSED (object):
 
 
     def add_data_plot(self,sed_data,label=None,color=None,frame=None,fmt='o',ms=4,mew=0.5,fit_range=None):
+        """Add data plot.
+        
+        Parameters
+        ----------
+        sed_data : object
+            Observational SED data container.
+        label : object, optional
+            Label used in output or plots.
+        color : object, optional
+            Matplotlib color specification.
+        frame : object, optional
+            Reference frame for data/model values.
+        fmt : str, optional
+            Parameter controlling fmt.
+        ms : int, optional
+            Parameter controlling ms.
+        mew : float, optional
+            Parameter controlling mew.
+        fit_range : object, optional
+            Range for fit.
+        """
         self._sed_data=sed_data
         frame = self._check_frame(frame)
         try:
@@ -552,6 +769,23 @@ class  PlotSED (object):
 
     def add_xy_plot(self,x,y,label=None,color=None,line_style=None,autoscale=False):
 
+        """Add xy plot.
+        
+        Parameters
+        ----------
+        x : object
+            Parameter controlling x.
+        y : object
+            Parameter controlling y.
+        label : object, optional
+            Label used in output or plots.
+        color : object, optional
+            Matplotlib color specification.
+        line_style : object, optional
+            Parameter controlling line style.
+        autoscale : bool, optional
+            Parameter controlling autoscale.
+        """
         if line_style is None:
             line_style='-'
 
@@ -571,6 +805,23 @@ class  PlotSED (object):
 
 
     def add_model_residual_plot(self, model, data, label=None, color=None, filter_UL=True, fit_range=None):
+        """Add model residual plot.
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        data : object
+            Input data table/array.
+        label : object, optional
+            Label used in output or plots.
+        color : object, optional
+            Matplotlib color specification.
+        filter_UL : bool, optional
+            Parameter controlling filter ul.
+        fit_range : object, optional
+            Range for fit.
+        """
         if data is not None:
             x,y = model.get_residuals(log_log=False,data=data,filter_UL=filter_UL)
             self.add_xy_residual_plot(x=x, y=y, fit_range=fit_range, color=color)
@@ -579,6 +830,19 @@ class  PlotSED (object):
 
 
     def add_xy_residual_plot(self, x, y, fit_range=None, color=None):
+        """Add xy residual plot.
+        
+        Parameters
+        ----------
+        x : object
+            Parameter controlling x.
+        y : object
+            Parameter controlling y.
+        fit_range : object, optional
+            Range for fit.
+        color : object, optional
+            Matplotlib color specification.
+        """
         if self.counter_res == 0:
             self.add_res_zeroline()
         if fit_range is not None:
@@ -595,6 +859,13 @@ class  PlotSED (object):
 
 
     def add_text(self,lines):
+        """Add text.
+        
+        Parameters
+        ----------
+        lines : object
+            Parameter controlling lines.
+        """
         self.PLT.focus(0,0)
         x_min, x_max = self.sedplot.get_xlim()
         y_min, y_max = self.sedplot.get_ylim()
@@ -606,6 +877,13 @@ class  PlotSED (object):
 
 
     def save(self,filename=None):
+        """Save object state to disk.
+        
+        Parameters
+        ----------
+        filename : object, optional
+            Filesystem path for filename.
+        """
         if filename is None:
             wd=self.out_dir
             filename = 'jetset_fig.png'
@@ -617,6 +895,7 @@ class  PlotSED (object):
         self.fig.savefig(outname)
 
     def show(self):
+        """Show."""
         self.fig.show()
 
 
@@ -624,18 +903,61 @@ class  PlotSED (object):
 
 
 class BasePlot(object):
+    """Lightweight base wrapper around a single Matplotlib axis.
+
+    Notes
+    -----
+    Provides common axis limit helpers and redraw/autoscale behavior reused by
+    specialized JetSeT plotting classes.
+    """
 
     def __init__(self,figsize=(8,6),dpi=100):
+        """Create a new `BasePlot` instance.
+        
+        Parameters
+        ----------
+        figsize : tuple, optional
+            Parameter controlling figsize.
+        dpi : int, optional
+            Parameter controlling dpi.
+        """
         self.fig, self.ax = plt.subplots(figsize=figsize,dpi=dpi)
 
     def rescale(self, x_min=None, x_max=None, y_min=None, y_max=None):
+        """Rescale.
+        
+        Parameters
+        ----------
+        x_min : object, optional
+            Minimum value for x.
+        x_max : object, optional
+            Maximum value for x.
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        """
         _rescale(x_min=x_min,x_max=x_max,y_min=y_min,y_max=y_max)
 
     def setlim(self, x_min=None, x_max=None, y_min=None, y_max=None):
+        """Setlim.
+        
+        Parameters
+        ----------
+        x_min : object, optional
+            Minimum value for x.
+        x_max : object, optional
+            Maximum value for x.
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        """
         self.ax.set_xlim(x_min, x_max)
         self.ax.set_ylim(y_min, y_max)
 
     def update_plot(self):
+        """Update plot."""
         self.fig.canvas.draw()
         self.ax.relim()
         self.ax.autoscale(axis='y')
@@ -645,7 +967,9 @@ class BasePlot(object):
 
 
 class PlotSpectralMultipl(BasePlot):
+    """Plot helper for spectral multiplicative terms in log-log space."""
     def __init__(self):
+        """Create a new `PlotSpectralMultipl` instance."""
         super(PlotSpectralMultipl, self).__init__()
 
         secax = self.ax.secondary_xaxis('top', functions=(y_ev_transf, y_ev_transf_inv))
@@ -654,6 +978,27 @@ class PlotSpectralMultipl(BasePlot):
 
     def plot(self,nu,y,y_label,y_min=None,y_max=None,label=None,line_style=None,color=None):
 
+        """Plot.
+        
+        Parameters
+        ----------
+        nu : object
+            Frequency values in Hz.
+        y : object
+            Parameter controlling y.
+        y_label : object
+            Parameter controlling y label.
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        label : object, optional
+            Label used in output or plots.
+        line_style : object, optional
+            Parameter controlling line style.
+        color : object, optional
+            Matplotlib color specification.
+        """
         self.ax.plot(np.log10(nu), np.log10(y),label=label,ls=line_style,color=color)
         self.ax.set_xlabel(r'$ \nu $  (Hz)')
         self.ax.set_ylabel(y_label)
@@ -665,8 +1010,28 @@ class PlotSpectralMultipl(BasePlot):
 
 
 class  PlotPdistr (BasePlot):
+    """Plotter for particle/injection energy distributions.
+
+    Notes
+    -----
+    Supports multiple energy units, optional powers of energy (e.g. ``E^2 n``),
+    and linear/log views for electrons and protons.
+    """
 
     def __init__(self,figsize=(8,6),dpi=100,injection=False,loglog=True):
+        """Create a new `PlotPdistr` instance.
+        
+        Parameters
+        ----------
+        figsize : tuple, optional
+            Parameter controlling figsize.
+        dpi : int, optional
+            Parameter controlling dpi.
+        injection : bool, optional
+            Parameter controlling injection.
+        loglog : bool, optional
+            If ``True``, operate in log10 space.
+        """
         super(PlotPdistr, self).__init__(figsize=figsize,dpi=dpi)
         self.loglog=loglog
         self.injection = injection
@@ -757,6 +1122,29 @@ class  PlotPdistr (BasePlot):
 
     def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma',label=None):
 
+        """Plot distr.
+        
+        Parameters
+        ----------
+        gamma : object
+            Frequency/energy control value for gamma.
+        n_gamma : object
+            Frequency/energy control value for n gamma.
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        x_min : object, optional
+            Minimum value for x.
+        x_max : object, optional
+            Maximum value for x.
+        particle : str, optional
+            Parameter controlling particle.
+        energy_unit : str, optional
+            Frequency/energy control value for energy unit.
+        label : object, optional
+            Label used in output or plots.
+        """
         x,y,energy_name,energy_units=self._set_variable(gamma,n_gamma,particle,energy_unit)
 
         if label is None:
@@ -769,6 +1157,29 @@ class  PlotPdistr (BasePlot):
 
 
     def plot_distr2p(self, gamma, n_gamma, y_min=None, y_max=None, x_min=None, x_max=None,particle='electrons',energy_unit='gamma',label=None):
+        """Plot distr2p.
+        
+        Parameters
+        ----------
+        gamma : object
+            Frequency/energy control value for gamma.
+        n_gamma : object
+            Frequency/energy control value for n gamma.
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        x_min : object, optional
+            Minimum value for x.
+        x_max : object, optional
+            Maximum value for x.
+        particle : str, optional
+            Parameter controlling particle.
+        energy_unit : str, optional
+            Frequency/energy control value for energy unit.
+        label : object, optional
+            Label used in output or plots.
+        """
         if label is None:
             label=particle
 
@@ -780,6 +1191,29 @@ class  PlotPdistr (BasePlot):
         self.ax.set_xlim(x_min, x_max)
 
     def plot_distr3p(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma', label=None):
+        """Plot distr3p.
+        
+        Parameters
+        ----------
+        gamma : object
+            Frequency/energy control value for gamma.
+        n_gamma : object
+            Frequency/energy control value for n gamma.
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        x_min : object, optional
+            Minimum value for x.
+        x_max : object, optional
+            Maximum value for x.
+        particle : str, optional
+            Parameter controlling particle.
+        energy_unit : str, optional
+            Frequency/energy control value for energy unit.
+        label : object, optional
+            Label used in output or plots.
+        """
         if label is None:
             label = particle
 
@@ -792,6 +1226,7 @@ class  PlotPdistr (BasePlot):
 
 
     def update_plot(self):
+        """Update plot."""
         self.fig.canvas.draw()
         self.ax.relim()
         self.ax.autoscale(axis='y')
@@ -806,8 +1241,20 @@ class  PlotPdistr (BasePlot):
 
 
 class  PlotTempEvEmitters (PlotPdistr):
+    """Emitter-distribution plotter specialized for time-evolution outputs."""
 
     def __init__(self,figsize=(8,6),dpi=100,loglog=True):
+        """Create a new `PlotTempEvEmitters` instance.
+        
+        Parameters
+        ----------
+        figsize : tuple, optional
+            Parameter controlling figsize.
+        dpi : int, optional
+            Parameter controlling dpi.
+        loglog : bool, optional
+            If ``True``, operate in log10 space.
+        """
         super(PlotTempEvEmitters, self).__init__(figsize=figsize,dpi=dpi,loglog=loglog,)
 
 
@@ -889,18 +1336,71 @@ class  PlotTempEvEmitters (PlotPdistr):
         self.ax.legend()
 
     def plot_distr(self, temp_ev, region='acc', energy_unit='gamma',plot_Q_inj=True,pow=None):
+        """Plot distr.
+        
+        Parameters
+        ----------
+        temp_ev : object
+            Parameter controlling temp ev.
+        region : str, optional
+            Parameter controlling region.
+        energy_unit : str, optional
+            Frequency/energy control value for energy unit.
+        plot_Q_inj : bool, optional
+            If ``True``, plot q inj.
+        pow : object, optional
+            Parameter controlling pow.
+        """
         self._plot_distr(temp_ev,region=region, particle='electrons',energy_unit=energy_unit,pow=pow,plot_Q_inj=plot_Q_inj)
 
     def plot_distr2p(self, temp_ev, region='acc', energy_unit='gamma',plot_Q_inj=True):
+        """Plot distr2p.
+        
+        Parameters
+        ----------
+        temp_ev : object
+            Parameter controlling temp ev.
+        region : str, optional
+            Parameter controlling region.
+        energy_unit : str, optional
+            Frequency/energy control value for energy unit.
+        plot_Q_inj : bool, optional
+            If ``True``, plot q inj.
+        """
         self._plot_distr(temp_ev, region=region, particle='electrons',energy_unit=energy_unit,pow=2,plot_Q_inj=plot_Q_inj)
 
     def plot_distr3p(self, temp_ev, region='acc', energy_unit='gamma',plot_Q_inj=True):
+        """Plot distr3p.
+        
+        Parameters
+        ----------
+        temp_ev : object
+            Parameter controlling temp ev.
+        region : str, optional
+            Parameter controlling region.
+        energy_unit : str, optional
+            Frequency/energy control value for energy unit.
+        plot_Q_inj : bool, optional
+            If ``True``, plot q inj.
+        """
         self._plot_distr(temp_ev, region=region, particle='electrons',energy_unit=energy_unit,pow=3,plot_Q_inj=plot_Q_inj)
 
 
 class  PlotTempEvDiagram (object):
+    """Diagnostic multi-panel summary for time-evolution control profiles."""
 
     def __init__(self,figsize=(8,6),dpi=100,expanding_region=False):
+        """Create a new `PlotTempEvDiagram` instance.
+        
+        Parameters
+        ----------
+        figsize : tuple, optional
+            Parameter controlling figsize.
+        dpi : int, optional
+            Parameter controlling dpi.
+        expanding_region : bool, optional
+            Parameter controlling expanding region.
+        """
         if expanding_region is True:
             n_rows =4
         else:
@@ -916,6 +1416,23 @@ class  PlotTempEvDiagram (object):
              R_H_exp):
 
 
+        """Plot.
+        
+        Parameters
+        ----------
+        T_array : object
+            Array/grid values for t array.
+        inj_profile : object
+            Filesystem path for inj profile.
+        acc_profile : object
+            Filesystem path for acc profile.
+        R_exp : object
+            Parameter controlling r exp.
+        B_exp : object
+            Parameter controlling b exp.
+        R_H_exp : object
+            Parameter controlling r h exp.
+        """
         self.axs[0].plot(T_array, acc_profile, label='Acc. start/stop', c='g')
         self.axs[0].set_ylim(0, 1.5)
 
@@ -939,19 +1456,60 @@ class  PlotTempEvDiagram (object):
         self.fig.tight_layout()
 
     def rescale(self, x_min=None, x_max=None, y_min=None, y_max=None):
+        """Rescale.
+        
+        Parameters
+        ----------
+        x_min : object, optional
+            Minimum value for x.
+        x_max : object, optional
+            Maximum value for x.
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        """
         _rescale(x_min=x_min,x_max=x_max,y_min=y_min,y_max=y_max)
 
     def setlim(self, x_min=None, x_max=None, y_min=None, y_max=None):
+        """Setlim.
+        
+        Parameters
+        ----------
+        x_min : object, optional
+            Minimum value for x.
+        x_max : object, optional
+            Maximum value for x.
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        """
         self.ax.set_xlim(x_min, x_max)
         self.ax.set_ylim(y_min, y_max)
 
 class  PlotSpecComp (BasePlot):
+    """Quick-look plotter for individual spectral components."""
 
     def __init__(self):
+        """Create a new `PlotSpecComp` instance."""
         super(PlotSpecComp, self).__init__()
 
     def plot(self,nu,nuFnu,y_min=None,y_max=None):
 
+        """Plot.
+        
+        Parameters
+        ----------
+        nu : object
+            Frequency values in Hz.
+        nuFnu : object
+            Frequency/energy control value for nu fnu.
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        """
         self.ax.plot(np.log10(nu), np.log10(nuFnu))
         self.ax.set_xlabel(r'log($ \nu $)  (Hz)')
         self.ax.set_ylabel(r'log($ \nu F_{\nu} $ )  (erg cm$^{-2}$  s$^{-1}$)')
@@ -961,12 +1519,27 @@ class  PlotSpecComp (BasePlot):
 
 
 class  PlotSeedPhotons (BasePlot):
+    """Quick-look plotter for seed-photon number density spectra."""
 
     def __init__(self):
+        """Create a new `PlotSeedPhotons` instance."""
         super(PlotSeedPhotons, self).__init__()
 
     def plot(self,nu,nuFnu,y_min=None,y_max=None):
 
+        """Plot.
+        
+        Parameters
+        ----------
+        nu : object
+            Frequency values in Hz.
+        nuFnu : object
+            Frequency/energy control value for nu fnu.
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        """
         self.ax.plot(np.log10(nu), np.log10(nuFnu))
         self.ax.set_xlabel(r'log($ \nu $)  (Hz)')
         self.ax.set_ylabel(r'log(n )  (photons cm$^{-3}$  Hz$^{-1}$  ster$^{-1}$)')

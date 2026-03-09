@@ -20,6 +20,20 @@ __all__=['filter_interval','find_E0','IC_fit_range','index','index_array','index
          'SEDShape','spectral_index_range','sync_fit_range']
 
 def filter_interval(x,x_range):
+    """Filter data by interval.
+    
+    Parameters
+    ----------
+    x : object
+        Parameter controlling x.
+    x_range : object
+        Range for x.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     msk1=x>=x_range[0]
     msk2=x<=x_range[1]
     return msk1*msk2
@@ -32,6 +46,17 @@ class index_typecasting(object):
     Class to handle different types of spectral indices
     """
     def __init__(self,data_type,val,error=False):
+        """Create a new `index_typecasting` instance.
+        
+        Parameters
+        ----------
+        data_type : object
+            Parameter controlling data type.
+        val : object
+            Value to assign.
+        error : bool, optional
+            Parameter controlling error.
+        """
         self.spectral=None
         self.photon=None
         self.sed=None
@@ -64,6 +89,21 @@ class index(object):
     """
     
     def __init__(self,name=None,data_type=None,val=None,err=None,idx_range=[]):
+        """Create a new `index` instance.
+        
+        Parameters
+        ----------
+        name : object, optional
+            Name identifier.
+        data_type : object, optional
+            Parameter controlling data type.
+        val : object, optional
+            Value to assign.
+        err : object, optional
+            Uncertainty values associated with inputs.
+        idx_range : list, optional
+            Range for idx.
+        """
         index_names=['radio','radio_mm','mm_IR','IR_Opt','Opt_UV','BBB','X','UV_X','Fermi','TeV']
 
         data_type_allowed=['spectral','photon','sed']
@@ -97,10 +137,20 @@ class index(object):
             
     
     def assign_val(self,val,err):
+        """Assign val.
+        
+        Parameters
+        ----------
+        val : object
+            Value to assign.
+        err : object
+            Uncertainty values associated with inputs.
+        """
         self.val=index_typecasting(self.data_type,val=val)
         self.err=index_typecasting(self.data_type,val=err,error=True)
        
     def show_val(self):
+        """Display val."""
         if self.val is None:
             val='No'
         else:
@@ -122,12 +172,40 @@ class index_array(object):
     Class to handle an array of :class:`index` objects
     """
     def __init__(self):
+        """Create a new `index_array` instance."""
         self.idx_list=[]
     
     def add_index(self,name=None,data_type=None,val=None,err=None,idx_range=[]):
+        """Add index.
+        
+        Parameters
+        ----------
+        name : object, optional
+            Name identifier.
+        data_type : object, optional
+            Parameter controlling data type.
+        val : object, optional
+            Value to assign.
+        err : object, optional
+            Uncertainty values associated with inputs.
+        idx_range : list, optional
+            Range for idx.
+        """
         self.idx_list.append(index(name=name,data_type=data_type,val=val,err=err,idx_range=idx_range))
     
     def get_by_name(self,name):
+        """Return by name.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         for pi in range(len(self.idx_list)):
             if self.idx_list[pi].name==name:
                 return self.idx_list[pi]
@@ -167,6 +245,7 @@ class index_array(object):
 
 
     def show_pars(self):
+        """Display pars."""
         self._build_table()
         _show_table(self.table)
         
@@ -174,6 +253,18 @@ class index_array(object):
 
 #----------------------------------------------------
 def spectral_index_range(name):
+        """Spectral index range.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         spectral_range_dic={}
         spectral_range_dic['radio']=[6.,10.]
         spectral_range_dic['radio_mm']=[10.,11.]
@@ -189,6 +280,20 @@ def spectral_index_range(name):
         
         
 def sync_fit_range(name,indices):
+        """Sync fit range.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        indices : object
+            Parameter controlling indices.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         spectral_range_dic={}
         spectral_range_dic['blind']=[9.,19.]        
         spectral_range_dic['ISP']=[10.,17.]
@@ -270,6 +375,7 @@ class peak_values(object):
             
         
         def show(self):
+            """Show."""
             if self.nu_p_val is None:
                 nu_p_val='No'
             else:
@@ -324,6 +430,13 @@ class SEDShape(object):
     
     def __init__(self,sed_data):
         
+        """Create a new `SEDShape` instance.
+        
+        Parameters
+        ----------
+        sed_data : object
+            Observational SED data container.
+        """
         self.indices=index_array()
         self.indices.add_index(name='radio',data_type='sed')    
         self.indices.add_index(name='radio_mm',data_type='sed')   
@@ -406,6 +519,7 @@ class SEDShape(object):
     
     def show_values(self):
         
+        """Display values."""
         print (section_separator)
         
         print ('*** SEDShape values ***')
@@ -444,6 +558,13 @@ class SEDShape(object):
     
     def save_values(self,name):
 
+        """Save object state to disk.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        """
         _v=[]
 
         _dt=[('src_name','S32')]
@@ -538,6 +659,18 @@ class SEDShape(object):
             
 
     def plot_indices(self,plot_obj=None):
+        """Plot indices.
+        
+        Parameters
+        ----------
+        plot_obj : object, optional
+            Existing plot object to update.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         if plot_obj is None:
             plot_obj=PlotSED(sed_data=self.sed_data)
 
@@ -547,6 +680,18 @@ class SEDShape(object):
         return plot_obj
 
     def plot_shape_fit(self, plot_obj=None):
+        """Plot shape fit.
+        
+        Parameters
+        ----------
+        plot_obj : object, optional
+            Existing plot object to update.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         if plot_obj is None:
             plot_obj = PlotSED(sed_data=self.sed_data)
 
@@ -664,6 +809,13 @@ class SEDShape(object):
        
     
     def save_sync_fit_report(self,name=None):
+        """Save object state to disk.
+        
+        Parameters
+        ----------
+        name : object, optional
+            Name identifier.
+        """
         self.sync_best_fit.save_report(name=name)
 
     
@@ -686,6 +838,38 @@ class SEDShape(object):
       
         #fit_model1=copy.deepcopy(fit_model)
 
+        """Do sync fit.
+        
+        Parameters
+        ----------
+        fit_model : object
+            Model instance used for fitting.
+        fit_law_name : object
+            Parameter controlling fit law name.
+        fit_range : object, optional
+            Range for fit.
+        check_disk : bool, optional
+            Parameter controlling check disk.
+        check_BBB : bool, optional
+            Parameter controlling check bbb.
+        check_host : bool, optional
+            Parameter controlling check host.
+        Ep_start : object, optional
+            Lower bound/control for ep start.
+        no_check : bool, optional
+            Parameter controlling no check.
+        minimizer : str, optional
+            Lower bound/control for minimizer.
+        silent : bool, optional
+            If ``True``, suppress informational output.
+        show_fit_report : bool, optional
+            If ``True``, display fit report.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         if fit_range is None:
             s_fit_range=sync_fit_range('blind',self.indices)
         else:
@@ -789,6 +973,13 @@ class SEDShape(object):
     
     def add_disk(self,fit_model):
         
+        """Add disk.
+        
+        Parameters
+        ----------
+        fit_model : object
+            Model instance used for fitting.
+        """
         disk=Disk(cosmo=fit_model.cosmo, z=self.sed_data.z,name='Disk')
         
         fit_model.add_component(disk)
@@ -805,6 +996,13 @@ class SEDShape(object):
     
     def   add_BBB_template(self,fit_model):
         
+        """Add bbb template.
+        
+        Parameters
+        ----------
+        fit_model : object
+            Model instance used for fitting.
+        """
         BBB_template=SpectralTemplateLogLog.template_factory('BBB', cosmo=fit_model.cosmo, z=self.sed_data.z, name='BBB')
         
         fit_model.add_component(BBB_template)
@@ -824,6 +1022,13 @@ class SEDShape(object):
 
     def add_host_template(self,fit_model):
         
+        """Add host template.
+        
+        Parameters
+        ----------
+        fit_model : object
+            Model instance used for fitting.
+        """
         host_gal=SpectralTemplateLogLog.template_factory('host_galaxy', cosmo=fit_model.cosmo, z=self.sed_data.z, name='host_galaxy')
                  
         fit_model.add_component(host_gal)
@@ -839,6 +1044,17 @@ class SEDShape(object):
     
     
     def set_S_LE_slope(self,fit_func,fit_law_name,use_log_par):
+        """Set s le slope.
+        
+        Parameters
+        ----------
+        fit_func : object
+            Parameter controlling fit func.
+        fit_law_name : object
+            Parameter controlling fit law name.
+        use_log_par : object
+            If ``True``, enable log par.
+        """
         if use_log_par==False:
             self.S_LE_slope=2.0
         else:
@@ -853,6 +1069,26 @@ class SEDShape(object):
     
     def IC_fit(self,fit_range=None,use_log_par=False,Ep_start=None,minimizer='minuit',silent=False):
     
+        """Ic fit.
+        
+        Parameters
+        ----------
+        fit_range : object, optional
+            Range for fit.
+        use_log_par : bool, optional
+            If ``True``, enable log par.
+        Ep_start : object, optional
+            Lower bound/control for ep start.
+        minimizer : str, optional
+            Lower bound/control for minimizer.
+        silent : bool, optional
+            If ``True``, suppress informational output.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         print  (section_separator)
               
         print ("*** Log-Polynomial fitting of the IC component ***")
@@ -957,11 +1193,43 @@ class SEDShape(object):
     
     def get_nu_max(self,nu,fit_range):
 
+        """Return nu max.
+        
+        Parameters
+        ----------
+        nu : object
+            Frequency values in Hz.
+        fit_range : object
+            Range for fit.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         msk = filter_interval(nu,fit_range)
         return nu[msk].max()
         
         
     def check_adapt_range_size(self,x,index,min_size,silent=False):
+        """Check adapt range size.
+        
+        Parameters
+        ----------
+        x : object
+            Parameter controlling x.
+        index : object
+            Index/identifier for index.
+        min_size : object
+            Lower bound/control for min size.
+        silent : bool, optional
+            If ``True``, suppress informational output.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         do_fit=True
         x_range=[index.idx_range[0],index.idx_range[1]]
         msk = filter_interval(x,x_range)
@@ -991,6 +1259,20 @@ class SEDShape(object):
 
 
     def get_initial_index_values(self,index,loglog_pl):
+        """Return initial index values.
+        
+        Parameters
+        ----------
+        index : object
+            Index/identifier for index.
+        loglog_pl : object
+            Parameter controlling loglog pl.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         d=self.sed_data.data[np.logical_and(self.sed_data.data['nu_data_log']>=index.idx_range[0],self.sed_data.data['nu_data_log']<=index.idx_range[1])]
         id_min=np.argmin(d['nu_data_log'])
         id_max=np.argmax(d['nu_data_log'])

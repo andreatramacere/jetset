@@ -1,3 +1,5 @@
+"""Base model abstractions and shared utilities used across JetSeT models."""
+
 
 __author__ = "Andrea Tramacere"
 
@@ -27,6 +29,7 @@ __all__=['Model','MultiplicativeModel']
 class Model(object):
     
     
+    """Base class for analytical and numerical SED models."""
     def __init__(self,name='no_name',
                  nu_size=200,
                  model_type='base_model',
@@ -35,6 +38,25 @@ class Model(object):
                  nu_min=None,
                  nu_max=None):
         
+        """Initialize a model container.
+
+        Parameters
+        ----------
+        name : str, optional
+            Model name.
+        nu_size : int, optional
+            Number of frequencies used when building an internal evaluation grid.
+        model_type : str, optional
+            Descriptive model type label.
+        scale : str, optional
+            Preferred plotting/evaluation scale.
+        cosmo : Cosmo, optional
+            Cosmology helper. If omitted, a default :class:`Cosmo` instance is used.
+        nu_min : float, optional
+            Minimum frequency of the model grid in Hz.
+        nu_max : float, optional
+            Maximum frequency of the model grid in Hz.
+        """
         self.model_type=model_type
         
         self.name=name
@@ -62,6 +84,13 @@ class Model(object):
         
     @property
     def version(self):
+        """Return the package version used to create this model.
+
+        Returns
+        -------
+        str
+            Version string.
+        """
         return self._version
 
     def _set_version(self, v=None):
@@ -135,6 +164,29 @@ class Model(object):
 
     def eval(self, fill_SED=True, nu=None, get_model=False, loglog=False, label=None, **kwargs):
 
+        """Evaluate model fluxes.
+
+        Parameters
+        ----------
+        fill_SED : bool, optional
+            If ``True``, update the model SED object after evaluation.
+        nu : array-like or float, optional
+            Frequency grid in Hz (or log10(Hz) if ``loglog`` is ``True``).
+            If omitted, the internal ``nu_min``/``nu_max``/``nu_size`` grid is used.
+        get_model : bool, optional
+            If ``True``, return evaluated values.
+        loglog : bool, optional
+            If ``True``, treat input/output frequency and model values in log10 space.
+        label : str, optional
+            Reserved for subclasses/plotting integrations.
+        **kwargs
+            Extra keyword arguments accepted for subclass compatibility.
+
+        Returns
+        -------
+        ndarray or None
+            Evaluated model array when ``get_model`` is ``True``, otherwise ``None``.
+        """
         out_model = None
         #print('--> base model 1', nu[0])
         lin_nu,log_nu=self._prepare_nu_model(nu,loglog)
@@ -176,6 +228,32 @@ class Model(object):
 
     def plot_model(self,plot_obj=None,clean=False,sed_data=None,frame='obs',skip_components=False,label=None,line_style='-', density=False):
 
+        """Plot model SED and optional spectral components.
+
+        Parameters
+        ----------
+        plot_obj : PlotSED, optional
+            Existing plotting object. If omitted, a new one is created.
+        clean : bool, optional
+            If ``True``, clear existing model lines from ``plot_obj``.
+        sed_data : ObsData, optional
+            Optional observed data used by the plotting helper.
+        frame : {'obs', 'src'}, optional
+            Output frame for plotting.
+        skip_components : bool, optional
+            If ``True``, do not plot individual spectral components.
+        label : str, optional
+            Label for the model curve.
+        line_style : str, optional
+            Matplotlib line style.
+        density : bool, optional
+            If ``True``, use density representation in plotting helper.
+
+        Returns
+        -------
+        PlotSED
+            Plot object with model curves added.
+        """
         plot_obj=self._set_up_plot(plot_obj,sed_data,frame,density)
 
         if clean is True:
@@ -205,6 +283,17 @@ class Model(object):
         return plot_obj
 
     def set_nu_grid(self,nu_min=None,nu_max=None,nu_size=None):
+        """Set model frequency-grid settings.
+
+        Parameters
+        ----------
+        nu_min : float, optional
+            Minimum frequency in Hz.
+        nu_max : float, optional
+            Maximum frequency in Hz.
+        nu_size : int, optional
+            Number of samples in the grid.
+        """
         if nu_size is not None:
             self.nu_size=nu_size
         
@@ -216,14 +305,55 @@ class Model(object):
 
 
     def lin_func(self,lin_nu):
+        """Return model values in linear space.
+
+        Parameters
+        ----------
+        lin_nu : ndarray
+            Frequency array in Hz.
+
+        Returns
+        -------
+        ndarray
+            Model values in linear ``nuFnu`` units.
+        """
         return np.ones(lin_nu.shape) * self.flux_plot_lim
     
     def log_func(self,log_nu):
+        """Return model values in log10 space.
+
+        Parameters
+        ----------
+        log_nu : ndarray
+            Frequency array in log10(Hz).
+
+        Returns
+        -------
+        ndarray
+            Model values in log10 space.
+        """
         return np.log10(self.lin_func(np.power(10,log_nu)))
 
 
 
     def get_residuals(self, data, log_log=False,filter_UL=True):
+        """Compute residuals between observed data and model prediction.
+
+        Parameters
+        ----------
+        data : ObsData or table-like
+            Input data table containing ``nu_data``, ``nuFnu_data``,
+            ``dnuFnu_data`` and ``UL`` columns.
+        log_log : bool, optional
+            If ``True``, return frequency axis in log10(Hz).
+        filter_UL : bool, optional
+            If ``True``, exclude upper-limit points.
+
+        Returns
+        -------
+        tuple of ndarray
+            ``(nu_axis, residuals)``.
+        """
         if isinstance(data,ObsData):
             data=data.data
 
@@ -245,14 +375,47 @@ class Model(object):
             return  np.log10(nu_residuals[msk]),  residuals[msk]
 
     def save_model(self, file_name):
+        """Serialize the model to disk.
+
+        Parameters
+        ----------
+        file_name : str
+            Output pickle file path.
+        """
         pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
     def save_model(self, file_name):
+        """Serialize the model to disk.
+
+        Parameters
+        ----------
+        file_name : str
+            Output pickle file path.
+        """
         pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
 
     @classmethod
     def load_model(cls, file_name_or_obj,from_string=False):
+        """Load a serialized model.
+
+        Parameters
+        ----------
+        file_name_or_obj : str or bytes or file-like
+            Serialized model source accepted by the pickle loader.
+        from_string : bool, optional
+            If ``True``, interpret ``file_name_or_obj`` as in-memory content.
+
+        Returns
+        -------
+        Model
+            Reconstructed and evaluated model instance.
+
+        Raises
+        ------
+        RuntimeError
+            If deserialization fails or object type is not valid.
+        """
         try:
             c=cls._load_pickle(file_name_or_obj,from_string=from_string)
             c._fix_par_dep_on_load(verbose=True)
@@ -285,9 +448,17 @@ class Model(object):
         return c
     
     def clone(self):
+        """Return a deep clone of the model via in-memory serialization.
+
+        Returns
+        -------
+        Model
+            Cloned model instance.
+        """
         return self.load_model(pickle.dumps(self, protocol=pickle.HIGHEST_PROTOCOL),from_string=True)
 
     def show_model(self):
+        """Print model summary and parameters."""
         print("")
         print('-'*80)
 
@@ -304,19 +475,33 @@ class Model(object):
         print('-'*80)
 
     def show_pars(self, sort_key='par type'):
+        """Display model parameters.
+
+        Parameters
+        ----------
+        sort_key : str, optional
+            Column used to sort displayed parameters.
+
+        Returns
+        -------
+        object
+            Output returned by ``ModelParameterArray.show_pars``.
+        """
         return self.parameters.show_pars(sort_key=sort_key)
 
     def show_best_fit_pars(self):
+        """Display best-fit parameter values."""
         self.parameters.show_best_fit_pars()
 
     def set_par(self,par_name,val):
-        """
-        shortcut to :class:`ModelParametersArray.set` method
-        set a parameter value
+        """Set a parameter value by name.
 
-        :param par_name: (srt), name of the parameter
-        :param val: parameter value
-
+        Parameters
+        ----------
+        par_name : str
+            Parameter name.
+        val : float or int
+            New parameter value.
         """
 
         self.parameters.set(par_name, val=val)
@@ -324,10 +509,17 @@ class Model(object):
 
 
     def get_par_by_type(self,par_type):
-        """
+        """Return first parameter matching a parameter type.
 
-        get parameter by type
+        Parameters
+        ----------
+        par_type : str
+            Parameter type label.
 
+        Returns
+        -------
+        ModelParameter or None
+            Matching parameter, if found.
         """
         for param in self.parameters.par_array:
             if param.par_type==par_type:
@@ -336,10 +528,17 @@ class Model(object):
         return None
 
     def get_par_by_name(self,par_name):
-        """
+        """Return parameter by name.
 
-        get parameter by type
+        Parameters
+        ----------
+        par_name : str
+            Parameter name.
 
+        Returns
+        -------
+        ModelParameter or None
+            Matching parameter, if found.
         """
         for param in self.parameters.par_array:
             if param.name==par_name:
@@ -348,6 +547,23 @@ class Model(object):
         return None
 
     def dep_func_get_default_args(self, par_func):
+        """Validate dependency-function arguments against model parameters.
+
+        Parameters
+        ----------
+        par_func : callable
+            Function used as dependency expression.
+
+        Returns
+        -------
+        list of str
+            Ordered list of parameter names accepted by ``par_func``.
+
+        Raises
+        ------
+        RuntimeError
+            If ``par_func`` uses argument names not present in the model.
+        """
         signature = inspect.signature(par_func)
         d = []
         for k, v in signature.parameters.items():
@@ -370,6 +586,23 @@ class Model(object):
 
     def make_dependent_par(self, par, depends_on, par_expr,verbose=True,set_par_expr_source_code=True,master_pars=None):
         #print("\n  ===> make par: ",par, "depending on : ",depends_on, " START")
+        """Make dependent par.
+        
+        Parameters
+        ----------
+        par : object
+            Parameter object or parameter name.
+        depends_on : object
+            Names of master parameters used by the dependency.
+        par_expr : object
+            Expression defining a dependent parameter.
+        verbose : bool, optional
+            If ``True``, print additional information.
+        set_par_expr_source_code : bool, optional
+            If ``True``, store source code for the dependency expression.
+        master_pars : object, optional
+            Master-parameter objects used by the dependency.
+        """
         master_par_list = depends_on
 
         dep_par=self.parameters.get_par_by_name(par)
@@ -409,11 +642,35 @@ class Model(object):
         #print("  ===> make par: ",par, "depending on : ",depends_on, " END\n")
     
     def add_user_par(self,name,val,units='',val_min=None,val_max=None):
+        """Add a user-defined parameter to the model.
+
+        Parameters
+        ----------
+        name : str
+            Parameter name.
+        val : float
+            Initial value.
+        units : str, optional
+            Parameter units label.
+        val_min : float, optional
+            Lower physical bound.
+        val_max : float, optional
+            Upper physical bound.
+        """
         self.parameters.add_par(ModelParameter(name=name,units=units,val=val,val_min=val_min,val_max=val_max,par_type='user_defined'))
 
 
 
     def set_fit_range(self,down_tol=0.1,up_tol=100):
+        """Set fit ranges for numeric parameters.
+
+        Parameters
+        ----------
+        down_tol : float, optional
+            Multiplicative factor for lower fit bound.
+        up_tol : float, optional
+            Relative factor for upper fit bound.
+        """
         for p in self.parameters.par_array:
             if isinstance(p.val, numbers.Number):
                 if p.val_min is not None:
@@ -428,6 +685,13 @@ class Model(object):
 
     def build_table(self, restframe='obs'):
 
+        """Build SED table for the current model state.
+
+        Parameters
+        ----------
+        restframe : {'obs', 'src'}, optional
+            Frame used to build frequency/flux columns.
+        """
         _names = ['nu']
         _cols=[]
         if hasattr(self,'SED'):
@@ -455,6 +719,18 @@ class Model(object):
 
    
     def sed_table(self, restframe='obs'):
+        """Return SED table, evaluating the model if needed.
+
+        Parameters
+        ----------
+        restframe : {'obs', 'src'}, optional
+            Frame used to build frequency/flux columns.
+
+        Returns
+        -------
+        astropy.table.Table or None
+            SED table for the current model state.
+        """
         try:
             self.build_table(restframe=restframe)
         except:
@@ -466,7 +742,20 @@ class Model(object):
 
 class MultiplicativeModel(Model):
 
+    """Model subclass for multiplicative spectral components."""
     def __init__(self, name='no-name', nu_size=100, model_type='multiplicative_model', scale='lin-lin'):
+        """Initialize a multiplicative model.
+
+        Parameters
+        ----------
+        name : str, optional
+            Model name.
+        nu_size : int, optional
+            Number of evaluation frequencies.
+        model_type : str, optional
+            Model type label.
+        scale : str, optional
+            Preferred plotting/evaluation scale.
+        """
         super(MultiplicativeModel, self).__init__(name=name, nu_size=nu_size, model_type=model_type,scale=scale)
         delattr(self,'SED')
-

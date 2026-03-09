@@ -11,6 +11,13 @@ __all__=['JetParameter','JetModelDictionaryPar','JetModelParameterArray']
 
 
 class JetModelDictionaryPar(object):
+    """Declarative parameter specification used to build jet parameters.
+
+    Notes
+    -----
+    Stores metadata (bounds, units, default value, kernel binding and flags)
+    that are later converted into concrete :class:`JetParameter` instances.
+    """
 
     def __init__(self,
                  ptype=None,
@@ -24,6 +31,31 @@ class JetModelDictionaryPar(object):
                  is_in_jetkernel=True,
                  allowed_values=None ):
 
+        """Create a new `JetModelDictionaryPar` instance.
+        
+        Parameters
+        ----------
+        ptype : object, optional
+            Parameter controlling ptype.
+        vmin : object, optional
+            Lower bound/control for vmin.
+        vmax : object, optional
+            Upper bound/control for vmax.
+        punit : object, optional
+            Parameter controlling punit.
+        froz : bool, optional
+            Parameter controlling froz.
+        log : bool, optional
+            Parameter controlling log.
+        val : object, optional
+            Value to assign.
+        jetkernel_par_name : object, optional
+            Parameter controlling jetkernel par name.
+        is_in_jetkernel : bool, optional
+            Boolean flag controlling in jetkernel.
+        allowed_values : object, optional
+            Lower bound/control for allowed values.
+        """
         self.ptype =ptype
         self.val=val
         self.vmin =vmin
@@ -37,12 +69,7 @@ class JetModelDictionaryPar(object):
 
 
 class JetParameter(ModelParameter):
-    """
-    This class is a subclass of the :class:`.ModelParameter` class,
-    extending the base class to  handles SSC/EC parameters,
-    overriding the :meth:`.ModelParameter.set` in order to propagate the
-    parameter value to the BlazarSED object instance
-    """
+    """JetParameter class."""
     def __init__(self,
                  model,
                  jetkernel_struct_name,
@@ -50,6 +77,25 @@ class JetParameter(ModelParameter):
                  is_in_jetkernel=True,
                  **keywords):
 
+        """This class is a subclass of the :class:`.ModelParameter` class,
+        extending the base class to  handles SSC/EC parameters,
+        overriding the :meth:`.ModelParameter.set` in order to propagate the
+        parameter value to the BlazarSED object instance
+
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        jetkernel_struct_name : object
+            Parameter controlling jetkernel struct name.
+        jetkernel_parameter_name : object
+            Parameter controlling jetkernel parameter name.
+        is_in_jetkernel : bool, optional
+            Boolean flag controlling in jetkernel.
+        **keywords : dict
+            Parameter controlling keywords.
+        """
         self._model = model
         #self._jetkernel_attr_name = jetkernel_attr_name
         self._jetkernel_parameter_name=  jetkernel_parameter_name
@@ -105,9 +151,12 @@ class JetParameter(ModelParameter):
 
     #@safe_run
     def set(self,**keywords):
-        """
-        overrides the  :meth:`.ModelParameter.set` method in order to propagate the
-        parameter value to the BlazarSED object instance
+        """Set.
+        
+        Parameters
+        ----------
+        **keywords : dict
+            Additional keyword arguments.
         """
         super(JetParameter,self).set(**keywords )
 
@@ -121,7 +170,14 @@ class JetParameter(ModelParameter):
 
 
     def assign_val_to_jetkernel(self, name, val):
-        """
+        """Assign val to jetkernel.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        val : object
+            Value to assign.
         """
         if self._jetkernel_parameter_name is not None:
             name=self._jetkernel_parameter_name
@@ -159,8 +215,23 @@ class JetParameter(ModelParameter):
 
 
 class JetModelParameterArray(ModelParameterArray):
+    """Parameter-array helper for jet models and kernel-backed parameters.
+
+    Notes
+    -----
+    Extends :class:`~jetset.model_parameters.ModelParameterArray` with methods
+    that instantiate parameters from JetSeT dictionary specifications and bind
+    them to jetkernel structures.
+    """
 
     def __init__(self,model=None):
+        """Create a new `JetModelParameterArray` instance.
+        
+        Parameters
+        ----------
+        model : object, optional
+            Model instance.
+        """
         super(JetModelParameterArray, self).__init__(model=model)
 
 
@@ -170,8 +241,18 @@ class JetModelParameterArray(ModelParameterArray):
                           model ,
                           struct_name,
                           parameter_class):
-        """
-
+        """Add par from dict.
+        
+        Parameters
+        ----------
+        model_dic : object
+            Model-parameter dictionary specification.
+        model : object
+            Model instance.
+        struct_name : object
+            Name of the bound jetkernel structure.
+        parameter_class : object
+            Parameter class used to instantiate entries.
         """
         #print('--->',model_dic)
         for key in model_dic.keys():

@@ -6,8 +6,10 @@ from packaging import version
 import subprocess
 
 class capture(redirect_stdout):
+    """Context manager capturing stdout into an in-memory string buffer."""
 
     def __init__(self):
+        """Create a new `capture` instance."""
         self.f = io.StringIO()
         self._new_target = self.f
         self._old_targets = []  # verbatim from parent class
@@ -22,6 +24,7 @@ class capture(redirect_stdout):
 
 
 def check_version():
+    """Check version."""
     try:
         p = subprocess.run(['python', '-m','pip', 'index', '--retries', '1', 'versions', 'jetset'], capture_output=True, text=True,timeout=1)
         message = p.stdout
@@ -49,6 +52,7 @@ def check_version():
     print(o_message)
 
 def run_version_checking():
+    """Run version checking."""
     try:
         check_version()
     except Exception as e:

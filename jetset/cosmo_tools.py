@@ -12,10 +12,28 @@ __all__=['Cosmo']
 
 
 class  Cosmo (object):
+    """Cosmology helper wrapping either Astropy cosmology or fixed distance.
+
+    Notes
+    -----
+    Provides luminosity-distance evaluation in centimeters and supports
+    serialization/deserialization of the underlying cosmology configuration.
+    """
 
 
     def __init__(self,astropy_cosmo=None,DL_cm=None,verbose=False):
         
+        """Create a new `Cosmo` instance.
+        
+        Parameters
+        ----------
+        astropy_cosmo : object, optional
+            Parameter controlling astropy cosmo.
+        DL_cm : object, optional
+            Parameter controlling dl cm.
+        verbose : bool, optional
+            Parameter controlling verbose.
+        """
         _c = None
         self._c_name=None
         if DL_cm is not None and astropy_cosmo is not None:
@@ -64,6 +82,18 @@ class  Cosmo (object):
         return s
 
     def get_DL_cm(self,z=None):
+        """Return dl cm.
+        
+        Parameters
+        ----------
+        z : object, optional
+            Parameter controlling z.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         if self._c is not None:
             #THIS IS FIXING THE ERROR WITH PICKLED COSMO
             #TODO: open issue on astropy!
@@ -96,6 +126,18 @@ class  Cosmo (object):
     
     @classmethod
     def from_model(cls,model):
+        """From model.
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         astropy_cosmo,DL_cm  = cls._decode_model(model)
         return cls(astropy_cosmo,DL_cm)
 
@@ -124,4 +166,3 @@ class  Cosmo (object):
         except Exception as e:
             warnings.warn('failed to decode saved astropy model, reason: %s'%str(e))       
         return astropy_cosmo,DL_cm  
-

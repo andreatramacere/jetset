@@ -16,6 +16,24 @@ _available_dict = {'lp': 'log-parabola',
 
 
 def distr_func_bkn(gamma_break, gamma, p, p_1):
+    """Distr func bkn.
+    
+    Parameters
+    ----------
+    gamma_break : object
+        Frequency/energy control value for gamma break.
+    gamma : object
+        Frequency/energy control value for gamma.
+    p : object
+        Parameter controlling p.
+    p_1 : object
+        Parameter controlling p 1.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     f = np.zeros(gamma.shape)
     m = gamma < gamma_break
     f[m] = np.power(gamma[m], -p)
@@ -24,24 +42,124 @@ def distr_func_bkn(gamma_break, gamma, p, p_1):
 
 
 def distr_func_pl(gamma, p, ):
+    """Distr func pl.
+    
+    Parameters
+    ----------
+    gamma : object
+        Frequency/energy control value for gamma.
+    p : object
+        Parameter controlling p.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     return np.power(gamma, -p)
 
 
 def distr_func_plc(gamma, gamma_cut, p,):
+    """Distr func plc.
+    
+    Parameters
+    ----------
+    gamma : object
+        Frequency/energy control value for gamma.
+    gamma_cut : object
+        Frequency/energy control value for gamma cut.
+    p : object
+        Parameter controlling p.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     return np.power(gamma, -p) * np.exp(-(gamma / gamma_cut) )
 
 
 def distr_func_super_exp(gamma, gamma_cut, p, a):
+    """Distr func super exp.
+    
+    Parameters
+    ----------
+    gamma : object
+        Frequency/energy control value for gamma.
+    gamma_cut : object
+        Frequency/energy control value for gamma cut.
+    p : object
+        Parameter controlling p.
+    a : object
+        Parameter controlling a.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     return np.power(gamma, -p) * np.exp(-(1 / a) * (gamma / gamma_cut) ** a)
 
 def distr_func_lp(gamma, gamma0_log_parab, r, s):
+    """Distr func lp.
+    
+    Parameters
+    ----------
+    gamma : object
+        Frequency/energy control value for gamma.
+    gamma0_log_parab : object
+        Frequency/energy control value for gamma0 log parab.
+    r : object
+        Parameter controlling r.
+    s : object
+        Parameter controlling s.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     return np.power((gamma / gamma0_log_parab), (-s - r * np.log10(gamma / gamma0_log_parab)))
 
 
 def distr_func_lep(gamma, gamma_p, r):
+    """Distr func lep.
+    
+    Parameters
+    ----------
+    gamma : object
+        Frequency/energy control value for gamma.
+    gamma_p : object
+        Frequency/energy control value for gamma p.
+    r : object
+        Parameter controlling r.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     return np.power(10., (-r * np.power(np.log10(gamma / gamma_p), 2)))
 
 def distr_func_lppl(gamma, gamma0_log_parab, r, s):
+    """Distr func lppl.
+    
+    Parameters
+    ----------
+    gamma : object
+        Frequency/energy control value for gamma.
+    gamma0_log_parab : object
+        Frequency/energy control value for gamma0 log parab.
+    r : object
+        Parameter controlling r.
+    s : object
+        Parameter controlling s.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     f = np.zeros(gamma.shape)
     m = gamma < gamma0_log_parab
     f[m] = np.power(gamma[m]/gamma0_log_parab, -s)
@@ -50,6 +168,34 @@ def distr_func_lppl(gamma, gamma0_log_parab, r, s):
 
 
 def distr_func_lppl_pileup(gamma, gamma0_log_parab,  gamma_inj, r,  s, gamma_eq,  ratio_pile_up , alpha, gamma_cut_acc):
+    """Distr func lppl pileup.
+    
+    Parameters
+    ----------
+    gamma : object
+        Frequency/energy control value for gamma.
+    gamma0_log_parab : object
+        Frequency/energy control value for gamma0 log parab.
+    gamma_inj : object
+        Frequency/energy control value for gamma inj.
+    r : object
+        Parameter controlling r.
+    s : object
+        Parameter controlling s.
+    gamma_eq : object
+        Frequency/energy control value for gamma eq.
+    ratio_pile_up : object
+        Parameter controlling ratio pile up.
+    alpha : object
+        Parameter controlling alpha.
+    gamma_cut_acc : object
+        Frequency/energy control value for gamma cut acc.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     b = np.zeros(gamma.shape)
     a = np.zeros(gamma.shape)
     m = gamma < gamma_inj
@@ -72,10 +218,19 @@ def distr_func_lppl_pileup(gamma, gamma0_log_parab,  gamma_inj, r,  s, gamma_eq,
 
 
 class EmittersFactory:
+    """Factory for analytical emitter distribution objects.
+
+    Notes
+    -----
+    Builds configured :class:`~jetset.jet_emitters.EmittersDistribution`
+    instances for supported spectral shapes (power law, broken power law,
+    log-parabola variants, and cutoff forms).
+    """
     def __repr__(self):
         return str(pprint.pprint(self._available_dict))
 
     def __init__(self):
+        """Create a new `EmittersFactory` instance."""
         self._available_dict=_available_dict
 
         self._func_dict = {'pl': self._create_pl,
@@ -99,11 +254,19 @@ class EmittersFactory:
 
     @staticmethod
     def available_distributions():
+        """Available distributions."""
         for k in _available_dict.keys():
             print('%s: %s' % (k, _available_dict[k]))
 
     @staticmethod
     def available_distributions_list():
+        """Available distributions list.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         return  _available_dict.keys()
 
     def create_emitters(self,
@@ -114,6 +277,28 @@ class EmittersFactory:
                         normalize=True,
                         skip_build=False):
 
+        """Create emitters.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        gamma_grid_size : int, optional
+            Array/grid values for gamma grid size.
+        log_values : bool, optional
+            Parameter controlling log values.
+        emitters_type : str, optional
+            Parameter controlling emitters type.
+        normalize : bool, optional
+            Parameter controlling normalize.
+        skip_build : bool, optional
+            If ``True``, skip build.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         if name not in self._available_dict.keys():
             raise RuntimeError('name', name, 'not among available', self._available_dict.keys())
 
@@ -289,8 +474,16 @@ class EmittersFactory:
         return n_lppl_pileup
 
 class InjEmittersFactory(EmittersFactory):
+    """Factory specialized for injection distributions ``Q(gamma)``.
+
+    Notes
+    -----
+    Reuses the distribution-shape registry from :class:`EmittersFactory` but
+    instantiates injection-oriented emitter classes.
+    """
 
     def __init__(self):
+        """Create a new `InjEmittersFactory` instance."""
         super(InjEmittersFactory, self).__init__()
 
 
@@ -303,6 +496,28 @@ class InjEmittersFactory(EmittersFactory):
                         normalize=True,
                         skip_build=False):
 
+        """Create inj emitters.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        gamma_grid_size : int, optional
+            Array/grid values for gamma grid size.
+        log_values : bool, optional
+            Parameter controlling log values.
+        emitters_type : str, optional
+            Parameter controlling emitters type.
+        normalize : bool, optional
+            Parameter controlling normalize.
+        skip_build : bool, optional
+            If ``True``, skip build.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         if name not in self._available_dict.keys():
             raise RuntimeError('name', name, 'not among available', self._available_dict.keys())
         

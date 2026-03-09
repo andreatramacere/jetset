@@ -15,10 +15,24 @@ __all__=['ModelParameter','ModelParameterArray','Value']
 class SettingDependentParError(Exception):
     """custom error for dependent error"""
     def __init__(self, message):
+        """Create a new `SettingDependentParError` instance.
+        
+        Parameters
+        ----------
+        message : object
+            Parameter controlling message.
+        """
         super().__init__(message)
         
 
 def is_notebook():
+    """Is notebook.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     try:
         from IPython import get_ipython
         if "IPKernelApp" not in get_ipython().config:  # pragma: no cover
@@ -44,8 +58,26 @@ def _show_table(t):
     else:
         t.pprint_all()
 class Value(object):
+    """Numeric parameter value with unit and log/linear views.
+
+    Notes
+    -----
+    Centralizes conversions between stored value, linear value, and log value,
+    while tracking dimensionality and Astropy-compatible units.
+    """
 
     def __init__(self,val,units,islog=False):
+        """Create a new `Value` instance.
+        
+        Parameters
+        ----------
+        val : object
+            Value to assign.
+        units : object
+            Parameter controlling units.
+        islog : bool, optional
+            Parameter controlling islog.
+        """
         self.val=val
         self.islog=islog
         self.units=units
@@ -56,22 +88,57 @@ class Value(object):
 
     @property
     def islog(self):
+        """Islog.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return  self._islog
 
     @islog.setter
     def islog(self,val):
+        """Islog.
+        
+        Parameters
+        ----------
+        val : object
+            Value to assign.
+        """
         self._islog=val
 
     @property
     def val(self):
+        """Val.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._val
 
     @val.setter
     def val(self, val):
+        """Val.
+        
+        Parameters
+        ----------
+        val : object
+            Value to assign.
+        """
         self._val = val
 
     @property
     def lin(self):
+        """Lin.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         if self._val is None:
             return None
         if self._islog is True:
@@ -81,6 +148,13 @@ class Value(object):
 
     @property
     def log(self):
+        """Log.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         if self._val is None:
             return None
         if self._islog is True:
@@ -90,10 +164,26 @@ class Value(object):
 
     @property
     def units(self):
+        """Units.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._units
 
     @units.setter
     def units(self, p_unit,verbose=False):
+        """Units.
+        
+        Parameters
+        ----------
+        p_unit : object
+            Parameter controlling p unit.
+        verbose : bool, optional
+            Parameter controlling verbose.
+        """
         try:
             self._units = u.Unit(p_unit)
             if self._units == '':
@@ -160,6 +250,13 @@ class ModelParameter(object):
     def __init__(self, **keywords):
 
 
+        """Create a new `ModelParameter` instance.
+        
+        Parameters
+        ----------
+        **keywords : dict
+            Parameter controlling keywords.
+        """
         self.allowed_keywords={'name':None}
         self.allowed_keywords['val']=None
         self.allowed_keywords['par_type']=None
@@ -254,44 +351,119 @@ class ModelParameter(object):
 
     @property
     def linked(self):
+        """Linked.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._linked
 
     @property
     def islog(self):
+        """Islog.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._val.islog
 
     @property
     def val(self ):
+        """Val.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._val.val
 
     @property
     def val_lin(self):
+        """Val lin.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._val.lin
 
     @property
     def val_log(self):
+        """Val log.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._val.log
 
     @val.setter
     def val(self,val):
+        """Val.
+        
+        Parameters
+        ----------
+        val : object
+            Value to assign.
+        """
         self.set(val=val)
 
     @property
     def units(self):
+        """Units.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._val.units
 
     @units.setter
     def units(self,val):
+        """Units.
+        
+        Parameters
+        ----------
+        val : object
+            Value to assign.
+        """
         self._val.units=val
 
     @property
     def adimensional(self):
+        """Adimensional.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         if hasattr(self._val,'_adimensional'):
             return self._val._adimensional
         else:
             return False
 
     def to(self, units):
+        """To.
+        
+        Parameters
+        ----------
+        units : object
+            Parameter controlling units.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         try:
             return (self.val*self.units).to(units)
         except Exception as e:
@@ -301,10 +473,24 @@ class ModelParameter(object):
     @property
     def fit_range(self):
 
+        """Fit range.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return [self.fit_range_min,self.fit_range_max]
 
     @fit_range.setter
     def fit_range(self, fit_range=None):
+        """Fit range.
+        
+        Parameters
+        ----------
+        fit_range : object, optional
+            Range for fit.
+        """
         if fit_range is None:
             fit_range=[None,None]
         if isinstance(fit_range,tuple):
@@ -324,6 +510,7 @@ class ModelParameter(object):
             raise RuntimeError('par',self.name, 'value',self.val,'> fit range max',fit_range[1])
 
     def reset_dependencies(self):
+        """Reset dependencies."""
         for mp in self._master_pars:
             if hasattr(mp, '_depending_pars'):
                 if self in mp._depending_pars:
@@ -354,6 +541,13 @@ class ModelParameter(object):
 
     @property
     def par_expression_source_code(self):
+        """Par expression source code.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         if hasattr(self,'_par_expr_text'):
             pass
         else:
@@ -379,10 +573,24 @@ class ModelParameter(object):
 
     @property
     def par_expr(self):
+        """Par expr.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._depending_par_expr
 
     @par_expr.setter
     def par_expr(self, expr_string):
+        """Par expr.
+        
+        Parameters
+        ----------
+        expr_string : object
+            Parameter controlling expr string.
+        """
         self._depending_par_expr = expr_string
 
     def _eval_par_func(self):
@@ -506,6 +714,18 @@ class ModelParameter(object):
     def get(self,*args ):
         
        
+        """Get.
+        
+        Parameters
+        ----------
+        *args : tuple
+            Additional positional arguments.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         for arg in args:
             
             if arg in  self.allowed_keywords.keys():
@@ -520,14 +740,37 @@ class ModelParameter(object):
 
     @property
     def immutable(self):
+        """Immutable.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._is_dependent or self._linked
 
     @property
     def frozen(self):
+        """Frozen.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._frozen
 
     @frozen.setter
     def frozen(self,v,skip_dep_par_warning=False):
+        """Frozen.
+        
+        Parameters
+        ----------
+        v : object
+            Parameter controlling v.
+        skip_dep_par_warning : bool, optional
+            If ``True``, skip dep par warning.
+        """
         if self.immutable is True and skip_dep_par_warning is True:
             raise RuntimeError('frozen state of linked/dependent parameter:',self.name , 'can not be changed, please update your script')
 
@@ -674,6 +917,13 @@ class ModelParameter(object):
         return descr
 
     def identity_func(self):
+        """Identity func.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         return self._root_par.val
 
 
@@ -712,24 +962,52 @@ class ModelParameter(object):
 
 def create_a_function( **kwargs):
 
+    """Create a function.
+    
+    Parameters
+    ----------
+    **kwargs : dict
+        Additional keyword arguments.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     def function_template(**kwargs):
+        """Function template.
+        
+        Parameters
+        ----------
+        **kwargs : dict
+            Additional keyword arguments.
+        """
         return
 
     return function_template
 
 
 class CompositeModelParameterArray(object):
+    """Unified parameter interface across multiple model components.
+
+    Notes
+    -----
+    Collects per-component parameter arrays, supports cross-component linking,
+    and builds merged parameter/best-fit tables for composite models.
+    """
 
     def __repr__(self):
         return str(self.show_pars())
 
     def __init__(self,):
 
+        """Create a new `CompositeModelParameterArray` instance."""
         self.all_frozen = False
         self._parameters = []
         self._model_comp = []
 
     def reset_dependencies(self):
+        """Reset dependencies."""
         for p in self.par_array:
             p.reset_dependencies()
 
@@ -737,6 +1015,17 @@ class CompositeModelParameterArray(object):
 
 
     def link_par(self,par_name,model_name_list,root_model_name):
+        """Link par.
+        
+        Parameters
+        ----------
+        par_name : object
+            Parameter controlling par name.
+        model_name_list : object
+            List of model name.
+        root_model_name : object
+            Parameter controlling root model name.
+        """
         m_root=self.get_model_by_name(root_model_name)
         p_root=m_root.get_par_by_name(par_name)
 
@@ -788,6 +1077,13 @@ class CompositeModelParameterArray(object):
         raise RuntimeError(s)
 
     def add_model_parameters(self, model):
+        """Add model parameters.
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        """
         try:
             assert (model.name not in [m.name for m in self._model_comp])
         except:
@@ -802,6 +1098,13 @@ class CompositeModelParameterArray(object):
         self._model_comp.append(model)
 
     def del_model_parameters(self, model_name):
+        """Del model parameters.
+        
+        Parameters
+        ----------
+        model_name : object
+            Parameter controlling model name.
+        """
         m,ID=self.get_model_by_name(model_name,get_idx=True)
         if m is not None:
             #_p = self._comp_par_array.pop(ID)
@@ -812,6 +1115,20 @@ class CompositeModelParameterArray(object):
 
 
     def get_model_by_name(self, model_name,get_idx=False):
+        """Return model by name.
+        
+        Parameters
+        ----------
+        model_name : object
+            Parameter controlling model name.
+        get_idx : bool, optional
+            Index/identifier for get idx.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         try:
             if isinstance(model_name, str):
                 pass
@@ -843,6 +1160,20 @@ class CompositeModelParameterArray(object):
                             fit_model.set_par(jet,value) 
                       '''
     def get_par_by_name(self, model_name,par_name):
+        """Return par by name.
+        
+        Parameters
+        ----------
+        model_name : object
+            Parameter controlling model name.
+        par_name : object
+            Parameter controlling par name.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         p=None
         m=self.get_model_by_name(model_name)
 
@@ -879,6 +1210,13 @@ class CompositeModelParameterArray(object):
 
     @property
     def par_array(self):
+        """Par array.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         pa=[]
         for p in  self._parameters:
             pa.extend(p.par_array)
@@ -887,15 +1225,43 @@ class CompositeModelParameterArray(object):
 
     @property
     def par_table(self):
+        """Par table.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         self._build_par_table()
         return self._par_table
 
     @property
     def best_fit_par_table(self):
+        """Best fit par table.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         self._build_best_fit_par_table()
         return self._best_fit_par_table
 
     def show_pars(self, getstring=False, sort_key=None):
+        """Display pars.
+        
+        Parameters
+        ----------
+        getstring : bool, optional
+            Parameter controlling getstring.
+        sort_key : object, optional
+            Parameter controlling sort key.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         self._build_par_table()
         if sort_key is not None:
             self.par_table.sort(sort_key)
@@ -907,6 +1273,18 @@ class CompositeModelParameterArray(object):
             _show_table(self.par_table)
 
     def show_best_fit_pars(self, getstring=False):
+        """Display best fit pars.
+        
+        Parameters
+        ----------
+        getstring : bool, optional
+            Parameter controlling getstring.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         self._build_best_fit_par_table()
         if getstring == True:
             return self._best_fit_par_table.pformat_all()
@@ -917,14 +1295,45 @@ class CompositeModelParameterArray(object):
 
     #@compositr_parameter_setter
     def freeze(self, model_name,par_name):
+        """Freeze.
+        
+        Parameters
+        ----------
+        model_name : object
+            Parameter controlling model name.
+        par_name : object
+            Parameter controlling par name.
+        """
         self.set(model_name,par_name, 'frozen')
 
     #@compositr_parameter_setter
     def free(self,model_name, par_name):
+        """Free.
+        
+        Parameters
+        ----------
+        model_name : object
+            Parameter controlling model name.
+        par_name : object
+            Parameter controlling par name.
+        """
         self.set(model_name,par_name, 'free')
 
     #@compositr_parameter_setter
     def set(self, model_name, par_name, *args, **kw):
+        """Set.
+        
+        Parameters
+        ----------
+        model_name : object
+            Parameter controlling model name.
+        par_name : object
+            Parameter controlling par name.
+        *args : tuple
+            Additional positional arguments.
+        **kw : dict
+            Parameter controlling kw.
+        """
         m=self.get_model_by_name(model_name)
         if m is not None:
             m.parameters.set(par_name, *args, **kw)
@@ -933,6 +1342,17 @@ class CompositeModelParameterArray(object):
 
     #@compositr_parameter_setter
     def set_par(self,model_name, par_name, val):
+        """Set par.
+        
+        Parameters
+        ----------
+        model_name : object
+            Parameter controlling model name.
+        par_name : object
+            Parameter controlling par name.
+        val : object
+            Value to assign.
+        """
         m=self.get_model_by_name(model_name)
         if m is not None:
             m.parameters.set(par_name, val=val)
@@ -942,6 +1362,26 @@ class CompositeModelParameterArray(object):
     #@compositr_parameter_setter
     def get(self, model_name,par_name, field_name, *args, **kw):
         #print('-->', par_name, field_name)
+        """Get.
+        
+        Parameters
+        ----------
+        model_name : object
+            Parameter controlling model name.
+        par_name : object
+            Parameter controlling par name.
+        field_name : object
+            Parameter controlling field name.
+        *args : tuple
+            Additional positional arguments.
+        **kw : dict
+            Parameter controlling kw.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         m = self.get_model_by_name(model_name)
         if m is not None:
             pass
@@ -952,6 +1392,20 @@ class CompositeModelParameterArray(object):
 
     #@compositr_parameter_setter
     def get_val(self, model_name,par_name):
+        """Return val.
+        
+        Parameters
+        ----------
+        model_name : object
+            Parameter controlling model name.
+        par_name : object
+            Parameter controlling par name.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         m = self.get_model_by_name(model_name)
         if m is not None:
             pass
@@ -961,12 +1415,14 @@ class CompositeModelParameterArray(object):
         return m.parameters.get(par_name, 'val')
 
     def freeze_all(self):
+        """Freeze all."""
         self.all_frozen = True
         for p_arr in self._parameters:
             for pi in range(len(p_arr)):
                 self.par_array[pi].freeze()
 
     def free_all(self):
+        """Free all."""
         self.all_frozen = False
         for p_arr in self._parameters:
             for pi in range(len(p_arr)):
@@ -1004,6 +1460,7 @@ class ModelParameterArray(object):
 
 
     def reset_dependencies(self):
+        """Reset dependencies."""
         for p in self.par_array:
             p.reset_dependencies()
 
@@ -1029,6 +1486,13 @@ class ModelParameterArray(object):
         par.model=self.model
     @property
     def names(self):
+        """Names.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return [p.name for p in self.par_array]
 
     def _build_par_table(self,names_list=None):
@@ -1252,6 +1716,13 @@ class ModelParameterArray(object):
 
     def del_par(self,par):
         
+        """Del par.
+        
+        Parameters
+        ----------
+        par : object
+            Parameter controlling par.
+        """
         self.par_array.remove(par)
         delattr(self,par.name)
         self.properties.pop(par.name)
@@ -1308,16 +1779,46 @@ class ModelParameterArray(object):
     
     @property
     def par_table(self):
+        """Par table.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         self._build_par_table()
         return self._par_table
 
     @property
     def best_fit_par_table(self):
+        """Best fit par table.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         self._build_best_fit_par_table()
         return self._best_fit_par_table
 
     def show_pars(self,getstring=False,names_list=None,sort_key=None):
 
+        """Display pars.
+        
+        Parameters
+        ----------
+        getstring : bool, optional
+            Parameter controlling getstring.
+        names_list : object, optional
+            List of names.
+        sort_key : object, optional
+            Parameter controlling sort key.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         self._build_par_table(names_list=names_list)
         if sort_key is not None:
             self.par_table.sort(sort_key)
@@ -1331,6 +1832,18 @@ class ModelParameterArray(object):
     
     def show_best_fit_pars(self,getstring=False):
 
+        """Display best fit pars.
+        
+        Parameters
+        ----------
+        getstring : bool, optional
+            Parameter controlling getstring.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         self._build_best_fit_par_table()
         if getstring == True:
             return self.best_fit_par_table.pformat_all()
@@ -1431,12 +1944,14 @@ class ModelParameterArray(object):
         return par.get(arg)
     
     def freeze_all(self):
+        """Freeze all."""
         self.all_frozen=True
         for pi in range(len(self.par_array)):
             self.par_array[pi].freeze()
                 
         
     def free_all(self):
+        """Free all."""
         self.all_frozen = False
         for pi in range(len(self.par_array)):
             self.par_array[pi].free()

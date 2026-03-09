@@ -16,7 +16,7 @@ try:
 except:
     on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
     
-    if on_rtd is True:
+    if on_rtd:
         SpectralModel=object
         pass
     else:
@@ -45,10 +45,25 @@ def int_to_string(n: int) -> str:
     return ''.join(reversed(chars))
 
 class GammapyJetsetModel(SpectralModel):
-    
+    """Adapter exposing a JetSeT model as a Gammapy ``SpectralModel``.
+
+    Notes
+    -----
+    Mirrors JetSeT free/frozen parameters into Gammapy parameter objects and
+    delegates spectral evaluation to the wrapped JetSeT model.
+    """
 
     def __init__(self,jetset_model,clone=True):
        
+        """Create a new `GammapyJetsetModel` instance.
+        
+        Parameters
+        ----------
+        jetset_model : object
+            Parameter controlling jetset model.
+        clone : bool, optional
+            Parameter controlling clone.
+        """
         if clone is True:
             _jetset_model = jetset_model.clone()
         else:
@@ -109,6 +124,20 @@ class GammapyJetsetModel(SpectralModel):
         super(GammapyJetsetModel, self).__init__()
 
     def evaluate(self,energy=None,**kwargs):
+        """Evaluate uate.
+        
+        Parameters
+        ----------
+        energy : object, optional
+            Frequency/energy control value for energy.
+        **kwargs : dict
+            Additional keyword arguments.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         if energy is None:
             el1=np.log10( self._jetset_model.nu_min)
             el2=np.log10( self._jetset_model.nu_max)
@@ -150,8 +179,29 @@ class GammapyJetsetModel(SpectralModel):
     
     @property
     def jetset_model(self):
+        """Jetset model.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._jetset_model
     
 
 def GammapyJetsetModelFactory(jetset_model,clone=True):
+    """Gammapy jetset model factory.
+    
+    Parameters
+    ----------
+    jetset_model : object
+        Parameter controlling jetset model.
+    clone : bool, optional
+        Parameter controlling clone.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     return GammapyJetsetModel(jetset_model,clone=clone)

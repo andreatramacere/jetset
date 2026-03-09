@@ -23,6 +23,15 @@ class PolyParameter(ModelParameter):
     """
     def __init__(self,polymodel,**keywords):
         
+        """Create a new `PolyParameter` instance.
+        
+        Parameters
+        ----------
+        polymodel : object
+            Parameter controlling polymodel.
+        **keywords : dict
+            Parameter controlling keywords.
+        """
         self.polymodel=polymodel
 
         self.allowed_par_types=['curvature','peak freq','peak flux','third-degree','spectral-slope','flux-const','turn-over freq']
@@ -37,6 +46,13 @@ class PolyParameter(ModelParameter):
         
         
     def set(self,**keywords):
+        """Set.
+        
+        Parameters
+        ----------
+        **keywords : dict
+            Parameter controlling keywords.
+        """
         super(PolyParameter,self).set(**keywords )
         
         """
@@ -48,19 +64,56 @@ class PolyParameter(ModelParameter):
     
     def assign_val(self,name,val):
 
+        """Assign val.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        val : object
+            Value to assign.
+        """
         setattr(self.polymodel,name,val)
 
 
 
 class LogLogModel(Model):
+    """Base class for spectral models defined in log-log frequency space.
+
+    Notes
+    -----
+    Subclasses implement ``log_func``; this base class converts it to linear
+    ``nuFnu`` values through :meth:`lin_func`.
+    """
     
     def __init__(self,nu_size=100, **keywords):
        
+        """Create a new `LogLogModel` instance.
+        
+        Parameters
+        ----------
+        nu_size : int, optional
+            Frequency/energy control value for nu size.
+        **keywords : dict
+            Parameter controlling keywords.
+        """
         super(LogLogModel,self).__init__(**keywords)
         self.model_type='LogLogModel'
     
     
     def lin_func(self,nu):
+        """Lin func.
+        
+        Parameters
+        ----------
+        nu : object
+            Frequency values in Hz.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         nu_log=np.log10(nu)
         return np.power(10.0,self.log_func(nu_log))
          
@@ -73,7 +126,14 @@ class LogLinear(LogLogModel):
     """
     
     def __init__(self,nu_size=100,**keywords):
-        """
+        """Create a new `LogLinear` instance.
+        
+        Parameters
+        ----------
+        nu_size : int, optional
+            Number of points for frequency grids.
+        **keywords : dict
+            Additional keyword arguments.
         """
      
         super(LogLinear,self).__init__(  **keywords)
@@ -99,6 +159,18 @@ class LogLinear(LogLogModel):
             #print(x_log)
             #print self.Ep,self.Sp,self.b,self.c,x_log
             
+            """Log func.
+            
+            Parameters
+            ----------
+            log_nu : object
+                Frequency/energy control value for log nu.
+            
+            Returns
+            -------
+            object
+                Computed result.
+            """
             return self.K + self.alpha*(log_nu)
     
     
@@ -114,7 +186,14 @@ class LogParabolaEp(LogLogModel):
     """
     
     def __init__(self,nu_size=100, **keywords):
-        """
+        """Create a new `LogParabolaEp` instance.
+        
+        Parameters
+        ----------
+        nu_size : int, optional
+            Number of points for frequency grids.
+        **keywords : dict
+            Additional keyword arguments.
         """
         
         super(LogParabolaEp,self).__init__(  **keywords)
@@ -136,6 +215,18 @@ class LogParabolaEp(LogLogModel):
         
     def log_func(self,log_nu):
     
+            """Log func.
+            
+            Parameters
+            ----------
+            log_nu : object
+                Frequency/energy control value for log nu.
+            
+            Returns
+            -------
+            object
+                Computed result.
+            """
             x_log=log_nu-self.Ep
 
             
@@ -153,7 +244,14 @@ class LogParabolaPL(LogLogModel):
     """
     
     def __init__(self,nu_size=100,**keywords):
-        """
+        """Create a new `LogParabolaPL` instance.
+        
+        Parameters
+        ----------
+        nu_size : int, optional
+            Number of points for frequency grids.
+        **keywords : dict
+            Additional keyword arguments.
         """
         
         super(LogParabolaPL,self).__init__(  **keywords)
@@ -181,6 +279,18 @@ class LogParabolaPL(LogLogModel):
         
         
         #TODO fix this to numpy array function
+        """Log func.
+        
+        Parameters
+        ----------
+        log_nu : object
+            Frequency/energy control value for log nu.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         if shape(log_nu)==():
             return self.composite_func(log_nu)
 
@@ -193,6 +303,18 @@ class LogParabolaPL(LogLogModel):
    
     def composite_func(self,log_nu):     
         
+        """Composite func.
+        
+        Parameters
+        ----------
+        log_nu : object
+            Frequency/energy control value for log nu.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         x_log=log_nu-self.E0
         
         if log_nu >=  self.E0:
@@ -215,7 +337,14 @@ class LogCubic(LogLogModel):
     """
     
     def __init__(self,nu_size=100, **keywords):
-        """
+        """Create a new `LogCubic` instance.
+        
+        Parameters
+        ----------
+        nu_size : int, optional
+            Number of points for frequency grids.
+        **keywords : dict
+            Additional keyword arguments.
         """
         
         
@@ -246,6 +375,18 @@ class LogCubic(LogLogModel):
     def log_func(self,log_nu):
     
     
+            """Log func.
+            
+            Parameters
+            ----------
+            log_nu : object
+                Frequency/energy control value for log nu.
+            
+            Returns
+            -------
+            object
+                Computed result.
+            """
             x_log=log_nu-self.Ep
             
             #print self.Ep,self.Sp,self.b,self.c,x_log
@@ -257,6 +398,22 @@ class LogCubic(LogLogModel):
 
 def find_max_cubic(x_log,y_log,x_range=None):
     
+    """Find max cubic.
+    
+    Parameters
+    ----------
+    x_log : object
+        Parameter controlling x log.
+    y_log : object
+        Parameter controlling y log.
+    x_range : object, optional
+        Range for x.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     if x_range is not None:
         msk = x_log >x_range[0]
         msk*= x_log <x_range[1]

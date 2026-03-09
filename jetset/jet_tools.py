@@ -78,6 +78,18 @@ def build_emitting_region_dict(cosmo, beaming_expr='delta',emitters_type='electr
 
 
 def BLR_constraints(L_Disk):
+    """Blr constraints.
+    
+    Parameters
+    ----------
+    L_Disk : object
+        Parameter controlling l disk.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     r1_min = 1E17 * (L_Disk / 1E45) ** 0.5
     r2_min = r1_min * 1.01
     r2_max = r1_min * 2
@@ -86,13 +98,36 @@ def BLR_constraints(L_Disk):
 
 
 def DT_constraints(L_Disk):
+    """Dt constraints.
+    
+    Parameters
+    ----------
+    L_Disk : object
+        Parameter controlling l disk.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     return 1E18 * (L_Disk / 1E45) ** 0.5
 
 
 def build_ExtFields_dic(EC_model_list,disk_type ):
+    """Build  ext fields dic.
+    
+    Parameters
+    ----------
+    EC_model_list : object
+        List of external-Compton model components.
+    disk_type : object
+        Accretion-disk template/type identifier.
+    
+    Returns
+    -------
+    object
+        Computed value.
     """
-
-        """
 
     model_dic = {}
 
@@ -164,6 +199,13 @@ def build_ExtFields_dic(EC_model_list,disk_type ):
     return model_dic
     
 def clean_numba(distr):
+    """Clean numba.
+    
+    Parameters
+    ----------
+    distr : object
+        Parameter controlling distr.
+    """
     if hasattr(distr,'_py_distr_func'):
         setattr(distr,'distr_func',copy.deepcopy(distr._py_distr_func))
     elif hasattr(distr.distr_func,'py_func'):

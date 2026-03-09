@@ -1,3 +1,5 @@
+"""Composite model containers and orchestration helpers for fitting."""
+
 
 __author__ = "Andrea Tramacere"
 
@@ -30,13 +32,35 @@ __all__=['FitModel']
 
 class CompositeModelContainer(object):
 
+    """Container that manages component models inside a composite fit model.
+
+    Notes
+    -----
+    Tracks component registration order, merged parameter arrays, and cached
+    per-component evaluated values used during composite model evaluation.
+    """
     def __init__(self):
+        """Initialize container state for model components.
+
+        Notes
+        -----
+        Tracks component objects, evaluated values, and merged parameters.
+        """
         self._components_list=[]
         self._components_value=[]
         self._components_value_dict = {}
         self.parameters=CompositeModelParameterArray()
 
     def add_component(self, model_comp,fit_model):
+        """Add component.
+        
+        Parameters
+        ----------
+        model_comp : object
+            Component model instance to add/remove/query.
+        fit_model : object
+            Model instance used for fitting.
+        """
         try:
             assert (model_comp.name not in [m_comp.name for m_comp in self._components_list])
         except Exception as e:
@@ -58,9 +82,30 @@ class CompositeModelContainer(object):
 
     @property
     def components_list(self):
+        """Components list.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._components_list
 
     def get_model_by_name(self, model_name,get_idx=False):
+        """Return model by name.
+        
+        Parameters
+        ----------
+        model_name : object
+            Name of the model/component.
+        get_idx : bool, optional
+            If ``True``, also return the component index.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         model = None
         idx=None
         for ID,m in enumerate(self._components_list):
@@ -75,6 +120,15 @@ class CompositeModelContainer(object):
             return model,idx
 
     def del_component(self,model_name,fit_model):
+        """Del component.
+        
+        Parameters
+        ----------
+        model_name : object
+            Name of the model/component.
+        fit_model : object
+            Model instance used for fitting.
+        """
         m,ID=self.get_model_by_name(model_name,get_idx=True)
         if m is not None:
             _ = self._components_list.pop(ID)
@@ -86,9 +140,21 @@ class CompositeModelContainer(object):
         delattr(fit_model, model_name)
 
     def show_pars(self):
+        """Display parameters for all registered components.
+
+        Notes
+        -----
+        Delegates formatting to the internal parameter-array helper.
+        """
         self.parameters.show_pars()
 
     def show_model(self):
+        """Display each registered component summary.
+
+        Notes
+        -----
+        Calls ``show_model`` on each component in insertion order.
+        """
         for c in self._components_list:
             #print()
             c.show_model()
@@ -99,7 +165,13 @@ class CompositeModelContainer(object):
 
 
 class FitModel(Model):
-    """
+    """Composite spectral model used for fitting observational datasets.
+
+    Notes
+    -----
+    Combines one or more component models (for example, jets and templates),
+    exposes a unified parameter interface, and evaluates either summed
+    components or user-defined composite expressions.
     """
     
     def __init__(self,
@@ -117,6 +189,35 @@ class FitModel(Model):
                  **keywords):
 
         
+        """Create a new `FitModel` instance.
+        
+        Parameters
+        ----------
+        elec_distr : object, optional
+            Electron-distribution object used to initialize a jet.
+        jet : object, optional
+            Jet model instance.
+        name : str, optional
+            Name identifier.
+        out_dir : object, optional
+            Output directory path.
+        flag : object, optional
+            Optional flag/name suffix used in object naming.
+        template : object, optional
+            Template-model component instance.
+        loglog_poly : object, optional
+            Log-log polynomial component instance.
+        analytical : object, optional
+            Analytical component instance.
+        nu_size : int, optional
+            Number of points for frequency grids.
+        cosmo : object, optional
+            Cosmology helper used for frame/luminosity conversions.
+        composite_expr : object, optional
+            Composite expression used to combine component outputs.
+        **keywords : dict
+            Additional keyword arguments.
+        """
         super(FitModel,self).__init__(model_type='composite_model',
                                       nu_size=nu_size,
                                       name=name,
@@ -169,6 +270,32 @@ class FitModel(Model):
             self.add_component(analytical)
 
     def plot_model(self,plot_obj=None,clean=False,sed_data=None,frame='obs',skip_components=False,label=None,skip_sub_components=False, density=False):
+        """Plot model.
+        
+        Parameters
+        ----------
+        plot_obj : object, optional
+            Existing plot object to update.
+        clean : bool, optional
+            If ``True``, clear previously plotted content before plotting.
+        sed_data : object, optional
+            Observational SED data container.
+        frame : str, optional
+            Reference frame for data/model values.
+        skip_components : bool, optional
+            If ``True``, skip components.
+        label : object, optional
+            Label used in output or plots.
+        skip_sub_components : bool, optional
+            If ``True``, skip sub components.
+        density : bool, optional
+            If ``True``, use density representation instead of integrated quantity.
+        
+        Returns
+        -------
+        object
+            Plot object or generated visualization.
+        """
         plot_obj=self._set_up_plot(plot_obj,sed_data,frame,density)
 
         if clean is True:
@@ -222,6 +349,17 @@ class FitModel(Model):
 
 
     def set_nu_grid(self,nu_min=None,nu_max=None,nu_size=None):
+        """Set nu grid.
+        
+        Parameters
+        ----------
+        nu_min : object, optional
+            Minimum frequency in Hz.
+        nu_max : object, optional
+            Maximum frequency in Hz.
+        nu_size : object, optional
+            Number of points for frequency grids.
+        """
         if nu_size is not None:
             self.nu_size=nu_size
         
@@ -243,46 +381,164 @@ class FitModel(Model):
                 model_comp.nu_max=nu_max
 
     def set(self,model,par_name, *args, **kw):
+        """Set.
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        par_name : object
+            Parameter name.
+        *args : tuple
+            Additional positional arguments.
+        **kw : dict
+            Additional keyword-value mapping.
+        """
         self.parameters.set(model, par_name, *args, **kw)
 
     def set_par(self,model,par_name,val):
+        """Set par.
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        par_name : object
+            Parameter name.
+        val : object
+            Value to assign.
+        """
         self.parameters.set(model, par_name, val=val)
 
     def get(self,model,par_name,*args):
+        """Get.
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        par_name : object
+            Parameter name.
+        *args : tuple
+            Additional positional arguments.
+        """
         self.parameters.get(model,par_name,*args)
 
     def get_par_by_name(self,model,par_name):
+        """Return par by name.
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        par_name : object
+            Parameter name.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self.parameters.get_par_by_name(model, par_name)
 
     def freeze(self,model,par_name):
+        """Freeze.
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        par_name : object
+            Parameter name.
+        """
         self.parameters.freeze(model,par_name)
 
     def free(self,model,par_name):
+        """Free.
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        par_name : object
+            Parameter name.
+        """
         self.parameters.free(model,par_name)
 
     def free_all(self,):
+        """Set all model parameters to free state.
+
+        Notes
+        -----
+        Delegates to ``CompositeModelParameterArray.free_all``.
+        """
         self.parameters.free_all()
 
     def freeze_all(self,):
+        """Freeze all model parameters.
+
+        Notes
+        -----
+        Delegates to ``CompositeModelParameterArray.freeze_all``.
+        """
         self.parameters.freeze_all()
 
     def add_component(self,m):
+        """Add component.
+        
+        Parameters
+        ----------
+        m : object
+            Model/component object.
+        """
         self.components.add_component(m,self)
 
     def del_component(self,m):
+        """Del component.
+        
+        Parameters
+        ----------
+        m : object
+            Model/component object.
+        """
         self.components.del_component(m,self)
 
     @property
     def composite_expr(self):
+        """Composite expr.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._composite_expr
 
     def link_par(self,par_name,from_model,to_model):
+        """Link par.
+        
+        Parameters
+        ----------
+        par_name : object
+            Parameter name.
+        from_model : object
+            Source model/component for parameter linking.
+        to_model : object
+            Destination model/component for parameter linking.
+        """
         if isinstance(from_model, list) is False:
             from_model = [from_model]
         self.parameters.link_par(par_name,from_model, to_model)
 
     @composite_expr.setter
     def composite_expr(self,expr_string):
+        """Composite expr.
+        
+        Parameters
+        ----------
+        expr_string : object
+            String expression for composite-model evaluation.
+        """
         if expr_string is None:
             self._composite_expr = expr_string
         else:
@@ -332,6 +588,28 @@ class FitModel(Model):
 
     def eval(self,nu=None,fill_SED=True,get_model=False,loglog=False,label=None,phys_output=False):
 
+        """Evaluate model output.
+        
+        Parameters
+        ----------
+        nu : object, optional
+            Frequency values in Hz.
+        fill_SED : bool, optional
+            If ``True``, store evaluated values into SED containers.
+        get_model : bool, optional
+            If ``True``, return model values.
+        loglog : bool, optional
+            If ``True``, operate in log10 space.
+        label : object, optional
+            Label used in output or plots.
+        phys_output : bool, optional
+            If ``True``, return physical-output quantities when available.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         out_model= None
         #print('--> model mananger eval 1')
         lin_nu, log_nu = self._prepare_nu_model(nu, loglog)
@@ -352,6 +630,20 @@ class FitModel(Model):
     
     @classmethod
     def load_model(cls, file_name_or_obj, from_string=False):
+         """Load object state from disk.
+         
+         Parameters
+         ----------
+         file_name_or_obj : object
+             Serialized model path or already-open object.
+         from_string : bool, optional
+             If ``True``, deserialize from an in-memory string payload.
+         
+         Returns
+         -------
+         object
+             Loaded object.
+         """
          c = cls._load_pickle(file_name_or_obj,from_string=from_string)
          return cls._build_model(c)
     
@@ -389,6 +681,15 @@ class FitModel(Model):
 
 
     def set_fit_range(self,down_tol=0.1,up_tol=100):
+        """Set fit range.
+        
+        Parameters
+        ----------
+        down_tol : float, optional
+            Lower tolerance for parameter scans/intervals.
+        up_tol : int, optional
+            Upper tolerance for parameter scans/intervals.
+        """
         for m in self.components.components_list:
             m.set_fit_range(down_tol=down_tol,up_tol=up_tol)
                 
@@ -397,6 +698,12 @@ class FitModel(Model):
     #    return self.load_model(pickle.loads(pickle.dumps(self, protocol=pickle.HIGHEST_PROTOCOL)))
 
     def show_model_components(self):
+        """Print a concise overview of component models.
+
+        Notes
+        -----
+        This view does not print individual parameter tables.
+        """
         print("")
         print('-'*80)
 
@@ -411,6 +718,12 @@ class FitModel(Model):
         print('-'*80)
 
     def show_model(self):
+        """Print full composite-model summary and component details.
+
+        Notes
+        -----
+        Includes the per-component ``show_model`` output.
+        """
         print("")
         print('-'*80)
 
@@ -430,6 +743,18 @@ class FitModel(Model):
         print('-'*80)
 
     def sed_tables_dict(self, restframe='obs'):
+        """Sed tables dict.
+        
+        Parameters
+        ----------
+        restframe : str, optional
+            Target rest frame for output.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         self.eval()
         self._sed_tables_dict={}
         

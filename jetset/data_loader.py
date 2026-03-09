@@ -1,3 +1,5 @@
+"""Data containers and I/O helpers for observational SED datasets."""
+
 __author__ = "Andrea Tramacere"
 
 
@@ -22,6 +24,17 @@ cds.enable()
 __all__=['get_data_set_msk','get_freq_range_msk','lin_to_log','log_to_lin','ObsData','Data']
 
 def legacy_name_update(t):
+    """Rename deprecated table columns to current names in place.
+
+    Parameters
+    ----------
+    t : astropy.table.Table
+        Input table to normalize.
+
+    Notes
+    -----
+    Currently maps ``data_set`` to ``dataset`` and emits a deprecation warning.
+    """
     if 'data_set' in t.colnames and 'dataset' not in t.colnames:
         t.rename_column('data_set', 'dataset')
         warnings.warn(
@@ -32,8 +45,13 @@ def legacy_name_update(t):
         )
 
 class Data(object):
-    """
-    Class to store obs data
+    """Structured observational data table with metadata validation.
+
+    Notes
+    -----
+    Normalizes expected columns, validates required metadata fields, and
+    converts incoming units/scales into the internal linear observer-frame
+    representation used by JetSeT.
     """
     def __init__(self,
                  data_table=None,
@@ -41,20 +59,21 @@ class Data(object):
                  meta_data=None,
                  import_dictionary=None,
                  cosmo=None):
-        """_summary_
+        """Build a normalized observational data table.
 
         Parameters
         ----------
-        data_table : astropy table, optional
-            _description_, by default None
+        data_table : astropy.table.Table or str, optional
+            Input data table or path readable by ``Table.read``.
         n_rows : int, optional
-            the number of rows for an empty table if no data_table is passed, by default None
-        meta_data : dictionary, optional
-            the dictionary for the metadata, by default None
-        import_dictionary : dictionary, optional
-            a dictionary mapping the column renaming if needed for the data_table, by default None
+            Number of rows when creating an empty table.
+        meta_data : dict, optional
+            Metadata values to assign/override in the created table.
+        import_dictionary : dict, optional
+            Optional mapping ``{old_column_name: new_column_name}`` applied
+            before validation.
         cosmo : jetset.cosmo_tools.Cosmo, optional
-            the cosmology object, by default None
+            Cosmology helper used for frame conversions.
         """
 
         if cosmo is None:
@@ -111,17 +130,46 @@ class Data(object):
 
     @property
     def table(self):
+        """Return the internal Astropy table."""
         return self._table
 
     @property
     def metadata(self):
+        """Return table metadata dictionary."""
         return self._table.meta
 
     @classmethod
     def from_file(cls,data_table,format='ascii.ecsv',import_dictionary=None,guess=None):
+        """Create :class:`Data` from a file.
+
+        Parameters
+        ----------
+        data_table : str
+            File path to read.
+        format : str, optional
+            Astropy table format passed to ``Table.read``.
+        import_dictionary : dict, optional
+            Optional column renaming map.
+        guess : bool, optional
+            Forwarded to ``Table.read``.
+
+        Returns
+        -------
+        Data
+            New normalized data container.
+        """
         return cls(data_table= Table.read(data_table, format=format,guess=guess),import_dictionary=import_dictionary)
 
     def save_file(self, name, format='ascii.ecsv'):
+        """Write the internal table to disk.
+
+        Parameters
+        ----------
+        name : str
+            Output file path.
+        format : str, optional
+            Astropy output format.
+        """
         self._table.write(name,format=format,overwrite=True)
 
 
@@ -175,6 +223,15 @@ class Data(object):
 
 
     def set_meta_data(self,m,v):
+        """Set and validate a metadata field.
+
+        Parameters
+        ----------
+        m : str
+            Metadata key.
+        v : object
+            Metadata value.
+        """
         if m not in self._allowed_meta:
             raise RuntimeError('meta data ',m,'not in allowed',self._allowed_meta.keys())
 
@@ -189,6 +246,18 @@ class Data(object):
 
     def set_field(self,field,value,unit=None):
 
+        """Assign a column and optionally set/override its unit.
+
+        Parameters
+        ----------
+        field : str
+            Column name.
+        value : array-like
+            Values to assign to the column.
+        unit : astropy.units.Unit or str, optional
+            Unit to set after assignment. If omitted, preserves the existing
+            unit when available.
+        """
         if unit is None:
             if hasattr(self._table[field], 'unit'):
                 unit = self._table[field].unit
@@ -223,6 +292,26 @@ class Data(object):
 
     @classmethod
     def from_asdc(cls, asdc_sed_file, obj_name, z, restframe, data_scale):
+        """Create :class:`Data` from an ASDC-style text SED file.
+
+        Parameters
+        ----------
+        asdc_sed_file : str
+            Input ASDC SED file path.
+        obj_name : str
+            Source name stored in metadata.
+        z : float
+            Source redshift.
+        restframe : {"obs", "src"}
+            Frame declaration of the imported data.
+        data_scale : {"lin-lin", "log-log"}
+            Scale declaration of the imported data.
+
+        Returns
+        -------
+        Data
+            New data container built from the ASDC content.
+        """
         with open(asdc_sed_file, 'r') as f:
             lines = f.readlines()
         # print(len(lines),type(lines),lines)
@@ -261,10 +350,13 @@ class Data(object):
 
 
 class ObsData(object):
-    """ObsData class
+    """Legacy-compatible observational SED container for fitting workflows.
 
-    This class provides a  powerful interface  to load observational data stored in a file.
-    The following parameters set the corresponding class members
+    Notes
+    -----
+    Wraps an input table, applies optional filtering (datasets, duplicates,
+    upper limits), computes derived log-space columns, and exposes arrays used
+    by minimization and plotting utilities.
     """
 
 
@@ -278,19 +370,27 @@ class ObsData(object):
                  UL_CL=0.95,
 
                  **keywords):
-        
-        """
+        """Build an ``ObsData`` instance from an input table.
 
         Parameters
         ----------
-        cosmo
-        data_table
-        dupl_filter
-        data_set_filter
-        UL_filtering
-        UL_value
-        UL_CL
-        keywords
+        cosmo : jetset.cosmo_tools.Cosmo, optional
+            Cosmology helper used for frame conversions.
+        data_table : astropy.table.Table or Data
+            Input table (or a ``Data`` wrapper exposing ``.table``).
+        dupl_filter : bool, optional
+            If ``True``, remove duplicated rows at load time.
+        data_set_filter : str, optional
+            Comma-separated dataset names to keep.
+        UL_filtering : bool, optional
+            If ``True``, filter out points according to ``UL_value``.
+        UL_value : float, optional
+            Threshold used by upper-limit filtering.
+        UL_CL : float, optional
+            Confidence level metadata for upper limits.
+        **keywords
+            Additional metadata overrides (for example ``z``, ``restframe``,
+            ``data_scale``).
         """
         
         self.z=None
@@ -386,6 +486,18 @@ class ObsData(object):
 
     @property
     def metadata(self,skip=['col_types','col_nums']):
+        """Return metadata dictionary excluding internal bookkeeping keys.
+
+        Parameters
+        ----------
+        skip : list, optional
+            Keys to exclude from the returned dictionary.
+
+        Returns
+        -------
+        dict
+            Metadata key/value pairs currently set on the object.
+        """
         _d={}
         for k in self.allowed_keywords.keys():
             if hasattr(self,k) and k not in skip:
@@ -422,17 +534,37 @@ class ObsData(object):
 
     @staticmethod
     def load(file_name,):
+        """Load a serialized ``ObsData`` instance from disk.
+
+        Parameters
+        ----------
+        file_name : str
+            Pickle file path.
+
+        Returns
+        -------
+        ObsData
+            Loaded object with data sorted by frequency.
+        """
         _obj=pickle.load(open(file_name, "rb"))
         _obj.data.sort('nu_data')
         return _obj
 
     def save(self, file_name):
+        """Serialize this ``ObsData`` instance to disk.
+
+        Parameters
+        ----------
+        file_name : str
+            Pickle output path.
+        """
         self.data.sort('nu_data')
         pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
 
     @property
     def table(self):
+        """Return the working observational table."""
         return self.data
 
     def _build_data(self,dupl_filter=False):
@@ -657,6 +789,17 @@ class ObsData(object):
     
     def filter_data_set(self,filters,exclude=False,silent=False):
 
+        """Filter rows by dataset label.
+
+        Parameters
+        ----------
+        filters : str
+            Comma-separated dataset names.
+        exclude : bool, optional
+            If ``False`` keep only listed datasets; if ``True`` remove them.
+        silent : bool, optional
+            Suppress informational prints when ``True``.
+        """
         filters=filters.split(',')
 
         if silent is False:
@@ -694,12 +837,26 @@ class ObsData(object):
 
     def set_fake_error(self,):
 
+        """Inject default errors when no uncertainty column is available.
+
+        Notes
+        -----
+        Uses ``self.fake_error`` and only acts when ``dy`` is missing.
+        """
         if 'dy' not in self.col_types:
             self.set_error(self.fake_error)
 
         
     def set_UL(self,val=None):
         
+        """Flag upper limits from an error-threshold criterion.
+
+        Parameters
+        ----------
+        val : float, optional
+            Threshold applied to ``dnuFnu`` (or log equivalent) to define UL
+            points. If omitted, uses ``self.UL_value``.
+        """
         self.UL_value=val
 
         if self.UL_value is not None:
@@ -724,6 +881,15 @@ class ObsData(object):
         
     def set_zero_error(self,val=0.2,replace_zero=True):
         
+        """Mark and optionally replace non-positive uncertainty values.
+
+        Parameters
+        ----------
+        val : float, optional
+            Relative replacement error used when ``replace_zero=True``.
+        replace_zero : bool, optional
+            If ``True``, replace zero/negative errors with a fallback value.
+        """
         self.zero_error_replacment=val
         #print("---> replacing zero error with relative error ", val)
         if 'dy' in self.col_types and self.data_scale=='lin-lin':
@@ -754,12 +920,12 @@ class ObsData(object):
         
         
     def filter_UL(self,val=None):
-        """
-        remove the  upper limits points from  from data
-        
-        :param val: minimum value to set the upper limit. **As default, negative errors indicates upper limits, hence val=0.**
-        :Retruns msk: a boolean array to mask the upper limits, i.e. all the data points with negative errors.
-        
+        """Remove rows considered upper limits by error threshold.
+
+        Parameters
+        ----------
+        val : float, optional
+            Error threshold; defaults to ``self.UL_value``.
         """
         
 #         
@@ -803,16 +969,16 @@ class ObsData(object):
         
      
     def filter_time(self,T_min=None,T_max=None,exclude=False):
-        """
-        filter the data, keeping all the data with
-        T_min <T< T_max if exclude=False (defualt).
-        The opposite if exclude=True
-        
-        
-        :param T_min: lower limit of the range (MJD)
-        :type T_min: float
-        :param T_max: upper limit of the range (MJD)
-        :type T_max: float
+        """Filter rows by time interval.
+
+        Parameters
+        ----------
+        T_min : float, optional
+            Minimum ``T_start`` (MJD) to include.
+        T_max : float, optional
+            Maximum ``T_stop`` (MJD) to include.
+        exclude : bool, optional
+            If ``True``, remove selected rows instead of keeping them.
         """
         
         
@@ -833,18 +999,16 @@ class ObsData(object):
         
         
     def filter_freq(self,nu_min=None,nu_max=None,exclude=False):
-        """
-        filter the data, keeping all the data with
-        nu_min <nu< nu_max if exclude=False (defualt).
-        The opposite if exclude=True
-        
-        
-        **both nu_max and nu_min are in linear scale**
-        
-        :param nu_min: lower limit of the range (linear scale, in Hz)
-        :type nu_min: float
-        :param nu_max: upper limit of the range (linear scale, in Hz)
-        :type nu_max: float
+        """Filter rows by frequency interval.
+
+        Parameters
+        ----------
+        nu_min : float, optional
+            Minimum frequency in Hz to include.
+        nu_max : float, optional
+            Maximum frequency in Hz to include.
+        exclude : bool, optional
+            If ``True``, remove selected rows instead of keeping them.
         """
         
         msk1=np.ones(self.data['nu_data'].size, dtype=bool)
@@ -864,6 +1028,12 @@ class ObsData(object):
         print ("---> data len after filtering=%d" % len(self.data))
     
     def reset_data(self):
+        """Reset working data to the original loaded dataset.
+
+        Notes
+        -----
+        Rebuilds internal tables from the unfiltered source copy.
+        """
         self._build_data()
        
   
@@ -896,15 +1066,20 @@ class ObsData(object):
             
     def group_data(self,N_bin=None,bin_width=None,correct_dispersions=True,nu_min=None,nu_max=None):
         
-        """
-        function to perform a spectral group of the data
+        """Rebin data in logarithmic-frequency bins.
 
-        :param N_bin: (int)
-        :param bin_width: (float) logarthmic
-        
-        .. note::
-    
-            To perform  a rebinning of the data has to be provided either ``N_bin`` or ``bin_width``.
+        Parameters
+        ----------
+        N_bin : int, optional
+            Number of bins. Mutually exclusive with ``bin_width``.
+        bin_width : float, optional
+            Log10-bin width. Mutually exclusive with ``N_bin``.
+        correct_dispersions : bool, optional
+            Apply weighted-mean dispersion correction inside each bin.
+        nu_min : float, optional
+            Lower bound of rebinning interval in Hz.
+        nu_max : float, optional
+            Upper bound of rebinning interval in Hz.
         """
         
         print (section_separator)
@@ -1031,11 +1206,17 @@ class ObsData(object):
         print (section_separator)
     
     def add_systematics(self,syst,nu_range=None,dataset=None):
-        """
-        add systematics to errors
-        
-        :param syst: (float) systematic value (fractional)
-        :param nu_range:  array_like of floats, [nu_min,nu_max], optional, range of frequencies to apply sistematics
+        """Add fractional systematic uncertainty in quadrature.
+
+        Parameters
+        ----------
+        syst : float
+            Relative systematic term (for example ``0.1`` for 10%).
+        nu_range : tuple, optional
+            Frequency interval ``(nu_min, nu_max)`` where the systematic is
+            applied.
+        dataset : str, optional
+            Dataset label where the systematic is applied.
         """
         
         if nu_range is not None and dataset  is not  None:
@@ -1068,11 +1249,18 @@ class ObsData(object):
         
     
     def set_error(self,error_value,nu_range=None,dataset=None,data_msk=None):
-        """
-         set all the paramters to same error
-            
-        :param error_value: float, value of the error (fractional error)
-        :param nu_range:  array_like of floats, [nu_min,nu_max], optional, range of frequencies to apply the error value
+        """Set relative statistical errors on selected rows.
+
+        Parameters
+        ----------
+        error_value : float
+            Relative error factor; applied as ``error_value * nuFnu``.
+        nu_range : tuple, optional
+            Frequency interval ``(nu_min, nu_max)`` to target.
+        dataset : str, optional
+            Dataset label to target.
+        data_msk : array-like of bool, optional
+            Additional boolean mask combined with internal selection masks.
         """
         #print self.data['dnuFnu_data']
         
@@ -1109,8 +1297,12 @@ class ObsData(object):
        
 
     def set_fake_error(self,val):
-        """
-        Sets the value for the fake error
+        """Set fallback relative errors used in fits and plotting.
+
+        Parameters
+        ----------
+        val : float
+            Relative error assigned to the ``dnuFnu_fake`` columns.
         """
         self.fake_error=val
         self.data['dnuFnu_fake_log']= np.ones(self.data['nu_data_log'].size) * self.fake_error
@@ -1118,8 +1310,23 @@ class ObsData(object):
         
     
     def get_data_points(self,log_log=False,skip_UL=False,frame='obs',density=False):
-        """
-        Gives data point
+        """Return data arrays ready for plotting or fitting.
+
+        Parameters
+        ----------
+        log_log : bool, optional
+            If ``True``, return log10-transformed arrays.
+        skip_UL : bool, optional
+            If ``True``, exclude rows flagged as upper limits.
+        frame : {"obs", "src"}, optional
+            Output frame of returned arrays.
+        density : bool, optional
+            If ``True``, return density-style values (divide by frequency).
+
+        Returns
+        -------
+        tuple
+            ``(x, y, dx, dy)`` arrays in the requested frame/scale.
         """
 
         if   skip_UL==True:
@@ -1168,6 +1375,12 @@ class ObsData(object):
         return _x ,_y, _dx, _dy
     
     def show_data_sets(self):
+        """Print currently available dataset labels.
+
+        Notes
+        -----
+        Labels are read from the ``dataset`` column of the working table.
+        """
         shown=[]
         print('current datasets')
         for entry in self.data['dataset']:
@@ -1177,6 +1390,13 @@ class ObsData(object):
                 
     
     def get_data_sets(self):
+        """Return unique dataset labels present in the table.
+
+        Returns
+        -------
+        list
+            Dataset labels.
+        """
         shown=[]
         for entry in np.unique(self.data['dataset']):
             if entry not in shown:
@@ -1187,6 +1407,34 @@ class ObsData(object):
 
 
     def plot_sed(self,plot_obj=None,frame='obs',color=None,fmt='o',ms=4,mew=0.5,figsize=None,show_dataset=False, density=False):
+        """Plot observational SED points.
+
+        Parameters
+        ----------
+        plot_obj : jetset.plot_sedfit.PlotSED, optional
+            Existing plot object; if omitted a new one is created.
+        frame : {"obs", "src"}, optional
+            Frame used for plotting.
+        color : str, optional
+            Matplotlib color.
+        fmt : str, optional
+            Marker format.
+        ms : float, optional
+            Marker size.
+        mew : float, optional
+            Marker edge width.
+        figsize : tuple, optional
+            Figure size used only when creating a new plot.
+        show_dataset : bool, optional
+            If ``True``, plot each dataset label as a separate series.
+        density : bool, optional
+            If ``True``, plot density representation.
+
+        Returns
+        -------
+        jetset.plot_sedfit.PlotSED
+            Plot object containing added data traces.
+        """
         if plot_obj is None:
             plot_obj = PlotSED(frame=frame, figsize=figsize,density=density)
 
@@ -1206,6 +1454,18 @@ class ObsData(object):
     def plot_time_spans(self,save_as=None):
 
 
+        """Plot time coverage per dataset on a single figure.
+
+        Parameters
+        ----------
+        save_as : str, optional
+            Optional output path where the figure is saved.
+
+        Returns
+        -------
+        matplotlib.figure.Figure
+            Generated figure.
+        """
         fig=plt.figure(figsize=(12,9))
         ax1 = fig.add_subplot(111)
         ax1.set_xlabel('MJD')
@@ -1235,15 +1495,41 @@ class ObsData(object):
         
     
     def get_time_span(self,dataset=None):
+        """Return time-span summary for one dataset or all data.
+
+        Parameters
+        ----------
+        dataset : str, optional
+            Dataset label. If omitted, uses all rows.
+
+        Returns
+        -------
+        tuple
+            ``(T_start, T_stop, DT, n_points)`` in MJD units.
+        """
         return self.find_time_span(dataset=dataset,get_values=True)
     
     def show_time_span(self,dataset=None):
+        """Print time-span summary for one dataset or all data."""
         self.find_time_span(dataset=dataset,silent=False)
     
     def find_time_span(self,dataset=None,silent=True,get_values=False):
-        """
-        returns Tstart, Tstop, and Delta T for the full data set (if no dat_set
-        is provided), or for a specific dataset
+        """Compute time-span summary for selected rows.
+
+        Parameters
+        ----------
+        dataset : str, optional
+            Dataset label. If omitted, uses all rows.
+        silent : bool, optional
+            If ``False``, print the summary.
+        get_values : bool, optional
+            If ``True``, return summary values.
+
+        Returns
+        -------
+        tuple or None
+            Returns ``(T_start, T_stop, DT, n_points)`` when
+            ``get_values=True``, otherwise ``None``.
         """
 
         time_span_found = False
@@ -1302,20 +1588,57 @@ class ObsData(object):
 
     def lin_to_log(self,val=None,err=None):
         
+       """Wrapper to convert linear values/errors to log10 space.
+
+       Parameters
+       ----------
+       val : array-like, optional
+           Linear values.
+       err : array-like, optional
+           Linear errors associated with ``val``.
+
+       Returns
+       -------
+       array-like or list
+           Converted values and, when provided, propagated log errors.
+       """
        return lin_to_log(val=val,err=err)
        
     
     def log_to_lin(self,log_val=None,log_err=None):
         
+        """Wrapper to convert log10 values/errors back to linear space.
+
+        Parameters
+        ----------
+        log_val : array-like, optional
+            Log10 values.
+        log_err : array-like, optional
+            Errors in log10 space.
+
+        Returns
+        -------
+        array-like or list
+            Converted linear values and, when provided, propagated errors.
+        """
         return log_to_lin(log_val=log_val,log_err=log_err)
         
 
     @property
     def gammapy_table(self):
+        """Return data as a Gammapy-compatible flux-points table."""
         return self.get_gammapy_table()
 
 
     def get_gammapy_table(self):
+        """Build a Gammapy flux-points table from the current data.
+
+        Returns
+        -------
+        astropy.table.Table
+            Table with ``e_ref``, ``e2dnde`` and ``e2dnde_err`` columns plus
+            metadata.
+        """
         table = Table()
         for c in self.metadata:
             table.meta[c]=self.metadata[c]
@@ -1332,6 +1655,20 @@ class ObsData(object):
 
 def lin_to_log(val=None,err=None):
        
+       """Convert linear values and errors to log10 representation.
+
+       Parameters
+       ----------
+       val : array-like, optional
+           Linear values.
+       err : array-like, optional
+           Linear errors associated with ``val``.
+
+       Returns
+       -------
+       array-like or list
+           Log10 values and, when ``err`` is provided, propagated log errors.
+       """
        conv_fac=np.log(10)
        
        ret_val=[]
@@ -1351,6 +1688,21 @@ def lin_to_log(val=None,err=None):
    
 def log_to_lin(log_val=None,log_err=None):
        
+       """Convert log10 values and errors back to linear space.
+
+       Parameters
+       ----------
+       log_val : array-like, optional
+           Log10 values.
+       log_err : array-like, optional
+           Errors in log10 space.
+
+       Returns
+       -------
+       array-like or list
+           Linear values and, when ``log_err`` is provided, propagated linear
+           errors.
+       """
        conv_fac=np.log(10)
        
        ret_val=[]
@@ -1372,9 +1724,37 @@ def log_to_lin(log_val=None,log_err=None):
 
 
 def get_freq_range_msk(x,x_range):
+    """Build mask selecting values inside a frequency interval.
+
+    Parameters
+    ----------
+    x : array-like
+        Frequency array.
+    x_range : tuple
+        Two-element interval ``(x_min, x_max)``.
+
+    Returns
+    -------
+    numpy.ndarray
+        Boolean mask.
+    """
     msk1=x>=x_range[0]
     msk2=x<=x_range[1]
     return msk1*msk2
 
 def get_data_set_msk(x,dataset):
+    """Build mask selecting rows belonging to one dataset label.
+
+    Parameters
+    ----------
+    x : astropy.table.Table or numpy structured array
+        Data table containing a ``dataset`` column.
+    dataset : str
+        Dataset label to match.
+
+    Returns
+    -------
+    numpy.ndarray
+        Boolean mask.
+    """
     return x['dataset']==dataset

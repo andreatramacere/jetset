@@ -18,6 +18,18 @@ import numpy as n
 __all__=['check_is_number','do_convert']
 
 def check_is_number(t):
+    """Check is number.
+    
+    Parameters
+    ----------
+    t : object
+        Parameter controlling t.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     try: 
         float(t[0])
         return True
@@ -29,6 +41,15 @@ def check_is_number(t):
 #------ Main --------------
 def main(argv=None,cmd_par=None):
 
+    """Main.
+    
+    Parameters
+    ----------
+    argv : object, optional
+        Parameter controlling argv.
+    cmd_par : object, optional
+        Parameter controlling cmd par.
+    """
     if cmd_par  is None:
         argc=len(sys.argv)
         arg_list=sys.argv
@@ -56,6 +77,15 @@ def main(argv=None,cmd_par=None):
         do_convert(sed,comos_eval)
         
 def do_convert(infile_name,cosmo_eval):
+    """Do convert.
+    
+    Parameters
+    ----------
+    infile_name : object
+        Filesystem path for infile name.
+    cosmo_eval : object
+        Parameter controlling cosmo eval.
+    """
     infile=open(infile_name,'r')
     
     outfile_name=infile_name.split('.')

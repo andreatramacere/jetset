@@ -26,10 +26,19 @@ from .jet_kernel_tools import get_spectral_c_array_read_only
 __all__=['JetSeedPhotons','JetSpecComponent','SpecCompList']
 
 class JetSeedPhotons(object):
-    """
-
-    """
+    """JetSeedPhotons class."""
     def __init__(self,name,blob_object,var_name=None):
+        """Create a new `JetSeedPhotons` instance.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        blob_object : object
+            Parameter controlling blob object.
+        var_name : object, optional
+            Parameter controlling var name.
+        """
         self.name = name
 
         self._blob_object = blob_object
@@ -45,10 +54,33 @@ class JetSeedPhotons(object):
         self.fill(emiss_lim=self._blob_object.core.emiss_lim)
 
     def fill(self,log_log=False,emiss_lim=0):
+        """Fill.
+        
+        Parameters
+        ----------
+        log_log : bool, optional
+            If ``True``, operate in log10 space.
+        emiss_lim : int, optional
+            Parameter controlling emiss lim.
+        """
         self.nu,self.n=self.get_spectral_points(log_log=log_log,emiss_lim=emiss_lim)
 
     def get_spectral_points(self,log_log=False,emiss_lim=0):
 
+        """Return spectral points.
+        
+        Parameters
+        ----------
+        log_log : bool, optional
+            If ``True``, operate in log10 space.
+        emiss_lim : int, optional
+            Parameter controlling emiss lim.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         x,y=get_spectral_c_array_read_only(self.nu_ptr,self.n_ptr,self._blob_object.core.nu_grid_size)
         msk_nan=np.isnan(x)
         msk_nan+=np.isnan(y)
@@ -82,6 +114,20 @@ class JetSeedPhotons(object):
 
 
     def plot(self, y_min=None,y_max=None):
+        """Plot.
+        
+        Parameters
+        ----------
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         self.fill(emiss_lim=self._blob_object.core.emiss_lim)
         p=PlotSeedPhotons()
         p.plot(nu=self.nu,nuFnu=self.n,y_min=y_min,y_max=y_max)
@@ -91,8 +137,7 @@ class JetSeedPhotons(object):
 
 
 class JetSpecComponent(object):
-    """
-    """
+    """JetSpecComponent class."""
 
     def __repr__(self):
         return str(self.show())
@@ -103,6 +148,25 @@ class JetSpecComponent(object):
 
     def __init__(self,jet_obj,name,blob_object,var_name=None,state_dict=None,state=None,tau=None):
 
+        """Create a new `JetSpecComponent` instance.
+        
+        Parameters
+        ----------
+        jet_obj : object
+            Parameter controlling jet obj.
+        name : object
+            Name identifier.
+        blob_object : object
+            Parameter controlling blob object.
+        var_name : object, optional
+            Parameter controlling var name.
+        state_dict : object, optional
+            Mapping/dictionary for state dict.
+        state : object, optional
+            Parameter controlling state.
+        tau : object, optional
+            Parameter controlling tau.
+        """
         self.name=name
         self.jet_obj=jet_obj
 
@@ -168,20 +232,57 @@ class JetSpecComponent(object):
 
     @property
     def hidden(self):
+        """Hidden.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._hidden
 
     @hidden.setter
     def hidden(self,val):
+        """Hidden.
+        
+        Parameters
+        ----------
+        val : object
+            Value to assign.
+        """
         if val not in [True,False]:
             raise RuntimeError('val must be False or True')
         else:
             self._hidden=val
 
     def get_emiss_lim(self,seed=False):
+        """Return emiss lim.
+        
+        Parameters
+        ----------
+        seed : bool, optional
+            Parameter controlling seed.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._blob_object.core.emiss_lim
 
 
     def fill_SED(self,log_log=False,lin_nu=None,skip_zeros=False):
+        """Fill sed.
+        
+        Parameters
+        ----------
+        log_log : bool, optional
+            If ``True``, operate in log10 space.
+        lin_nu : object, optional
+            Frequency/energy control value for lin nu.
+        skip_zeros : bool, optional
+            If ``True``, skip zeros.
+        """
         x,y=self.get_SED_points( log_log=log_log,lin_nu=lin_nu,skip_zeros=skip_zeros)
         if self._tau is not None:
             y=y*np.exp(-self._tau)
@@ -195,6 +296,24 @@ class JetSpecComponent(object):
 
 
     def get_SED_points(self, log_log=False, lin_nu=None, interp='linear', skip_zeros=False):
+        """Return sed points.
+        
+        Parameters
+        ----------
+        log_log : bool, optional
+            If ``True``, operate in log10 space.
+        lin_nu : object, optional
+            Frequency/energy control value for lin nu.
+        interp : str, optional
+            Parameter controlling interp.
+        skip_zeros : bool, optional
+            If ``True``, skip zeros.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         x,y= get_spectral_c_array_read_only(self.nu_ptr, self.nuFnu_ptr, self._blob_object.core.nu_grid_size)
   
         msk_nan = np.isnan(x)
@@ -247,6 +366,7 @@ class JetSpecComponent(object):
 
 
     def show(self):
+        """Show."""
         print('name                :',self.name)
         print('var name            :',self._var_name)
         print('state               :',self._state)
@@ -258,10 +378,24 @@ class JetSpecComponent(object):
 
     @property
     def state(self,):
+        """State.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._state
 
     @state.setter
     def state(self, val):
+        """State.
+        
+        Parameters
+        ----------
+        val : object
+            Value to assign.
+        """
         if self._state_dict!={}:
             if val not in self._state_dict.keys():
                 raise RuntimeError('val', val, 'not in allowed', self._state_dict.keys())
@@ -274,6 +408,13 @@ class JetSpecComponent(object):
             raise Warning('the state of the spectral component',self.name,' can not be changed')
 
     def get_var_state(self,):
+        """Return var state.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         if self._var_name is not None:
             return  get_nested_attr(self._blob_object, self._var_name)
         else:
@@ -282,6 +423,20 @@ class JetSpecComponent(object):
 
 
     def plot(self, y_min=None,y_max=None):
+        """Plot.
+        
+        Parameters
+        ----------
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         p=PlotSpecComp()
         p.plot(nu=self.SED.nu.value,nuFnu=self.SED.nuFnu.value,y_min=y_min,y_max=y_max)
 
@@ -289,13 +444,28 @@ class JetSpecComponent(object):
 
 
 class SpecCompList(object):
+    """Container for spectral-component objects and tabular export.
+
+    Notes
+    -----
+    Provides convenience methods to display components, look them up by name,
+    and build an Astropy table from visible component SEDs.
+    """
 
     def __init__(self,sc_list):
+        """Create a new `SpecCompList` instance.
+        
+        Parameters
+        ----------
+        sc_list : object
+            List of sc.
+        """
         self._sc_list=sc_list
         self._table=None
 
 
     def show(self):
+        """Show."""
         for sc in self._sc_list:
             sc.show()
 
@@ -304,6 +474,13 @@ class SpecCompList(object):
 
     def build_table(self, restframe='obs'):
 
+        """Build table.
+        
+        Parameters
+        ----------
+        restframe : str, optional
+            Parameter controlling restframe.
+        """
         _names = ['nu']
         _cols=[]
 
@@ -331,6 +508,20 @@ class SpecCompList(object):
         self._table = Table(_cols, names=_names,meta=_meta)
 
     def get_spectral_component_by_name(self,name,verbose=True):
+        """Return spectral component by name.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        verbose : bool, optional
+            Parameter controlling verbose.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         for i in range(len(self._sc_list)):
             if self._sc_list[i].name==name:
                 return self._sc_list[i]
@@ -341,5 +532,11 @@ class SpecCompList(object):
 
     @property
     def table(self):
+        """Table.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._table
-

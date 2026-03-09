@@ -26,6 +26,15 @@ class TemplateParameter(ModelParameter):
     """
     def __init__(self,template,**keywords):
         
+        """Create a new `TemplateParameter` instance.
+        
+        Parameters
+        ----------
+        template : object
+            Parameter controlling template.
+        **keywords : dict
+            Parameter controlling keywords.
+        """
         self.template=template
 
         self.allowed_par_types=['nu-scale','nuFnu-scale']
@@ -41,6 +50,13 @@ class TemplateParameter(ModelParameter):
         
 
     def set(self,**keywords):
+        """Set.
+        
+        Parameters
+        ----------
+        **keywords : dict
+            Parameter controlling keywords.
+        """
         super(TemplateParameter,self).set(**keywords )
         
         """
@@ -53,6 +69,15 @@ class TemplateParameter(ModelParameter):
     
     def assign_val(self,name,val):
 
+        """Assign val.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        val : object
+            Value to assign.
+        """
         setattr(self.template,name,val)
         
 
@@ -62,7 +87,20 @@ class SpectralTemplateLogLog(Model):
     Class to handle spectral templates
     """
     def __init__(self,template_type,cosmo,z=None,nu_size=100,name='TemplateModel'):
-        """
+        """Create a new `SpectralTemplateLogLog` instance.
+        
+        Parameters
+        ----------
+        template_type : object
+            Template identifier/name.
+        cosmo : object
+            Cosmology helper used for frame/luminosity conversions.
+        z : object, optional
+            Source redshift.
+        nu_size : int, optional
+            Number of points for frequency grids.
+        name : str, optional
+            Name identifier.
         """
         super(SpectralTemplateLogLog, self).__init__(name=name)
 
@@ -96,10 +134,37 @@ class SpectralTemplateLogLog(Model):
 
     @staticmethod
     def get_allowed_template_name():
+        """Return allowed template name.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return ['BBB','host_galaxy','user_defined']
 
     @classmethod
     def template_factory(cls,template_type,cosmo,z=None,nu_size=100,name='TemplateModel'):
+        """Template factory.
+        
+        Parameters
+        ----------
+        template_type : object
+            Parameter controlling template type.
+        cosmo : object
+            Parameter controlling cosmo.
+        z : object, optional
+            Parameter controlling z.
+        nu_size : int, optional
+            Frequency/energy control value for nu size.
+        name : str, optional
+            Name identifier.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         if template_type == 'BBB':
             return BigBlueBumpTemplateLogLog(template_type, cosmo, z=z, nu_size=nu_size, name=name)
 
@@ -112,6 +177,30 @@ class SpectralTemplateLogLog(Model):
             raise ValueError("Wrong template type=%s, allowed=" % (template_type, cls.get_allowed_template_name()))
 
     def plot_model(self,plot_obj=None,clean=False,label=None,sed_data=None,color=None, density=False,frame='obs'):
+        """Plot model.
+        
+        Parameters
+        ----------
+        plot_obj : object, optional
+            Existing plot object to update.
+        clean : bool, optional
+            Parameter controlling clean.
+        label : object, optional
+            Label used in output or plots.
+        sed_data : object, optional
+            Observational SED data container.
+        color : object, optional
+            Matplotlib color specification.
+        density : bool, optional
+            Parameter controlling density.
+        frame : str, optional
+            Reference frame for data/model values.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         plot_obj = self._set_up_plot(plot_obj, sed_data, frame, density)
 
         if clean is True:
@@ -127,13 +216,39 @@ class SpectralTemplateLogLog(Model):
 
 
     def get_redshift(self):
+        """Return redshift.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self.z
 
     def set_Lum(self,nuFnu_p):
+        """Set lum.
+        
+        Parameters
+        ----------
+        nuFnu_p : object
+            Frequency/energy control value for nu fnu p.
+        """
         self.L_D=self.get_L_D(nuFnu_p)
 
     
     def get_Lum(self,nuFnu_p):
+        """Return lum.
+        
+        Parameters
+        ----------
+        nuFnu_p : object
+            Frequency/energy control value for nu fnu p.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return 4*np.pi*self.DL*self.DL*nuFnu_p
         
 
@@ -150,6 +265,18 @@ class SpectralTemplateLogLog(Model):
    
     def log_func(self,nu_log):
         
+        """Log func.
+        
+        Parameters
+        ----------
+        nu_log : object
+            Frequency/energy control value for nu log.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         x_shift=getattr(self,self.x_scale)
         y_shift=getattr(self,self.y_scale)
         if np.shape(nu_log)==():
@@ -209,10 +336,26 @@ class SpectralTemplateLogLog(Model):
             
   
 class BigBlueBumpTemplateLogLog(SpectralTemplateLogLog):
+    """Log-log spectral template for the Big Blue Bump (accretion disk)."""
 
 
     def __init__(self,template_type,cosmo,z=None,nu_size=100,name='TemplateModel'):
 
+        """Create a new `BigBlueBumpTemplateLogLog` instance.
+        
+        Parameters
+        ----------
+        template_type : object
+            Parameter controlling template type.
+        cosmo : object
+            Parameter controlling cosmo.
+        z : object, optional
+            Parameter controlling z.
+        nu_size : int, optional
+            Frequency/energy control value for nu size.
+        name : str, optional
+            Name identifier.
+        """
         super(BigBlueBumpTemplateLogLog, self).__init__(template_type,
                                                      cosmo,
                                                      z=z,
@@ -246,9 +389,25 @@ class BigBlueBumpTemplateLogLog(SpectralTemplateLogLog):
         self.interp_func = interp1d(self.nu_template, self.nuFnu_template)
 
     def get_T_BBB(self):
+        """Return t bbb.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self.nu_p_template / (1.39 * 5.879e10)
 
     def set_BBB_pars(self, fit_model, model_name):
+        """Set bbb pars.
+        
+        Parameters
+        ----------
+        fit_model : object
+            Model instance used for fitting.
+        model_name : object
+            Parameter controlling model name.
+        """
         self.DL = self.cosmo.get_DL_cm(self.z)
 
         nuFnu_p, nuFnu_p_err = log_to_lin(
@@ -270,9 +429,25 @@ class BigBlueBumpTemplateLogLog(SpectralTemplateLogLog):
 
 
 class HostGalaxyTemplateLogLog(SpectralTemplateLogLog):
+    """Log-log spectral template for host-galaxy emission."""
 
     def __init__(self, template_type, cosmo, z=None, nu_size=100, name='TemplateModel'):
 
+        """Create a new `HostGalaxyTemplateLogLog` instance.
+        
+        Parameters
+        ----------
+        template_type : object
+            Parameter controlling template type.
+        cosmo : object
+            Parameter controlling cosmo.
+        z : object, optional
+            Parameter controlling z.
+        nu_size : int, optional
+            Frequency/energy control value for nu size.
+        name : str, optional
+            Name identifier.
+        """
         super(HostGalaxyTemplateLogLog, self).__init__(template_type,
                                                      cosmo,
                                                      z=z,
@@ -310,6 +485,15 @@ class HostGalaxyTemplateLogLog(SpectralTemplateLogLog):
 
 
     def set_host_pars(self, fit_model, model_name):
+        """Set host pars.
+        
+        Parameters
+        ----------
+        fit_model : object
+            Model instance used for fitting.
+        model_name : object
+            Parameter controlling model name.
+        """
         self.DL = self.cosmo.get_DL_cm(self.z)
 
         nuFnu_p, nuFnu_p_err = log_to_lin(

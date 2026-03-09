@@ -1,3 +1,5 @@
+"""MCMC sampling utilities built on emcee for JetSeT fit models."""
+
 __author__ = "Andrea Tramacere"
 
 from .minimizer import  _eval_res
@@ -28,7 +30,21 @@ __all__=['McmcSampler']
 class Counter(object):
 
 
+    """Progress counter used during MCMC sampling loops.
+
+    Notes
+    -----
+    Stores total calls, accepted calls, and a spinner iterator used by
+    text-based progress feedback.
+    """
     def __init__(self,count_tot):
+        """Create a new `Counter` instance.
+        
+        Parameters
+        ----------
+        count_tot : object
+            Total number of expected iterations/samples.
+        """
         self.count = 0
         self.count_OK = 0
         self.count_tot = count_tot
@@ -45,13 +61,21 @@ class Counter(object):
 
 #to prevent from deprecation to error in emcee 
 def sample_ball(p0, std, size=1):
-    """
-    Produce a ball of walkers around an initial parameter value.
-
-    :param p0: The initial parameter value.
-    :param std: The axis-aligned standard deviation.
-    :param size: The number of samples to produce.
-
+    """Sample ball.
+    
+    Parameters
+    ----------
+    p0 : object
+        Initial parameter vector.
+    std : object
+        Per-parameter standard deviations for sampling.
+    size : int, optional
+        Number of samples or sample size.
+    
+    Returns
+    -------
+    object
+        Computed value.
     """
     assert len(p0) == len(std)
     return np.vstack(
@@ -60,7 +84,22 @@ def sample_ball(p0, std, size=1):
 
 class McmcSampler(object):
 
+    """Run and manage ``emcee`` sampling for a fitted JetSeT model.
+
+    Notes
+    -----
+    Wraps an input :class:`~jetset.minimizer.ModelMinimizer`, clones its model
+    state, stores sampler outputs, and provides serialization-safe state
+    handling for chain analysis and plotting.
+    """
     def __init__(self,model_minimizer):
+        """Create a new `McmcSampler` instance.
+        
+        Parameters
+        ----------
+        model_minimizer : object
+            Initialized model-minimizer object.
+        """
         if emcee.__version__ < "3":
             raise RuntimeError('Please update to emcee v>=3.0.0')
         #self.model_minimizer
@@ -133,12 +172,12 @@ class McmcSampler(object):
 
 
     def set_labels(self,use_labels_dict=None):
-        """_summary_
-
+        """Set labels.
+        
         Parameters
         ----------
-        use_labels_dict : _type_, optional
-            _description_, by default None
+        use_labels_dict : object, optional
+            If ``True``, enable labels dict.
         """
 
         self._par_array=[]
@@ -175,6 +214,13 @@ class McmcSampler(object):
 
     @property
     def par_table(self):
+        """Par table.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         self._build_par_table()
         return self._par_table
 
@@ -247,6 +293,22 @@ class McmcSampler(object):
         self._par_table = Table(rows=_rows, names=_names, masked=False)
 
     def show_pars(self, getstring=False, names_list=None, sort_key=None):
+        """Display pars.
+        
+        Parameters
+        ----------
+        getstring : bool, optional
+            If ``True``, return text output instead of printing.
+        names_list : object, optional
+            Ordered list of parameter/component names.
+        sort_key : object, optional
+            Key used to sort table-like outputs.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         self._build_par_table(names_list=names_list)
         if sort_key is not None:
             self.par_table.sort(sort_key)
@@ -258,9 +320,27 @@ class McmcSampler(object):
 
     @property
     def labels(self):
+        """Labels.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self.par_table
     
     def set_bounds(self,bound=0.2,bound_rel=False,preserve_fit_range=True):
+        """Set bounds.
+        
+        Parameters
+        ----------
+        bound : float, optional
+            Absolute parameter-bound span.
+        bound_rel : bool, optional
+            Relative parameter-bound span.
+        preserve_fit_range : bool, optional
+            Range for preserve fit.
+        """
         self._set_bounds(bound=bound,bound_rel=bound_rel,preserve_fit_range=preserve_fit_range)
     
     def _set_bounds(self, bound=0.2,bound_rel=True,preserve_fit_range=True):
@@ -306,6 +386,22 @@ class McmcSampler(object):
             self._bounds.append(par['bounds'])
 
     def get_par(self, par_name_or_idx, comp_name=None, get_index=False):
+        """Return par.
+        
+        Parameters
+        ----------
+        par_name_or_idx : object
+            Parameter identifier by name or index.
+        comp_name : object, optional
+            Model-component name.
+        get_index : bool, optional
+            If ``True``, also return the index of the selected item.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         if type(par_name_or_idx) == int:
             par_idx=par_name_or_idx
 
@@ -330,19 +426,41 @@ class McmcSampler(object):
 
 
     def set_plot_label(self,par_name,plot_label,comp_name=None):
+        """Set plot label.
+        
+        Parameters
+        ----------
+        par_name : object
+            Parameter name.
+        plot_label : object
+            Custom label used in plots.
+        comp_name : object, optional
+            Model-component name.
+        """
         p=self.get_par(par_name,comp_name=comp_name)
         p['plot_label']=plot_label
 
     def reset_to_minimizer_best_fit(self):
+        """Reset sampled parameter values to minimizer best-fit values.
+
+        Notes
+        -----
+        This updates only the internal parameter dictionary used by the
+        sampler helper; it does not run a new minimization.
+        """
         for par in  self._par_array:
             par['val'] = par['minimizer_best_fit_val']
 
-    #def reset_to_mcmc(self,quantile=0.5):
-    #    for ID,par in enumerate(self.par_array):
-    #        q_vals=self.get_par_quantiles(ID,quantiles=quantile)
-    #        par.val = q_vals
+
 
     def reset_to_mcmc_best_fit(self,verbose=True):
+        """Reset to mcmc best fit.
+        
+        Parameters
+        ----------
+        verbose : bool, optional
+            If ``True``, print additional information.
+        """
         _prob_max = np.argmax(self.samples_log_prob)
         _id_prob_max = np.unravel_index(_prob_max, self.samples_log_prob.shape)
         
@@ -367,6 +485,29 @@ class McmcSampler(object):
                     progress='notebook'):
 
 
+        """Run sampler.
+        
+        Parameters
+        ----------
+        nwalkers : int, optional
+            Number of MCMC walkers.
+        steps : int, optional
+            Number of MCMC steps.
+        pos : object, optional
+            Initial walker positions.
+        burnin : int, optional
+            Number of burn-in steps to discard.
+        use_UL : bool, optional
+            If ``True``, enable ul.
+        threads : object, optional
+            Number of worker threads/processes.
+        walker_start_bound : float, optional
+            Initial spread factor for walker starting points.
+        loglog : bool, optional
+            If ``True``, operate in log10 space.
+        progress : str, optional
+            If ``True``, display sampling progress.
+        """
         if self._par_array is None:
             raise RuntimeError('please set the labels, using .set_labels, before running the sampler')
 
@@ -428,27 +569,46 @@ class McmcSampler(object):
 
 
     def get_par_quantiles(self,par_name,comp_name=None,quantiles=(0.16,0.5,0.84)):
+        """Return par quantiles.
+        
+        Parameters
+        ----------
+        par_name : str
+            Parameter name.
+        comp_name : object, optional
+            Model-component name.
+        quantiles : tuple, optional
+            Quantiles to evaluate/report.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return np.array(np.quantile(self.get_sample(par_name,comp_name=comp_name),quantiles))
 
     
 
     def corner_plot(self, comp_name=None,quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}, **kwargs):
-        """_summary_
-
+        """Corner plot.
+        
         Parameters
         ----------
- 
+        comp_name : str, optional
+            Model-component name.
         quantiles : tuple, optional
-            _description_, by default (0.16, 0.5, 0.84)
-        levels :levels=(1 - np.exp(-0.5),)
-            check for proper levels definition for 2d: https://corner.readthedocs.io/en/latest/pages/sigmas/
+            Quantiles to evaluate/report.
+        levels : object, optional
+            Contour levels for corner plots.
         title_kwargs : dict, optional
-            _description_, by default {}
-
+            Keyword arguments forwarded to plot-title rendering.
+        **kwargs : dict
+            Additional keyword arguments.
+        
         Returns
         -------
-        _type_
-            _description_
+        object
+            Computed value.
         """
        
         if comp_name is None:
@@ -500,6 +660,22 @@ class McmcSampler(object):
 
     
     def plot_chain(self,par_name=None, comp_name=None,log_plot=False):
+        """Plot chain.
+        
+        Parameters
+        ----------
+        par_name : str, optional
+            Parameter name.
+        comp_name : object, optional
+            Model-component name.
+        log_plot : bool, optional
+            If ``True``, use logarithmic plot scaling where applicable.
+        
+        Returns
+        -------
+        object
+            Plot object or generated visualization.
+        """
         f_list=[]
         if comp_name is None:
             components=np.unique([p['comp_name'] for  p in self._par_array])
@@ -557,6 +733,20 @@ class McmcSampler(object):
       
     
     def get_trace(self, par_name,comp_name=None):
+        """Return trace.
+        
+        Parameters
+        ----------
+        par_name : str
+            Parameter name.
+        comp_name : object, optional
+            Model-component name.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         _p,p_idx=self.get_par(par_name,comp_name=comp_name,get_index=True)
         if hasattr(self, 'chain') and self.chain is not None:
             return self.chain[:, :, p_idx]
@@ -571,6 +761,28 @@ class McmcSampler(object):
 
 
     def plot_par(self, par_name, comp_name=None,nbins=20, log_plot=False,quantiles=(0.16,0.5,0.84),figsize=None):
+        """Plot par.
+        
+        Parameters
+        ----------
+        par_name : str
+            Parameter name.
+        comp_name : object, optional
+            Model-component name.
+        nbins : int, optional
+            Number of bins for histogram estimates.
+        log_plot : bool, optional
+            If ``True``, use logarithmic plot scaling where applicable.
+        quantiles : tuple, optional
+            Quantiles to evaluate/report.
+        figsize : object, optional
+            Matplotlib figure size.
+        
+        Returns
+        -------
+        object
+            Plot object or generated visualization.
+        """
         set_mpl()
 
         par = self.get_par(par_name,comp_name=comp_name)
@@ -615,37 +827,51 @@ class McmcSampler(object):
         return f
     
     def get_sample(self, par_name,comp_name=None):
+        """Return sample.
+        
+        Parameters
+        ----------
+        par_name : str
+            Parameter name.
+        comp_name : object, optional
+            Model-component name.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         _p,p_idx=self.get_par(par_name,comp_name=comp_name,get_index=True)
         return self.samples[:,p_idx]
 
     def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False,quantiles=None, get_model=False, plot_mcmc_best_fit_model=False,rnd_seed=0):
-        """_summary_
-
+        """Plot model.
+        
         Parameters
         ----------
-        sed_data : _type_, optional
-            _description_, by default None
-        fit_range : _type_, optional
-            _description_, by default None
+        sed_data : object, optional
+            Observational SED data container.
+        fit_range : [float,float], optional
+            Range for fit.
         size : int, optional
-            _description_, by default 100
+            Number of samples or sample size.
         frame : str, optional
-            _description_, by default 'obs'
+            Reference frame for data/model values.
         density : bool, optional
-            _description_, by default False
-        quantiles : _type_, optional
-            _description_, by default None
+            If ``True``, use density representation instead of integrated quantity.
+        quantiles : object, optional
+            Quantiles to evaluate/report.
         get_model : bool, optional
-            _description_, by default False
+            If ``True``, return model values.
         plot_mcmc_best_fit_model : bool, optional
-            _description_, by default False
+            If ``True``, overlay MCMC best-fit model in plots.
         rnd_seed : int, optional
-            _description_, by default 0
-
+            Random seed used for reproducible sampling.
+        
         Returns
         -------
-        _type_
-            _description_
+        object
+            Plot object or generated visualization.
         """
         if sed_data is None:
             sed_data=self.sed_data
@@ -720,6 +946,13 @@ class McmcSampler(object):
             print("\r%s progress=%3.3f%% calls=%d accepted=%d" % (next(self._progress_iter),float(100*self.calls)/(self.calls_tot),self.calls,self.calls_OK), end="")
 
     def save(self, name):
+        """Save object state to disk.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        """
         with open(name, 'wb') as output:
             pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
 
@@ -729,6 +962,18 @@ class McmcSampler(object):
     #        return pickle.load(input)
     def load(cls, file_name):
 
+        """Load object state from disk.
+        
+        Parameters
+        ----------
+        file_name : object
+            Input/output file path.
+        
+        Returns
+        -------
+        object
+            Loaded object.
+        """
         try:
             c = pickle.load(open(file_name, "rb"))
             if isinstance(c, McmcSampler):
@@ -745,6 +990,28 @@ class McmcSampler(object):
 
 
 def emcee_log_like(theta,fit_model,data,use_UL,par_array,loglog):
+    """Emcee log like.
+    
+    Parameters
+    ----------
+    theta : object
+        Parameter vector sampled by MCMC.
+    fit_model : object
+        Model instance used for fitting.
+    data : object
+        Input data table or array.
+    use_UL : object
+        If ``True``, enable ul.
+    par_array : object
+        Array/list of model parameters.
+    loglog : object
+        If ``True``, operate in log10 space.
+    
+    Returns
+    -------
+    object
+        Computed value.
+    """
     _warn = False
     for pi in range(len(theta)):
         
@@ -772,6 +1039,32 @@ def emcee_log_like(theta,fit_model,data,use_UL,par_array,loglog):
 
 
 def log_prob(theta,fit_model,data,use_UL,counter,bounds,par_array,loglog):
+    """Log prob.
+    
+    Parameters
+    ----------
+    theta : object
+        Parameter vector sampled by MCMC.
+    fit_model : object
+        Model instance used for fitting.
+    data : object
+        Input data table or array.
+    use_UL : object
+        If ``True``, enable ul.
+    counter : object
+        Sampling progress counter object.
+    bounds : object
+        Bounds for sampled/fitted parameters.
+    par_array : object
+        Array/list of model parameters.
+    loglog : object
+        If ``True``, operate in log10 space.
+    
+    Returns
+    -------
+    object
+        Computed value.
+    """
     lp = log_prior(theta,bounds)
     counter.count += 1
     if not np.isfinite(lp):
@@ -786,6 +1079,20 @@ def log_prob(theta,fit_model,data,use_UL,counter,bounds,par_array,loglog):
 
 
 def log_prior(theta,bounds):
+    """Log prior.
+    
+    Parameters
+    ----------
+    theta : object
+        Parameter vector sampled by MCMC.
+    bounds : object
+        Bounds for sampled/fitted parameters.
+    
+    Returns
+    -------
+    object
+        Computed value.
+    """
     _r=0.
 
     for pi in range(len(theta)):

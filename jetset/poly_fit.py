@@ -12,6 +12,20 @@ __all__=['check_maxima','cubic_peaks','do_cubic_fit','do_cubic_fit_peaks','do_li
 
 
 def filter_interval(x,x_range):
+    """Filter data by interval.
+    
+    Parameters
+    ----------
+    x : object
+        Parameter controlling x.
+    x_range : object
+        Range for x.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     msk1=x>=x_range[0]
     msk2=x<=x_range[1]
     return msk1*msk2
@@ -22,6 +36,24 @@ def filter_interval(x,x_range):
 #-------- LINEAR FIT----------------------------
 def do_linear_fit(x,y,dy=None,x_range=None):
     
+    """Do linear fit.
+    
+    Parameters
+    ----------
+    x : object
+        Parameter controlling x.
+    y : object
+        Parameter controlling y.
+    dy : object, optional
+        Parameter controlling dy.
+    x_range : object, optional
+        Range for x.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     if x_range is not None  :
         msk = filter_interval(x,x_range)
         x_fit=x[msk]
@@ -62,10 +94,42 @@ def do_linear_fit(x,y,dy=None,x_range=None):
 
 def lin(p,x):
 
+    """Lin.
+    
+    Parameters
+    ----------
+    p : object
+        Parameter controlling p.
+    x : object
+        Parameter controlling x.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     return p[0]+p[1]*(x)
 
 def residuals_linfit(p,x,y,dy):
     #print len(dy),len(x),len(y),len(p)
+    """Residuals linfit.
+    
+    Parameters
+    ----------
+    p : object
+        Parameter controlling p.
+    x : object
+        Parameter controlling x.
+    y : object
+        Parameter controlling y.
+    dy : object
+        Parameter controlling dy.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     err = (y-lin(p,x))/dy
     return err
 #-----------------------------------------------
@@ -77,10 +141,44 @@ def cubic_peaks(p,x):
     #p1=b
     #p2=xp
     #
+    """Cubic peaks.
+    
+    Parameters
+    ----------
+    p : object
+        Parameter controlling p.
+    x : object
+        Parameter controlling x.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     return p[0] + p[1]*(x-p[2])*(x-p[2]) + p[3]*(x-p[2])*(x-p[2])*(x-p[2])
 
 
 def residuals_cubic_peaks(p,x,y,dy,template):
+    """Residuals cubic peaks.
+    
+    Parameters
+    ----------
+    p : object
+        Parameter controlling p.
+    x : object
+        Parameter controlling x.
+    y : object
+        Parameter controlling y.
+    dy : object
+        Parameter controlling dy.
+    template : object
+        Parameter controlling template.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     if template is not None  :
         model1=np.power(10,cubic_peaks(p[:4],x))
         model2=np.power(10,template.func(x,nuFnu_scale=p[4]))
@@ -95,6 +193,30 @@ def residuals_cubic_peaks(p,x,y,dy,template):
 
 def do_cubic_fit_peaks(x,y,xp,yp,dy=None,x_range=None,template=None):
     
+    """Do cubic fit peaks.
+    
+    Parameters
+    ----------
+    x : object
+        Parameter controlling x.
+    y : object
+        Parameter controlling y.
+    xp : object
+        Parameter controlling xp.
+    yp : object
+        Parameter controlling yp.
+    dy : object, optional
+        Parameter controlling dy.
+    x_range : object, optional
+        Range for x.
+    template : object, optional
+        Parameter controlling template.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     if x_range is not None  :
         msk = filter_interval(x,x_range)
         x_fit=x[msk]
@@ -146,6 +268,26 @@ def do_cubic_fit_peaks(x,y,xp,yp,dy=None,x_range=None,template=None):
 
 #-----CUBIC   -----------------------------------------
 def find_max_cubic(p,x,y,dy=None,x_range=None):
+    """Find max cubic.
+    
+    Parameters
+    ----------
+    p : object
+        Parameter controlling p.
+    x : object
+        Parameter controlling x.
+    y : object
+        Parameter controlling y.
+    dy : object, optional
+        Parameter controlling dy.
+    x_range : object, optional
+        Range for x.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     der=polyder(p,1)
     delta=der[1]*der[1] -(4*der[0]*der[2])
     if delta>=0:
@@ -174,6 +316,26 @@ def find_max_cubic(p,x,y,dy=None,x_range=None):
 
 
 def check_maxima(xm,ym,b,x,y):
+    """Check maxima.
+    
+    Parameters
+    ----------
+    xm : object
+        Parameter controlling xm.
+    ym : object
+        Parameter controlling ym.
+    b : object
+        Parameter controlling b.
+    x : object
+        Parameter controlling x.
+    y : object
+        Parameter controlling y.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     c = np.array([x, y]).T
     c = c[np.argsort(c[:, 1])]
     max=c[-1]
@@ -193,6 +355,24 @@ def check_maxima(xm,ym,b,x,y):
 
 def do_cubic_fit(x,y,dy=None,x_range=None):
     
+    """Do cubic fit.
+    
+    Parameters
+    ----------
+    x : object
+        Parameter controlling x.
+    y : object
+        Parameter controlling y.
+    dy : object, optional
+        Parameter controlling dy.
+    x_range : object, optional
+        Range for x.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     if x_range is not None  :
         msk = filter_interval(x,x_range)
         x_fit=x[msk]
@@ -219,6 +399,32 @@ def do_cubic_fit(x,y,dy=None,x_range=None):
 
 def do_log_Parab_FIT(x,y,xp,yp,beta,dy=None,x_range=None,template=None):
 
+    """Do log  parab fit.
+    
+    Parameters
+    ----------
+    x : object
+        Parameter controlling x.
+    y : object
+        Parameter controlling y.
+    xp : object
+        Parameter controlling xp.
+    yp : object
+        Parameter controlling yp.
+    beta : object
+        Parameter controlling beta.
+    dy : object, optional
+        Parameter controlling dy.
+    x_range : object, optional
+        Range for x.
+    template : object, optional
+        Parameter controlling template.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     if x_range is not None  :
         msk = filter_interval(x,x_range)
         x_fit=x[msk]
@@ -263,11 +469,45 @@ def do_log_Parab_FIT(x,y,xp,yp,beta,dy=None,x_range=None,template=None):
 
 def parab(p,x):
     
+    """Parab.
+    
+    Parameters
+    ----------
+    p : object
+        Parameter controlling p.
+    x : object
+        Parameter controlling x.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     return p[1]+p[2]*(x-p[0])*(x-p[0])
 
 
 def residuals_parab(p,x,y,dy,template):
     #print p
+    """Residuals parab.
+    
+    Parameters
+    ----------
+    p : object
+        Parameter controlling p.
+    x : object
+        Parameter controlling x.
+    y : object
+        Parameter controlling y.
+    dy : object
+        Parameter controlling dy.
+    template : object
+        Parameter controlling template.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     if template is not None  :
         model1=np.power(10,parab(p[:3],x))
         model2=np.power(10,template.interp_template(template.func,x,p[3]))

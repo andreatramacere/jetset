@@ -38,6 +38,17 @@ class JetsetSherpaModel(RegriddableModel1D):
     """
 
     def __init__(self, jetset_model,par_list=None,clone=False):
+        """Create a new `JetsetSherpaModel` instance.
+        
+        Parameters
+        ----------
+        jetset_model : object
+            Parameter controlling jetset model.
+        par_list : object, optional
+            List of par.
+        clone : bool, optional
+            Parameter controlling clone.
+        """
         if clone is True:
             self._jetset_model = jetset_model.clone()
         else:
@@ -87,6 +98,20 @@ class JetsetSherpaModel(RegriddableModel1D):
 
 
     def calc(self, pars, x):
+        """Calc.
+        
+        Parameters
+        ----------
+        pars : object
+            Parameter controlling pars.
+        x : object
+            Parameter controlling x.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         for ID, p in enumerate(self._jp_list):
             j_p = self._jp_par_array[ID]
             j_p.val = p.val
@@ -94,6 +119,21 @@ class JetsetSherpaModel(RegriddableModel1D):
         return self._jetset_model.eval(get_model=True, nu=x)
 
     def plot_model(self, fit_range, model_range=[1E10, 1E30], nu_grid_size=200, plot_obj=None, sed_data=None):
+        """Plot model.
+        
+        Parameters
+        ----------
+        fit_range : object
+            Range for fit.
+        model_range : list, optional
+            Range for model.
+        nu_grid_size : int, optional
+            Array/grid values for nu grid size.
+        plot_obj : object, optional
+            Existing plot object to update.
+        sed_data : object, optional
+            Observational SED data container.
+        """
         self._jetset_model.set_nu_grid(model_range[0], model_range[1], nu_grid_size)
         self._jetset_model.eval()
         plot_obj = self._jetset_model.plot_model(plot_obj=plot_obj, sed_data=sed_data)
@@ -106,6 +146,34 @@ class JetsetSherpaModel(RegriddableModel1D):
 
 def plot_sherpa_model(sherpa_model, fit_range=None, model_range=[1E10, 1E30], nu_grid_size=200, sed_data=None,
                       add_res=False, plot_obj=None, label=None, line_style=None):
+    """Plot sherpa model.
+    
+    Parameters
+    ----------
+    sherpa_model : object
+        Parameter controlling sherpa model.
+    fit_range : object, optional
+        Range for fit.
+    model_range : list, optional
+        Range for model.
+    nu_grid_size : int, optional
+        Array/grid values for nu grid size.
+    sed_data : object, optional
+        Observational SED data container.
+    add_res : bool, optional
+        Parameter controlling add res.
+    plot_obj : object, optional
+        Existing plot object to update.
+    label : object, optional
+        Label used in output or plots.
+    line_style : object, optional
+        Parameter controlling line style.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     if fit_range is not None:
         x = np.logspace(np.log10(fit_range[0]), np.log10(fit_range[1]), nu_grid_size)
     else:
@@ -130,8 +198,26 @@ def plot_sherpa_model(sherpa_model, fit_range=None, model_range=[1E10, 1E30], nu
 
 
 class SherpaMinimizer(Minimizer):
+    """Sherpa-based minimizer backend for JetSeT fits.
+
+    Notes
+    -----
+    Wraps a JetSeT model into a Sherpa model/data pair, runs the selected
+    Sherpa optimizer/statistic, and maps fit outputs back to JetSeT structures.
+    """
 
     def __init__(self, model,method=None,stat=None):
+        """Create a new `SherpaMinimizer` instance.
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        method : object, optional
+            Parameter controlling method.
+        stat : object, optional
+            Parameter controlling stat.
+        """
         if sherpa_installed is True:
             pass
         else:
@@ -158,10 +244,24 @@ class SherpaMinimizer(Minimizer):
 
     @property
     def sherpa_fitter(self):
+        """Sherpa fitter.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._sherpa_fitter
 
     @property
     def calls(self):
+        """Calls.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         if self._sherpa_model is not None:
             return self._sherpa_model._jetset_ncalls
         else:
@@ -169,6 +269,13 @@ class SherpaMinimizer(Minimizer):
 
     @calls.setter
     def calls(self,n):
+        """Calls.
+        
+        Parameters
+        ----------
+        n : object
+            Parameter controlling n.
+        """
         if self._sherpa_model is not None:
             self._sherpa_model._jetset_ncalls = n
 
@@ -190,6 +297,18 @@ class SherpaMinimizer(Minimizer):
         self.errors = [np.sqrt(np.fabs(self.covar[pi, pi])) for pi in range(len(self.model.fit_par_free))]
 
 def sherpa_model_to_table(sherpa_model):
+    """Sherpa model to table.
+    
+    Parameters
+    ----------
+    sherpa_model : object
+        Parameter controlling sherpa model.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     rows=[]
     for p in sherpa_model.pars:
         

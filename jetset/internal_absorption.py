@@ -1,3 +1,5 @@
+"""Internal absorption modeling utilities for jet spectral components."""
+
 import os
 
 # Prefer the portable numba backend for this kernel path to avoid OpenMP runtime
@@ -103,6 +105,14 @@ def _compute_tau_numba(nu_src,
 class InternalAbsorption(object):
 
 
+    """Compute internal gamma-gamma absorption from jet seed photon fields.
+
+    Notes
+    -----
+    Evaluates optical depth ``tau(nu)`` using BLR or DT photon distributions,
+    caches previous evaluations for reuse, and provides attenuation factors for
+    integration into jet spectral component calculations.
+    """
     def __init__(self,
                  jet,
                  nu_min=None,
@@ -113,6 +123,27 @@ class InternalAbsorption(object):
                  N_theta=20,
                  use_R_H_profile_extrapolation=False,
                  ):
+        """Create a new `InternalAbsorption` instance.
+        
+        Parameters
+        ----------
+        jet : object
+            Jet model instance.
+        nu_min : object, optional
+            Minimum frequency in Hz.
+        seed_photons_name : str, optional
+            Seed-photon field identifier (for example ``BLR`` or ``DT``).
+        N_soft : int, optional
+            Number of soft-photon energy samples.
+        N_hard : int, optional
+            Number of hard-photon energy samples.
+        N_R_H : int, optional
+            Number of distance samples along ``R_H``.
+        N_theta : int, optional
+            Number of angular samples.
+        use_R_H_profile_extrapolation : bool, optional
+            If ``True``, enable r h profile extrapolation.
+        """
         if seed_photons_name in ['BLR','DT']:
             self._seed_photons_name=seed_photons_name
         else:
@@ -190,6 +221,26 @@ class InternalAbsorption(object):
                          peak=False,
                          use_R_H_profile_extrapolation=False):
 
+        """Evaluate tau photons.
+        
+        Parameters
+        ----------
+        nu_src : object
+            Source-frame frequency array in Hz.
+        R_H : object
+            Distance from black hole in cm.
+        skip_check : bool, optional
+            If ``True``, skip check.
+        peak : bool, optional
+            If ``True``, use peak-optimized seed-photon sampling.
+        use_R_H_profile_extrapolation : bool, optional
+            If ``True``, enable r h profile extrapolation.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         for p_orig in self._jet_orig.parameters.par_array:
             if not p_orig.frozen and not p_orig._is_dependent:
                 p=self._jet.get_par_by_name(p_orig.name)
@@ -303,9 +354,17 @@ class InternalAbsorption(object):
 
 
     def sigma(self, s):
-        """
-        Pair-production cross section [cm^2], s = dimensionless CM energy squared
-        s must satisfy s >= 1
+        """Sigma.
+        
+        Parameters
+        ----------
+        s : object
+            Dimensionless interaction invariant.
+        
+        Returns
+        -------
+        object
+            Computed value.
         """
         out = np.zeros_like(s)
         mask = s >= 1.0
@@ -325,6 +384,26 @@ class InternalAbsorption(object):
             peak=False,
             rescale=True):
                     
+        """Return n.
+        
+        Parameters
+        ----------
+        seed_photons_name : object
+            Seed-photon field identifier (for example ``BLR`` or ``DT``).
+        N_soft : object
+            Number of soft-photon energy samples.
+        R_H : object
+            Distance from black hole in cm.
+        peak : bool, optional
+            If ``True``, use peak-optimized seed-photon sampling.
+        rescale : bool, optional
+            If ``True``, apply normalization rescaling.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         self._jet.set_par('R_H',val=R_H)
         BlazarSED.Build_I_nu_Disk(self._jet._blob)
         if seed_photons_name == "BLR":
@@ -375,7 +454,23 @@ class InternalAbsorption(object):
 
 
     def eval(self, get_tau=False,skip_check=True,lin_nu=None,peak=False):
-        """
+        """Evaluate model output.
+        
+        Parameters
+        ----------
+        get_tau : bool, optional
+            If ``True``, return optical depth instead of attenuation.
+        skip_check : bool, optional
+            If ``True``, skip check.
+        lin_nu : object, optional
+            Linear-frequency array in Hz.
+        peak : bool, optional
+            If ``True``, use peak-optimized seed-photon sampling.
+        
+        Returns
+        -------
+        object
+            Computed value.
         """
 
         if lin_nu is None:

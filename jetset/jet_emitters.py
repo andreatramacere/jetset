@@ -1,3 +1,5 @@
+"""Emitter distribution classes and helpers used by jet models."""
+
 __author__ = "Andrea Tramacere"
 
 import os
@@ -19,10 +21,7 @@ from .jet_kernel_tools import set_emitters_c_array1d_fast as set_emitters
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd is True:
-    try:
-        from .jetkernel import jetkernel as BlazarSED
-    except ImportError:
-        from .mock import jetkernel as BlazarSED
+    from .mock import jetkernel as BlazarSED
 else:
     from .jetkernel import jetkernel as BlazarSED
 
@@ -36,7 +35,25 @@ __all__ = ['EmittersDistribution',
 
 class ArrayDistribution(object):
 
+    """Pair of emitter-energy and density arrays used for tabulated spectra.
+
+    Notes
+    -----
+    Validates input array sizes and stores the grid size used when expanding
+    tabulated distributions onto model evaluation grids.
+    """
     def __init__(self, e_array, n_array, gamma_grid_size=None):
+        """Create a new `ArrayDistribution` instance.
+        
+        Parameters
+        ----------
+        e_array : object
+            Energy/gamma array for tabulated input.
+        n_array : object
+            Distribution values associated with ``e_array``.
+        gamma_grid_size : object, optional
+            Number of points in the gamma grid.
+        """
         self.e_array = e_array
         self.n_array = n_array
         _size = e_array.size
@@ -49,8 +66,36 @@ class ArrayDistribution(object):
 
 
 def check_par_name(method):
+    """Check par name.
+    
+    Parameters
+    ----------
+    method : object
+        Callable/function to decorate or evaluate.
+    
+    Returns
+    -------
+    object
+        Computed value.
+    """
     def inner(ref,  *args, **kwargs):
         #print(ref,args,kwargs)
+        """Inner.
+        
+        Parameters
+        ----------
+        ref : object
+            Parameter controlling ref.
+        *args : tuple
+            Additional positional arguments.
+        **kwargs : dict
+            Additional keyword arguments.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         if args[0]  in ref._skip:
             raise RuntimeError('par name',args[0],'can not be in proteced names',ref._skip)
         else:
@@ -61,6 +106,14 @@ def check_par_name(method):
 
 class BaseEmittersDistribution(object):
 
+    """Base implementation for emitter distribution parameterizations.
+
+    Notes
+    -----
+    Defines common parameter handling, gamma-grid generation, normalization,
+    numerical moment evaluation, and plotting helpers shared by electron and
+    proton distribution subclasses.
+    """
     def __init__(self,
                  name,
                  spectral_type,
@@ -70,6 +123,25 @@ class BaseEmittersDistribution(object):
                  skip_build=False,
                  normalize=False):
 
+        """Create a new `BaseEmittersDistribution` instance.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        spectral_type : object
+            Spectral-shape identifier.
+        gamma_grid_size : int, optional
+            Number of points in the gamma grid.
+        log_values : bool, optional
+            If ``True``, parameters are represented in log10 scale.
+        emitters_type : str, optional
+            Emitter population type.
+        skip_build : bool, optional
+            If ``True``, skip build.
+        normalize : bool, optional
+            If ``True``, normalize the distribution before scaling.
+        """
         self._spectral_type = None
         self._allowed_spectral_types = ['bkn', 'plc', 'lp', 'lppl', 'pl', 'lpep', 'array','user_defined']
         self._set_emitters_type(emitters_type)
@@ -106,16 +178,51 @@ class BaseEmittersDistribution(object):
 
     @staticmethod
     def spectral_types_obs_constrain():
+        """Spectral types obs constrain.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         return ['bkn', 'plc', 'lp', 'lppl', 'pl', 'lpep', 'array']
 
     @property
     def spectral_type(self):
+        """Spectral type.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._spectral_type
 
     @check_par_name
     def add_par(self, name, par_type, val, vmax, vmin, unit='', log=False, frozen=False):
         
 
+        """Add par.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        par_type : object
+            Parameter type/category label.
+        val : object
+            Value to assign.
+        vmax : object
+            Maximum allowed value.
+        vmin : object
+            Minimum allowed value.
+        unit : str, optional
+            Physical unit string.
+        log : bool, optional
+            If ``True``, treat the value in log10 units.
+        frozen : bool, optional
+            If ``True``, keep parameter fixed during fitting.
+        """
         self.parameters.add_par(ModelParameter(name=name,
                                                par_type=par_type,
                                                val=val,
@@ -127,6 +234,13 @@ class BaseEmittersDistribution(object):
 
     def set_distr_func(self,distr_func):
         
+        """Set distr func.
+        
+        Parameters
+        ----------
+        distr_func : object
+            Distribution function used to evaluate emitters.
+        """
         if distr_func is not None:
             self._validate_func(distr_func)
         self.distr_func=distr_func
@@ -161,6 +275,22 @@ class BaseEmittersDistribution(object):
 
 
     def set_bounds(self,a,b,log_val=False):
+        """Set bounds.
+        
+        Parameters
+        ----------
+        a : object
+            First shape/control parameter.
+        b : object
+            Second shape/control parameter.
+        log_val : bool, optional
+            If ``True``, interpret bounds/values in log10 scale.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         if log_val == False:
             return [a,b]
 
@@ -186,6 +316,13 @@ class BaseEmittersDistribution(object):
 
     @property
     def name(self):
+        """Name.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._name
 
     def _check_emitters_type(self, emitters_type):
@@ -196,9 +333,21 @@ class BaseEmittersDistribution(object):
             pass
 
     def update(self):
+        """Refresh distribution arrays from current parameter values.
+
+        Notes
+        -----
+        Recomputes internal grids and distribution values via ``_fill``.
+        """
         self._fill()
 
     def set_grid(self):
+        """Build logarithmic gamma grid from ``gmin`` and ``gmax``.
+
+        Notes
+        -----
+        Grid size is controlled by ``self._gamma_grid_size``.
+        """
         gmin = self.parameters.get_par_by_name('gmin').val_lin
         gmax = self.parameters.get_par_by_name('gmax').val_lin
         self._gamma_grid = np.logspace(np.log10(gmin), np.log10(gmax), self._gamma_grid_size)
@@ -206,6 +355,13 @@ class BaseEmittersDistribution(object):
     def eval_N(self):
         #NOTE: commented until is fixed the setting to zero of Ne_jetset for protons
         #self.update()
+        """Evaluate n.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         if self.emitters_type=='electrons':
             return np.trapezoid(self.n_gamma_e,self.gamma_e)
         elif self.emitters_type=='protons':
@@ -219,6 +375,20 @@ class BaseEmittersDistribution(object):
     def eval_U(self, gmin=None, gmax=None):
         #NOTE: commented until is fixed the setting to zero of Ne_jetset for protons
         #self.update()
+        """Evaluate u.
+        
+        Parameters
+        ----------
+        gmin : object, optional
+            Lower gamma bound.
+        gmax : object, optional
+            Upper gamma bound.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         if self.emitters_type == 'electrons':# or self.emitters_type == 'electrons-equilibrium':
             x=self.gamma_e
             y=self.n_gamma_e * self.gamma_e
@@ -372,6 +542,32 @@ class BaseEmittersDistribution(object):
         return p
 
     def plot(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None,loglog=False):
+        """Plot.
+        
+        Parameters
+        ----------
+        p : object, optional
+            Spectral slope/shape parameter or input vector.
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        x_min : object, optional
+            Minimum value for x.
+        x_max : object, optional
+            Maximum value for x.
+        energy_unit : str, optional
+            Energy unit used for plotting/output.
+        label : object, optional
+            Label used in output or plots.
+        loglog : bool, optional
+            If ``True``, operate in log10 space.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         if p is None:
             p = PlotPdistr(loglog=loglog)
         m=getattr(p,'plot_distr')
@@ -379,6 +575,32 @@ class BaseEmittersDistribution(object):
         return p
 
     def plot2p(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None,loglog=False):
+        """Plot2p.
+        
+        Parameters
+        ----------
+        p : object, optional
+            Spectral slope/shape parameter or input vector.
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        x_min : object, optional
+            Minimum value for x.
+        x_max : object, optional
+            Maximum value for x.
+        energy_unit : str, optional
+            Energy unit used for plotting/output.
+        label : object, optional
+            Label used in output or plots.
+        loglog : bool, optional
+            If ``True``, operate in log10 space.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         if p is None:
             p = PlotPdistr(loglog=loglog)
         m=getattr(p,'plot_distr2p')
@@ -387,6 +609,32 @@ class BaseEmittersDistribution(object):
         return p
 
     def plot3p(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None,loglog=False):
+        """Plot3p.
+        
+        Parameters
+        ----------
+        p : object, optional
+            Spectral slope/shape parameter or input vector.
+        y_min : object, optional
+            Minimum value for y.
+        y_max : object, optional
+            Maximum value for y.
+        x_min : object, optional
+            Minimum value for x.
+        x_max : object, optional
+            Maximum value for x.
+        energy_unit : str, optional
+            Energy unit used for plotting/output.
+        label : object, optional
+            Label used in output or plots.
+        loglog : bool, optional
+            If ``True``, operate in log10 space.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         if p is None:
             p = PlotPdistr(loglog=loglog)
         m=getattr(p,'plot_distr3p')
@@ -396,6 +644,14 @@ class BaseEmittersDistribution(object):
 
 class EmittersDistribution(BaseEmittersDistribution):
 
+    """Jet-coupled emitter distribution for electrons or protons.
+
+    Notes
+    -----
+    Extends :class:`BaseEmittersDistribution` with synchronization to the jet
+    backend blob, including equilibrium readback paths and jet-kernel
+    parameter dictionary integration.
+    """
     def __init__(self,
                  name,
                  spectral_type,
@@ -406,6 +662,27 @@ class EmittersDistribution(BaseEmittersDistribution):
                  normalize=False,
                  skip_build=False):
 
+        """Create a new `EmittersDistribution` instance.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        spectral_type : object
+            Spectral-shape identifier.
+        jet : object, optional
+            Jet model instance.
+        gamma_grid_size : int, optional
+            Number of points in the gamma grid.
+        log_values : bool, optional
+            If ``True``, parameters are represented in log10 scale.
+        emitters_type : str, optional
+            Emitter population type.
+        normalize : bool, optional
+            If ``True``, normalize the distribution before scaling.
+        skip_build : bool, optional
+            If ``True``, skip build.
+        """
         super(EmittersDistribution, self).__init__(name,
                                                    spectral_type=spectral_type,
                                                    emitters_type=emitters_type,
@@ -434,6 +711,13 @@ class EmittersDistribution(BaseEmittersDistribution):
             par.set(val=p.val, skip_dep_par_warning=True)
 
     def update(self):
+        """Refresh distribution values and sync with jet backend state.
+
+        Notes
+        -----
+        In equilibrium mode this triggers backend readback instead of direct
+        analytical filling.
+        """
         if self.emitters_type == 'electrons' and hasattr(self, '_jet') and self._jet is not None:
             if getattr(self._jet._blob.emitters, 'do_equilibrium', 0) == 1:
                 # In equilibrium mode the physical electron distribution comes from C readback.
@@ -471,6 +755,27 @@ class EmittersDistribution(BaseEmittersDistribution):
         #if log is True:
         #    val = np.log10(val)
 
+        """Add par.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        par_type : object
+            Parameter type/category label.
+        val : object
+            Value to assign.
+        vmax : object
+            Maximum allowed value.
+        vmin : object
+            Minimum allowed value.
+        unit : str, optional
+            Physical unit string.
+        log : bool, optional
+            If ``True``, treat the value in log10 units.
+        frozen : bool, optional
+            If ``True``, keep parameter fixed during fitting.
+        """
         if name not in self._parameters_dict.keys():
             self._parameters_dict[name]=JetModelDictionaryPar(ptype=par_type,
                                                               vmin=vmin,
@@ -494,6 +799,12 @@ class EmittersDistribution(BaseEmittersDistribution):
                                                log=log,))
 
     def set_parameters_dict(self,):
+        """Build default parameter dictionary and mirrored parameter array.
+
+        Notes
+        -----
+        Values are initialized according to emitter type and distribution class.
+        """
         model_dict, a_h, b_h, a_l, b_l, a_t, b_t = self._get_base_dict_and_bounds()
         model_dict['gmin'].val = 2.0
         model_dict['gmin'].is_in_jetkernel = True
@@ -553,6 +864,13 @@ class EmittersDistribution(BaseEmittersDistribution):
         return model_dic, a_h, b_h, a_l, b_l, a_t, b_t
 
     def set_jet(self, jet):
+        """Set jet.
+        
+        Parameters
+        ----------
+        jet : object
+            Jet model instance.
+        """
         if jet is not None:
 
             #name passed to the C code
@@ -583,12 +901,25 @@ class EmittersDistribution(BaseEmittersDistribution):
 
 
     def set_grid_size(self,gamma_grid_size):
+        """Set grid size.
+        
+        Parameters
+        ----------
+        gamma_grid_size : object
+            Number of points in the gamma grid.
+        """
         if gamma_grid_size is not None:
             if self._jet is not  None:
               set_nested_attr(self._jet._blob, 'emitters.gamma_grid_size', gamma_grid_size)
         self._fill()
 
     def set_grid(self):
+        """Build gamma grid either analytically or from jet backend arrays.
+
+        Notes
+        -----
+        When attached to a jet, the grid is read from jetkernel memory.
+        """
         if self._jet is None:
             gmin = self.parameters.get_par_by_name('gmin').val_lin
             gmax = self.parameters.get_par_by_name('gmax').val_lin
@@ -697,6 +1028,13 @@ class EmittersDistribution(BaseEmittersDistribution):
 
 
 class EmittersArrayDistribution(EmittersDistribution):
+    """Emitter distribution defined by user-provided tabulated arrays.
+
+    Notes
+    -----
+    Interpolates ``n(gamma)`` from provided arrays and exposes it through the
+    standard emitter-distribution interface used by jet models.
+    """
     def __init__(self,
                  name,
                  jet=None,
@@ -707,6 +1045,27 @@ class EmittersArrayDistribution(EmittersDistribution):
                  n_gamma_array=None,
                  gamma_grid_size=None):
 
+        """Create a new `EmittersArrayDistribution` instance.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        jet : object, optional
+            Jet model instance.
+        emitters_type : str, optional
+            Emitter population type.
+        normalize : bool, optional
+            If ``True``, normalize the distribution before scaling.
+        skip_build : bool, optional
+            If ``True``, skip build.
+        gamma_array : object, optional
+            Gamma grid values for tabulated distributions.
+        n_gamma_array : object, optional
+            Distribution values corresponding to ``gamma_array``.
+        gamma_grid_size : object, optional
+            Number of points in the gamma grid.
+        """
         super(EmittersArrayDistribution, self).__init__(name,
                                                         spectral_type='array',
                                                         emitters_type=emitters_type)
@@ -749,6 +1108,14 @@ class EmittersArrayDistribution(EmittersDistribution):
 
 class InjEmittersDistribution(BaseEmittersDistribution):
 
+    """Injection emitter distribution used in time/equilibrium calculations.
+
+    Notes
+    -----
+    Manages ``Q(gamma)``-style injection parameterizations, normalization, and
+    optional synchronization of injected particles with equilibrium-enabled
+    backend buffers.
+    """
     def __init__(self,
                  name,
                  spectral_type,
@@ -758,6 +1125,25 @@ class InjEmittersDistribution(BaseEmittersDistribution):
                  normalize=True,
                  emitters_type='electrons'):
 
+        """Create a new `InjEmittersDistribution` instance.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        spectral_type : object
+            Spectral-shape identifier.
+        gamma_grid_size : int, optional
+            Number of points in the gamma grid.
+        log_values : bool, optional
+            If ``True``, parameters are represented in log10 scale.
+        skip_build : bool, optional
+            If ``True``, skip build.
+        normalize : bool, optional
+            If ``True``, normalize the distribution before scaling.
+        emitters_type : str, optional
+            Emitter population type.
+        """
         super(InjEmittersDistribution, self).__init__(name=name,
                                                       spectral_type=spectral_type,
                                                       emitters_type='electrons',
@@ -800,6 +1186,12 @@ class InjEmittersDistribution(BaseEmittersDistribution):
     #    self.parameters.add_par( JetModelDictionaryPar(name='Q', par_type='emitters_density', val=1E-3, val_min=0, val_max=None, units='cm-3 s-1'))
         
     def set_parameters_dict(self,):
+        """Build default parameter dictionary for injection distributions.
+
+        Notes
+        -----
+        Populates both ``_parameters_dict`` and ``parameters`` container.
+        """
         model_dict, a_h, b_h, a_l, b_l, a_t, b_t = self._get_base_dict_and_bounds()
         model_dict['gmin'].val = 2.0
         model_dict['gmin'].is_in_jetkernel = True
@@ -856,6 +1248,13 @@ class InjEmittersDistribution(BaseEmittersDistribution):
                 set_emitters(q_ptr,self._jet._blob,size,self.n_gamma_e)
 
     def eval_U_q(self):
+        """Evaluate u q.
+        
+        Returns
+        -------
+        object
+            Computed value.
+        """
         self._fill()
         x=self.gamma_e
         y=self.f*x
@@ -871,10 +1270,37 @@ class InjEmittersDistribution(BaseEmittersDistribution):
     
     #NOTE: not used, to be removed
     def set_temp_ev(self):
+        """Bind temporary-evolution buffers used by legacy workflows.
+
+        Notes
+        -----
+        Marked as legacy in code comments and kept for compatibility.
+        """
         self.e_gamma_ptr = getattr(self._temp_ev, self._gammae_name)
         self._Q_inj_e_second_ptr = get_nested_attr(self._temp_ev._blob, self._Q_inj_e_second_name)
 
     def add_par(self, name, par_type, val, vmax, vmin, unit='', log=False, frozen=False):
+        """Add par.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        par_type : object
+            Parameter type/category label.
+        val : object
+            Value to assign.
+        vmax : object
+            Maximum allowed value.
+        vmin : object
+            Minimum allowed value.
+        unit : str, optional
+            Physical unit string.
+        log : bool, optional
+            If ``True``, treat the value in log10 units.
+        frozen : bool, optional
+            If ``True``, keep parameter fixed during fitting.
+        """
         if name not in self._parameters_dict.keys():
             self._parameters_dict[name]=JetModelDictionaryPar(ptype=par_type,
                                                               vmin=vmin,
@@ -899,6 +1325,13 @@ class InjEmittersDistribution(BaseEmittersDistribution):
 
 
 class InjEmittersArrayDistribution(InjEmittersDistribution):
+    """Array-based injection distribution ``Q(gamma)`` implementation.
+
+    Notes
+    -----
+    Uses tabulated gamma and injection-density arrays, interpolates them onto
+    internal grids, and keeps compatibility with injection-distribution APIs.
+    """
     def __init__(self,
                  name,
                  emitters_type='electrons',
@@ -908,6 +1341,25 @@ class InjEmittersArrayDistribution(InjEmittersDistribution):
                  n_gamma_array=None,
                  gamma_grid_size=None):
 
+        """Create a new `InjEmittersArrayDistribution` instance.
+        
+        Parameters
+        ----------
+        name : object
+            Name identifier.
+        emitters_type : str, optional
+            Emitter population type.
+        normalize : bool, optional
+            If ``True``, normalize the distribution before scaling.
+        skip_build : bool, optional
+            If ``True``, skip build.
+        gamma_array : object, optional
+            Gamma grid values for tabulated distributions.
+        n_gamma_array : object, optional
+            Distribution values corresponding to ``gamma_array``.
+        gamma_grid_size : object, optional
+            Number of points in the gamma grid.
+        """
         super(InjEmittersArrayDistribution, self).__init__(name,
                                                         spectral_type='array',
                                                         emitters_type=emitters_type)

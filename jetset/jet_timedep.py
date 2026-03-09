@@ -47,8 +47,24 @@ __all__=['JetTimeEvol','TimeEmittersDistribution', 'TimeEvolvingRegion','merge_l
 
 
 class ProgressBarTempEV(object):
+    """Progress-bar helper for time-dependent evolution runs.
+
+    Notes
+    -----
+    Polls the backend evolution counter and updates a ``tqdm`` bar in a worker
+    thread until the run is complete.
+    """
 
     def __init__(self, target_class,N):
+        """Create a new `ProgressBarTempEV` instance.
+        
+        Parameters
+        ----------
+        target_class : object
+            Parameter controlling target class.
+        N : object
+            Parameter controlling n.
+        """
         self.target_class = target_class
         self.N = N
         self.pbar = tqdm(total=self.N)
@@ -58,10 +74,18 @@ class ProgressBarTempEV(object):
         self.pbar.n=0
 
     def update(self):
+        """Update."""
         step_tqdm = self.target_class.temp_ev.T_COUNTER +1 - self.pbar.n
         self.pbar.update(step_tqdm)
 
     def finalize(self,max_try=10):
+        """Finalize.
+        
+        Parameters
+        ----------
+        max_try : int, optional
+            Upper bound/control for max try.
+        """
         n_try=1
         while (self.pbar.n<self.N and n_try<max_try):
             system_time.sleep(.1)
@@ -70,6 +94,7 @@ class ProgressBarTempEV(object):
         self.pbar.display()
 
     def run(self):
+        """Run."""
         self.pbar.n = 0
         while (self.stop is False):
             self.update()
@@ -77,8 +102,26 @@ class ProgressBarTempEV(object):
 
 
 class TimeEmittersDistribution(object):
+    """Time-sampled emitter distributions and frame-time conversions.
+
+    Notes
+    -----
+    Stores ``n(gamma, t)`` snapshots together with blob/src/observer time
+    mappings used by time-dependent region post-processing.
+    """
 
     def __init__(self, jet, time_size, gamma_size):
+        """Create a new `TimeEmittersDistribution` instance.
+        
+        Parameters
+        ----------
+        jet : object
+            Parameter controlling jet.
+        time_size : object
+            Time-related value for time size.
+        gamma_size : object
+            Frequency/energy control value for gamma size.
+        """
         self.jet=jet
         self.time_blob=np.zeros(time_size)
         self.gamma=np.zeros(gamma_size)
@@ -90,10 +133,24 @@ class TimeEmittersDistribution(object):
 
     @property
     def time_src(self):
+        """Time src.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self.time_blob / self.jet.get_beaming()
 
     @property
     def time_obs(self):
+        """Time obs.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self.time_blob * (1 + self.jet.parameters.z_cosm.val) / self.jet.get_beaming()
 
     def _time_obs_to_blob(self,time_obs):
@@ -184,9 +241,29 @@ class TimeEmittersDistribution(object):
 
 
 class TimeEvolvingRegion(object):
+    """Region-level view of a time-dependent JetSeT evolution run.
+
+    Notes
+    -----
+    Manages cached SED slices, time-indexed particle distributions, and region
+    state updates (``acc`` or ``rad``) for plotting and analysis workflows.
+    """
 
     def __init__(self,temp_ev,jet,region_type,build_cached=True,):
 
+        """Create a new `TimeEvolvingRegion` instance.
+        
+        Parameters
+        ----------
+        temp_ev : object
+            Parameter controlling temp ev.
+        jet : object
+            Parameter controlling jet.
+        region_type : object
+            Parameter controlling region type.
+        build_cached : bool, optional
+            Parameter controlling build cached.
+        """
         self._set_region_type(region_type)
         self._set_up(temp_ev=temp_ev,
                      jet=jet,
@@ -207,6 +284,13 @@ class TimeEvolvingRegion(object):
 
     @property
     def num_seds(self):
+        """Num seds.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         if hasattr(self.temp_ev,'parameters'):
             N = self.temp_ev.parameters.num_samples.val
         else:
@@ -216,10 +300,24 @@ class TimeEvolvingRegion(object):
 
     @property
     def region_type(self):
+        """Region type.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._region_type
 
     @property
     def mult_factor(self):
+        """Mult factor.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         if self._region_type == 'acc':
             R, _mult_factor = self.temp_ev._get_R_acc_sphere()
         else:
@@ -291,6 +389,17 @@ class TimeEvolvingRegion(object):
         self._update(build_cached=build_cached)
 
     def set_time(self, time_slice=None, time=None, frame='blob'):
+        """Set time.
+        
+        Parameters
+        ----------
+        time_slice : object, optional
+            Time-related value for time slice.
+        time : object, optional
+            Time-related value for time.
+        frame : str, optional
+            Reference frame for data/model values.
+        """
         if (time_slice is None and time is None) or (time_slice is not None and time is not None):
             raise RuntimeError('you can use either the N-th time slice, or the time in seconds')
 
@@ -333,6 +442,32 @@ class TimeEvolvingRegion(object):
                 use_cached=False,
                 average =False):
 
+        """Return sed.
+        
+        Parameters
+        ----------
+        comp : object
+            Parameter controlling comp.
+        frame : object
+            Reference frame for data/model values.
+        time_slice : object, optional
+            Time-related value for time slice.
+        time_slice_bin : object, optional
+            Time-related value for time slice bin.
+        time : object, optional
+            Time-related value for time.
+        time_bin : object, optional
+            Time-related value for time bin.
+        use_cached : bool, optional
+            If ``True``, enable cached.
+        average : bool, optional
+            Parameter controlling average.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         if (time_slice is not None and time is not None):
             raise RuntimeError(
                 'you can to pass either the N-th time slice "time_slice", or the blob time in seconds "time" ')
@@ -376,6 +511,7 @@ class TimeEvolvingRegion(object):
         return sed
 
     def build_cached_SEDs(self):
+        """Build cached se ds."""
         print('caching SED for each saved distribution: start')
         self.seds_array = [None ] * self.num_seds
         pbar = tqdm(total=self.num_seds)
@@ -404,6 +540,42 @@ class TimeEvolvingRegion(object):
                 name=None,
                 density_mono_chromatic=False):
 
+        """Make lc.
+        
+        Parameters
+        ----------
+        nu1 : object
+            Frequency/energy control value for nu1.
+        nu2 : object, optional
+            Frequency/energy control value for nu2.
+        comp : str, optional
+            Parameter controlling comp.
+        t1 : object, optional
+            Parameter controlling t1.
+        t2 : object, optional
+            Parameter controlling t2.
+        delta_t_out : object, optional
+            Parameter controlling delta t out.
+        cross_time_slices : int, optional
+            Time-related value for cross time slices.
+        frame : str, optional
+            Reference frame for data/model values.
+        eval_cross_time : bool, optional
+            Time-related value for eval cross time.
+        use_cached : bool, optional
+            If ``True``, enable cached.
+        R : object, optional
+            Parameter controlling r.
+        name : object, optional
+            Name identifier.
+        density_mono_chromatic : bool, optional
+            Parameter controlling density mono chromatic.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         beaming = self.jet.get_beaming()
 
         if frame == 'obs':
@@ -525,6 +697,24 @@ class TimeEvolvingRegion(object):
 
     @staticmethod
     def eval_R_cross_time( t_blob, lc, R=None, n_slices=1000 ):
+        """Evaluate r cross time.
+        
+        Parameters
+        ----------
+        t_blob : object
+            Time-related value for t blob.
+        lc : object
+            Parameter controlling lc.
+        R : object, optional
+            Parameter controlling r.
+        n_slices : int, optional
+            Parameter controlling n slices.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         c = const.c.cgs.value
         
         R=np.copy(R)
@@ -563,6 +753,24 @@ class TimeEvolvingRegion(object):
 
 
     def eval_R_cross_time_no( t_blob, lc, R, n_slices=1000):
+        """Evaluate r cross time no.
+        
+        Parameters
+        ----------
+        t_blob : object
+            Time-related value for t blob.
+        lc : object
+            Parameter controlling lc.
+        R : object
+            Parameter controlling r.
+        n_slices : int, optional
+            Parameter controlling n slices.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         c = const.c.cgs.value
         delay_max=2 * R / c
         delta_R = (2 * R) / n_slices
@@ -691,6 +899,27 @@ class JetTimeEvol(object):
                  setup=True):
 
 
+        """Create a new `JetTimeEvol` instance.
+        
+        Parameters
+        ----------
+        jet_rad : object
+            Parameter controlling jet rad.
+        only_radiation : bool, optional
+            Parameter controlling only radiation.
+        Q_inj : object, optional
+            Parameter controlling q inj.
+        name : str, optional
+            Name identifier.
+        inplace : bool, optional
+            Parameter controlling inplace.
+        log_sampling : bool, optional
+            Parameter controlling log sampling.
+        jet_gamma_grid_size : int, optional
+            Array/grid values for jet gamma grid size.
+        setup : bool, optional
+            Parameter controlling setup.
+        """
         self._temp_ev = BlazarSED.MakeTempEv()
         if setup is True:
             self._setup_(jet_rad,Q_inj,name,log_sampling,jet_gamma_grid_size,inplace,only_radiation)
@@ -842,11 +1071,30 @@ class JetTimeEvol(object):
         #        pass
     def save_model(self, file_name):
 
+        """Save object state to disk.
+        
+        Parameters
+        ----------
+        file_name : object
+            Input/output file path.
+        """
         pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
 
     @classmethod
     def load_model(cls, file_name):
+        """Load object state from disk.
+        
+        Parameters
+        ----------
+        file_name : object
+            Input/output file path.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         try:
             c = pickle.load(open(file_name, "rb"))
             c.init_TempEv()
@@ -856,6 +1104,18 @@ class JetTimeEvol(object):
 
 
     def get_region(self, region):
+        """Return region.
+        
+        Parameters
+        ----------
+        region : object
+            Parameter controlling region.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         if region == 'rad':
             _reg = self.rad_region
         elif region == 'acc':
@@ -865,6 +1125,7 @@ class JetTimeEvol(object):
         return _reg
 
     def init_TempEv(self):
+        """Init  temp ev."""
         BlazarSED.Init(self.rad_region.jet._blob, self.rad_region.jet.get_DL_cm())
         if self.acc_region is not None:
             BlazarSED.Init(self.acc_region.jet._blob, self.acc_region.jet.get_DL_cm())
@@ -1024,18 +1285,46 @@ class JetTimeEvol(object):
 
     @property
     def Delta_R_acc(self):
+        """Delta r acc.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self.parameters.Delta_R_acc.val
 
     @property
     def time_steps_array(self):
+        """Time steps array.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._time_steps_array
 
     @time_steps_array.setter
     def time_steps_array(self, v):
+        """Time steps array.
+        
+        Parameters
+        ----------
+        v : object
+            Parameter controlling v.
+        """
         self._time_steps_array = v
 
     @property
     def temp_ev(self):
+        """Temp ev.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._temp_ev
 
     def _get_R_rad_sphere(self, time):
@@ -1074,14 +1363,35 @@ class JetTimeEvol(object):
         return self.Delta_R_acc * 0.5, N
 
     def V_acc(self):
+        """V acc.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         R = self.parameters.R_rad_start.val
         return R * R * self.Delta_R_acc*np.pi
 
     def V_rad(self):
+        """V rad.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         R = self.parameters.R_rad_start.val
         return (4/3)*np.pi*R*R*R
 
     def show_pars(self, sort_key='par type'):
+        """Display pars.
+        
+        Parameters
+        ----------
+        sort_key : str, optional
+            Parameter controlling sort key.
+        """
         self.parameters.show_pars(sort_key=sort_key)
 
     @property
@@ -1142,10 +1452,24 @@ class JetTimeEvol(object):
 
     @property
     def IC_cooling(self):
+        """Ic cooling.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._IC_cooling
 
     @IC_cooling.setter
     def IC_cooling(self, val):
+        """Ic cooling.
+        
+        Parameters
+        ----------
+        val : object
+            Value to assign.
+        """
         state_dict = dict((('on', 1), ('off', 0)))
         if val not in state_dict.keys():
             raise  RuntimeError('allowed values are on/off')
@@ -1154,10 +1478,24 @@ class JetTimeEvol(object):
 
     @property
     def region_expansion(self):
+        """Region expansion.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._region_expansion
 
     @region_expansion.setter
     def region_expansion(self, val):
+        """Region expansion.
+        
+        Parameters
+        ----------
+        val : object
+            Value to assign.
+        """
         state_dict = dict((('on', 1), ('off', 0)))
         if val not in state_dict.keys():
             raise RuntimeError('allowed values are on/off')
@@ -1166,10 +1504,24 @@ class JetTimeEvol(object):
 
     @property
     def Sync_cooling(self):
+        """Sync cooling.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._Sync_cooling
 
     @Sync_cooling.setter
     def Sync_cooling(self, val):
+        """Sync cooling.
+        
+        Parameters
+        ----------
+        val : object
+            Value to assign.
+        """
         state_dict = dict((('on', 1), ('off', 0)))
         if val not in state_dict.keys():
             raise RuntimeError('allowed values are on/off')
@@ -1178,10 +1530,24 @@ class JetTimeEvol(object):
 
     @property
     def Adiabatic_cooling(self):
+        """Adiabatic cooling.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._Adiabatic_cooling
 
     @Sync_cooling.setter
     def Adiabatic_cooling(self, val):
+        """Adiabatic cooling.
+        
+        Parameters
+        ----------
+        val : object
+            Value to assign.
+        """
         state_dict = dict((('on', 1), ('off', 0)))
         if val not in state_dict.keys():
             raise RuntimeError('allowed values are on/off')
@@ -1191,18 +1557,46 @@ class JetTimeEvol(object):
 
     @property
     def custom_q_inj_profile(self):
+        """Custom q inj profile.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._custom_q_inj_profile
 
     @custom_q_inj_profile.setter
     def custom_q_inj_profile(self,user_defined_array):
+        """Custom q inj profile.
+        
+        Parameters
+        ----------
+        user_defined_array : object
+            Array/grid values for user defined array.
+        """
         self._set_inj_time_profile(user_defined_array)
 
     @property
     def custom_acc_profile(self):
+        """Custom acc profile.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._custom_acc_profile
 
     @custom_acc_profile.setter
     def custom_acc_profile(self, user_defined_array):
+        """Custom acc profile.
+        
+        Parameters
+        ----------
+        user_defined_array : object
+            Array/grid values for user defined array.
+        """
         self._set_acc_time_profile(np.double(user_defined_array>0))
 
     def _set_inj_time_profile(self,user_defined_array=None):
@@ -1230,6 +1624,13 @@ class JetTimeEvol(object):
             self._custom_acc_profile = np.double(user_defined_array)
 
     def eval_L_tot_inj(self):
+        """Evaluate l tot inj.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         if self.Q_inj is not None and self.acc_region is not None:
             return self.Q_inj.eval_U_q() * self.V_acc()
         elif self.Q_inj is not None and self._only_radiation is True:
@@ -1273,6 +1674,17 @@ class JetTimeEvol(object):
         return _id
 
     def set_time(self, time_slice=None, time=None, frame='blob'):
+        """Set time.
+        
+        Parameters
+        ----------
+        time_slice : object, optional
+            Time-related value for time slice.
+        time : object, optional
+            Time-related value for time.
+        frame : str, optional
+            Reference frame for data/model values.
+        """
         self.rad_region.set_time(time_slice=time_slice,time=time,frame=frame)
         if self.acc_region is not None:
             self.acc_region.set_time(time_slice=time_slice, time=time, frame=frame)
@@ -1280,6 +1692,20 @@ class JetTimeEvol(object):
   
 
     def plot_time_profile(self,figsize=(8,8),dpi=120):
+        """Plot time profile.
+        
+        Parameters
+        ----------
+        figsize : tuple, optional
+            Parameter controlling figsize.
+        dpi : int, optional
+            Parameter controlling dpi.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         p=PlotTempEvDiagram(figsize=figsize,dpi=dpi,expanding_region=self.region_expansion=='on')
         p.plot(self.time_steps_array,
                self.custom_q_inj_profile,
@@ -1290,6 +1716,30 @@ class JetTimeEvol(object):
         return p
 
     def plot_tempev_emitters(self,region='rad',figsize=(8,8),dpi=120,energy_unit='gamma',loglog=True,plot_Q_inj=True,pow=None):
+        """Plot tempev emitters.
+        
+        Parameters
+        ----------
+        region : str, optional
+            Parameter controlling region.
+        figsize : tuple, optional
+            Parameter controlling figsize.
+        dpi : int, optional
+            Parameter controlling dpi.
+        energy_unit : str, optional
+            Frequency/energy control value for energy unit.
+        loglog : bool, optional
+            If ``True``, operate in log10 space.
+        plot_Q_inj : bool, optional
+            If ``True``, plot q inj.
+        pow : object, optional
+            Parameter controlling pow.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         region=self.get_region(region)
 
         p=PlotTempEvEmitters(figsize=figsize,dpi=dpi,loglog=loglog)
@@ -1314,6 +1764,44 @@ class JetTimeEvol(object):
                           average=False):
 
 
+        """Plot tempev model.
+        
+        Parameters
+        ----------
+        comp : str, optional
+            Parameter controlling comp.
+        region : str, optional
+            Parameter controlling region.
+        frame : str, optional
+            Reference frame for data/model values.
+        t1 : object, optional
+            Parameter controlling t1.
+        t2 : object, optional
+            Parameter controlling t2.
+        time_slice : object, optional
+            Time-related value for time slice.
+        time_slice_bin : object, optional
+            Time-related value for time slice bin.
+        time : object, optional
+            Time-related value for time.
+        time_bin : object, optional
+            Time-related value for time bin.
+        density : bool, optional
+            Parameter controlling density.
+        use_cached : bool, optional
+            If ``True``, enable cached.
+        sed_data : object, optional
+            Observational SED data container.
+        plot_obj : object, optional
+            Existing plot object to update.
+        average : bool, optional
+            Parameter controlling average.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         if plot_obj is None:
             plot_obj=PlotSED(frame=frame,density=density)
 
@@ -1334,6 +1822,20 @@ class JetTimeEvol(object):
         return plot_obj
 
     def plot_pre_run_plot(self,figsize=(8,6),dpi=120):
+        """Plot pre run plot.
+        
+        Parameters
+        ----------
+        figsize : tuple, optional
+            Parameter controlling figsize.
+        dpi : int, optional
+            Parameter controlling dpi.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         p=BasePlot(figsize=figsize,dpi=dpi)
         p.ax.loglog(self.gamma_pre_run, self.t_Sync_cool_pre_run, label='t coool, synch.')
         if self._only_radiation is False:
@@ -1358,6 +1860,17 @@ class JetTimeEvol(object):
         return p
 
     def show_model(self, getstring=False, names_list=None, sort_key=None):
+        """Display model.
+        
+        Parameters
+        ----------
+        getstring : bool, optional
+            Parameter controlling getstring.
+        names_list : object, optional
+            List of names.
+        sort_key : object, optional
+            Parameter controlling sort key.
+        """
         print('-'*80)
         print("JetTimeEvol model description")
         print('-'*80)
@@ -1482,6 +1995,13 @@ class JetTimeEvol(object):
 
     @property
     def tempev_table(self):
+        """Tempev table.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         if self.acc_region is not None:
             self._build_tempev_table(self.rad_region.jet, self.acc_region.jet)
         else:

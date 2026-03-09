@@ -64,6 +64,24 @@ def convert_nu_to_src(nu,z,in_frame):
 
 
 def convert_nuFnu_to_nuLnu_src(nuFnu,z,in_frame,dl):
+    """Convert nu fnu to nu lnu src.
+    
+    Parameters
+    ----------
+    nuFnu : object
+        Frequency/energy control value for nu fnu.
+    z : object
+        Parameter controlling z.
+    in_frame : object
+        Parameter controlling in frame.
+    dl : object
+        Parameter controlling dl.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     check_frame(in_frame)
     if in_frame == "obs":
        c=4.0*np.pi*dl**2
@@ -76,12 +94,44 @@ def convert_nuFnu_to_nuLnu_src(nuFnu,z,in_frame,dl):
 
 
 def convert_nuLnu_src_to_nuLnu_blob(nuLnu,beaming,in_frame):
+    """Convert nu lnu src to nu lnu blob.
+    
+    Parameters
+    ----------
+    nuLnu : object
+        Frequency/energy control value for nu lnu.
+    beaming : object
+        Lower bound/control for beaming.
+    in_frame : object
+        Parameter controlling in frame.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     check_frame(in_frame)
     c=1/(beaming**4)
     return c*nuLnu
 
 
 def convert_nu_src_to_nu_blob(nu_src,beaming,in_frame):
+    """Convert nu src to nu blob.
+    
+    Parameters
+    ----------
+    nu_src : object
+        Frequency/energy control value for nu src.
+    beaming : object
+        Lower bound/control for beaming.
+    in_frame : object
+        Parameter controlling in frame.
+    
+    Returns
+    -------
+    object
+        Computed result.
+    """
     check_frame(in_frame)
     return nu_src/beaming
 

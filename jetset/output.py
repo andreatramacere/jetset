@@ -13,6 +13,13 @@ __all__=['clean_dir','makedir','section_separator', 'WorkPlace']
 
 
 def clean_dir(dir_name):
+    """Clean dir.
+    
+    Parameters
+    ----------
+    dir_name : object
+        Filesystem path for dir name.
+    """
     print ("cleaning dir",dir_name)
     shutil.rmtree(dir_name)
     os.mkdir(dir_name)
@@ -60,6 +67,17 @@ class WorkPlace(object):
     
     """
     def __init__(self,out_dir='./jet_wd',flag='sed-fit-tests',clean=False):
+        """Create a new `WorkPlace` instance.
+        
+        Parameters
+        ----------
+        out_dir : str, optional
+            Filesystem path for out dir.
+        flag : str, optional
+            Parameter controlling flag.
+        clean : bool, optional
+            Parameter controlling clean.
+        """
         self.out_dir=out_dir
         self.flag=flag
 

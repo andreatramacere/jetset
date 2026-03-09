@@ -42,7 +42,38 @@ class TemplateTable2D(Model):
                  nu_size=100,
                  name='TableModel2D',
                  zero=1E-100):
-        """
+        """Create a new `TemplateTable2D` instance.
+        
+        Parameters
+        ----------
+        x_values : object
+            Grid values for x-axis.
+        y_values : object
+            Grid values for y-axis.
+        z_values : object
+            Grid values for z-axis or template surface.
+        log_input_grid : bool, optional
+            If ``True``, input grid axes are already in log10 space.
+        log_log_interp : bool, optional
+            If ``True``, perform interpolation in log-log space.
+        x_in_units : object, optional
+            Input unit for x-axis values.
+        y_in_units : object, optional
+            Input unit for y-axis values.
+        x_out_units : str, optional
+            Output unit for x-axis values.
+        y_out_units : str, optional
+            Output unit for y-axis values.
+        z_in_units : object, optional
+            Input unit for z values.
+        z_out_units : object, optional
+            Output unit for z values.
+        nu_size : int, optional
+            Number of points for frequency grids.
+        name : str, optional
+            Name identifier.
+        zero : float, optional
+            Fill value used where interpolation is undefined.
         """
         super(TemplateTable2D, self).__init__(name=name)
 
@@ -108,6 +139,30 @@ class TemplateTable2D(Model):
         self.model_type = 'table2D'
 
     def plot_model(self,plot_obj=None,clean=False,label=None,sed_data=None,color=None, density=False,frame='obs'):
+        """Plot model.
+        
+        Parameters
+        ----------
+        plot_obj : object, optional
+            Existing plot object to update.
+        clean : bool, optional
+            Parameter controlling clean.
+        label : object, optional
+            Label used in output or plots.
+        sed_data : object, optional
+            Observational SED data container.
+        color : object, optional
+            Matplotlib color specification.
+        density : bool, optional
+            Parameter controlling density.
+        frame : str, optional
+            Reference frame for data/model values.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         plot_obj=self._set_up_plot(plot_obj,sed_data,frame,density)
 
         if clean==True:
@@ -178,9 +233,7 @@ class TemplateTable2D(Model):
 
 
 class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
-    """
-
-    """
+    """EBLAbsorptionTemplate class."""
     def __init__(self,
                  redshift_array,
                  energy_array,
@@ -236,6 +289,13 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
 
     @property
     def z(self):
+        """Z.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         if hasattr(self,'_z'):
             if isinstance(self._z,ModelParameter):
                 return self._z.val
@@ -246,9 +306,23 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
 
     @z.setter
     def z(self,z):
+        """Z.
+        
+        Parameters
+        ----------
+        z : object
+            Parameter controlling z.
+        """
         self._z = z
 
     def apply_to(self,model):
+        """Apply to.
+        
+        Parameters
+        ----------
+        model : object
+            Model instance.
+        """
         p_m = model.parameters.get_par_by_type('redshift')
         _p= self.get_par_by_name('redshift')
         _p.val=p_m.val
@@ -258,18 +332,46 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
 
     @property
     def redshift_array(self):
+        """Redshift array.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self.x_values
     
     @property
     def energy_array(self):
+        """Energy array.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self.y_values
     
     @property
     def tau_array(self):
+        """Tau array.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self.z_values
     
     @property
     def redshift_array(self):
+        """Redshift array.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self.x_values
         
     @classmethod
@@ -390,6 +492,26 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
         return out_model
 
     def plot_model(self, plot_obj=None,  label=None, line_style='-',color=None,frame='obs'):
+        """Plot model.
+        
+        Parameters
+        ----------
+        plot_obj : object, optional
+            Existing plot object to update.
+        label : object, optional
+            Label used in output or plots.
+        line_style : str, optional
+            Parameter controlling line style.
+        color : object, optional
+            Matplotlib color specification.
+        frame : str, optional
+            Reference frame for data/model values.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         if plot_obj is None:
             plot_obj = PlotSpectralMultipl()
 

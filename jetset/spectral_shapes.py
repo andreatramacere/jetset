@@ -29,6 +29,33 @@ class SED(object):
                  log_log=False,
                  beaming=None):
 
+        """Create a new `SED` instance.
+        
+        Parameters
+        ----------
+        name : object, optional
+            Name identifier.
+        nu : object, optional
+            Frequency values in Hz.
+        nuFnu : object, optional
+            Frequency/energy control value for nu fnu.
+        nu_residuals : object, optional
+            Index/identifier for nu residuals.
+        residuals : object, optional
+            Index/identifier for residuals.
+        nu_src_residuals : object, optional
+            Index/identifier for nu src residuals.
+        nuLnu_src_residuals : object, optional
+            Index/identifier for nu lnu src residuals.
+        dl : object, optional
+            Parameter controlling dl.
+        z : object, optional
+            Parameter controlling z.
+        log_log : bool, optional
+            If ``True``, operate in log10 space.
+        beaming : object, optional
+            Lower bound/control for beaming.
+        """
         if beaming is None:
             beaming =1
 
@@ -65,10 +92,24 @@ class SED(object):
 
     @property
     def nu(self):
+        """Nu.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._nu
 
     @nu.setter
     def nu(self,nu):
+        """Nu.
+        
+        Parameters
+        ----------
+        nu : object
+            Frequency values in Hz.
+        """
         if nu is None:
             self._nu=nu
         else:
@@ -77,11 +118,25 @@ class SED(object):
 
     @property
     def nuFnu(self):
+        """Nu fnu.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._nuFnu
 
 
     @nuFnu.setter
     def nuFnu(self,nuFnu):
+        """Nu fnu.
+        
+        Parameters
+        ----------
+        nuFnu : object
+            Frequency/energy control value for nu fnu.
+        """
         if nuFnu is None:
             self._nuFnu=nuFnu
         else:
@@ -89,11 +144,25 @@ class SED(object):
 
     @property
     def nu_src(self):
+        """Nu src.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._nu_src
 
     @nu_src.setter
     def nu_src(self, z):
         #print('->self._nu',self._nu)
+        """Nu src.
+        
+        Parameters
+        ----------
+        z : object
+            Parameter controlling z.
+        """
         if self._nu is None:
             self._nu_src = self._nu
         else:
@@ -106,10 +175,24 @@ class SED(object):
 
     @property
     def nuLnu_src(self):
+        """Nu lnu src.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return self._nuLnu
 
     @nuLnu_src.setter
     def nuLnu_src(self, t):
+        """Nu lnu src.
+        
+        Parameters
+        ----------
+        t : object
+            Parameter controlling t.
+        """
         z,dl=t
         #print('2')
         #print('->',t,z,dl,self._loglog)
@@ -123,14 +206,42 @@ class SED(object):
 
     @property
     def nuLnu_blob(self):
+        """Nu lnu blob.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return convert_nuLnu_src_to_nuLnu_blob(self._nuLnu, beaming=self.beaming, in_frame='src')* self._nuLnu_src_units
 
     @property
     def nu_blob(self):
+        """Nu blob.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         return convert_nu_src_to_nu_blob(self._nu_src, beaming=self.beaming, in_frame='src')* self._nu_units
 
     def get_model_points(self,log_log=False,frame='obs'):
 
+        """Return model points.
+        
+        Parameters
+        ----------
+        log_log : bool, optional
+            If ``True``, operate in log10 space.
+        frame : str, optional
+            Reference frame for data/model values.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         check_frame(frame)
         if frame == 'obs':
             x, y = self.nu.value, self.nuFnu.value
@@ -153,6 +264,18 @@ class SED(object):
 
     def get_residuals(self, log_log=False):
 
+        """Return residuals.
+        
+        Parameters
+        ----------
+        log_log : bool, optional
+            If ``True``, operate in log10 space.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
         residuals = self.residuals
         nu_residuals = self.nu_residuals
 
@@ -163,6 +286,21 @@ class SED(object):
 
     def fill(self,nu=None,nuFnu=None,nu_residuals=None,residuals=None,log_log=False):
 
+        """Fill.
+        
+        Parameters
+        ----------
+        nu : object, optional
+            Frequency values in Hz.
+        nuFnu : object, optional
+            Frequency/energy control value for nu fnu.
+        nu_residuals : object, optional
+            Index/identifier for nu residuals.
+        residuals : object, optional
+            Index/identifier for residuals.
+        log_log : bool, optional
+            If ``True``, operate in log10 space.
+        """
         self._loglog=log_log
         #if nu is not None:
         self.nu=(nu)
@@ -181,6 +319,19 @@ class SED(object):
     def fill_nuLnu(self, nu_src_residuals=None, nuLnu_src_residuals=None, z=None, dl=None):
 
 
+        """Fill nu lnu.
+        
+        Parameters
+        ----------
+        nu_src_residuals : object, optional
+            Index/identifier for nu src residuals.
+        nuLnu_src_residuals : object, optional
+            Index/identifier for nu lnu src residuals.
+        z : object, optional
+            Parameter controlling z.
+        dl : object, optional
+            Parameter controlling dl.
+        """
         if z is not None and dl is not None:
 
             #calling setter do not change

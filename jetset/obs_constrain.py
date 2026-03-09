@@ -1,3 +1,5 @@
+"""Parameter-constraint utilities derived from observed SED properties."""
+
 
 __author__ = "Andrea Tramacere"
 
@@ -40,8 +42,12 @@ __all__=['ObsConstrain','check_boundaries', 'check_t_var',
 
 
 class ObsConstrain(object):
-    """
-    doc
+    """Derive initial jet-model parameters from observed SED features.
+    
+    Notes
+    -----
+    This helper maps phenomenological SED observables to a physically
+    parameterized :class:`jetset.jet_model.Jet` configuration.
     """
     def __init__(self,B_range=None,
                  distr_e=None,
@@ -56,6 +62,38 @@ class ObsConstrain(object):
                  obspar_workplace=None,
                  **keywords):
 
+        """Initialize observational constraints from SED inputs.
+        
+        Parameters
+        ----------
+        B_range : sequence of float
+            Allowed magnetic-field range ``[B_min, B_max]`` in Gauss.
+        distr_e : str, optional
+            Emitter spectral family name used to initialize the jet model.
+        t_var_sec : float
+            Variability timescale in seconds used to estimate region size.
+        nu_cut_IR : float, optional
+            Infrared cutoff frequency used to estimate low-energy cutoff.
+        beaming : float, optional
+            Doppler beaming factor (use this *or* ``theta``/``bulk_factor``).
+        theta : float, optional
+            Viewing angle (deg) for ``bulk_theta`` beaming mode.
+        bulk_factor : float, optional
+            Bulk Lorentz factor for ``bulk_theta`` beaming mode.
+        obj_class : str, optional
+            Source class label (for example ``'LSP'``, ``'ISP'``, ``'HSP'``).
+        z : float, optional
+            Redshift.
+        obspar_workplace : WorkPlace, optional
+            Workspace used for generated products.
+        **keywords
+            Either direct observable quantities or a ``SEDShape`` object.
+        
+        Raises
+        ------
+        RuntimeError
+            If redshift is invalid or beaming inputs are inconsistent.
+        """
         if 'SEDShape' not in keywords :
 
             self.indices=index_array()
@@ -132,8 +170,25 @@ class ObsConstrain(object):
 
     def constrain_SSC_model(self,name=None,jet_model=None,params_grid_size=10,electron_distribution_log_values=False,silent=False):
 
-        """
-        constarin SSC model paramters
+        """Build or update an SSC jet model from observables.
+        
+        Parameters
+        ----------
+        name : str, optional
+            Name for a newly created jet model.
+        jet_model : Jet, optional
+            Existing jet model to update. If omitted, a new one is created.
+        params_grid_size : int, optional
+            Grid size used in internal one-dimensional parameter scans.
+        electron_distribution_log_values : bool, optional
+            If ``True``, electron-distribution parameters are interpreted in log space.
+        silent : bool, optional
+            If ``True``, suppress progress messages.
+        
+        Returns
+        -------
+        Jet
+            Constrained SSC jet model.
         """
         print(section_separator)
         print("***  constrains parameters from observable ***")
@@ -161,8 +216,35 @@ class ObsConstrain(object):
                                R_H_within_BLR=False,
                                R_H_within_DT=False,
                                disk_type='BB'):
-        """
-        constarin SSC model paramters
+        """Build or update an SSC+EC jet model from observables.
+        
+        Parameters
+        ----------
+        name : str, optional
+            Name for a newly created jet model.
+        jet_model : Jet, optional
+            Existing jet model to update. If omitted, a new one is created.
+        EC_components_list : list of str, optional
+            External-Compton components to activate.
+        params_grid_size : int, optional
+            Grid size used in internal one-dimensional parameter scans.
+        electron_distribution_log_values : bool, optional
+            If ``True``, electron-distribution parameters are interpreted in log space.
+        R_H : float, optional
+            Optional dissipation distance override.
+        silent : bool, optional
+            If ``True``, suppress progress messages.
+        R_H_within_BLR : bool, optional
+            If ``True``, enforce ``R_H`` inside BLR when relevant.
+        R_H_within_DT : bool, optional
+            If ``True``, enforce ``R_H`` inside dusty torus when relevant.
+        disk_type : str, optional
+            Disk model type used for EC setup.
+        
+        Returns
+        -------
+        Jet
+            Constrained SSC+EC jet model.
         """
         
          
@@ -205,7 +287,41 @@ class ObsConstrain(object):
                              R_H_within_DT=False,
                              disk_type='BB'):
         
-
+        """Apply observational constraints and return an initialized jet model.
+        
+        Parameters
+        ----------
+        name : str, optional
+            Name used when creating a new jet model.
+        jet_model : Jet, optional
+            Existing jet model to constrain. If omitted, a new one is built.
+        EC_components_list : list of str, optional
+            External-Compton components to activate.
+        params_grid_size : int, optional
+            Grid size used by numeric scans for ``B`` and ``R`` constraints.
+        electron_distribution_log_values : bool, optional
+            If ``True``, distribution parameters are interpreted in log space.
+        silent : bool, optional
+            If ``True``, suppress progress output.
+        R_H : float, optional
+            Optional dissipation distance override.
+        R_H_within_BLR : bool, optional
+            If ``True``, clip ``R_H`` inside BLR when disk/BLR is enabled.
+        R_H_within_DT : bool, optional
+            If ``True``, clip ``R_H`` inside dusty torus when enabled.
+        disk_type : str, optional
+            Disk model type for EC setup.
+        
+        Returns
+        -------
+        Jet
+            Constrained jet model ready for evaluation and fitting.
+        
+        Raises
+        ------
+        RuntimeError
+            If beaming mode or emitter spectral type is not compatible.
+        """
         if silent is False:
             print(section_separator)
             print("---> ***  emitting region parameters  ***")
@@ -606,7 +722,33 @@ class ObsConstrain(object):
 
 def run_task(func):
 
+    """Decorator adding completion metadata to helper-task outputs.
+    
+    Parameters
+    ----------
+    func : callable
+        Function to wrap.
+    
+    Returns
+    -------
+    callable
+        Wrapped function returning ``(result, completed)``.
+    """
     def func_wrapper(*args, **kwargs):
+        """Func wrapper.
+        
+        Parameters
+        ----------
+        *args : tuple
+            Additional positional arguments.
+        **kwargs : dict
+            Additional keyword arguments.
+        
+        Returns
+        -------
+        object
+            Computed result.
+        """
         completed=True
 
         try:
@@ -620,10 +762,46 @@ def run_task(func):
 
 
 def check_t_var(R,beaming,z):
+    """Compute variability timescale from size and beaming.
+    
+    Parameters
+    ----------
+    R : float
+        Region size in cm.
+    beaming : float
+        Doppler beaming factor.
+    z : float
+        Redshift.
+    
+    Returns
+    -------
+    float
+        Variability timescale in seconds.
+    """
     return R*(1+z)/(BlazarSED.vluce_cm*beaming)
 
 @run_task
 def set_gmin_from_nu_cut_IR(nu_cut_IR,rest_frame,B,beaming,z):
+        """Estimate low-energy cutoff from IR cutoff frequency.
+        
+        Parameters
+        ----------
+        nu_cut_IR : float or None
+            IR cutoff frequency.
+        rest_frame : {'obs', 'src', 'blob'}
+            Frame associated with ``nu_cut_IR``.
+        B : float
+            Magnetic field in Gauss.
+        beaming : float
+            Doppler beaming factor.
+        z : float
+            Redshift.
+        
+        Returns
+        -------
+        float
+            Estimated ``gmin`` (defaults to ``1`` when ``nu_cut_IR`` is missing).
+        """
         if nu_cut_IR is not None:
             _v, completed= find_gamma_Synch (nu_cut_IR,rest_frame,B,beaming,z)
             return _v
@@ -637,6 +815,22 @@ def set_gmin_from_nu_cut_IR(nu_cut_IR,rest_frame,B,beaming,z):
 @run_task
 def find_turn_over(jet,distr_e,gamma_3p):
     
+    """Estimate distribution turn-over parameter from ``gamma_3p``.
+    
+    Parameters
+    ----------
+    jet : Jet
+        Jet model containing distribution parameters.
+    distr_e : str
+        Spectral distribution family.
+    gamma_3p : float
+        Lorentz factor corresponding to peak of ``n(gamma)*gamma^3``.
+    
+    Returns
+    -------
+    float
+        Estimated turn-over parameter for the selected distribution.
+    """
     if distr_e=='lppl' or distr_e=='lp':
         r=jet.get_par_by_type('spectral_curvature').val
         s=jet.get_par_by_type('LE_spectral_slope').val
@@ -659,6 +853,28 @@ def find_turn_over(jet,distr_e,gamma_3p):
 
 @run_task
 def find_HE_cut_off(distr_e,nu_S_max,rest_frame,B,beaming,z):
+    """Estimate high-energy cutoff from synchrotron maximum frequency.
+    
+    Parameters
+    ----------
+    distr_e : str
+        Spectral distribution family.
+    nu_S_max : float
+        Maximum synchrotron frequency.
+    rest_frame : {'obs', 'src', 'blob'}
+        Frame associated with ``nu_S_max``.
+    B : float
+        Magnetic field in Gauss.
+    beaming : float
+        Doppler beaming factor.
+    z : float
+        Redshift.
+    
+    Returns
+    -------
+    float
+        Estimated high-energy cutoff value.
+    """
     gamma_max_Sync,completed=find_gamma_Synch(nu_S_max,rest_frame,B ,beaming,z)
     
     if distr_e=='lppl' or distr_e=='lp' or distr_e=='lpep':
@@ -670,17 +886,21 @@ def find_HE_cut_off(distr_e,nu_S_max,rest_frame,B,beaming,z):
 
 @run_task
 def find_gamma0(r,s,gamma_3p):
-    """returns the value of gamma_0  for
-    a log_par+pl distribution
+    """Find gamma0.
     
-    Args:
-        r: curvature
-        s: spectral index in the PL branch
-        gamma_3p: peak value requested for n(gamma)gamma^3
-
-    Returns:
-        
-        
+    Parameters
+    ----------
+    r : object
+        Spectral-curvature parameter.
+    s : object
+        Dimensionless interaction invariant.
+    gamma_3p : object
+        Gamma value at third spectral point.
+    
+    Returns
+    -------
+    object
+        Computed result.
     """
     if (r!=0.0):
         c=(3-s)/(2*r)
@@ -697,18 +917,25 @@ def find_gamma0(r,s,gamma_3p):
 
 @run_task
 def find_B_from_nu_p_S(nu_p_S,gamma_3p,rest_frame,beaming,z):
-    """returns B according to Ep_S and gamma_3p
-
-
-        Args:
-            nu_p_S:  Synchrotron peack frequency
-            gamma_3p: peak value of n(gamma)gamma^3
-            
-
-            re_eval: def==True, set the flag to re_evaluate find_gamma_3p_Synch, after updating B
-
-        Returns:
-            B
+    """Estimate magnetic field from synchrotron peak and ``gamma_3p``.
+    
+    Parameters
+    ----------
+    nu_p_S : float
+        Synchrotron peak frequency.
+    gamma_3p : float
+        Lorentz factor of the ``n(gamma)*gamma^3`` peak.
+    rest_frame : {'obs', 'src', 'blob'}
+        Frame associated with ``nu_p_S``.
+    beaming : float
+        Doppler beaming factor.
+    z : float
+        Redshift.
+    
+    Returns
+    -------
+    float
+        Magnetic field estimate in Gauss.
     """
     nu_p_blob=convert_nu_to_blob(nu_p_S,rest_frame,beaming,z)
 
@@ -719,19 +946,25 @@ def find_B_from_nu_p_S(nu_p_S,gamma_3p,rest_frame,beaming,z):
     
 @run_task
 def  find_gamma_Synch (nu_S,rest_frame,B,beaming,z):
-    """returns the value of gamma corresponding to the  Synch freq
+    """Estimate electron Lorentz factor corresponding to synchrotron frequency.
     
-        
-        Args:
-            B: magnetic field
-            nu_S:  Synchrotron  frequency
-            rest_frame: rest frame cooresponding to nu_p_S
-            z: redshift
-            beamign: beaming factor
-            
-        Returns:
-            gamma
-            
+    Parameters
+    ----------
+    nu_S : float
+        Synchrotron frequency.
+    rest_frame : {'obs', 'src', 'blob'}
+        Frame associated with ``nu_S``.
+    B : float
+        Magnetic field in Gauss.
+    beaming : float
+        Doppler beaming factor.
+    z : float
+        Redshift.
+    
+    Returns
+    -------
+    float
+        Estimated electron Lorentz factor.
     """
     nu_S_blob=convert_nu_to_blob(nu_S,rest_frame,beaming,z)
      
@@ -740,17 +973,31 @@ def  find_gamma_Synch (nu_S,rest_frame,B,beaming,z):
 
 @run_task
 def find_gamma_3p_SSC(nu_p_S,nu_p_IC,rest_frame,gamma_3p_Sync,beaming,z,nu_p_EC_seed_field=None,silent=False):
-    """returns the value of gamma_3p from nu_p_S/nu_p_IC
-
-
-        Args:
-            nu_p_S :  Synchrotron peack frequency
-            nu_p_IC:  IC peack frequency
-            rest_frame: rest frame cooresponding to peak frequencies
-
-                    
-        Returns:
-            gamma_3p_SSC
+    """Estimate ``gamma_3p`` from synchrotron and IC peak frequencies.
+    
+    Parameters
+    ----------
+    nu_p_S : float
+        Synchrotron peak frequency.
+    nu_p_IC : float
+        Inverse-Compton peak frequency.
+    rest_frame : {'obs', 'src', 'blob'}
+        Frame associated with input peak frequencies.
+    gamma_3p_Sync : float
+        ``gamma_3p`` estimate derived from synchrotron constraints.
+    beaming : float
+        Doppler beaming factor.
+    z : float
+        Redshift.
+    nu_p_EC_seed_field : float, optional
+        External seed-field peak frequency for EC-dominated scenarios.
+    silent : bool, optional
+        If ``True``, suppress progress messages.
+    
+    Returns
+    -------
+    float
+        Estimated ``gamma_3p`` for the IC component.
     """
     #print "*** find_gamma_3p_SSC ***"
     #print "nu_p_S",nu_p_S
@@ -791,14 +1038,19 @@ def find_gamma_3p_SSC(nu_p_S,nu_p_IC,rest_frame,gamma_3p_Sync,beaming,z,nu_p_EC_
 
 @run_task
 def get_Comp_factor(gamma,nu_p_S_blob):
-    """returns the compton factor = nu_blob_seed_Synch*hplanck/(mec2)
-        
-        Args:
-            gamma: gamma of the up-scattering electrons
-            u_p_S_blob: Synchrotron peack frequency in the blob rest frame
-           
-        Returns:
-         compton factor
+    """Compute Klein-Nishina Compton factor for seed photons.
+    
+    Parameters
+    ----------
+    gamma : float
+        Lorentz factor of scattering electrons.
+    nu_p_S_blob : float
+        Seed-photon frequency in blob frame.
+    
+    Returns
+    -------
+    float
+        Dimensionless Compton factor ``gamma * h * nu / (m_e c^2)``.
     """
     # print "--> Ep_S_blob ",nu_p_S_blob
     return gamma*nu_p_S_blob*BlazarSED.HPLANCK/(BlazarSED.MEC2)
@@ -808,15 +1060,25 @@ def get_Comp_factor(gamma,nu_p_S_blob):
 
 @run_task
 def find_s(class_obj,nu_p_S_obs,S_LE_slope,indices,silent=False):
-    """Find the index of the low-energy PL branch of n(gamma), from PL fit over various instrument bands
-
-    Args:
-        class_obj: object  class
-        indices_array
-
-    Returns:
-        s_Planck, s_X, s_Fermi, s
-
+    """Estimate low-energy particle slope from source class and band indices.
+    
+    Parameters
+    ----------
+    class_obj : str
+        Source class label (for example ``'LSP'``, ``'ISP'``, ``'HSP'``).
+    nu_p_S_obs : float
+        Observed synchrotron peak frequency.
+    S_LE_slope : float
+        Low-energy synchrotron slope from SED-shape fitting.
+    indices : index_array
+        Spectral-index container.
+    silent : bool, optional
+        If ``True``, suppress progress messages.
+    
+    Returns
+    -------
+    tuple
+        ``(s_radio_mm, s_X, s_Fermi, s)``.
     """
     
     #1 get S index from nu_p_S_obs
@@ -940,13 +1202,38 @@ def find_s(class_obj,nu_p_S_obs,S_LE_slope,indices,silent=False):
 @run_task
 def find_s1(class_obj,indices):
     #print "---> !!! fake function, still to develop"
+    """Return placeholder high-energy slope estimate.
+    
+    Parameters
+    ----------
+    class_obj : str
+        Source class label.
+    indices : index_array
+        Spectral-index container.
+    
+    Returns
+    -------
+    float
+        Placeholder value used for ``s1``.
+    """
     val=3.5
     #print ("---> set s1 to %f"%val)
     return val
 
 @run_task
 def rescale_Ne(jet,S_p,nu_p,rest_frame):
-    """Rescales N.blob to get the wanted Lp_S_blob
+    """Rescale emitter normalization to match synchrotron peak.
+    
+    Parameters
+    ----------
+    jet : Jet
+        Jet model to rescale.
+    S_p : float
+        Target peak flux or luminosity value.
+    nu_p : float
+        Peak frequency.
+    rest_frame : {'obs', 'src'}
+        Frame used to interpret ``S_p`` and ``nu_p``.
     """
 
     if rest_frame=='obs':
@@ -959,16 +1246,19 @@ def rescale_Ne(jet,S_p,nu_p,rest_frame):
 
 @run_task
 def get_U_Sync_from_Ph(jet,re_eval_sync=False):
-    """returns U_synch by integrating Synch photon spectrum
-
-    Args:
-        blob: SED module class
-        temp_ev: SED module class
-
-        re_eval_sync: def==False, re_eval Synch spectrum and then get U_synch
-    Returns:
-        U_synch
-
+    """Compute synchrotron photon energy density from current model state.
+    
+    Parameters
+    ----------
+    jet : Jet
+        Jet model instance.
+    re_eval_sync : bool, optional
+        If ``True``, re-evaluate synchrotron emission before integration.
+    
+    Returns
+    -------
+    float
+        Synchrotron photon energy density.
     """
     if re_eval_sync==True:
         comp_old=jet.blob.core.do_SSC
@@ -979,6 +1269,26 @@ def get_U_Sync_from_Ph(jet,re_eval_sync=False):
     return BlazarSED.Uph_Sync(jet.blob)
 
 def check_boundaries(val,val_min,val_max,val_name,silent=False):
+    """Clamp a value to bounds and report if clipping occurred.
+    
+    Parameters
+    ----------
+    val : float
+        Candidate value.
+    val_min : float
+        Lower bound.
+    val_max : float
+        Upper bound.
+    val_name : str
+        Value label used for diagnostic prints.
+    silent : bool, optional
+        If ``True``, suppress progress messages.
+    
+    Returns
+    -------
+    tuple
+        ``(value, failed)`` where ``failed`` is ``True`` if clipping occurred.
+    """
     failed=False
     if val<val_min or val>val_max:
         failed=True
@@ -1000,9 +1310,39 @@ def check_boundaries(val,val_min,val_max,val_name,silent=False):
 
 @run_task
 def get_R_tvar(beaming,t_var_sec,z):
+    """Estimate region size from variability timescale.
+    
+    Parameters
+    ----------
+    beaming : float
+        Doppler beaming factor.
+    t_var_sec : float
+        Variability timescale in seconds.
+    z : float
+        Redshift.
+    
+    Returns
+    -------
+    float
+        Estimated region size in cm.
+    """
     return BlazarSED.vluce_cm*beaming*t_var_sec/(1+z)
 
 def set_lin_log_val(p,v):
+    """Convert linear value to log10 when parameter is logarithmic.
+    
+    Parameters
+    ----------
+    p : ModelParameter
+        Parameter carrying the ``islog`` flag.
+    v : float
+        Linear-space value.
+    
+    Returns
+    -------
+    float
+        Value in linear or log10 space according to parameter convention.
+    """
     if p.islog is True:
         v = m.log10(v)
     return v
@@ -1016,6 +1356,36 @@ def constr_R_from_CD(jet,nuFnu_p_S,nu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,p
     # be set back to their original #
     # values                        #
     #################################
+    """Estimate emitting-region size from Compton dominance.
+    
+    Parameters
+    ----------
+    jet : Jet
+        Jet model to constrain.
+    nuFnu_p_S : float
+        Synchrotron peak flux.
+    nu_p_S : float
+        Synchrotron peak frequency.
+    nuFnu_p_IC : float
+        Inverse-Compton peak flux.
+    nu_p_IC : float
+        Inverse-Compton peak frequency.
+    rest_frame : {'obs', 'src'}
+        Frame used to evaluate peaks.
+    R_tvar : float
+        Region-size estimate from variability.
+    params_grid_size : int
+        Number of points in the scan grid.
+    EC : bool, optional
+        If ``True``, use EC-aware IC peak extraction.
+    silent : bool, optional
+        If ``True``, suppress progress messages.
+    
+    Returns
+    -------
+    tuple
+        ``(R_best, failed)``.
+    """
     R_initial=jet.get_par_by_name('R').val_lin
     N_initial=jet.get_par_by_name('N').val
 
@@ -1061,6 +1431,36 @@ def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,par
     # values                        #
     #################################
 
+    """Estimate magnetic field from synchrotron and IC peak frequencies.
+    
+    Parameters
+    ----------
+    jet : Jet
+        Jet model to constrain.
+    nu_p_S : float
+        Synchrotron peak frequency.
+    nu_p_IC : float
+        Inverse-Compton peak frequency.
+    rest_frame : {'obs', 'src'}
+        Frame used to evaluate peaks.
+    B_min : float
+        Lower bound for magnetic-field scan.
+    B_max : float
+        Upper bound for magnetic-field scan.
+    beaming : float
+        Doppler beaming factor.
+    params_grid_size : int
+        Number of points in the scan grid.
+    EC : bool, optional
+        If ``True``, use EC-aware IC peak extraction.
+    silent : bool, optional
+        If ``True``, suppress progress messages.
+    
+    Returns
+    -------
+    tuple
+        ``(B_best, failed)``.
+    """
     flag_initial=jet.get_flag()
     
     B_initial=jet.get_par_by_name('B').val
