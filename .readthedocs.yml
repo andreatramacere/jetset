@@ -12,6 +12,7 @@ build:
     # golang: "1.20"
   apt_packages:
     - graphviz
+    - cpio
   jobs:
     pre_install:
       - cd doc && python build_rtd_requirements.py
