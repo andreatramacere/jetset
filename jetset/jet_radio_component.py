@@ -45,7 +45,7 @@ class RadioSpectrum(Model):
         self.parameters = ModelParameterArray()
         
         self.parameters.add_par(AnalyticalParameter(self,name='alpha_radio',par_type='spectral-slope',val=0.0,val_min=-10.,val_max=10.,units=''))
-        self.parameters.add_par(AnalyticalParameter(self,name='nu_ssa',par_type='turn-over freq',val=1E10,val_min=1E6,val_max=1E12,units='Hz'))
+        self.parameters.add_par(AnalyticalParameter(self,name='nu_ssa',par_type='turn-over freq',val=1E9,val_min=1E6,val_max=1E12,units='Hz'))
         self.parameters.add_par(AnalyticalParameter(self,name='nu_cut',par_type='',val=1E11,val_min=1E6,val_max=1E13,units='Hz'))
         self.parameters.add_par(AnalyticalParameter(self,name='nuFnu_p',par_type='flux-const',val=1E-13,val_min=1E-30,val_max=1E-5,units='erg cm2 s-1'))
     
