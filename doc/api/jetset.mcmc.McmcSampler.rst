@@ -6,6 +6,13 @@ McmcSampler
 .. autoclass:: McmcSampler
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~McmcSampler.labels
+      ~McmcSampler.par_table
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -26,6 +33,12 @@ McmcSampler
       ~McmcSampler.set_bounds
       ~McmcSampler.set_labels
       ~McmcSampler.set_plot_label
+      ~McmcSampler.show_pars
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: labels
+   .. autoattribute:: par_table
 
    .. rubric:: Methods Documentation
 
@@ -45,3 +58,4 @@ McmcSampler
    .. automethod:: set_bounds
    .. automethod:: set_labels
    .. automethod:: set_plot_label
+   .. automethod:: show_pars

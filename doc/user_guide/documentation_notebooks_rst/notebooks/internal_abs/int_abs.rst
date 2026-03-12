@@ -3,6 +3,17 @@
 Internal absorption
 ===================
 
+.. code:: ipython3
+
+    import jetset
+    print('tested with',jetset.__version__)
+
+
+.. parsed-literal::
+
+    tested with 1.4.0rc0
+
+
 In this tutorial we show how to use the internal absorption for external
 radiative fields.
 
@@ -27,7 +38,7 @@ We first create a leptonic jet model with e EC components.
     jetset_model.set_EC_dependencies()
     
     jetset_model.set_par('L_Disk',val=2E45)
-    jetset_model.set_par('gmax',val=5E4)
+    jetset_model.set_par('gmax',val=5E5)
     jetset_model.set_par('gmin',val=2.)
     jetset_model.set_par('R_H',val=1E17)
     
@@ -41,6 +52,7 @@ We first create a leptonic jet model with e EC components.
     jetset_model.parameters.tau_DT.val=0.1
     jetset_model.parameters.T_DT.val=1000
     jetset_model.parameters.theta.freeze()
+    jetset_model.parameters.R_H.val=1E18
     jetset_model.set_N_from_nuFnu(nu_obs=1E13,nuFnu_obs=1E-13)
     jetset_model.set_external_field_transf('blob')
     
@@ -74,20 +86,34 @@ evaluate the model with internal absorption applied
     jetset_model.enable_internal_absorption('DT')
     jetset_model.enable_internal_absorption('BLR')
     jetset_model.eval()
-    jetset_model.plot_model()
+    p=jetset_model.plot_model()
+    
+    jetset_model.remove_internal_absorption('DT')
+    jetset_model.remove_internal_absorption('BLR')
+    jetset_model.eval()
+    jetset_model.plot_model(plot_obj=p,comp='EC_DT',label='no DT abs',line_style='--')
+    jetset_model.plot_model(plot_obj=p,comp='EC_BLR',label='no BLR abs',line_style='--')
+    
+
 
 
 
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotSED at 0x327aa3e60>
+    <jetset.plot_sedfit.PlotSED at 0x3169a6240>
 
 
 
 
-.. image:: int_abs_files/int_abs_6_1.png
+.. image:: int_abs_files/int_abs_7_1.png
 
+
+.. code:: ipython3
+
+    
+    jetset_model.enable_internal_absorption('DT')
+    jetset_model.enable_internal_absorption('BLR')
 
 This model can be used now for model fitting.
 
@@ -103,7 +129,7 @@ This model can be used now for model fitting.
     ('N_soft', 50)
     ('N_theta', 50)
     ('N_R_H', 50)
-    ('nu_min', None)
+    ('nu_min', 1e+20)
     ('comp', 'DT')
     ('use_R_H_profile_extrapolation', False)
     
@@ -112,7 +138,7 @@ This model can be used now for model fitting.
     ('N_soft', 50)
     ('N_theta', 50)
     ('N_R_H', 50)
-    ('nu_min', None)
+    ('nu_min', 1e+20)
     ('comp', 'BLR')
     ('use_R_H_profile_extrapolation', False)
     
@@ -135,7 +161,7 @@ remove the BLR absorption
     ('N_soft', 50)
     ('N_theta', 50)
     ('N_R_H', 50)
-    ('nu_min', None)
+    ('nu_min', 1e+20)
     ('comp', 'DT')
     ('use_R_H_profile_extrapolation', False)
     
@@ -148,7 +174,7 @@ remove the BLR absorption
 
 .. parsed-literal::
 
-    29.1 ms ± 2.57 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+    26 ms ± 2.75 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
 
 .. code:: ipython3
@@ -164,13 +190,15 @@ remove the BLR absorption
 
 .. parsed-literal::
 
-    7.29 ms ± 269 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+    7.05 ms ± 102 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
     internal absorption not enabled in this jet model
 
 
 The increase in computational time, for component, compared to an EC
-model without absorption, is of a factor of ~ 4. Setting
-``use_R_H_profile_extrapolation=True``
+model without absorption, is of a factor of ~ 4.
+
+By setting ``use_R_H_profile_extrapolation=True``, we can speed up the
+process
 
 .. code:: ipython3
 
@@ -184,14 +212,15 @@ model without absorption, is of a factor of ~ 4. Setting
 
 .. parsed-literal::
 
-    15.6 ms ± 114 μs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+    13.9 ms ± 818 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
-The increase in computational time is attenuated, to a factor of ~2 per
-absorption component.
+The increase in computational time is lower now, down to a factor of ~2
+per absorption component.
 
 In the following some plots showing the accuracy effect when using
-``use_R_H_profile_extrapolation=True``
+``use_R_H_profile_extrapolation=True``, so you can choose accordingly,
+if whether to use the approximation or not.
 
 .. code:: ipython3
 
@@ -236,7 +265,7 @@ In the following some plots showing the accuracy effect when using
 
 
 
-.. image:: int_abs_files/int_abs_18_0.png
+.. image:: int_abs_files/int_abs_20_0.png
 
 
 .. code:: ipython3
@@ -288,6 +317,11 @@ In the following some plots showing the accuracy effect when using
     plt.tight_layout()
     plt.grid()
 
+
+
+.. image:: int_abs_files/int_abs_21_0.png
+
+
 .. code:: ipython3
 
     jetset_model.parameters.tau_BLR.val=0.1
@@ -332,5 +366,5 @@ In the following some plots showing the accuracy effect when using
 
 
 
-.. image:: int_abs_files/int_abs_20_0.png
+.. image:: int_abs_files/int_abs_22_0.png
 

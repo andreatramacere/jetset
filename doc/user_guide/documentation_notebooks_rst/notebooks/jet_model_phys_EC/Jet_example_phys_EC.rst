@@ -39,12 +39,12 @@ Broad Line Region
 .. code:: ipython3
 
     import jetset
-    print('tested on jetset',jetset.__version__)
+    print('tested with',jetset.__version__)
 
 
 .. parsed-literal::
 
-    tested on jetset 1.3.0rc9
+    tested with 1.4.0rc0
 
 
 .. code:: ipython3
@@ -57,12 +57,6 @@ Broad Line Region
     from jetset.jet_model import Jet
     my_jet=Jet(name='EC_example',electron_distribution='bkn',beaming_expr='bulk_theta')
     my_jet.add_EC_component(['EC_BLR','EC_Disk'],disk_type='BB')
-
-
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
 
 
 The ``show_model`` method provides, among other information, information
@@ -128,11 +122,16 @@ black body ``BB``
     --------------------------------------------------------------------------------
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=18</i>
-    <table id="table4397535712-239776" class="table-striped table-bordered table-condensed">
+    <table id="table6431110448-264982" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>EC_example</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -172,17 +171,17 @@ black body ``BB``
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4397535712-239776').dataTable()");
+        console.log("$('#table6431110448-264982').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4397535712-239776').dataTable({
+        $('#table6431110448-264982').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -293,11 +292,16 @@ parameters regarding the multi temperature black body accretion disk:
     --------------------------------------------------------------------------------
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=21</i>
-    <table id="table5588044240-853841" class="table-striped table-bordered table-condensed">
+    <table id="table6433680384-615653" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>EC_example</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -340,17 +344,17 @@ parameters regarding the multi temperature black body accretion disk:
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5588044240-853841').dataTable()");
+        console.log("$('#table6433680384-615653').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5588044240-853841').dataTable({
+        $('#table6433680384-615653').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -453,11 +457,16 @@ Dusty Torus
     --------------------------------------------------------------------------------
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=24</i>
-    <table id="table4397536144-327092" class="table-striped table-bordered table-condensed">
+    <table id="table6433316480-472670" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>EC_example</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -503,17 +512,17 @@ Dusty Torus
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4397536144-327092').dataTable()");
+        console.log("$('#table6433316480-472670').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4397536144-327092').dataTable({
+        $('#table6433316480-472670').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -556,12 +565,6 @@ Dusty Torus
     my_jet=Jet.load_model('test_EC_model.pkl')
 
 
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
-
 .. code:: ipython3
 
     my_jet.eval()
@@ -576,6 +579,11 @@ Dusty Torus
 
 .. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_24_0.png
 
+
+Internal absorption
+~~~~~~~~~~~~~~~~~~~
+
+If you want to add internal absorption (pair production), please, read this tutorial :ref:`int_abs_guide`.
 
 setting the BLR and DT radius as a function of the disk luminosity
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -616,11 +624,16 @@ Using the depending parameters (see :ref:`dep_pars`, for more details) we can se
     my_jet.parameters
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=24</i>
-    <table id="table5601855952-824684" class="table-striped table-bordered table-condensed">
+    <table id="table6425876416-421057" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>EC_example</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>5.000000e+04</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -666,17 +679,17 @@ Using the depending parameters (see :ref:`dep_pars`, for more details) we can se
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5601855952-824684').dataTable()");
+        console.log("$('#table6425876416-421057').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5601855952-824684').dataTable({
+        $('#table6425876416-421057').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -704,7 +717,7 @@ Using the depending parameters (see :ref:`dep_pars`, for more details) we can se
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_30_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_32_0.png
 
 
 .. important::
@@ -736,11 +749,16 @@ Using the depending parameters (see :ref:`dep_pars`, for more details) we can se
     my_jet.parameters
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=25</i>
-    <table id="table5601855952-883570" class="table-striped table-bordered table-condensed">
+    <table id="table6425876416-609130" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>EC_example</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>5.000000e+04</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -787,17 +805,17 @@ Using the depending parameters (see :ref:`dep_pars`, for more details) we can se
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5601855952-883570').dataTable()");
+        console.log("$('#table6425876416-609130').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5601855952-883570').dataTable({
+        $('#table6425876416-609130').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -837,11 +855,16 @@ Using the depending parameters (see :ref:`dep_pars`, for more details) we can se
     my_jet.parameters
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=25</i>
-    <table id="table5596336416-674940" class="table-striped table-bordered table-condensed">
+    <table id="table6425876416-222354" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>EC_example</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>5.000000e+04</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -888,17 +911,17 @@ Using the depending parameters (see :ref:`dep_pars`, for more details) we can se
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5596336416-674940').dataTable()");
+        console.log("$('#table6425876416-222354').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5596336416-674940').dataTable({
+        $('#table6425876416-222354').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -926,7 +949,7 @@ Using the depending parameters (see :ref:`dep_pars`, for more details) we can se
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_37_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_39_0.png
 
 
 Changing the external field transformation
@@ -987,11 +1010,11 @@ EC seed photon fields, in the Disk rest frame
         y[0,ID]=my_jet.energetic_dict['U_Disk_DRF']
         y[2,ID]=my_jet.energetic_dict['U_DT_DRF']
         
-    y[4,:]=iso_field_transf(my_jet._blob.L_Disk_radiative*my_jet.parameters.tau_DT.val,my_jet.parameters.R_DT.val,G)
-    y[3,:]=iso_field_transf(my_jet._blob.L_Disk_radiative*my_jet.parameters.tau_BLR.val,my_jet.parameters.R_BLR_in.val,G)
-    y[5,:]=external_iso_behind_transf(my_jet._blob.L_Disk_radiative*my_jet.parameters.tau_BLR.val,R_range,G)
-    y[6,:]=external_iso_behind_transf(my_jet._blob.L_Disk_radiative*my_jet.parameters.tau_DT.val,R_range,G)
-    y[7,:]=external_iso_behind_transf(my_jet._blob.L_Disk_radiative,R_range,G)
+    y[4,:]=iso_field_transf(my_jet._blob.Disk.L_Disk_radiative*my_jet.parameters.tau_DT.val,my_jet.parameters.R_DT.val,G)
+    y[3,:]=iso_field_transf(my_jet._blob.Disk.L_Disk_radiative*my_jet.parameters.tau_BLR.val,my_jet.parameters.R_BLR_in.val,G)
+    y[5,:]=external_iso_behind_transf(my_jet._blob.Disk.L_Disk_radiative*my_jet.parameters.tau_BLR.val,R_range,G)
+    y[6,:]=external_iso_behind_transf(my_jet._blob.Disk.L_Disk_radiative*my_jet.parameters.tau_DT.val,R_range,G)
+    y[7,:]=external_iso_behind_transf(my_jet._blob.Disk.L_Disk_radiative,R_range,G)
     
     ax.plot(np.log10(R_range),np.log10(y[0,:]),label=r'Disk')
     ax.plot(np.log10(R_range),np.log10(y[1,:]),'-',label=r'BLR')
@@ -1012,12 +1035,12 @@ EC seed photon fields, in the Disk rest frame
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x14d41f010>
+    <matplotlib.legend.Legend at 0x17f7a1670>
 
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_47_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_49_1.png
 
 
 .. code:: ipython3
@@ -1049,11 +1072,11 @@ EC seed photon fields, in the Disk rest frame
         
     
     
-    y[4,:]=iso_field_transf(my_jet._blob.L_Disk_radiative*my_jet.parameters.tau_DT.val,my_jet.parameters.R_DT.val,G)
-    y[3,:]=iso_field_transf(my_jet._blob.L_Disk_radiative*my_jet.parameters.tau_BLR.val,my_jet.parameters.R_BLR_in.val,G)
-    y[5,:]=external_iso_behind_transf(my_jet._blob.L_Disk_radiative*my_jet.parameters.tau_BLR.val,R_range,G)
-    y[6,:]=external_iso_behind_transf(my_jet._blob.L_Disk_radiative*my_jet.parameters.tau_DT.val,R_range,G)
-    y[7,:]=external_iso_behind_transf(my_jet._blob.L_Disk_radiative,R_range,G)
+    y[4,:]=iso_field_transf(my_jet._blob.Disk.L_Disk_radiative*my_jet.parameters.tau_DT.val,my_jet.parameters.R_DT.val,G)
+    y[3,:]=iso_field_transf(my_jet._blob.Disk.L_Disk_radiative*my_jet.parameters.tau_BLR.val,my_jet.parameters.R_BLR_in.val,G)
+    y[5,:]=external_iso_behind_transf(my_jet._blob.Disk.L_Disk_radiative*my_jet.parameters.tau_BLR.val,R_range,G)
+    y[6,:]=external_iso_behind_transf(my_jet._blob.Disk.L_Disk_radiative*my_jet.parameters.tau_DT.val,R_range,G)
+    y[7,:]=external_iso_behind_transf(my_jet._blob.Disk.L_Disk_radiative,R_range,G)
     
     ax.plot(np.log10(R_range),np.log10(y[0,:]),label=r'Disk')
     ax.plot(np.log10(R_range),np.log10(y[1,:]),'-',label=r'BLR')
@@ -1077,12 +1100,12 @@ EC seed photon fields, in the Disk rest frame
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x14d4141f0>
+    <matplotlib.legend.Legend at 0x318c0bbc0>
 
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_48_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_50_1.png
 
 
 IC against the CMB
@@ -1103,12 +1126,6 @@ IC against the CMB
     my_jet.set_par('r',val=0.42)
     my_jet.set_N_from_nuFnu(5E-15,1E12)
     my_jet.add_EC_component('EC_CMB')
-
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
 
 We can now compare the different beaming pattern for the EC emission if
 the CMB, and realize that the beaming pattern is different. This is very
@@ -1139,7 +1156,7 @@ isotropic external field.
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_52_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_54_0.png
 
 
 Equipartition
@@ -1170,20 +1187,25 @@ points (``N_pts``)
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_55_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_57_1.png
 
 
 .. parsed-literal::
 
     setting B to  0.0001389495494373139
-    setting N to  9.160733610838076e-06
+    setting N to  9.160733610838053e-06
+
+
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
 
 
 
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table5594499536-956912" class="table-striped table-bordered table-condensed">
+    <table id="table6441642864-980414" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test_equipartition</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+21</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test_equipartition</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1218,17 +1240,17 @@ points (``N_pts``)
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5594499536-956912').dataTable()");
+        console.log("$('#table6441642864-980414').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5594499536-956912').dataTable({
+        $('#table6441642864-980414').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1247,5 +1269,5 @@ points (``N_pts``)
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_56_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_58_0.png
 

@@ -5,11 +5,9 @@ Hadronic pp jet model
 
 In this section we show the hadronic `pp` implemented for the Jet model. The `pp` implementation is based on the work presented in [Kelner2006]_.
 
-Secondaries :math:`e^{\pm}`, are evolved to the equilibrium following the approach in [Inoue96]_. To speed up the process only synchroton cooling is taken into account. In the next release also the option to switch on IC cooling contribution will be added.  
+Secondaries :math:`e^{\pm}`, are evolved to the equilibrium following the approach in [Inoue96]_.
 
 A validation of the integral solution for the :math:`e^{\pm}` equilibrium used for the pp jet against the Fokker-Plank equation solution, implemented in the  :class:`.JetTimeEvol` class, is presented in  :ref:`hadronic_pp_jet_validation_guide`
-
-We remind the approximation of the only synchrotron cooling is used only for this specific class, and for this first release, and that the :class:`.JetTimeEvol` class offers full cooling access (synchrotron, IC, and adiabatic expansion). See :ref:`temp_ev` for more details.
 
 .. code:: ipython3
 
@@ -21,12 +19,12 @@ We remind the approximation of the only synchrotron cooling is used only for thi
 .. code:: ipython3
 
     import jetset
-    print('tested on jetset',jetset.__version__)
+    print('tested with',jetset.__version__)
 
 
 .. parsed-literal::
 
-    tested on jetset 1.3.1rc5
+    tested with 1.4.0rc0
 
 
 To get an hadronic jet with ``pp`` interaction, we set the
@@ -42,6 +40,9 @@ To get an hadronic jet with ``pp`` interaction, we set the
     j.parameters.beam_obj.val=20
 
 
+we can plot the ``emitters_distribution`` which will show the
+equilibrium solution.
+
 .. code:: ipython3
 
     j.emitters_distribution.plot()
@@ -51,7 +52,7 @@ To get an hadronic jet with ``pp`` interaction, we set the
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotPdistr at 0x166284d40>
+    <jetset.plot_sedfit.PlotPdistr at 0x16ff0c530>
 
 
 
@@ -59,10 +60,32 @@ To get an hadronic jet with ``pp`` interaction, we set the
 .. image:: hadronic_files/hadronic_10_1.png
 
 
+Changing a parameter will update the eq. solution for the plot of the
+emitters.
+
 .. code:: ipython3
 
+    j.parameters.B.val=.01
+    j.emitters_distribution.plot()
+
+
+
+
+
+.. parsed-literal::
+
+    <jetset.plot_sedfit.PlotPdistr at 0x317ac14f0>
+
+
+
+
+.. image:: hadronic_files/hadronic_12_1.png
+
+
+.. code:: ipython3
+
+    j.parameters.B.val=1
     j.eval(init=True)
-    
     j.show_model()
 
 
@@ -128,7 +151,7 @@ To get an hadronic jet with ``pp`` interaction, we set the
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5990160608-775044" class="table-striped table-bordered table-condensed">
+    <table id="table13285944704-907774" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_hadronic_pp</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_hadronic_pp</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -165,14 +188,14 @@ To get an hadronic jet with ``pp`` interaction, we set the
         datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5990160608-775044').dataTable()");
+        console.log("$('#table13285944704-907774').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5990160608-775044').dataTable({
+        $('#table13285944704-907774').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -209,18 +232,8 @@ To get an hadronic jet with ``pp`` interaction, we set the
 
 
 
-.. image:: hadronic_files/hadronic_13_0.png
+.. image:: hadronic_files/hadronic_15_0.png
 
-
-.. code:: ipython3
-
-    #emitters.Ne_jetset','emitters.griglia_gamma_Ne_log
-    from jetset.utils import set_str_attr, get_nested_attr, set_nested_attr
-    from jetset.jet_kernel_tools import get_emitters_c_array1d_fast as get_emitters
-    Ne_ptr = get_nested_attr(j._blob, 'emitters.Ne_jetset')
-    e_gamma_ptr = get_nested_attr(j._blob, 'emitters.griglia_gamma_Ne_log')
-    size= j._blob.emitters.gamma_grid_size
-    gamma_e,n_gamma_e=get_emitters(e_gamma_ptr,Ne_ptr,j._blob,size )
 
 .. code:: ipython3
 
@@ -230,7 +243,7 @@ To get an hadronic jet with ``pp`` interaction, we set the
 
 
 
-.. image:: hadronic_files/hadronic_15_0.png
+.. image:: hadronic_files/hadronic_16_0.png
 
 
 Jet pp Consistency with Kelner 2006
@@ -332,7 +345,7 @@ Jet pp Consistency with Kelner 2006
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table6035131424-819022" class="table-striped table-bordered table-condensed">
+    <table id="table6073412272-787008" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_hadronic_pp</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+18</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_hadronic_pp</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -369,14 +382,14 @@ Jet pp Consistency with Kelner 2006
         datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table6035131424-819022').dataTable()");
+        console.log("$('#table6073412272-787008').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table6035131424-819022').dataTable({
+        $('#table6073412272-787008').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -411,13 +424,15 @@ Jet pp Consistency with Kelner 2006
 
 
 
-.. image:: hadronic_files/hadronic_21_0.png
+.. image:: hadronic_files/hadronic_22_0.png
 
 
 .. code:: ipython3
 
     from jetset.utils import get_nested_attr
     from jetset.jet_kernel_tools import get_spectral_c_array_read_only
+    j.eval()
+    j.emitters_distribution.plot()
     def get_component(jet,j_name,nu_name):
         j_nu_ptr=get_nested_attr(jet._blob, j_name)
         nu_ptr=get_nested_attr(jet._blob, nu_name)
@@ -434,6 +449,11 @@ Jet pp Consistency with Kelner 2006
         xg=xg*jetkernel.HPLANCK_TeV
         
         return xg,yg
+
+
+
+.. image:: hadronic_files/hadronic_23_0.png
+
 
 .. code:: ipython3
 
@@ -481,12 +501,12 @@ Jet pp Consistency with Kelner 2006
 
 .. parsed-literal::
 
-    <matplotlib.lines.Line2D at 0x168077bc0>
+    <matplotlib.lines.Line2D at 0x31a459970>
 
 
 
 
-.. image:: hadronic_files/hadronic_23_1.png
+.. image:: hadronic_files/hadronic_24_1.png
 
 
 .. code:: ipython3
@@ -529,7 +549,7 @@ Jet pp Consistency with Kelner 2006
 
 
 
-.. image:: hadronic_files/hadronic_24_1.png
+.. image:: hadronic_files/hadronic_25_1.png
 
 
 .. include:: /references.rst

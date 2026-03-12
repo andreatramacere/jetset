@@ -4,12 +4,12 @@ Phenomenological model constraining: SSC theory
 .. code:: ipython3
 
     import jetset
-    print('tested on jetset',jetset.__version__)
+    print('tested with',jetset.__version__)
 
 
 .. parsed-literal::
 
-    tested on jetset 1.3.0rc7
+    tested with 1.4.0rc0
 
 
 .. code:: ipython3
@@ -85,7 +85,6 @@ This section is based on the work presented in
 
 .. parsed-literal::
 
-    ===> setting C threads to 12
     
     --------------------------------------------------------------------------------
     model description: 
@@ -131,7 +130,7 @@ This section is based on the work presented in
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5658746768-799854" class="table-striped table-bordered table-condensed">
+    <table id="table13447158608-872603" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -165,17 +164,17 @@ This section is based on the work presented in
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5658746768-799854').dataTable()");
+        console.log("$('#table13447158608-872603').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5658746768-799854').dataTable({
+        $('#table13447158608-872603').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -218,7 +217,7 @@ This section is based on the work presented in
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x151f07bb0>
+    <matplotlib.legend.Legend at 0x321fc0320>
 
 
 
@@ -237,7 +236,7 @@ This section is based on the work presented in
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x152a7af80>
+    <matplotlib.legend.Legend at 0x321baf7a0>
 
 
 
@@ -346,13 +345,8 @@ Synchrotron trend for :math:`\gamma_{min}`
 
 
 
-.. parsed-literal::
 
-    ===> setting C threads to 12
-
-
-
-.. image:: SSC_th_bkg_files/SSC_th_bkg_17_1.png
+.. image:: SSC_th_bkg_files/SSC_th_bkg_17_0.png
 
 
 .. code:: ipython3
@@ -380,7 +374,7 @@ Synchrotron trend for :math:`\gamma_{min}`
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x150f9f4c0>
+    <matplotlib.legend.Legend at 0x321aaeed0>
 
 
 
@@ -495,7 +489,7 @@ Synchrotron trend for the low-energy spectral slope
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x15274b430>
+    <matplotlib.legend.Legend at 0x323d96570>
 
 
 
@@ -575,7 +569,7 @@ Change in the peak frequency of the SED
 
 .. parsed-literal::
 
-    (2, 9)
+    (2.0, 9.0)
 
 
 
@@ -605,7 +599,7 @@ Change in the peak frequency of the SED
 
 .. parsed-literal::
 
-    (0, 1.5)
+    (0.0, 1.5)
 
 
 
@@ -647,13 +641,8 @@ Changing :math:`\gamma_{min}`
 
 
 
-.. parsed-literal::
 
-    ===> setting C threads to 12
-
-
-
-.. image:: SSC_th_bkg_files/SSC_th_bkg_30_1.png
+.. image:: SSC_th_bkg_files/SSC_th_bkg_30_0.png
 
 
 Changing the turn-over energy
@@ -686,13 +675,8 @@ Changing the turn-over energy
     p.setlim(y_min=1E-20,y_max=1E-11,x_min=1E9)
 
 
-.. parsed-literal::
 
-    ===> setting C threads to 12
-
-
-
-.. image:: SSC_th_bkg_files/SSC_th_bkg_32_1.png
+.. image:: SSC_th_bkg_files/SSC_th_bkg_32_0.png
 
 
 The IC redistribution function
@@ -739,7 +723,7 @@ The IC redistribution function
         
         x=nu_1_range/nu_1_max
         y=rate
-        c=np.trapz(y,x)
+        c=np.trapezoid(y,x)
         plt.plot(x, rate/c,label=r'$\Gamma=%2.2e$'%(Gamma))
         plt.axvline(1.0,ls='--',lw=0.5)
         plt.legend()
@@ -747,13 +731,8 @@ The IC redistribution function
         plt.ylabel(r'$Fc(\nu_{out},\nu_{in},\gamma)$')
 
 
-.. parsed-literal::
 
-    ===> setting C threads to 12
-
-
-
-.. image:: SSC_th_bkg_files/SSC_th_bkg_36_1.png
+.. image:: SSC_th_bkg_files/SSC_th_bkg_36_0.png
 
 
 .. code:: ipython3
@@ -837,17 +816,12 @@ Transition from TH to KN regime for the IC emission: changing the curvature in t
     pe.setlim(y_min=0)
 
 
-.. parsed-literal::
 
-    ===> setting C threads to 12
+.. image:: SSC_th_bkg_files/SSC_th_bkg_40_0.png
 
 
 
 .. image:: SSC_th_bkg_files/SSC_th_bkg_40_1.png
-
-
-
-.. image:: SSC_th_bkg_files/SSC_th_bkg_40_2.png
 
 
 the following plot shows the trend for the S curvature (b) and the IC
@@ -878,7 +852,7 @@ the curvature of the electron distribution (r)
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x15363db40>
+    <matplotlib.legend.Legend at 0x320678560>
 
 
 
@@ -958,21 +932,16 @@ Transition from TH to KN regime for the IC emission: changing the turnover energ
 
 
 
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
-
 
 
 .. parsed-literal::
 
-    <matplotlib.collections.PathCollection at 0x1537e4550>
+    <matplotlib.collections.PathCollection at 0x321a14410>
 
 
 
 
-.. image:: SSC_th_bkg_files/SSC_th_bkg_45_2.png
+.. image:: SSC_th_bkg_files/SSC_th_bkg_45_1.png
 
 
 .. code:: ipython3
@@ -994,7 +963,7 @@ Transition from TH to KN regime for the IC emission: changing the turnover energ
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x1524fac50>
+    <matplotlib.legend.Legend at 0x3239b0da0>
 
 
 
@@ -1024,7 +993,7 @@ Transition from TH to KN regime for the IC emission: changing the turnover energ
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x1534e2aa0>
+    <matplotlib.legend.Legend at 0x323936d80>
 
 
 
@@ -1040,4 +1009,3 @@ gamma0_log_parab
 
 hint: use the get_component_peak to extract the peak of the SED for each
 component
-

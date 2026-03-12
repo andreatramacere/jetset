@@ -6,12 +6,12 @@ Physical setup
 .. code:: ipython3
 
     import jetset
-    print('tested on jetset',jetset.__version__)
+    print('tested with',jetset.__version__)
 
 
 .. parsed-literal::
 
-    tested on jetset 1.3.0rc9
+    tested with 1.4.0rc0
 
 
 In this section we describe how  to build a model of jet able to reproduce SSC/EC emission processes, using the :class:`.Jet` class from the :mod:`.jet_model` module.  
@@ -26,14 +26,9 @@ A jet instance can be built using the  the :class:`.Jet` class, instantiating th
 
 .. code:: ipython3
 
+    from matplotlib import pylab as plt
     from jetset.jet_model import Jet
     my_jet=Jet(name='test',electron_distribution='lppl')
-
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
 
 This instruction will create:
     * a ``Jet`` object with ``name`` **test**,
@@ -56,23 +51,11 @@ Switch back to a single C thread
 
     my_jet.set_num_c_threads(1)
 
-
-.. parsed-literal::
-
-    ===> setting C threads to 1
-
-
 Set a custom number of C treads
 
 .. code:: ipython3
 
     my_jet.set_num_c_threads(8)
-
-
-.. parsed-literal::
-
-    ===> setting C threads to 8
-
 
 let’s try how changes the computational speed with the number of threads
 
@@ -80,32 +63,14 @@ let’s try how changes the computational speed with the number of threads
 
     my_jet.set_num_c_threads(1)
 
-
-.. parsed-literal::
-
-    ===> setting C threads to 1
-
-
 .. code:: ipython3
 
     %timeit my_jet.eval()
-
-
-.. parsed-literal::
-
-    45 ms ± 492 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
-
 
 .. code:: ipython3
 
     my_jet.set_num_c_threads(8)
 
-
-.. parsed-literal::
-
-    ===> setting C threads to 8
-
-
 .. code:: ipython3
 
     %timeit my_jet.eval()
@@ -113,19 +78,13 @@ let’s try how changes the computational speed with the number of threads
 
 .. parsed-literal::
 
-    17.7 ms ± 639 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+    5.5 ms ± 248 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
 .. code:: ipython3
 
     my_jet.set_num_c_threads(10)
 
-
-.. parsed-literal::
-
-    ===> setting C threads to 10
-
-
 .. code:: ipython3
 
     %timeit my_jet.eval()
@@ -133,19 +92,13 @@ let’s try how changes the computational speed with the number of threads
 
 .. parsed-literal::
 
-    16.7 ms ± 260 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+    5.46 ms ± 355 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
 .. code:: ipython3
 
     my_jet.set_num_c_threads(20)
 
-
-.. parsed-literal::
-
-    ===> setting C threads to 20
-
-
 .. code:: ipython3
 
     %timeit my_jet.eval()
@@ -153,7 +106,7 @@ let’s try how changes the computational speed with the number of threads
 
 .. parsed-literal::
 
-    17.9 ms ± 1.36 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+    4.24 ms ± 62.6 μs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
 as you can see, the computational speed saturates at 10 threads, to a
@@ -176,6 +129,7 @@ For a list of possible electron distributions you can run the command
     pl: powerlaw
     lppl: log-parabola with low-energy powerlaw branch
     lpep: log-parabola defined by peak energy
+    lppl_pileup: log-parabola with low-energy powerlaw branch and pileup
     plc: powerlaw with cut-off
     bkn: broken powerlaw
     superexp: powerlaw with super-exp cut-off
@@ -188,11 +142,16 @@ to view all the paramters of the jet model:
     my_jet.show_pars()
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5833097072-831438" class="table-striped table-bordered table-condensed">
+    <table id="table12975149456-135829" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -226,17 +185,17 @@ to view all the paramters of the jet model:
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5833097072-831438').dataTable()");
+        console.log("$('#table12975149456-135829').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5833097072-831438').dataTable({
+        $('#table12975149456-135829').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -257,11 +216,16 @@ Each parameter has a default value. All the parameters listed are handled by :cl
     my_jet.parameters
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5833097072-953969" class="table-striped table-bordered table-condensed">
+    <table id="table12975149456-640483" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -295,17 +259,17 @@ Each parameter has a default value. All the parameters listed are handled by :cl
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5833097072-953969').dataTable()");
+        console.log("$('#table12975149456-640483').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5833097072-953969').dataTable({
+        $('#table12975149456-640483').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -383,11 +347,16 @@ To get a full description of the model you can use the instruction
     --------------------------------------------------------------------------------
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5833094720-683415" class="table-striped table-bordered table-condensed">
+    <table id="table12975152432-56705" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -421,17 +390,17 @@ To get a full description of the model you can use the instruction
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5833094720-683415').dataTable()");
+        console.log("$('#table12975152432-56705').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5833094720-683415').dataTable({
+        $('#table12975152432-56705').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -517,11 +486,16 @@ for setting custom electron distributions can be created by the user as describe
     
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5833094720-916011" class="table-striped table-bordered table-condensed">
+    <table id="table12975152432-212108" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>2.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
@@ -555,17 +529,17 @@ for setting custom electron distributions can be created by the user as describe
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5833094720-916011').dataTable()");
+        console.log("$('#table12975152432-212108').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5833094720-916011').dataTable({
+        $('#table12975152432-212108').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -643,7 +617,6 @@ Using log values for electron distribution parameters
 
 .. parsed-literal::
 
-    ===> setting C threads to 12
     
     --------------------------------------------------------------------------------
     model description: 
@@ -685,11 +658,16 @@ Using log values for electron distribution parameters
     --------------------------------------------------------------------------------
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5831368784-988482" class="table-striped table-bordered table-condensed">
+    <table id="table12991008112-578670" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -723,17 +701,17 @@ Using log values for electron distribution parameters
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5831368784-988482').dataTable()");
+        console.log("$('#table12991008112-578670').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5831368784-988482').dataTable({
+        $('#table12991008112-578670').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -765,11 +743,16 @@ instruction
     my_jet.show_pars()
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5831544640-389395" class="table-striped table-bordered table-condensed">
+    <table id="table12975082144-131912" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -803,17 +786,17 @@ instruction
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5831544640-389395').dataTable()");
+        console.log("$('#table12975082144-131912').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5831544640-389395').dataTable({
+        $('#table12975082144-131912').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -981,11 +964,16 @@ method reports information for the SED ``nu_min``, ``nu_max``,
     --------------------------------------------------------------------------------
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5849728672-752350" class="table-striped table-bordered table-condensed">
+    <table id="table12989850992-278427" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1019,17 +1007,17 @@ method reports information for the SED ``nu_min``, ``nu_max``,
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5849728672-752350').dataTable()");
+        console.log("$('#table12989850992-278427').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5849728672-752350').dataTable({
+        $('#table12989850992-278427').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1052,7 +1040,6 @@ method reports information for the SED ``nu_min``, ``nu_max``,
     import matplotlib.ticker as ticker
     p=my_jet.plot_model()
     p.setlim(x_min=1E5,x_max=1E16,y_min=10**-29)
-    plt.show()
 
 
 
@@ -1106,13 +1093,8 @@ to compare the same model after changing a parameter
     my_plot.setlim(y_max=1E-13,y_min=2E-17,x_min=1E8)
 
 
-.. parsed-literal::
 
-    ===> setting C threads to 12
-
-
-
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_82_1.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_82_0.png
 
 
 Saving a plot
@@ -1138,12 +1120,6 @@ Saving and loading a model
 .. code:: ipython3
 
     my_jet_new=Jet.load_model('test_model.pkl')
-
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
 
 Switching on/off the particle distribution normalization
 --------------------------------------------------------
@@ -1201,12 +1177,6 @@ It is possible to set the density of emitting particles starting from some obser
 
     my_jet=Jet(name='test',electron_distribution='lppl')
 
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
-
 this is the initial value of N
 
 .. code:: ipython3
@@ -1218,7 +1188,7 @@ this is the initial value of N
 
 .. parsed-literal::
 
-    100
+    100.0
 
 
 
@@ -1242,7 +1212,7 @@ flux at the given frequency
 
 .. parsed-literal::
 
-    272.4
+    np.float64(272.37555111028814)
 
 
 
@@ -1257,7 +1227,7 @@ OR
 
 .. parsed-literal::
 
-    272.4
+    np.float64(272.37555111028814)
 
 
 
@@ -1266,11 +1236,16 @@ OR
     my_jet.parameters.show_pars()
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5842873088-757791" class="table-striped table-bordered table-condensed">
+    <table id="table13012152352-747819" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1304,17 +1279,17 @@ OR
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5842873088-757791').dataTable()");
+        console.log("$('#table13012152352-747819').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5842873088-757791').dataTable({
+        $('#table13012152352-747819').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1366,22 +1341,21 @@ It is possible to set the beaming factor according to the relativistic BulkFacto
 
     my_jet=Jet(name='test',electron_distribution='lppl',beaming_expr='bulk_theta')
 
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
-
 .. code:: ipython3
 
     my_jet.parameters.show_pars()
+
+
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
 
 
 
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table5850932144-343251" class="table-striped table-bordered table-condensed">
+    <table id="table13017315568-979423" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1416,17 +1390,17 @@ It is possible to set the beaming factor according to the relativistic BulkFacto
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5850932144-343251').dataTable()");
+        console.log("$('#table13017315568-979423').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5850932144-343251').dataTable({
+        $('#table13017315568-979423').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1449,7 +1423,7 @@ the actual value of the beaming factor can be obtained using the :meth:`.Jet.get
 
 .. parsed-literal::
 
-    19.94
+    19.943844732554005
 
 
 
@@ -1468,7 +1442,7 @@ We can change the value of ``theta`` and get the updated value of the beaming fa
 
 .. parsed-literal::
 
-    4.968
+    4.968041140891954
 
 
 
@@ -1479,22 +1453,21 @@ expression as in the default case
 
     my_jet=Jet(name='test',electron_distribution='lppl',beaming_expr='delta')
 
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
-
 .. code:: ipython3
 
     my_jet.parameters.show_pars()
+
+
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
 
 
 
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5830816816-712368" class="table-striped table-bordered table-condensed">
+    <table id="table12992941616-139498" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1528,17 +1501,17 @@ expression as in the default case
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5830816816-712368').dataTable()");
+        console.log("$('#table12992941616-139498').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5830816816-712368').dataTable({
+        $('#table12992941616-139498').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1601,11 +1574,16 @@ Switch ON/OFF Synchrotron sefl-absorption and IC emission
     --------------------------------------------------------------------------------
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5830804144-462810" class="table-striped table-bordered table-condensed">
+    <table id="table12970252512-236089" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1639,17 +1617,17 @@ Switch ON/OFF Synchrotron sefl-absorption and IC emission
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5830804144-462810').dataTable()");
+        console.log("$('#table12970252512-236089').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5830804144-462810').dataTable({
+        $('#table12970252512-236089').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1678,7 +1656,7 @@ states value
 .. parsed-literal::
 
     name                : Sync
-    var name            : do_Sync
+    var name            : core.do_Sync
     state               : self-abs
     allowed states : ['on', 'off', 'self-abs']
 
@@ -1722,7 +1700,7 @@ to re-enable
 .. parsed-literal::
 
     name                : SSC
-    var name            : do_SSC
+    var name            : core.do_SSC
     state               : on
     allowed states : ['on', 'off']
 
@@ -1762,12 +1740,6 @@ It is possible to access specific spectral components of our model
 
     my_jet=Jet(name='test',electron_distribution='lppl',beaming_expr='bulk_theta')
     my_jet.eval()
-
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
 
 We can obtain this information anytime using the :meth:`.Jet.list_spectral_components` method
 
@@ -1833,7 +1805,7 @@ and from the ``SED`` object we can extract both the nu and nuFnu array
 
     [0.00000000e+00 0.00000000e+00 0.00000000e+00 6.04250670e-26
      2.16351829e-24 9.84432972e-23 4.74613296e-21 2.28931297e-19
-     1.09662087e-17 1.83733916e-16 4.11135769e-16 7.21745036e-16
+     1.09662087e-17 1.83733916e-16 4.11135769e-16 7.21744734e-16
      1.25581697e-15 2.18363181e-15 3.79383567e-15 6.57833387e-15
      1.13501032e-14 1.93585563e-14 3.21429895e-14 5.06938061e-14
      7.36908738e-14 9.77112603e-14 1.17645633e-13 1.28621805e-13
@@ -1862,7 +1834,7 @@ or for the ``src`` rest frame (isotropic luminosity)
 
     [0.00000000e+00 0.00000000e+00 0.00000000e+00 1.63219228e+30
      5.84406112e+31 2.65913465e+33 1.28201787e+35 6.18385569e+36
-     2.96217481e+38 4.96299126e+39 1.11055338e+40 1.94956618e+40
+     2.96217481e+38 4.96299126e+39 1.11055338e+40 1.94956537e+40
      3.39219277e+40 5.89839143e+40 1.02478484e+41 1.77692906e+41
      3.06587177e+41 5.22910236e+41 8.68241307e+41 1.36933301e+42
      1.99052613e+42 2.63936099e+42 3.17782509e+42 3.47431170e+42
@@ -1892,7 +1864,7 @@ Moreover, you can access the corresponding astropy table
 .. raw:: html
 
     <div><i>Table length=50</i>
-    <table id="table5836894896" class="table-striped table-bordered table-condensed">
+    <table id="table12993695328" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / (s cm2)</th><th>erg / (s cm2)</th><th>erg / (s cm2)</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -1900,16 +1872,15 @@ Moreover, you can access the corresponding astropy table
     <tr><td>3026648.059395689</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
     <tr><td>9160598.47544371</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
     <tr><td>27725907.59860481</td><td>6.042506698961876e-26</td><td>6.042506698961876e-26</td><td>0.0</td></tr>
-    <tr><td>83916564.42830162</td><td>2.163518310314854e-24</td><td>2.1635182921864927e-24</td><td>1.812816291990128e-32</td></tr>
-    <tr><td>253985906.87807292</td><td>9.844329807737109e-23</td><td>9.844329720868366e-23</td><td>8.68551689841149e-31</td></tr>
+    <tr><td>83916564.42830162</td><td>2.163518310314854e-24</td><td>2.1635182921864927e-24</td><td>1.8128162919901133e-32</td></tr>
+    <tr><td>253985906.87807292</td><td>9.844329807737028e-23</td><td>9.844329720868285e-23</td><td>8.685516898411419e-31</td></tr>
     <tr><td>768725952.1663721</td><td>4.746132990060179e-21</td><td>4.746132957910235e-21</td><td>3.2149712394627884e-29</td></tr>
-    <tr><td>2326662911.331458</td><td>2.2893129865238557e-19</td><td>2.289312967845199e-19</td><td>1.8678480792336018e-27</td></tr>
-    <tr><td>7041989785.449296</td><td>1.0966208792227018e-17</td><td>1.0966208685756238e-17</td><td>1.064527310710398e-25</td></tr>
+    <tr><td>2326662911.331458</td><td>2.2893129865238557e-19</td><td>2.289312967845199e-19</td><td>1.8678480792335864e-27</td></tr>
+    <tr><td>7041989785.449296</td><td>1.0966208792226929e-17</td><td>1.0966208685756149e-17</td><td>1.0645273107103894e-25</td></tr>
     <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-    <tr><td>1.7317171337233599e+25</td><td>3.1108073206153626e-15</td><td>0.0</td><td>3.1108073206153626e-15</td></tr>
-    <tr><td>5.2412983022060615e+25</td><td>2.583262880430937e-15</td><td>0.0</td><td>2.583262880430937e-15</td></tr>
-    <tr><td>1.5863565335085865e+26</td><td>1.5673161713761437e-15</td><td>0.0</td><td>1.5673161713761437e-15</td></tr>
-    <tr><td>4.801342923653465e+26</td><td>5.732736267795347e-16</td><td>0.0</td><td>5.732736267795347e-16</td></tr>
+    <tr><td>5.2412983022060615e+25</td><td>2.583262880430874e-15</td><td>0.0</td><td>2.583262880430874e-15</td></tr>
+    <tr><td>1.5863565335085865e+26</td><td>1.567316171376086e-15</td><td>0.0</td><td>1.567316171376086e-15</td></tr>
+    <tr><td>4.801342923653465e+26</td><td>5.732736267795206e-16</td><td>0.0</td><td>5.732736267795206e-16</td></tr>
     <tr><td>1.4531975242368953e+27</td><td>3.3493374925730033e-96</td><td>0.0</td><td>3.3493374925730033e-96</td></tr>
     <tr><td>4.3983174666502106e+27</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
     <tr><td>1.3312159025043105e+28</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
@@ -1937,7 +1908,7 @@ and also in the ``src`` restframe
 .. raw:: html
 
     <div><i>Table length=50</i>
-    <table id="table5836884816" class="table-striped table-bordered table-condensed">
+    <table id="table12993348816" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / s</th><th>erg / s</th><th>erg / s</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -1945,16 +1916,15 @@ and also in the ``src`` restframe
     <tr><td>3329312.865335258</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
     <tr><td>10076658.322988082</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
     <tr><td>30498498.35846529</td><td>1.6321922754264707e+30</td><td>1.6321922754264707e+30</td><td>0.0</td></tr>
-    <tr><td>92308220.8711318</td><td>5.84406116495712e+31</td><td>5.84406111598908e+31</td><td>4.896750464607491e+23</td></tr>
-    <tr><td>279384497.56588024</td><td>2.6591346719896186e+33</td><td>2.659134648524772e+33</td><td>2.3461179765193927e+25</td></tr>
+    <tr><td>92308220.8711318</td><td>5.84406116495712e+31</td><td>5.84406111598908e+31</td><td>4.896750464607451e+23</td></tr>
+    <tr><td>279384497.56588024</td><td>2.659134671989597e+33</td><td>2.65913464852475e+33</td><td>2.3461179765193734e+25</td></tr>
     <tr><td>845598547.3830093</td><td>1.2820178760999728e+35</td><td>1.2820178674156813e+35</td><td>8.684229052937516e+26</td></tr>
-    <tr><td>2559329202.464604</td><td>6.183855738678291e+36</td><td>6.183855688223801e+36</td><td>5.045401450889629e+28</td></tr>
-    <tr><td>7746188763.994226</td><td>2.9621748345702107e+38</td><td>2.9621748058104933e+38</td><td>2.875484199000618e+30</td></tr>
+    <tr><td>2559329202.464604</td><td>6.183855738678291e+36</td><td>6.183855688223801e+36</td><td>5.0454014508895875e+28</td></tr>
+    <tr><td>7746188763.994226</td><td>2.9621748345701865e+38</td><td>2.962174805810469e+38</td><td>2.875484199000595e+30</td></tr>
     <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-    <tr><td>1.904888847095696e+25</td><td>8.402863136123344e+40</td><td>0.0</td><td>8.402863136123344e+40</td></tr>
-    <tr><td>5.765428132426668e+25</td><td>6.977868505399752e+40</td><td>0.0</td><td>6.977868505399752e+40</td></tr>
-    <tr><td>1.744992186859445e+26</td><td>4.2336094530282163e+40</td><td>0.0</td><td>4.2336094530282163e+40</td></tr>
-    <tr><td>5.2814772160188116e+26</td><td>1.5485175804538692e+40</td><td>0.0</td><td>1.5485175804538692e+40</td></tr>
+    <tr><td>5.765428132426668e+25</td><td>6.977868505399582e+40</td><td>0.0</td><td>6.977868505399582e+40</td></tr>
+    <tr><td>1.744992186859445e+26</td><td>4.2336094530280606e+40</td><td>0.0</td><td>4.2336094530280606e+40</td></tr>
+    <tr><td>5.2814772160188116e+26</td><td>1.548517580453831e+40</td><td>0.0</td><td>1.548517580453831e+40</td></tr>
     <tr><td>1.598517276660585e+27</td><td>9.047177033520093e-41</td><td>0.0</td><td>9.047177033520093e-41</td></tr>
     <tr><td>4.838149213315232e+27</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
     <tr><td>1.4643374927547416e+28</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
@@ -1977,7 +1947,7 @@ units of the Synchrotron luminostity form erg/s to GeV/s
 
 .. math::
 
-    [0,~0,~0,~1.0187343 \times 10^{33},~3.647576 \times 10^{34},~1.6597013 \times 10^{36},~8.0017262 \times 10^{37},~3.8596591 \times 10^{39},~1.8488441 \times 10^{41},~3.0976555 \times 10^{42},~6.931529 \times 10^{42},~1.2168235 \times 10^{43},~2.1172402 \times 10^{43},~3.6814864 \times 10^{43},~6.3962039 \times 10^{43},~1.1090719 \times 10^{44},~1.9135666 \times 10^{44},~3.263749 \times 10^{44},~5.419136 \times 10^{44},~8.5467044 \times 10^{44},~1.2423887 \times 10^{45},~1.6473596 \times 10^{45},~1.9834424 \times 10^{45},~2.1684948 \times 10^{45},~2.1386317 \times 10^{45},~1.8654372 \times 10^{45},~1.3193169 \times 10^{45},~5.3551014 \times 10^{44},~4.0413955 \times 10^{43},~1.4979971 \times 10^{40},~1.260718 \times 10^{30},~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0] \; \mathrm{\frac{GeV}{s}}
+    [0,~0,~0,~1.0187343 \times 10^{33},~3.647576 \times 10^{34},~1.6597013 \times 10^{36},~8.0017262 \times 10^{37},~3.8596591 \times 10^{39},~1.8488441 \times 10^{41},~3.0976555 \times 10^{42},~6.931529 \times 10^{42},~1.216823 \times 10^{43},~2.1172402 \times 10^{43},~3.6814864 \times 10^{43},~6.3962039 \times 10^{43},~1.1090719 \times 10^{44},~1.9135666 \times 10^{44},~3.263749 \times 10^{44},~5.419136 \times 10^{44},~8.5467044 \times 10^{44},~1.2423887 \times 10^{45},~1.6473596 \times 10^{45},~1.9834424 \times 10^{45},~2.1684948 \times 10^{45},~2.1386317 \times 10^{45},~1.8654372 \times 10^{45},~1.3193169 \times 10^{45},~5.3551014 \times 10^{44},~4.0413955 \times 10^{43},~1.4979971 \times 10^{40},~1.260718 \times 10^{30},~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0,~0] \; \mathrm{\frac{GeV}{s}}
 
 
 
@@ -2020,12 +1990,6 @@ case of beaming expression ‘bulk_theta’
 
     my_jet=Jet(name='test',electron_distribution='lppl',beaming_expr='bulk_theta')
     my_jet.parameters.BulkFactor.val=15
-
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
 
 .. code:: ipython3
 
@@ -2075,11 +2039,16 @@ case of beaming expression ‘bulk_theta’
     --------------------------------------------------------------------------------
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table5832560112-200893" class="table-striped table-bordered table-condensed">
+    <table id="table12993353616-521284" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -2114,17 +2083,17 @@ case of beaming expression ‘bulk_theta’
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5832560112-200893').dataTable()");
+        console.log("$('#table12993353616-521284').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5832560112-200893').dataTable({
+        $('#table12993353616-521284').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -2158,11 +2127,16 @@ case of beaming expression ‘bulk_theta’
     my_jet.energetic_report()
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=39</i>
-    <table id="table5837760032-905383" class="table-striped table-bordered table-condensed">
+    <table id="table12988516352-655563" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
     <tr><td>BulkLorentzFactor</td><td>jet-bulk-factor</td><td></td><td>1.500000e+01</td></tr>
     <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.736635e-03</td></tr>
@@ -2223,17 +2197,17 @@ case of beaming expression ‘bulk_theta’
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5837760032-905383').dataTable()");
+        console.log("$('#table12988516352-655563').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5837760032-905383').dataTable({
+        $('#table12988516352-655563').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -2263,45 +2237,45 @@ If you want to evaluate the energetic report in non verbose mode:
 
 .. parsed-literal::
 
-    {'BulkLorentzFactor': 15,
-     'U_e': 0.001737,
-     'U_p_cold': 0.1503,
-     'U_B': 0.0003979,
-     'U_Synch': 1.832e-05,
-     'U_Synch_DRF': 14.73,
-     'U_Disk': 0,
-     'U_BLR': 0,
-     'U_DT': 0,
-     'U_CMB': 0,
-     'U_Star': 0,
-     'U_Disk_DRF': 0,
-     'U_BLR_DRF': 0,
-     'U_DT_DRF': 0,
-     'U_CMB_DRF': 0,
-     'U_Star_DRF': 0,
-     'U_seed_tot': 1.832e-05,
-     'L_Sync_rf': 1.725e+38,
-     'L_SSC_rf': 3.823e+36,
-     'L_EC_Disk_rf': 0,
-     'L_EC_BLR_rf': 0,
-     'L_EC_DT_rf': 0,
-     'L_EC_CMB_rf': 0,
-     'L_EC_Star_rf': 0,
-     'jet_L_Sync': 9.682e+39,
-     'jet_L_SSC': 2.146e+38,
-     'jet_L_EC_Disk': 0,
-     'jet_L_EC_BLR': 0,
-     'jet_L_EC_Star': 0,
-     'jet_L_EC_DT': 0,
-     'jet_L_EC_CMB': 0,
-     'jet_L_pp_gamma': 0,
-     'jet_L_rad': 9.896e+39,
-     'jet_L_kin': 8.038e+43,
-     'jet_L_tot': 8.06e+43,
-     'jet_L_e': 9.18e+41,
-     'jet_L_B': 2.103e+41,
-     'jet_L_p_cold': 7.946e+43,
-     'NH_cold_to_rel_e': 1}
+    {'BulkLorentzFactor': 15.0,
+     'U_e': 0.001736634756190473,
+     'U_p_cold': 0.15032764260999998,
+     'U_B': 0.00039788735772973844,
+     'U_Synch': 1.8315677212455574e-05,
+     'U_Synch_DRF': 14.729510354439668,
+     'U_Disk': 0.0,
+     'U_BLR': 0.0,
+     'U_DT': 0.0,
+     'U_CMB': 0.0,
+     'U_Star': 0.0,
+     'U_Disk_DRF': 0.0,
+     'U_BLR_DRF': 0.0,
+     'U_DT_DRF': 0.0,
+     'U_CMB_DRF': 0.0,
+     'U_Star_DRF': 0.0,
+     'U_seed_tot': 1.8315677212455574e-05,
+     'L_Sync_rf': 1.7250177043782496e+38,
+     'L_SSC_rf': 3.823311091080746e+36,
+     'L_EC_Disk_rf': 0.0,
+     'L_EC_BLR_rf': 0.0,
+     'L_EC_DT_rf': 0.0,
+     'L_EC_CMB_rf': 0.0,
+     'L_EC_Star_rf': 0.0,
+     'jet_L_Sync': 9.681637853854057e+39,
+     'jet_L_SSC': 2.1458280278815516e+38,
+     'jet_L_EC_Disk': 0.0,
+     'jet_L_EC_BLR': 0.0,
+     'jet_L_EC_Star': 0.0,
+     'jet_L_EC_DT': 0.0,
+     'jet_L_EC_CMB': 0.0,
+     'jet_L_pp_gamma': 0.0,
+     'jet_L_rad': 9.896220656642212e+39,
+     'jet_L_kin': 8.038093524416785e+43,
+     'jet_L_tot': 8.060115408950728e+43,
+     'jet_L_e': 9.179823709940847e+41,
+     'jet_L_B': 2.1032262468277818e+41,
+     'jet_L_p_cold': 7.946295287317376e+43,
+     'NH_cold_to_rel_e': 1.0}
 
 
 
@@ -2315,7 +2289,7 @@ If you want to evaluate the energetic report in non verbose mode:
 .. raw:: html
 
     <div><i>Table length=39</i>
-    <table id="table5837756768" class="table-striped table-bordered table-condensed">
+    <table id="table12988522448" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
     <thead><tr><th>str17</th><th>str29</th><th>object</th><th>float64</th></tr></thead>
     <tr><td>BulkLorentzFactor</td><td>jet-bulk-factor</td><td></td><td>1.500000e+01</td></tr>
@@ -2327,7 +2301,6 @@ If you want to evaluate the energetic report in non verbose mode:
     <tr><td>U_Disk</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
     <tr><td>U_BLR</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
     <tr><td>U_DT</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
-    <tr><td>U_CMB</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
     <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
     <tr><td>jet_L_EC_DT</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     <tr><td>jet_L_EC_CMB</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
@@ -2392,11 +2365,16 @@ If you want to evaluate the energetic report in non verbose mode:
     --------------------------------------------------------------------------------
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table5832569616-47774" class="table-striped table-bordered table-condensed">
+    <table id="table12986029152-26785" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -2431,17 +2409,17 @@ If you want to evaluate the energetic report in non verbose mode:
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5832569616-47774').dataTable()");
+        console.log("$('#table12986029152-26785').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5832569616-47774').dataTable({
+        $('#table12986029152-26785').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -2470,22 +2448,21 @@ case of beaming expression ‘delta’
     my_jet.parameters.beam_obj.val=25
     my_jet.eval()
 
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
-
 .. code:: ipython3
 
     my_jet.energetic_report()
+
+
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
 
 
 
 .. raw:: html
 
     <i>Table length=39</i>
-    <table id="table5851252480-450406" class="table-striped table-bordered table-condensed">
+    <table id="table12989460848-262130" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
     <tr><td>BulkLorentzFactor</td><td>jet-bulk-factor</td><td></td><td>2.500000e+01</td></tr>
     <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.736635e-03</td></tr>
@@ -2546,17 +2523,17 @@ case of beaming expression ‘delta’
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5851252480-450406').dataTable()");
+        console.log("$('#table12989460848-262130').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5851252480-450406').dataTable({
+        $('#table12989460848-262130').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],

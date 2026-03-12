@@ -23,12 +23,12 @@ Jet pp
 .. code:: ipython3
 
     import jetset
-    print('tested on jetset',jetset.__version__)
+    print('tested with',jetset.__version__)
 
 
 .. parsed-literal::
 
-    tested on jetset 1.3.0rc7
+    tested with 1.3.0
 
 
 .. code:: ipython3
@@ -38,7 +38,7 @@ Jet pp
 
 .. parsed-literal::
 
-    ===> setting C threads to 12
+    ===> setting C threads to 14
 
 
 .. code:: ipython3
@@ -91,7 +91,7 @@ Jet pp
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotPdistr at 0x15357b7c0>
+    <jetset.plot_sedfit.PlotPdistr at 0x169e94050>
 
 
 
@@ -111,7 +111,7 @@ Jet pp
 
 .. parsed-literal::
 
-    ===> setting C threads to 12
+    ===> setting C threads to 14
 
 
 setting up the JetTimeEvol model
@@ -139,7 +139,7 @@ setting up the JetTimeEvol model
 .. raw:: html
 
     <i>Table length=3</i>
-    <table id="table5713244896-349887" class="table-striped table-bordered table-condensed">
+    <table id="table6111005264-787269" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.836150e+07</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -167,14 +167,14 @@ setting up the JetTimeEvol model
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5713244896-349887').dataTable()");
+        console.log("$('#table6111005264-787269').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5713244896-349887').dataTable({
+        $('#table6111005264-787269').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -207,7 +207,7 @@ setting up the JetTimeEvol model
 
 .. parsed-literal::
 
-    [<matplotlib.lines.Line2D at 0x154a84b20>]
+    [<matplotlib.lines.Line2D at 0x173ac8610>]
 
 
 
@@ -225,13 +225,13 @@ setting up the JetTimeEvol model
 
 .. parsed-literal::
 
-    ===> setting C threads to 12
-    ===> setting C threads to 12
+    ===> setting C threads to 14
+    ===> setting C threads to 14
 
 
 .. parsed-literal::
 
-    /Users/orion/miniforge3/envs/jetset/lib/python3.10/site-packages/jetset/model_manager.py:158: UserWarning: no cosmology defined, using FlatLambdaCDM(name="Planck13", H0=67.77 km / (Mpc s), Om0=0.30712, Tcmb0=2.7255 K, Neff=3.046, m_nu=[0.   0.   0.06] eV, Ob0=0.048252)
+    /Users/orion/miniforge3/envs/jetset1.3.0/lib/python3.11/site-packages/jetset/model_manager.py:158: UserWarning: no cosmology defined, using FlatLambdaCDM(name="Planck13", H0=67.77 km / (Mpc s), Om0=0.30712, Tcmb0=2.7255 K, Neff=3.046, m_nu=[0.   0.   0.06] eV, Ob0=0.048252)
       warnings.warn(m)
 
 
@@ -293,7 +293,7 @@ we use the acc region with escape time equal to radiative region
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5732819984-346763" class="table-striped table-bordered table-condensed">
+    <table id="table6284360080-36098" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
     <tr><td>delta t</td><td>time</td><td>2.500000e+03</td><td>s</td><td>7.494811449999999e-05</td><td>R/c</td><td>False</td></tr>
     <tr><td>log. sampling</td><td>time</td><td>0.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
@@ -330,14 +330,14 @@ we use the acc region with escape time equal to radiative region
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5732819984-346763').dataTable()");
+        console.log("$('#table6284360080-36098').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5732819984-346763').dataTable({
+        $('#table6284360080-36098').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -361,7 +361,7 @@ we use the acc region with escape time equal to radiative region
 .. raw:: html
 
     <i>Table length=17</i>
-    <table id="table5732746336-555557" class="table-striped table-bordered table-condensed">
+    <table id="table6235657936-703144" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>5.000000e+09</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.100000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -403,14 +403,14 @@ we use the acc region with escape time equal to radiative region
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5732746336-555557').dataTable()");
+        console.log("$('#table6235657936-703144').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5732746336-555557').dataTable({
+        $('#table6235657936-703144').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -514,7 +514,7 @@ acceleration region
 
 .. parsed-literal::
 
-    [<matplotlib.lines.Line2D at 0x15580e920>]
+    [<matplotlib.lines.Line2D at 0x16c68cbd0>]
 
 
 

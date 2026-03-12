@@ -14,12 +14,12 @@ passing a specifc cosmology model form astropy
 .. code:: ipython3
 
     import jetset
-    print('tested on jetset',jetset.__version__)
+    print("tested with",jetset.__version__)
 
 
 .. parsed-literal::
 
-    tested on jetset 1.3.0rc7
+    tested with 1.4.0rc0
 
 
 .. code:: ipython3
@@ -51,7 +51,7 @@ the defualt comoslogy is
 
 .. parsed-literal::
 
-    2.095e+28
+    np.float64(2.095272891216756e+28)
 
 
 
@@ -84,7 +84,7 @@ you can choose a different cosmology model from astropy eg
 
 .. parsed-literal::
 
-    2.075e+28
+    np.float64(2.075470324081523e+28)
 
 
 
@@ -130,16 +130,8 @@ at object instantiation
     from jetset.jet_model import Jet
     my_jet=Jet(cosmo=c)
 
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
-
 or for already built models
 
 .. code:: ipython3
 
     my_jet.cosmo=c
-
-

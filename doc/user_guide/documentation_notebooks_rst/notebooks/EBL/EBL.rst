@@ -6,12 +6,12 @@ EBL
 .. code:: ipython3
 
     import jetset
-    print('tested on jetset',jetset.__version__)
+    print('tested with',jetset.__version__)
 
 
 .. parsed-literal::
 
-    tested on jetset 1.3.0rc7
+    tested with 1.4.0rc0
 
 
 .. code:: ipython3
@@ -95,8 +95,28 @@ Included models are:
     t=plt.title(r'$\nu=%1.1E Hz$'%nu)
 
 
+::
 
-.. image:: EBL_files/EBL_10_0.png
+
+    ---------------------------------------------------------------------------
+
+    IndexError                                Traceback (most recent call last)
+
+    Cell In[6], line 12
+         10 ebl_finke.parameters.z_cosm.val=z
+         11 ebl_dominguez_lopez.parameters.z_cosm.val=z
+    ---> 12 y_fr[ID]=ebl_franceschini.eval(nu=nu,get_model=True)[0]
+         13 y_fi[ID]=ebl_finke.eval(nu=nu,get_model=True)[0]
+         14 y_do[ID]=ebl_dominguez_lopez.eval(nu=nu,get_model=True)[0]
+
+
+    IndexError: too many indices for array: array is 0-dimensional, but 1 were indexed
+
+
+
+.. parsed-literal::
+
+    <Figure size 960x720 with 0 Axes>
 
 
 .. code:: ipython3

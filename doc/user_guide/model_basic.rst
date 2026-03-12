@@ -16,8 +16,6 @@ basic features
 
     jet leptonic equilibrium  *New (v1.4.0)* <documentation_notebooks_rst/notebooks/jet_leptonic_equilibrium/Jet_example_leptonic_eq.rst>
     
-   ..  add extend radio component to jet  *New (v1.4.0)* <documentation_notebooks_rst/user_guide/documentation_notebooks_rst/notebooks/radio_jet_plugin/Jet_example_and_radio_plugin_model_fit.rst>
-    
     galactic beamed/unbeamed objects  <documentation_notebooks_rst/notebooks/galactic/galactic.rst>
 
     change cosmology model - *New (v1.3.0)* <documentation_notebooks_rst/notebooks/cosmology/Jet_example_cosmo.rst>

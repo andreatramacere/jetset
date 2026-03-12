@@ -22,7 +22,7 @@ Model fitting 1: Leptonic equilibrim
 
 .. parsed-literal::
 
-    1.3.1rc5
+    1.4.0rc0
 
 
 .. code:: ipython3
@@ -34,10 +34,10 @@ Model fitting 1: Leptonic equilibrim
 
 .. parsed-literal::
 
-    ['/Users/orion/miniforge3/envs/py3.12/lib/python3.12/site-packages/jetset/test_data/SEDs_data/SED_3C345.ecsv',
-     '/Users/orion/miniforge3/envs/py3.12/lib/python3.12/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk421_EBL_DEABS.ecsv',
-     '/Users/orion/miniforge3/envs/py3.12/lib/python3.12/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk501_EBL_ABS.ecsv',
-     '/Users/orion/miniforge3/envs/py3.12/lib/python3.12/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk501_EBL_DEABS.ecsv']
+    ['/Users/orion/miniforge3/envs/jetset/lib/python3.12/site-packages/jetset/test_data/SEDs_data/SED_3C345.ecsv',
+     '/Users/orion/miniforge3/envs/jetset/lib/python3.12/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk421_EBL_DEABS.ecsv',
+     '/Users/orion/miniforge3/envs/jetset/lib/python3.12/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk501_EBL_ABS.ecsv',
+     '/Users/orion/miniforge3/envs/jetset/lib/python3.12/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk501_EBL_DEABS.ecsv']
 
 
 
@@ -55,7 +55,7 @@ see the :ref:`data_format` user guide for further information about loading data
 
 .. parsed-literal::
 
-    /Users/orion/miniforge3/envs/py3.12/lib/python3.12/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk421_EBL_DEABS.ecsv
+    /Users/orion/miniforge3/envs/jetset/lib/python3.12/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk421_EBL_DEABS.ecsv
 
 
 .. code:: ipython3
@@ -146,7 +146,7 @@ sed shaper
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table12954624864-977319" class="table-striped table-bordered table-condensed">
+    <table id="table13065958992-366578" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-1.563747e-01</td><td>-1.563747e-01</td><td>5.975434e-03</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-1.052802e-02</td><td>-1.052802e-02</td><td>8.781942e-04</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -175,14 +175,14 @@ sed shaper
         datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table12954624864-977319').dataTable()");
+        console.log("$('#table13065958992-366578').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table12954624864-977319').dataTable({
+        $('#table13065958992-366578').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -223,7 +223,7 @@ sed shaper
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table12955531600-574513" class="table-striped table-bordered table-condensed">
+    <table id="table13065959424-478756" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-2.274590e-01</td><td>-2.274590e-01</td><td>3.262165e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-6.259967e-02</td><td>-6.259967e-02</td><td>1.629407e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -252,14 +252,14 @@ sed shaper
         datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table12955531600-574513').dataTable()");
+        console.log("$('#table13065959424-478756').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table12955531600-574513').dataTable({
+        $('#table13065959424-478756').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -292,12 +292,13 @@ ore least-square bound, as shown below
 .. code:: ipython3
 
     from jetset.obs_constrain import ObsConstrain
-    from jetset.model_manager import  FitModel
+    
+    
     sed_obspar=ObsConstrain(beaming=25,
                             B_range=[0.001,0.1],
-                            distr_e='bkn',
                             t_var_sec=3*86400,
                             nu_cut_IR=1E12,
+                            distr_e='bkn',
                             SEDShape=my_shape)
     
     
@@ -317,7 +318,7 @@ ore least-square bound, as shown below
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table13560425280-218777" class="table-striped table-bordered table-condensed">
+    <table id="table13120889360-289901" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>2.219270e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -354,14 +355,14 @@ ore least-square bound, as shown below
         datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table13560425280-218777').dataTable()");
+        console.log("$('#table13120889360-289901').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table13560425280-218777').dataTable({
+        $('#table13120889360-289901').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -392,64 +393,100 @@ ore least-square bound, as shown below
 .. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_20_0.png
 
 
-Model fitting procedure
------------------------
+Enabling the leptonic equilibrium
+---------------------------------
 
-.. note::
-    Please, read the introduction and the caveat :ref:`for the frequentist model fitting <frequentist_model_fitting>`: to understand the frequentist fitting workflow
-    see the :ref:`composite_models` user guide for further information about the implementation of :class:`.FitModel`, in particular for parameter setting
-
-Model fitting with LSB
-~~~~~~~~~~~~~~~~~~~~~~
-
-.. code:: ipython3
-
-    from jetset.minimizer import fit_SED,ModelMinimizer
-    
-    from jetset.model_manager import  FitModel
-    from jetset.jet_model import Jet
-
-
-if you want to fit the ``prefit_model`` you can load the saved one (this
-allows you to save time) ad pass it to the ``FitModel`` class
+We build a jet with the leptonic equilibrium, and we copy the relevant
+parameters from the ``prefit_jet`` model
 
 .. code:: ipython3
 
     from jetset.jet_emitters_factory import InjEmittersFactory
+    from jetset.jet_model import Jet
     
     q_inj = InjEmittersFactory().create_inj_emitters('pl')
-    prefit_jet=Jet(emitters_distribution=q_inj)
-    prefit_jet.parameters.p.val=2.2
-    prefit_jet.parameters.z_cosm.val=3.080000e-02
-    prefit_jet.parameters.R.val=1E16
-    prefit_jet.parameters.B.val=.1
-    prefit_jet.parameters.L_inj.val=5E38
-    prefit_jet.parameters.gmin.val=100
-    prefit_jet.parameters.beam_obj.val=25
+    
+    lept_eq_jet=Jet(emitters_distribution=q_inj,name='leptonic_eq')
+    lept_eq_jet.parameters.p.val=prefit_jet.parameters.p.val
+    lept_eq_jet.parameters.z_cosm.val=prefit_jet.parameters.z_cosm.val
+    lept_eq_jet.parameters.R.val=prefit_jet.parameters.R.val
+    lept_eq_jet.parameters.B.val=prefit_jet.parameters.B.val
+    lept_eq_jet.parameters.gmin.val=prefit_jet.parameters.gmin.val
+    lept_eq_jet.parameters.gmax.val=prefit_jet.parameters.gmax.val
+    
+    lept_eq_jet.parameters.beam_obj.val=prefit_jet.parameters.beam_obj.val
+
+
+for the emitters density we use the standard tool
+
+.. code:: ipython3
+
+    lept_eq_jet.set_N_from_nuFnu(nu_obs=1E15,nuFnu_obs=1E-10)
+
+
+.. parsed-literal::
+
+    L_out 1.6340495211662187e+43 2.3263510983670636e+44
+    L_out 1.4236723356503605e+41
 
 
 .. code:: ipython3
 
-    prefit_jet.parameters
+    lept_eq_jet.eval()
+    lept_eq_jet.plot_model(sed_data=sed_data)
+
+
+
+
+.. parsed-literal::
+
+    <jetset.plot_sedfit.PlotSED at 0x30e106180>
+
+
+
+
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_26_1.png
+
+
+.. code:: ipython3
+
+    lept_eq_jet.emitters_distribution.plot()
+
+
+
+
+.. parsed-literal::
+
+    <jetset.plot_sedfit.PlotPdistr at 0x169793d40>
+
+
+
+
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_27_1.png
+
+
+.. code:: ipython3
+
+    lept_eq_jet.parameters
 
 
 
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table14199783744-208834" class="table-striped table-bordered table-condensed">
+    <table id="table13116160624-261346" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td></td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.200000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>T_esc_e_primaries</td><td>escape_time</td><td>R / c</td><td>1.000000e+00</td><td>1.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>L_inj</td><td>L_inj</td><td>erg / s</td><td>5.000000e+38</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>R</td><td>region_size</td><td>cm</td><td>2.219270e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>leptonic_eq</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>6.618390e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>leptonic_eq</td><td>beam_obj</td><td>beaming</td><td></td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>z_cosm</td><td>redshift</td><td></td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.103365e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.136207e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.169388e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>T_esc_e_primaries</td><td>escape_time</td><td>R / c</td><td>1.000000e+00</td><td>1.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>L_inj</td><td>L_inj</td><td>erg / s</td><td>1.423672e+41</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -473,14 +510,14 @@ allows you to save time) ad pass it to the ``FitModel`` class
         datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table14199783744-208834').dataTable()");
+        console.log("$('#table13116160624-261346').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table14199783744-208834').dataTable({
+        $('#table13116160624-261346').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -500,46 +537,28 @@ allows you to save time) ad pass it to the ``FitModel`` class
 
 
 
-.. code:: ipython3
+Model fitting procedure
+-----------------------
 
-    prefit_jet.eval()
-    prefit_jet.plot_model(sed_data=sed_data)
+.. note::
+    Please, read the introduction and the caveat :ref:`for the frequentist model fitting <frequentist_model_fitting>`: to understand the frequentist fitting workflow
+    see the :ref:`composite_models` user guide for further information about the implementation of :class:`.FitModel`, in particular for parameter setting
 
-
-
-
-.. parsed-literal::
-
-    <jetset.plot_sedfit.PlotSED at 0x332cccb30>
-
-
-
-
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_28_1.png
-
+Model fitting with LSB
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: ipython3
 
-    prefit_jet.emitters_distribution.plot()
+    from jetset.minimizer import ModelMinimizer
+    
+    from jetset.model_manager import  FitModel
 
 
-
-
-.. parsed-literal::
-
-    <jetset.plot_sedfit.PlotPdistr at 0x332c2e630>
-
-
-
-
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_29_1.png
-
-
-OR use the one generated above
+We use the ``lept_eq_jet`` model to build the ``FitModel``
 
 .. code:: ipython3
 
-    fit_model=FitModel( jet=prefit_jet, name='SSC-best-fit-lsb',template=None) 
+    fit_model=FitModel( jet=lept_eq_jet, name='SSC-best-fit',template=None) 
 
 .. code:: ipython3
 
@@ -552,50 +571,41 @@ OR use the one generated above
     --------------------------------------------------------------------------------
     Composite model description
     --------------------------------------------------------------------------------
-    name: SSC-best-fit-lsb  
+    name: SSC-best-fit  
     type: composite_model  
     components models:
-     -model name: jet_leptonic model type: jet
+     -model name: leptonic_eq model type: jet
     
     --------------------------------------------------------------------------------
 
 
-There is only one component, whit name ``jet_leptonic``, that refers to
-the ``prefit_jet`` model component
+There is only one component, whit name ``leptonic_eq``, that refers to
+the ``lept_eq_jet`` model component
 
 We now set the gamma grid size to 200, ad we set ``composite_expr``,
 anyhow, since we have only one component this step could be skipped
 
 .. code:: ipython3
 
-    fit_model.jet_leptonic.set_gamma_grid_size(200)
-    fit_model.composite_expr='jet_leptonic'
+    fit_model.leptonic_eq.set_gamma_grid_size(200)
+    fit_model.composite_expr='leptonic_eq'
 
 Freezeing parameters and setting fit_range intervals
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-These methods are alternative and equivalent ways to access a model
-component for setting parameters state and values
-
-a) passing as first argument, of the method, the model component
-   ``name``
-
-b) passing as first argument, of the method, the model component
-   ``object``
-
-c) accessing the model component member of the composite model class
-
 .. code:: ipython3
 
-    #a
-    fit_model.freeze('jet_leptonic','z_cosm')
-    fit_model.freeze('jet_leptonic','R_H')
     
-    fit_model.jet_leptonic.parameters.R.fit_range=[10**15.5,10**17.5]
-    fit_model.jet_leptonic.parameters.beam_obj.fit_range=[5., 50.]
-    fit_model.jet_leptonic.parameters.gmax.fit_range=[1E5, 5E6]
-    fit_model.jet_leptonic.parameters.gmin.fit_range=[10, 1000]
-    fit_model.jet_leptonic.parameters.T_esc_e_primaries.fit_range=[1, 2]
+    fit_model.freeze('leptonic_eq','z_cosm')
+    fit_model.freeze('leptonic_eq','R_H')
+    fit_model.freeze('leptonic_eq','T_esc_e_primaries')
+    
+    fit_model.leptonic_eq.parameters.R.fit_range=[10**15.5,10**17.5]
+    fit_model.leptonic_eq.parameters.beam_obj.fit_range=[5., 50.]
+    fit_model.leptonic_eq.parameters.gmax.fit_range=[1E5, 5E6]
+    fit_model.leptonic_eq.parameters.gmin.fit_range=[10, 1000]
+    fit_model.leptonic_eq.parameters.T_esc_e_primaries.val=1
+    fit_model.leptonic_eq.parameters.L_inj.fit_range=[1E38, 1E43]
     
 
 
@@ -608,19 +618,19 @@ c) accessing the model component member of the composite model class
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table13734091600-935820" class="table-striped table-bordered table-condensed">
+    <table id="table13116160624-297518" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td></td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.200000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>T_esc_e_primaries</td><td>escape_time</td><td>R / c</td><td>1.000000e+00</td><td>1.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>L_inj</td><td>L_inj</td><td>erg / s</td><td>5.000000e+38</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>R</td><td>region_size</td><td>cm</td><td>2.219270e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>leptonic_eq</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>6.618390e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>leptonic_eq</td><td>beam_obj</td><td>beaming</td><td></td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>z_cosm</td><td>redshift</td><td></td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>leptonic_eq</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.103365e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.136207e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.169388e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>T_esc_e_primaries</td><td>escape_time</td><td>R / c</td><td>1.000000e+00</td><td>1.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>leptonic_eq</td><td>L_inj</td><td>L_inj</td><td>erg / s</td><td>1.423672e+41</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -644,14 +654,14 @@ c) accessing the model component member of the composite model class
         datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table13734091600-935820').dataTable()");
+        console.log("$('#table13116160624-297518').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table13734091600-935820').dataTable({
+        $('#table13116160624-297518').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -683,7 +693,7 @@ Building the ModelMinimizer object
                                                1E29,
                                                fitname='SSC-best-fit-minuit',
                                                max_ev=10000,
-                                               repeat=2)
+                                               repeat=1)
 
 
 .. parsed-literal::
@@ -694,7 +704,6 @@ Building the ModelMinimizer object
     
     *** start fit process ***
     ----- 
-    fit run: 0
 
 
 
@@ -705,21 +714,7 @@ Building the ModelMinimizer object
 
 .. parsed-literal::
 
-    - best chisq=1.01730e+02
-    
-    fit run: 1
-    - old chisq=1.01730e+02
-
-
-
-.. parsed-literal::
-
-    0it [00:00, ?it/s]
-
-
-.. parsed-literal::
-
-    - best chisq=5.95715e+01
+    - best chisq=4.88440e+01
     
     -------------------------------------------------------------------------
     Fit report
@@ -731,19 +726,19 @@ Building the ModelMinimizer object
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table13614120880-86234" class="table-striped table-bordered table-condensed">
+    <table id="table6064844544-659505" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>9.814473e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>5.651606e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td></td><td>1.116704e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>3.288597e+01</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.409613e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>p</td><td>LE_spectral_slope</td><td></td><td>1.757100e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>T_esc_e_primaries</td><td>escape_time</td><td>R / c</td><td>1.475042e+00</td><td>1.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>L_inj</td><td>L_inj</td><td>erg / s</td><td>4.999639e+38</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>R</td><td>region_size</td><td>cm</td><td>2.915423e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>leptonic_eq</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>9.177237e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>leptonic_eq</td><td>beam_obj</td><td>beaming</td><td></td><td>1.774807e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>z_cosm</td><td>redshift</td><td></td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>leptonic_eq</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.288467e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>9.276581e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.048689e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>T_esc_e_primaries</td><td>escape_time</td><td>R / c</td><td>1.000000e+00</td><td>1.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>leptonic_eq</td><td>L_inj</td><td>L_inj</td><td>erg / s</td><td>2.181277e+41</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -767,14 +762,14 @@ Building the ModelMinimizer object
         datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table13614120880-86234').dataTable()");
+        console.log("$('#table6064844544-659505').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table13614120880-86234').dataTable({
+        $('#table6064844544-659505').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -790,7 +785,7 @@ Building the ModelMinimizer object
 
     
     converged=True
-    calls=2341
+    calls=2679
     mesg=
 
 
@@ -802,12 +797,12 @@ Building the ModelMinimizer object
             <th colspan="2" style="text-align:center" title="Minimizer"> Migrad </th>
         </tr>
         <tr>
-            <td style="text-align:left" title="Minimum value of function"> FCN = 59.57 </td>
-            <td style="text-align:center" title="Total number of function and (optional) gradient evaluations"> Nfcn = 2341 </td>
+            <td style="text-align:left" title="Minimum value of function"> FCN = 48.84 </td>
+            <td style="text-align:center" title="Total number of function and (optional) gradient evaluations"> Nfcn = 2679 </td>
         </tr>
         <tr>
-            <td style="text-align:left" title="Estimated distance to minimum and goal"> EDM = 2.57e+05 (Goal: 0.0002) </td>
-            <td style="text-align:center" title="Total run time of algorithms"> time = 20.5 sec </td>
+            <td style="text-align:left" title="Estimated distance to minimum and goal"> EDM = 10.7 (Goal: 0.0002) </td>
+            <td style="text-align:center" title="Total run time of algorithms"> time = 23.8 sec </td>
         </tr>
         <tr>
             <td style="text-align:center;background-color:#c15ef7;color:black"> INVALID Minimum </td>
@@ -836,8 +831,8 @@ Building the ModelMinimizer object
         <tr>
             <th> 0 </th>
             <td> par_0 </td>
-            <td> 98.1447e15 </td>
-            <td> 0.0025e15 </td>
+            <td> 29.154e15 </td>
+            <td> 0.010e15 </td>
             <td>  </td>
             <td>  </td>
             <td> 3.16E+15 </td>
@@ -847,8 +842,8 @@ Building the ModelMinimizer object
         <tr>
             <th> 1 </th>
             <td> par_1 </td>
-            <td> 56.516e-3 </td>
-            <td> 0.006e-3 </td>
+            <td> 0.0918 </td>
+            <td> 0.0031 </td>
             <td>  </td>
             <td>  </td>
             <td> 0 </td>
@@ -858,8 +853,8 @@ Building the ModelMinimizer object
         <tr>
             <th> 2 </th>
             <td> par_2 </td>
-            <td> 11.167 </td>
-            <td> 0.028 </td>
+            <td> 17.7 </td>
+            <td> 0.4 </td>
             <td>  </td>
             <td>  </td>
             <td> 5 </td>
@@ -869,8 +864,8 @@ Building the ModelMinimizer object
         <tr>
             <th> 3 </th>
             <td> par_3 </td>
-            <td> 32.8860 </td>
-            <td> 0.0018 </td>
+            <td> 428.847 </td>
+            <td> 0.005 </td>
             <td>  </td>
             <td>  </td>
             <td> 10 </td>
@@ -880,8 +875,8 @@ Building the ModelMinimizer object
         <tr>
             <th> 4 </th>
             <td> par_4 </td>
-            <td> 1.4096e6 </td>
-            <td> 0.0018e6 </td>
+            <td> 0.93e6 </td>
+            <td> 0.16e6 </td>
             <td>  </td>
             <td>  </td>
             <td> 1E+05 </td>
@@ -891,8 +886,8 @@ Building the ModelMinimizer object
         <tr>
             <th> 5 </th>
             <td> par_5 </td>
-            <td> 1.7571 </td>
-            <td> 0.0009 </td>
+            <td> 2.05 </td>
+            <td> 0.07 </td>
             <td>  </td>
             <td>  </td>
             <td> -10 </td>
@@ -902,23 +897,12 @@ Building the ModelMinimizer object
         <tr>
             <th> 6 </th>
             <td> par_6 </td>
-            <td> 1.4750423 </td>
-            <td> 0.0000016 </td>
+            <td> 0.218e42 </td>
+            <td> 0.014e42 </td>
             <td>  </td>
             <td>  </td>
-            <td> 1 </td>
-            <td> 2 </td>
-            <td>  </td>
-        </tr>
-        <tr>
-            <th> 7 </th>
-            <td> par_7 </td>
-            <td> 499.964e36 </td>
-            <td> 0.004e36 </td>
-            <td>  </td>
-            <td>  </td>
-            <td> 0 </td>
-            <td>  </td>
+            <td> 1E+38 </td>
+            <td> 1E+43 </td>
             <td>  </td>
         </tr>
     </table>
@@ -926,8 +910,8 @@ Building the ModelMinimizer object
 
 .. parsed-literal::
 
-    dof=26
-    chisq=59.571503, chisq/red=2.291212 null hypothesis sig=0.000191
+    dof=27
+    chisq=48.844023, chisq/red=1.809038 null hypothesis sig=0.006170
     
     best fit pars
 
@@ -936,19 +920,19 @@ Building the ModelMinimizer object
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table13734092176-463836" class="table-striped table-bordered table-condensed">
+    <table id="table13115947968-183733" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>R</td><td>9.814473e+16</td><td>9.814473e+16</td><td>2.534807e+12</td><td>--</td><td>1.000000e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H</td><td>1.000000e+17</td><td>--</td><td>--</td><td>--</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>5.651606e-02</td><td>5.651606e-02</td><td>5.858371e-06</td><td>--</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>NH_cold_to_rel_e</td><td>1.000000e+00</td><td>--</td><td>--</td><td>--</td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>1.116704e+01</td><td>1.116704e+01</td><td>2.766299e-02</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>3.080000e-02</td><td>--</td><td>--</td><td>--</td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>3.288597e+01</td><td>3.288597e+01</td><td>1.811529e-03</td><td>--</td><td>1.000000e+02</td><td>1.000000e+01</td><td>1.000000e+03</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>1.409613e+06</td><td>1.409613e+06</td><td>1.780474e+03</td><td>--</td><td>1.000000e+06</td><td>1.000000e+05</td><td>5.000000e+06</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>p</td><td>1.757100e+00</td><td>1.757100e+00</td><td>9.304760e-04</td><td>--</td><td>2.200000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>T_esc_e_primaries</td><td>1.475042e+00</td><td>1.475042e+00</td><td>1.636430e-06</td><td>--</td><td>1.000000e+00</td><td>1.000000e+00</td><td>2.000000e+00</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>L_inj</td><td>4.999639e+38</td><td>4.999639e+38</td><td>4.334593e+33</td><td>--</td><td>5.000000e+38</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>R</td><td>2.915423e+16</td><td>2.915423e+16</td><td>1.051357e+13</td><td>--</td><td>2.219270e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>R_H</td><td>1.000000e+17</td><td>--</td><td>--</td><td>--</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>leptonic_eq</td><td>B</td><td>9.177237e-02</td><td>9.177237e-02</td><td>3.093967e-03</td><td>--</td><td>6.618390e-02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>NH_cold_to_rel_e</td><td>1.000000e+00</td><td>--</td><td>--</td><td>--</td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>leptonic_eq</td><td>beam_obj</td><td>1.774807e+01</td><td>1.774807e+01</td><td>3.756669e-01</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>z_cosm</td><td>3.080000e-02</td><td>--</td><td>--</td><td>--</td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>leptonic_eq</td><td>gmin</td><td>4.288467e+02</td><td>4.288467e+02</td><td>4.726429e-03</td><td>--</td><td>4.103365e+02</td><td>1.000000e+01</td><td>1.000000e+03</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>gmax</td><td>9.276581e+05</td><td>9.276581e+05</td><td>1.598030e+05</td><td>--</td><td>1.136207e+06</td><td>1.000000e+05</td><td>5.000000e+06</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>p</td><td>2.048689e+00</td><td>2.048689e+00</td><td>6.774985e-02</td><td>--</td><td>2.169388e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>leptonic_eq</td><td>T_esc_e_primaries</td><td>1.000000e+00</td><td>--</td><td>--</td><td>--</td><td>1.000000e+00</td><td>1.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>leptonic_eq</td><td>L_inj</td><td>2.181277e+41</td><td>2.181277e+41</td><td>1.436004e+40</td><td>--</td><td>1.423672e+41</td><td>1.000000e+38</td><td>1.000000e+43</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -972,14 +956,14 @@ Building the ModelMinimizer object
         datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table13734092176-463836').dataTable()");
+        console.log("$('#table13115947968-183733').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table13734092176-463836').dataTable({
+        $('#table13115947968-183733').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -997,11 +981,7 @@ Building the ModelMinimizer object
     
     ================================================================================
     
-    there are  fit warnings messages, use  the .show_fit_warnings() or access the member .minimizer._post_fit_warnings
 
-
-note that this plot refers to the latest fit trial, in case, please
-consider storing the plot within a list in the fit loop
 
 .. code:: ipython3
 
@@ -1009,11 +989,7 @@ consider storing the plot within a list in the fit loop
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_43_0.png
-
-
-
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_43_1.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_44_0.png
 
 
 .. code:: ipython3
@@ -1025,12 +1001,12 @@ consider storing the plot within a list in the fit loop
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_44_0.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_45_0.png
 
 
 .. code:: ipython3
 
-    fit_model.jet_leptonic.emitters_distribution.plot()
+    fit_model.leptonic_eq.emitters_distribution.plot()
 
 
 
@@ -1038,14 +1014,12 @@ consider storing the plot within a list in the fit loop
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotPdistr at 0x31ff55c10>
+    <jetset.plot_sedfit.PlotPdistr at 0x30a8ad070>
 
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_45_1.png
-
-
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_46_1.png
 
 
 saving fit model, model minimizer
@@ -1056,41 +1030,6 @@ saving fit model, model minimizer
     best_fit_minuit.save_report('SSC-best-fit-minuit.pkl')
     model_minimizer_minuit.save_model('model_minimizer_minuit.pkl')
     fit_model.save_model('fit_model_minuit.pkl')
-
-You can obtain profile and contours, but this is typically time
-consuming. In any case, better results can be achieved using the MCMC
-approach (discussed in next section). For further information regarding
-minuit please refer to https://iminuit.readthedocs.io
-
-.. code:: ipython3
-
-    #migrad profile
-
-    #access the data
-    profile_migrad=model_minimizer_minuit.minimizer.mnprofile('s')
-
-    #make the plot(no need to run the previous command)
-    profile_plot_migrad=model_minimizer_minuit.minimizer.draw_mnprofile('s')
-
-.. code:: ipython2
-
-    #migrad contour
-    #access the data
-    contour_migrad=model_minimizer_minuit.minimizer.contour('beam_obj','B')
-
-    #make the plot(no need to run the previous command)
-    contour_plot_migrad=model_minimizer_minuit.minimizer.draw_contour('beam_obj','B')
-
-you can use also minos contour and profile, in this case the
-computational time is even longer:
-
-.. code:: ipython3
-    
-   profile_migrad=model_minimizer_minuit.minimizer.mnprofile('s')
-   profile_plot_migrad=model_minimizer_minuit.minimizer.draw_mnprofile('s')
-        
-   contour_migrad=model_minimizer_minuit.minimizer.mncontour('r','s')
-   contour_plot_migrad=model_minimizer_minuit.minimizer.draw_mncontour('r','s')
 
 MCMC sampling
 -------------
@@ -1117,8 +1056,8 @@ creating and setting the sampler
 
 .. code:: ipython3
 
-    labels=['L_inj','B','beam_obj','s','p']
-    model_name='jet_leptonic'
+    labels=['L_inj','B','beam_obj','R','p']
+    model_name='leptonic_eq'
     use_labels_dict={model_name:labels}
     
     mcmc.set_labels(use_labels_dict=use_labels_dict)
@@ -1131,10 +1070,11 @@ creating and setting the sampler
 
 .. parsed-literal::
 
-    par: L_inj  best fit value:  4.999638587107954e+38  mcmc bounds: [0, np.float64(2.999783152264772e+39)]
-    par: B  best fit value:  0.05651605669228488  mcmc bounds: [0, np.float64(0.33909634015370926)]
-    par: beam_obj  best fit value:  11.167037552869358  mcmc bounds: [5.0, 50.0]
-    par: p  best fit value:  1.7571000950520643  mcmc bounds: [np.float64(-7.028400380208256), 10]
+    par: L_inj  best fit value:  2.181277321031021e+41  mcmc bounds: [1e+38, np.float64(1.3087663926186125e+42)]
+    par: B  best fit value:  0.09177236691672452  mcmc bounds: [0, np.float64(0.5506342015003471)]
+    par: beam_obj  best fit value:  17.748068059424398  mcmc bounds: [5.0, 50.0]
+    par: R  best fit value:  2.9154231588805704e+16  mcmc bounds: [3162277660168379.5, np.float64(1.749253895328342e+17)]
+    par: p  best fit value:  2.0486894279548906  mcmc bounds: [np.float64(-8.194757711819562), 10]
 
 
 .. code:: ipython3
@@ -1147,10 +1087,11 @@ creating and setting the sampler
 
 .. parsed-literal::
 
-    par: L_inj  best fit value:  4.999638587107954e+38  mcmc bounds: [0, np.float64(2.999783152264772e+39)]
-    par: B  best fit value:  0.05651605669228488  mcmc bounds: [0, np.float64(0.33909634015370926)]
-    par: beam_obj  best fit value:  11.167037552869358  mcmc bounds: [5.0, 50.0]
-    par: p  best fit value:  1.7571000950520643  mcmc bounds: [np.float64(-7.028400380208256), 10]
+    par: L_inj  best fit value:  2.181277321031021e+41  mcmc bounds: [1e+38, np.float64(1.3087663926186125e+42)]
+    par: B  best fit value:  0.09177236691672452  mcmc bounds: [0, np.float64(0.5506342015003471)]
+    par: beam_obj  best fit value:  17.748068059424398  mcmc bounds: [5.0, 50.0]
+    par: R  best fit value:  2.9154231588805704e+16  mcmc bounds: [3162277660168379.5, np.float64(1.749253895328342e+17)]
+    par: p  best fit value:  2.0486894279548906  mcmc bounds: [np.float64(-8.194757711819562), 10]
 
 
 .. code:: ipython3
@@ -1172,13 +1113,44 @@ creating and setting the sampler
 
 .. parsed-literal::
 
-    mcmc run done, with 1 threads took 130.78 seconds
+    mcmc run done, with 1 threads took 127.93 seconds
+    ----------------------------
+    MCMC best fit solution
+    L_inj: 2.5379973193493358e+41
+    B: 0.09518968755529787
+    beam_obj: 16.33028232860727
+    R: 3.3257247384800336e+16
+    p: 1.9944227595464585
+    ----------------------------
+
+
+Showing the MCMC parameters. Now MCMC bestfit values are updated to the
+best-fit MCMC solution
+
+.. code:: ipython3
+
+    mcmc.par_table
+
+
+
+
+.. raw:: html
+
+    <div><i>Table length=5</i>
+    <table id="table13973843952" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>idx</th><th>model name</th><th>name</th><th>current val</th><th>mcmc best fit val</th><th>quantile 0.16</th><th>quantile 0.50</th><th>quantile 0.84</th><th>val min</th><th>val max</th><th>mcmc bound min</th><th>mcmc bound max</th><th>units</th><th>plot label</th></tr></thead>
+    <thead><tr><th>int64</th><th>str11</th><th>str8</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>object</th><th>float64</th><th>float64</th><th>str7</th><th>str8</th></tr></thead>
+    <tr><td>0</td><td>leptonic_eq</td><td>L_inj</td><td>2.5379973193493358e+41</td><td>2.5379973193493358e+41</td><td>2.1867930884430712e+41</td><td>2.491540763766256e+41</td><td>2.8282280337576004e+41</td><td>0.0</td><td>None</td><td>1e+38</td><td>1.3087663926186125e+42</td><td>erg / s</td><td>L_inj</td></tr>
+    <tr><td>1</td><td>leptonic_eq</td><td>B</td><td>0.09518968755529787</td><td>0.09518968755529787</td><td>0.08720791804708543</td><td>0.0938643557812696</td><td>0.09980040681544372</td><td>0.0</td><td>None</td><td>0.0</td><td>0.5506342015003471</td><td>gauss</td><td>B</td></tr>
+    <tr><td>2</td><td>leptonic_eq</td><td>beam_obj</td><td>16.33028232860727</td><td>16.33028232860727</td><td>15.542674793711477</td><td>16.551971318448267</td><td>17.641402456575815</td><td>0.0001</td><td>None</td><td>5.0</td><td>50.0</td><td></td><td>beam_obj</td></tr>
+    <tr><td>3</td><td>leptonic_eq</td><td>R</td><td>3.3257247384800336e+16</td><td>3.3257247384800336e+16</td><td>2.8985855002658204e+16</td><td>3.2668460989701056e+16</td><td>3.737521481393122e+16</td><td>1000.0</td><td>1e+30</td><td>3162277660168379.5</td><td>1.749253895328342e+17</td><td>cm</td><td>R</td></tr>
+    <tr><td>4</td><td>leptonic_eq</td><td>p</td><td>1.9944227595464585</td><td>1.9944227595464585</td><td>1.9605747375242233</td><td>2.0048053234657277</td><td>2.04560514893497</td><td>-10.0</td><td>10</td><td>-8.194757711819562</td><td>10.0</td><td></td><td>p</td></tr>
+    </table></div>
+
 
 
 plotting the posterior corner plot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-printout the labels
 
 To have a better rendering on the scatter plot, we redefine the plot
 labels
@@ -1208,7 +1180,7 @@ the code below lets you tuning the output
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_68_0.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_64_0.png
 
 
 .. code:: ipython3
@@ -1218,7 +1190,7 @@ the code below lets you tuning the output
 
 .. parsed-literal::
 
-    0.5905
+    0.5191000000000001
 
 
 plotting the model
@@ -1234,7 +1206,7 @@ To plot the sampled model range against the input best-fit model
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_72_0.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_68_0.png
 
 
 To plot the sampled model range,providing quantiles, against the input
@@ -1248,7 +1220,7 @@ best-fit model, providing quantiles
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_74_0.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_70_0.png
 
 
 To plot the sampled model range,providing quantiles, against the mcmc
@@ -1267,15 +1239,16 @@ model at 0.5 quantile (``plot_mcmc_best_fit_model==True`` provides the
 
     ----------------------------
     MCMC best fit solution
-    L_inj: 4.339846601153534e+38
-    B: 0.06424252204050229
-    beam_obj: 10.326557300503007
-    p: 1.7062547338458687
+    L_inj: 2.5379973193493358e+41
+    B: 0.09518968755529787
+    beam_obj: 16.33028232860727
+    R: 3.3257247384800336e+16
+    p: 1.9944227595464585
     ----------------------------
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_76_1.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_72_1.png
 
 
 plotting chains and individual posteriors
@@ -1289,7 +1262,7 @@ plotting chains and individual posteriors
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_78_0.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_74_0.png
 
 
 .. code:: ipython3
@@ -1300,7 +1273,7 @@ plotting chains and individual posteriors
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_79_0.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_75_0.png
 
 
 .. code:: ipython3
@@ -1311,7 +1284,7 @@ plotting chains and individual posteriors
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_80_0.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_76_0.png
 
 
 .. code:: ipython3
@@ -1321,7 +1294,7 @@ plotting chains and individual posteriors
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_81_0.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_77_0.png
 
 
 Save and reuse MCMC
@@ -1353,7 +1326,7 @@ Save and reuse MCMC
 
 .. parsed-literal::
 
-    'SSC-best-fit-lsb'
+    'SSC-best-fit'
 
 
 
@@ -1365,7 +1338,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_86_0.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_82_0.png
 
 
 .. code:: ipython3
@@ -1377,7 +1350,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_87_0.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_83_0.png
 
 
 .. code:: ipython3
@@ -1392,15 +1365,16 @@ Save and reuse MCMC
 
     ----------------------------
     MCMC best fit solution
-    L_inj: 4.339846601153534e+38
-    B: 0.06424252204050229
-    beam_obj: 10.326557300503007
-    p: 1.7062547338458687
+    L_inj: 2.5379973193493358e+41
+    B: 0.09518968755529787
+    beam_obj: 16.33028232860727
+    R: 3.3257247384800336e+16
+    p: 1.9944227595464585
     ----------------------------
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_88_1.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_84_1.png
 
 
 .. code:: ipython3
@@ -1410,7 +1384,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_89_0.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_85_0.png
 
 
 .. code:: ipython3
@@ -1420,7 +1394,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_90_0.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_86_0.png
 
 
 .. code:: ipython3
@@ -1429,7 +1403,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_91_0.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_87_0.png
 
 
 .. code:: ipython3
@@ -1440,7 +1414,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_92_0.png
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_88_0.png
 
 
 .. code:: ipython3
@@ -1451,7 +1425,5 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_93_0.png
-
-
+.. image:: Jet_example_model_fit_leptonic_eq_files/Jet_example_model_fit_leptonic_eq_89_0.png
 

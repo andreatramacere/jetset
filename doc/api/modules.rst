@@ -21,7 +21,7 @@ In the following the package modules are listed.
    jet_kernel_tools    <jet_kernel_tools.rst>
    jet_model    <jet_model.rst>
    jet_paramters    <jet_paramters.rst>
-   jet_radio_plugin    <jet_radio_plugin.rst>
+   jet_radio_component    <jet_radio_component.rst>
    jet_spectral_components    <jet_spectral_components.rst>
    jet_timedep    <jet_timedep.rst>
    jet_tools    <jet_tools.rst>
@@ -45,3 +45,6 @@ In the following the package modules are listed.
    test_data_helper    <test_data_helper.rst>
    utils    <utils.rst>
    version_notifier    <version_notifier.rst>
+   workflow_cli    <workflow_cli.rst>
+   workflow_executor    <workflow_executor.rst>
+   workflow_schema    <workflow_schema.rst>

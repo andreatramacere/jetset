@@ -19,15 +19,15 @@ To avoid to import the jetkernel module otherwise the build will crash: `export 
 
 ### Cleaning
 
-to clean everything under documentation_notebooks/notebooks: `./scripts/clean_rst_and_images.sh` 
+to clean .rst and .png under documentation_notebooks/notebooks: `./scripts/clean_rst_and_images.sh` 
 
-to clean everything under documentation_notebooks/notebooks/dir-name: `./scripts/clean_rst_and_images.sh dir-name`
+to clean .rst and .png under under documentation_notebooks/notebooks/dir-name: `./scripts/clean_rst_and_images.sh dir-name`
 
 
 ### Building notebooks rst
 3) run step a or b
  
-    a) run all notebooks and build rst file with script:
+    a) run all notebooks and build .rst files and .png images with script:
       - run all notebooks found in documentation_notebooks/notebooks  :`./scripts/build_rst_files.sh -e`
 
         OR     
@@ -45,9 +45,7 @@ to clean everything under documentation_notebooks/notebooks/dir-name: `./scripts
 
 
 
-### Update the rst in user_guide from the notebooks in documentation_notebooks
-  
-  - `./scripts/clean_rst_and_images.sh`
+### Update the .rst files and .png images in user_guide from the notebooks in documentation_notebooks
   - `./scripts/update_rts_images.sh`
 
 ### builds the sphinx docs

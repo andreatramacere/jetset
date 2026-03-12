@@ -29,12 +29,6 @@ distribution for a ``nu_range`` range of frequencies
     jet=Jet(name='test',electron_distribution='pl')
     jet.spectral_components.SSC.state='off'
 
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
-
 .. code:: ipython3
 
     sed_plot=PlotSED(figsize=(10,5))
@@ -75,12 +69,6 @@ distribution for a ``nu_range`` range of frequencies
     from jetset.plot_sedfit import PlotSED
     jet=Jet(name='test',electron_distribution='plc')
     jet.spectral_components.SSC.state='off'
-
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
 
 .. code:: ipython3
 

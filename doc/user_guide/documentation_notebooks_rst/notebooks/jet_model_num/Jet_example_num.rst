@@ -6,12 +6,12 @@ Numerical setup
 .. code:: ipython3
 
     import jetset
-    print('tested on jetset',jetset.__version__)
+    print('tested with',jetset.__version__)
 
 
 .. parsed-literal::
 
-    tested on jetset 1.3.0rc7
+    tested with 1.4.0rc0
 
 
 Changing the grid size for the electron distribution
@@ -26,7 +26,6 @@ Changing the grid size for the electron distribution
 
 .. parsed-literal::
 
-    ===> setting C threads to 12
     
     --------------------------------------------------------------------------------
     model description: 
@@ -68,11 +67,16 @@ Changing the grid size for the electron distribution
     --------------------------------------------------------------------------------
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table4478224656-529323" class="table-striped table-bordered table-condensed">
+    <table id="table13568682720-597001" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -106,17 +110,17 @@ Changing the grid size for the electron distribution
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4478224656-529323').dataTable()");
+        console.log("$('#table13568682720-597001').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4478224656-529323').dataTable({
+        $('#table13568682720-597001').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -188,7 +192,6 @@ Changing the grid size for the IC process spectra
 
 .. parsed-literal::
 
-    ===> setting C threads to 12
     
     --------------------------------------------------------------------------------
     model description: 
@@ -230,11 +233,16 @@ Changing the grid size for the IC process spectra
     --------------------------------------------------------------------------------
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5580157280-888548" class="table-striped table-bordered table-condensed">
+    <table id="table13569385792-680093" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -268,17 +276,17 @@ Changing the grid size for the IC process spectra
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5580157280-888548').dataTable()");
+        console.log("$('#table13569385792-680093').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5580157280-888548').dataTable({
+        $('#table13569385792-680093').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -336,7 +344,6 @@ Changing the grid size for the seed photons
 
 .. parsed-literal::
 
-    ===> setting C threads to 12
     
     --------------------------------------------------------------------------------
     model description: 
@@ -378,11 +385,16 @@ Changing the grid size for the seed photons
     --------------------------------------------------------------------------------
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5576868720-313382" class="table-striped table-bordered table-condensed">
+    <table id="table13604243696-111059" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -416,17 +428,17 @@ Changing the grid size for the seed photons
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5576868720-313382').dataTable()");
+        console.log("$('#table13604243696-111059').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5576868720-313382').dataTable({
+        $('#table13604243696-111059').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -479,7 +491,6 @@ and this value can be changed using the method :meth:`.Jet.set_seed_nu_size`. In
 
 .. parsed-literal::
 
-    ===> setting C threads to 12
     
     --------------------------------------------------------------------------------
     model description: 
@@ -521,11 +532,16 @@ and this value can be changed using the method :meth:`.Jet.set_seed_nu_size`. In
     --------------------------------------------------------------------------------
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5581312720-587529" class="table-striped table-bordered table-condensed">
+    <table id="table13594578480-438879" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -559,17 +575,17 @@ and this value can be changed using the method :meth:`.Jet.set_seed_nu_size`. In
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5581312720-587529').dataTable()");
+        console.log("$('#table13594578480-438879').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5581312720-587529').dataTable({
+        $('#table13594578480-438879').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -634,7 +650,7 @@ and this value can be changed using the method :meth:`.Jet.set_seed_nu_size`. In
 
 .. code:: ipython3
 
-    my_jet._blob.IC_adaptive_e_binning
+    my_jet._blob.core.IC_adaptive_e_binning
     my_jet.IC_nu_size=100
     my_jet.eval()
     sed_plot=my_jet.plot_model()

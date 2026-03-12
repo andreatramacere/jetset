@@ -5,8 +5,17 @@ Composite Models and depending pars
 
 .. code:: ipython3
 
-    from jetset.jet_model import Jet
-    from jetset.plot_sedfit import PlotSED
+    import jetset
+    print("tested with",jetset.__version__)
+
+
+.. parsed-literal::
+
+    tested with 1.4.0rc0
+
+
+.. code:: ipython3
+
     from jetset.model_manager import FitModel
 
 
@@ -31,12 +40,6 @@ multiplicative model. First, we define our Jet model
     from jetset.jet_model import Jet
     my_jet=Jet(electron_distribution='lppl',name='jet_flaring')
 
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
-
 Second, we define the EBL model, and we use in this case the ``Franceschini_2008`` model ( read the section :ref:`ebl_model`  for more info regarding the EBL models)
 
 .. code:: ipython3
@@ -56,7 +59,7 @@ Now we add the components models to the the :class:`.FitModel` class, using the 
 
 .. parsed-literal::
 
-    /Users/orion/miniforge3/envs/jetset/lib/python3.10/site-packages/jetset/model_manager.py:158: UserWarning: no cosmology defined, using FlatLambdaCDM(name="Planck13", H0=67.77 km / (Mpc s), Om0=0.30712, Tcmb0=2.7255 K, Neff=3.046, m_nu=[0.   0.   0.06] eV, Ob0=0.048252)
+    /Users/orion/miniforge3/envs/jetset/lib/python3.12/site-packages/jetset/model_manager.py:259: UserWarning: no cosmology defined, using FlatLambdaCDM(name="Planck13", H0=67.77 km / (Mpc s), Om0=0.30712, Tcmb0=2.7255 K, Neff=3.046, m_nu=[0.   0.   0.06] eV, Ob0=0.048252)
       warnings.warn(m)
 
 
@@ -68,11 +71,16 @@ cosmology model to the ``FitModel`` class, so it is using a default one
     composite_model.show_pars()
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=14</i>
-    <table id="table5747322560-454422" class="table-striped table-bordered table-condensed">
+    <table id="table13380089856-355075" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_flaring</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_flaring</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -108,17 +116,17 @@ cosmology model to the ``FitModel`` class, so it is using a default one
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5747322560-454422').dataTable()");
+        console.log("$('#table13380089856-355075').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5747322560-454422').dataTable({
+        $('#table13380089856-355075').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -138,22 +146,21 @@ redshift, we link the two parameters
     composite_model.link_par(par_name='z_cosm', from_model=my_jet.name, to_model='Franceschini_2008')
 
 
-
-.. parsed-literal::
-
-    adding par: z_cosm to  z_cosm
-
-
 .. code:: ipython3
 
     composite_model.show_pars()
+
+
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
 
 
 
 .. raw:: html
 
     <i>Table length=14</i>
-    <table id="table5747319344-882310" class="table-striped table-bordered table-condensed">
+    <table id="table13380077712-228188" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_flaring</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_flaring</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -189,17 +196,17 @@ redshift, we link the two parameters
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5747319344-882310').dataTable()");
+        console.log("$('#table13380077712-228188').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5747319344-882310').dataTable({
+        $('#table13380077712-228188').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -279,19 +286,13 @@ names reported in the model description table, and that’s it!
 
 
 
-.. image:: Composite_model_files/Composite_model_24_0.png
+.. image:: Composite_model_files/Composite_model_25_0.png
 
 
 .. code:: ipython3
 
     composite_model.save_model('composite.pkl')
     cm=FitModel.load_model('composite.pkl')
-
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
 
 Sum of two jets (steady and flaring) and application of the EBL absorption to both (Multiplicative and additive)
 ----------------------------------------------------------------------------------------------------------------
@@ -308,7 +309,7 @@ component) and apply to both of them the EBL absorption.
 
 .. parsed-literal::
 
-    /Users/orion/miniforge3/envs/jetset/lib/python3.10/site-packages/jetset/model_manager.py:158: UserWarning: no cosmology defined, using FlatLambdaCDM(name="Planck13", H0=67.77 km / (Mpc s), Om0=0.30712, Tcmb0=2.7255 K, Neff=3.046, m_nu=[0.   0.   0.06] eV, Ob0=0.048252)
+    /Users/orion/miniforge3/envs/jetset/lib/python3.12/site-packages/jetset/model_manager.py:259: UserWarning: no cosmology defined, using FlatLambdaCDM(name="Planck13", H0=67.77 km / (Mpc s), Om0=0.30712, Tcmb0=2.7255 K, Neff=3.046, m_nu=[0.   0.   0.06] eV, Ob0=0.048252)
       warnings.warn(m)
 
 
@@ -321,7 +322,6 @@ component) and apply to both of them the EBL absorption.
 
 .. parsed-literal::
 
-    ===> setting C threads to 12
     
     --------------------------------------------------------------------------------
     Composite model description
@@ -344,22 +344,21 @@ same ``master`` parameter used for the ``EBL`` model, i.e. to the
 
     composite_model.link_par(par_name='z_cosm',from_model=['steady_jet'],to_model='Franceschini_2008') 
 
-
-.. parsed-literal::
-
-    adding par: z_cosm to  z_cosm
-
-
 .. code:: ipython3
 
     composite_model.show_pars()
+
+
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
 
 
 
 .. raw:: html
 
     <i>Table length=25</i>
-    <table id="table5745750704-201022" class="table-striped table-bordered table-condensed">
+    <table id="table13406425872-760133" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_flaring</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_flaring</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -406,17 +405,17 @@ same ``master`` parameter used for the ``EBL`` model, i.e. to the
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5745750704-201022').dataTable()");
+        console.log("$('#table13406425872-760133').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5745750704-201022').dataTable({
+        $('#table13406425872-760133').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -445,7 +444,7 @@ same ``master`` parameter used for the ``EBL`` model, i.e. to the
 
 
 
-.. image:: Composite_model_files/Composite_model_35_0.png
+.. image:: Composite_model_files/Composite_model_36_0.png
 
 
 .. code:: ipython3
@@ -456,23 +455,21 @@ same ``master`` parameter used for the ``EBL`` model, i.e. to the
 
     cm=FitModel.load_model('composite.pkl')
 
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-    ===> setting C threads to 12
-
-
 .. code:: ipython3
 
     cm.show_pars()
+
+
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
 
 
 
 .. raw:: html
 
     <i>Table length=25</i>
-    <table id="table5747736736-581571" class="table-striped table-bordered table-condensed">
+    <table id="table13387369600-344945" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_flaring</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_flaring</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -519,17 +516,17 @@ same ``master`` parameter used for the ``EBL`` model, i.e. to the
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5747736736-581571').dataTable()");
+        console.log("$('#table13387369600-344945').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5747736736-581571').dataTable({
+        $('#table13387369600-344945').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],

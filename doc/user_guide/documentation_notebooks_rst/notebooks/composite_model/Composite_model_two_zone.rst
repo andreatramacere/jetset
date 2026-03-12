@@ -3,6 +3,9 @@
 Composite Models: two-zone jets
 ===============================
 
+import jetset
+print("tested with",jetset.__version__)
+
 .. code:: ipython3
 
     from jetset.jet_model import Jet
@@ -24,12 +27,6 @@ Setting the two components
 .. code:: ipython3
 
     compact_jet=Jet(name='compact_jet',beaming_expr='bulk_theta')
-
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-
 
 .. code:: ipython3
 
@@ -130,11 +127,16 @@ Setting the two components
     --------------------------------------------------------------------------------
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=21</i>
-    <table id="table4733481504-844576" class="table-striped table-bordered table-condensed">
+    <table id="table5225853632-472708" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>compact_jet</td><td>*R(D,theta_open)</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>True</td></tr>
     <tr><td>compact_jet</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>5.715026e+16</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
@@ -177,17 +179,17 @@ Setting the two components
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4733481504-844576').dataTable()");
+        console.log("$('#table5225853632-472708').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4733481504-844576').dataTable({
+        $('#table5225853632-472708').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -210,25 +212,6 @@ Now we clone the ``compact`` jet to generate the ``extended`` region
 
     extended_jet=compact_jet.clone()
 
-
-.. parsed-literal::
-
-    ===> setting C threads to 12
-    adding par: L_Disk to  R_DT
-    ==> par R_DT is depending on ['L_Disk'] according to expr:   R_DT =
-    2E19*(L_Disk/1E46)**0.5
-    adding par: L_Disk to  R_BLR_in
-    ==> par R_BLR_in is depending on ['L_Disk'] according to expr:   R_BLR_in =
-    3E17*(L_Disk/1E46)**0.5
-    adding par: R_BLR_in to  R_BLR_out
-    ==> par R_BLR_out is depending on ['R_BLR_in'] according to expr:   R_BLR_out =
-    R_BLR_in*1.1
-    adding par: R_H to  R
-    adding par: theta_open to  R
-    ==> par R is depending on ['R_H', 'theta_open'] according to expr:   R =
-    np.tan(np.radians(theta_open))*R_H
-
-
 Setting the composite model
 ---------------------------
 
@@ -247,7 +230,7 @@ Setting the composite model
 
 .. parsed-literal::
 
-    /Users/orion/miniforge3/envs/jetset/lib/python3.10/site-packages/jetset/model_manager.py:158: UserWarning: no cosmology defined, using FlatLambdaCDM(name="Planck13", H0=67.77 km / (Mpc s), Om0=0.30712, Tcmb0=2.7255 K, Neff=3.046, m_nu=[0.   0.   0.06] eV, Ob0=0.048252)
+    /Users/orion/miniforge3/envs/jetset/lib/python3.12/site-packages/jetset/model_manager.py:259: UserWarning: no cosmology defined, using FlatLambdaCDM(name="Planck13", H0=67.77 km / (Mpc s), Om0=0.30712, Tcmb0=2.7255 K, Neff=3.046, m_nu=[0.   0.   0.06] eV, Ob0=0.048252)
       warnings.warn(m)
 
 
@@ -270,11 +253,16 @@ We set the functional expression for the model composition
     composite_jet.show_pars()
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=42</i>
-    <table id="table4746647520-167472" class="table-striped table-bordered table-condensed">
+    <table id="table13286238896-504294" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>compact_jet</td><td>*R(D,theta_open)</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>True</td></tr>
     <tr><td>compact_jet</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>5.715026e+16</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
@@ -338,17 +326,17 @@ We set the functional expression for the model composition
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4746647520-167472').dataTable()");
+        console.log("$('#table13286238896-504294').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4746647520-167472').dataTable({
+        $('#table13286238896-504294').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -372,17 +360,6 @@ Linking pars in the composite model
         composite_jet.link_par(par_name=par,from_model='extended_jet',to_model='compact_jet')
 
 
-
-.. parsed-literal::
-
-    adding par: z_cosm to  z_cosm
-    adding par: theta_open to  theta_open
-    adding par: theta to  theta
-    adding par: T_Disk to  T_Disk
-    adding par: L_Disk to  L_Disk
-    adding par: T_DT to  T_DT
-
-
 .. important:: Spectral components which are the same (i.e. duplicated), as the DT an the Disk, must be hidden in the jet component were are linked.
 
 .. code:: ipython3
@@ -396,11 +373,16 @@ Linking pars in the composite model
     composite_jet.show_pars()
 
 
+.. parsed-literal::
+
+    WARNING: AstropyDeprecationWarning: 'classic' backend for show_in_notebook() is deprecated as of 6.1. Instead, use the supported backend 'ipydatagrid'. [astropy.table.table]
+
+
 
 .. raw:: html
 
     <i>Table length=42</i>
-    <table id="table4748446640-334411" class="table-striped table-bordered table-condensed">
+    <table id="table6074388208-646135" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>compact_jet</td><td>*R(D,theta_open)</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>True</td></tr>
     <tr><td>compact_jet</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>5.715026e+16</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
@@ -464,17 +446,17 @@ Linking pars in the composite model
     }
     
     require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+        datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4748446640-334411').dataTable()");
+        console.log("$('#table6074388208-646135').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4748446640-334411').dataTable({
+        $('#table6074388208-646135').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -527,5 +509,5 @@ We now place the extended region at a larger scale compared to the compact one, 
 
 
 
-.. image:: Composite_model_two_zone_files/Composite_model_two_zone_38_0.png
+.. image:: Composite_model_two_zone_files/Composite_model_two_zone_39_0.png
 
