@@ -16,12 +16,11 @@ build:
   jobs:
     pre_install:
       - cd doc && python build_rtd_requirements.py
-    build:
-      html:
-        - cd doc && python make_apidoc_and_uml_graphs.py
-        - cd doc && ./scripts/clean_rst_and_images.sh
-        - cd doc && ./scripts/build_rst_files.sh
-        - cd doc && ./scripts/update_rts_images.sh
+    pre_build:
+      - cd doc && python make_apidoc_and_uml_graphs.py
+      - cd doc && ./scripts/clean_rst_and_images.sh
+      - cd doc && ./scripts/build_rst_files.sh
+      - cd doc && ./scripts/update_rts_images.sh
 
 # Build documentation in the "docs/" directory with Sphinx
 sphinx:
