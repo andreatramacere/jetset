@@ -7,7 +7,7 @@ model fitting examples
 .. toctree::
    :maxdepth: 1
 
-    1: SSC model fit with extended radio plugin, minuit contours, and MCMC for Mrk 421 *New (v1.4.0)* <documentation_notebooks_rst/notebooks/model_fit_1/Jet_example_and_radio_plugin_model_fit.rst>
+    1: SSC model fit with extended radio plugin, minuit contours, and MCMC for Mrk 421 *New (v1.4.0)* <documentation_notebooks_rst/notebooks/model_fit_1/Jet_plus_radio_comp_example_model_fit.rst>
 
     2: SSC (jet+galaxy template) model fit and MCMC for Mrk 501 *New (v1.3.0)* <documentation_notebooks_rst/notebooks/model_fit_2/Jet_example_model_fit_wiht_gal_template.rst>
 
