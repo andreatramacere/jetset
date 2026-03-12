@@ -13,6 +13,8 @@ __pycache__/
 /doc/example_notebooks/*
 !/doc/example_notebooks/*.ipynb
 
+/doc/user_guide/documentation_notebooks_rst/notebooks/**/*.png
+
 .idea
 /.DS_Store
 *.egg-info
