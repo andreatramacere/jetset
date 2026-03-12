@@ -45,6 +45,3 @@ In the following the package modules are listed.
    test_data_helper    <test_data_helper.rst>
    utils    <utils.rst>
    version_notifier    <version_notifier.rst>
-   workflow_cli    <workflow_cli.rst>
-   workflow_executor    <workflow_executor.rst>
-   workflow_schema    <workflow_schema.rst>
