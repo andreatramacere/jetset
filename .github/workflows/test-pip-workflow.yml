@@ -157,7 +157,7 @@ jobs:
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
-      - uses: pypa/cibuildwheel@v2.19.2 
+      - uses: pypa/cibuildwheel@v3.1.4q 
         if: github.event.inputs.tags != null &&  github.event.inputs.tags != null
         env:
           CIBW_SKIP: "*-musllinux_*"

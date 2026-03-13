@@ -10,6 +10,8 @@ else:
 
 if 'arm64' in platform.platform():
     system_str= '%s_arm64'%system_str
+else:
+    system_str= '%s_X86_64'%system_str
 
 new_name=name.replace('.conda','_%s.conda'%system_str)
 
