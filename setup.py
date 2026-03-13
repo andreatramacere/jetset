@@ -6,7 +6,7 @@ from __future__ import division, absolute_import, print_function
 __author__ = 'andrea tramacere'
 
 
-from setuptools import setup, find_packages,Extension
+from setuptools import setup,Extension
 from distutils.command.build import build
 from setuptools.command.install import install
 from distutils.sysconfig import get_python_lib
@@ -15,7 +15,6 @@ import glob
 import shutil
 import json
 import sys
-import numpy as np
 
 def check_swig():
     command = 'swig'
