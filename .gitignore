@@ -15,7 +15,7 @@ __pycache__/
 
 /doc/user_guide/documentation_notebooks_rst/notebooks/**/*.png
 
-doc/api/**/*.rst
+/doc/api/**/*.rst
 
 .idea
 /.DS_Store
