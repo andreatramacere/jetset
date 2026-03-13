@@ -26,7 +26,7 @@ if you use mamba replace ``conda`` with ``mamba`` in the following
 
   .. code-block:: bash
 
-      conda create --name jetset python=3.10 ipython jupyter
+      conda create --name jetset python=3.12 ipython jupyter
 
   .. code-block:: bash
 
@@ -64,17 +64,11 @@ Install  JetSeT from pip
 
     pip install ipython jupyter
 
-- MacOS
+- install the code
   
   .. code-block:: bash
 
-      pip install jetset>=1.4
-
-- Linux
-  
-  .. code-block:: bash
-    
-      pip install jetset>=1.4
+ 
 
   if fails, use one of the following methods 
 
@@ -105,36 +99,29 @@ As for the other cases, I suggest creating a specific virtual environment
 Download the code
 ^^^^^^^^^^^^^^^^^
 
-To install from source a C compiler is also necessary, plus the SWIG wrapper generator.
+To install from source a C compiler is also necessary, plus the SWIG wrapper generator (the latter will be installed by dependencies).
 
-- Get the source code from: https://github.com/andreatramacere/jetset/archive/stable.tar.gz
+- Typically, you will clone the repo (and checkout a specific branch if needed).  In case you want access a specific release/tag e.g. : https://github.com/andreatramacere/jetset/archive/refs/tags/stable.tar.gz
 
 - Uncompress the  archive:  `jetset-stable.tar.gz`
 
-- cd to  the dir source code dir
+- cd to  source code dir
 
   .. code-block:: bash
 
       cd jetset-stable
 
-Installation from source using Anaconda
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-- Install requirements, run on the command line:
+Installation from source using the `install.sh` script
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- run on the command line:
 
 
   .. code-block:: bash
 
-      conda install -c astropy -c conda-forge --file requirements.txt
-
-.. important::
-    if anaconda fails to install swig, you can try one of the following alternative :ref:`swig` 
-
-
--  run on the command line
-
-   .. code-block:: bash
-
       ./install.sh
+
+The `install.sh` script will take care of everything from installing dependencies to compile and install jetset.
+
 
 - run the test (optional, **run all the examples outside the installation directory**)
 
@@ -148,37 +135,8 @@ Installation from source using Anaconda
 
      pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_users::TestUser
 
-
-
-
-
-
-Installation from source using PIP
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-- Install requirements, run on the command line: 
-
-  .. code-block:: bash
-
-    pip install -r requirements.txt
-
 .. important::
-    if pip fails to install swig, you can try one of the following alternative :ref:`swig` 
-
-
-- Install JetSeT: run on the command line:
-
-  .. code-block:: bash
-
-        ./install.sh
-
-- run the test  (optional, **run all the examples outside the installation directory**)
-
-  .. code-block:: bash
-
-       cd ~/
-       mkdir test_jetset
-       cd test_jetset
-       pytest  --pyargs  -vvv jetset.tests.test_users::TestUser
+    if pip or conda fails to install swig, you can try one of the following alternative :ref:`swig` 
 
 
 
