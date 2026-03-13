@@ -2,7 +2,7 @@
 #FROM continuumio/miniconda3
 
 #PIP
-FROM python:3.10-slim
+FROM python:3.12-slim
 # install the notebook package
 RUN pip install --no-cache --upgrade pip && \
     pip install --no-cache notebook
