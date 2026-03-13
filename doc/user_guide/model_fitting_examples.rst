@@ -11,7 +11,7 @@ model fitting examples
 
     2: SSC (jet+galaxy template) model fit and MCMC for Mrk 501 *New (v1.3.0)* <documentation_notebooks_rst/notebooks/model_fit_2/Jet_example_model_fit_wiht_gal_template.rst>
 
-    3: SSC and EC fit for 3C 454.3, with interval absorption *New (v1.4.0)*  <documentation_notebooks_rst/notebooks/model_fit_3/Jet_example_model_fit_EC.rst>
+    3: SSC and EC fit for 3C 454.3, with internal absorption *New (v1.4.0)*  <documentation_notebooks_rst/notebooks/model_fit_3/Jet_example_model_fit_EC.rst>
 
     4: Leptonic equilibrim for Mrk 421 fit, and MCMC *New (v1.4.0)*  <documentation_notebooks_rst/notebooks/model_fit_4/Jet_example_model_fit_leptonic_eq.rst>
 
