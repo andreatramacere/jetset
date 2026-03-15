@@ -4,8 +4,12 @@
 Jet Radio Component: ``RadioSpectrum``
 ======================================
 
-The :class:`.RadioSpectrum` model from :mod:`.jet_radio_component` is an analytical
+The :class:`.RadioSpectrum` model from :mod:`.jet_radio_component` module is an analytical
 radio spectral component with self-absorption turnover and high-frequency cutoff.
+
+This component can be used to model the radio emission form the extended jet (extended region), which, typically falls below the self-adsorbed frequency of the emitting blob (compact region).
+
+This component, if corresponding data are present in the SED data, can allow constraining better the `gmin` of the emitters. 
 
 In this notebook we show:
 
@@ -25,7 +29,7 @@ In this notebook we show:
 
 .. parsed-literal::
 
-    jetset version 1.4.0rc0
+    tested with 1.4.0rc0
 
 
 .. code:: ipython3
@@ -62,10 +66,10 @@ Create the radio component and inspect parameters
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table6130413024-838598" class="table-striped table-bordered table-condensed">
+    <table id="table6151132736-81411" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>alpha_radio</td><td>spectral-slope</td><td></td><td>0.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>nu_ssa</td><td>turn-over freq</td><td>Hz</td><td>1.000000e+10</td><td>1.000000e+06</td><td>1.000000e+12</td><td>False</td><td>False</td></tr>
+    <tr><td>nu_ssa</td><td>turn-over freq</td><td>Hz</td><td>1.000000e+09</td><td>1.000000e+06</td><td>1.000000e+12</td><td>False</td><td>False</td></tr>
     <tr><td>nu_cut</td><td></td><td>Hz</td><td>1.000000e+11</td><td>1.000000e+06</td><td>1.000000e+13</td><td>False</td><td>False</td></tr>
     <tr><td>nuFnu_p</td><td>flux-const</td><td>cm2 erg / s</td><td>1.000000e-13</td><td>1.000000e-30</td><td>1.000000e-05</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -91,14 +95,14 @@ Create the radio component and inspect parameters
         datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table6130413024-838598').dataTable()");
+        console.log("$('#table6151132736-81411').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table6130413024-838598').dataTable({
+        $('#table6151132736-81411').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -119,10 +123,10 @@ Create the radio component and inspect parameters
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table6130218576-708319" class="table-striped table-bordered table-condensed">
+    <table id="table5487959104-711895" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>alpha_radio</td><td>spectral-slope</td><td></td><td>0.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>nu_ssa</td><td>turn-over freq</td><td>Hz</td><td>1.000000e+10</td><td>1.000000e+06</td><td>1.000000e+12</td><td>False</td><td>False</td></tr>
+    <tr><td>nu_ssa</td><td>turn-over freq</td><td>Hz</td><td>1.000000e+09</td><td>1.000000e+06</td><td>1.000000e+12</td><td>False</td><td>False</td></tr>
     <tr><td>nu_cut</td><td></td><td>Hz</td><td>1.000000e+11</td><td>1.000000e+06</td><td>1.000000e+13</td><td>False</td><td>False</td></tr>
     <tr><td>nuFnu_p</td><td>flux-const</td><td>cm2 erg / s</td><td>1.000000e-13</td><td>1.000000e-30</td><td>1.000000e-05</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -148,14 +152,14 @@ Create the radio component and inspect parameters
         datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table6130218576-708319').dataTable()");
+        console.log("$('#table5487959104-711895').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table6130218576-708319').dataTable({
+        $('#table5487959104-711895').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -202,7 +206,7 @@ Evaluate and plot the standalone spectrum
 
 .. code:: ipython3
 
-    plot_parameter_scan('alpha_radio', [-0.8, -0.3, 0.0, 0.4],
+    plot_parameter_scan('alpha_radio', [-0.8, -0.3, 0.0, 0.4, 0.6],
                         'Effect of alpha_radio')
 
 
@@ -210,7 +214,7 @@ Evaluate and plot the standalone spectrum
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotSED at 0x16d6b5ca0>
+    <jetset.plot_sedfit.PlotSED at 0x177608620>
 
 
 
@@ -228,7 +232,7 @@ Evaluate and plot the standalone spectrum
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotSED at 0x16e18e3c0>
+    <jetset.plot_sedfit.PlotSED at 0x1779b8680>
 
 
 
@@ -246,7 +250,7 @@ Evaluate and plot the standalone spectrum
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotSED at 0x17fb2ef00>
+    <jetset.plot_sedfit.PlotSED at 0x305381280>
 
 
 
@@ -264,7 +268,7 @@ Evaluate and plot the standalone spectrum
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotSED at 0x17fd06060>
+    <jetset.plot_sedfit.PlotSED at 0x305af4380>
 
 
 
@@ -328,7 +332,7 @@ Evaluate and plot the standalone spectrum
 .. raw:: html
 
     <i>Table length=15</i>
-    <table id="table13719719712-807354" class="table-striped table-bordered table-condensed">
+    <table id="table13288329904-41028" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -368,14 +372,14 @@ Evaluate and plot the standalone spectrum
         datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table13719719712-807354').dataTable()");
+        console.log("$('#table13288329904-41028').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table13719719712-807354').dataTable({
+        $('#table13288329904-41028').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -406,7 +410,7 @@ Evaluate and plot the standalone spectrum
 .. raw:: html
 
     <i>Table length=15</i>
-    <table id="table13717236400-580566" class="table-striped table-bordered table-condensed">
+    <table id="table13291876768-792240" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -446,14 +450,14 @@ Evaluate and plot the standalone spectrum
         datatables: 'https://cdn.datatables.net/2.1.8/js/dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table13717236400-580566').dataTable()");
+        console.log("$('#table13291876768-792240').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table13717236400-580566').dataTable({
+        $('#table13291876768-792240').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
