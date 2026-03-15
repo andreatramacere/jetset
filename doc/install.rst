@@ -111,8 +111,8 @@ To install from source a C compiler is also necessary, plus the SWIG wrapper gen
 
       cd jetset-stable
 
-Installation from source using the `install.sh` script
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Installation from source using the `install.sh` script (recommended)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 - run on the command line:
 
 
@@ -139,7 +139,21 @@ The `install.sh` script will take care of everything from installing dependencie
     if pip or conda fails to install swig, you can try one of the following alternative :ref:`swig` 
 
 
+Installation from source without using the `install.sh` script
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+- install the dependencies:
+
+  - for pip: ``pip install -r requirements.txt``
+
+  OR
+
+  - for conda: ``conda install -c astropy -c conda-forge --file requirements.txt``
+
+
+- install the code:
+
+  ``pip install .``
 
 
 
