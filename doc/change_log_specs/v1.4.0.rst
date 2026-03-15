@@ -84,7 +84,7 @@ EC emission
 
 - added pair production absorption for Dusty Torus and Broad Line Region
 - internal absorption can be enabled for EC components (DT/BLR) and used in fitting workflows.
-  See :ref:`int_abs_guide` and :ref:`model_fitting_EC`
+  See :ref:`int_abs_guide` and :ref:`model_fitting_ec`
 
 - optional ``use_R_H_profile_extrapolation`` in internal absorption setup to speed up evaluations:
 
@@ -92,8 +92,8 @@ EC emission
 
     jetset_model.enable_internal_absorption('DT', use_R_H_profile_extrapolation=True)
 
-- To enable internal absorption for model fitting see the ```How to enable Internal absorption`` section of
-  :ref:`model_fitting_EC`
+- To enable internal absorption for model fitting see the ``How to enable Internal absorption`` section of
+  :ref:`model_fitting_ec`
 
 
 bug fixing
@@ -102,8 +102,8 @@ bug fixing
 - minor bug fixes
 - fixed some typo in variable names
 
-C code base
------------
+C codebase
+----------
 - Substantial refactoring of the C code, dividing the blob structure in several sub-structures, with hierarchy.
   
 
