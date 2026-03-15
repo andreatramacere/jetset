@@ -28,6 +28,8 @@ MCMC functionalities
     # NOTE: preserve_fit_range=True preserves the model fit range for each parameter used in the MCMC
     mcmc.set_bounds(bound=5.0,bound_rel=True,preserve_fit_range=True)
 
+- A complete example is available in the MCMC section of :ref:`model_fitting_1`
+
 
 Radio component in composite models
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -90,13 +92,9 @@ EC emission
 
     jetset_model.enable_internal_absorption('DT', use_R_H_profile_extrapolation=True)
 
-Improved functionalities
-^^^^^^^^^^^^^^^^^^^^^^^^
-- added new user-guide fitting notebooks for v1.4.0:
+- To enable internal absorption for model fitting see the ```How to enable Internal absorption`` section of
+  :ref:`model_fitting_EC`
 
-  - :ref:`model_fitting_1` (SSC + extended radio component)
-  - :ref:`model_fitting_EC` (EC model fitting, with optional internal absorption)
-  - :ref:`model_fitting_4` (leptonic equilibrium model fitting)
 
 bug fixing
 ----------
@@ -152,4 +150,3 @@ installation
 
 - Full source-install requirements and troubleshooting are documented in :ref:`install_file`
   (including SWIG notes in :ref:`swig`).
-
