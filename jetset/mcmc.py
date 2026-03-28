@@ -97,7 +97,7 @@ class McmcSampler(object):
             raise RuntimeError('Please update to emcee v>=3.0.0')
         self.model = model_minimizer.fit_model.clone()
         self.data = model_minimizer.data
-        self._bounds_sampler=None
+        self._bounds_sampler=[]
         
         self.model.parameters.__class__=McmcCompositeModelParameterArray
         self._progress_iter = cycle(['|', '/', '-', '\\'])
@@ -217,7 +217,7 @@ class McmcSampler(object):
         
 
 
-    def set_bounds(self,bound=0.2,bound_rel=False,preserve_fit_range=True):
+    def set_bounds(self,par_name=None,comp_name=None,bound=0.2,bound_rel=False,preserve_fit_range=True,par_bounds=None):
         """Set bounds.
         
         Parameters
@@ -229,57 +229,72 @@ class McmcSampler(object):
         preserve_fit_range : bool, optional
             Range for preserve fit.
         """
-        self._set_bounds(bound=bound,bound_rel=bound_rel,preserve_fit_range=preserve_fit_range)
-    
+        #all pars
+        if comp_name is None and par_name is None:
+            if par_bounds is not None:
+                raise RuntimeError('if you pass par_bounds, please provide both model comp_name and par_name')
+        
+            for par in self._par_array_sampler:
+                self._set_bounds(par=par,bound=bound,bound_rel=bound_rel,preserve_fit_range=preserve_fit_range,par_bounds=par_bounds)
+            return
+        
+        elif comp_name is not None and par_name is not None:
+            if np.shape(par_bounds)!=2:
+                raise RuntimeError('please provide par_bounds as [min_bound, max_bound], with min_bound<max_bound')
+            if par_bounds[0]>=par_bounds[1]:
+                raise RuntimeError('please provide par_bounds as [min_bound, max_bound], with min_bound<max_bound')
+
+            par=self.get_par(par_name,comp_name=comp_name)
+            self._set_bounds(par=par,bound=bound,bound_rel=bound_rel,preserve_fit_range=preserve_fit_range,par_bounds=par_bounds)
+            return
+
+        else:
+            raise RuntimeError('please, provide both par_name and comp_name')
+        
+
     
        
-    def _set_bounds(self, bound=0.2,bound_rel=True,preserve_fit_range=True):
-
-        self._bounds_sampler=[]
-
-        if np.shape(bound) == ():
-            bound=[bound,bound]
-        elif np.shape(bound) == (2,):
-            pass
-        else:
-            raise RuntimeError('bound shape', np.shape(bound), 'it is wrong, has to be a scalar or (2,)')
+    def _set_bounds(self, par, bound=0.2,bound_rel=True,preserve_fit_range=True,par_bounds=None):
         
-        to_fix=False
-        err_str='\n'
-        for par in self._par_array_sampler:
-            if par.best_fit_err is None:
-                err_str+=f"please set best_fit_err for par: {par.name} in model component: {par.model.name}\n"
-                to_fix=True
-        
-        if to_fix:
-            raise RuntimeError(f"can not set bounds if you do not set missing best_fit_err: {err_str}")
+        if par_bounds == [] or par_bounds is None:
+            if np.shape(bound) == ():
+                bound=[bound,bound]
+            elif np.shape(bound) == (2,):
+                pass
+            else:
+                raise RuntimeError('bound shape', np.shape(bound), 'it is wrong, has to be a scalar or (2,)')
+            
+            if par.best_fit_val is None:
+                ref_val=par.val
+            else:
+                ref_val=par.best_fit_val 
 
-        for par in self._par_array_sampler:
-            if  not bound_rel  and par.best_fit_err is not None:
-                delta_p = par.best_fit_err * bound[1]
-                delta_m = par.best_fit_err  * bound[0]
+            if  not bound_rel:
+                delta_p = ref_val * bound[1]
+                delta_m = ref_val  * bound[0]
 
             else:
-                delta_p = np.fabs(par.best_fit_err)*bound[1]
-                delta_m = np.fabs(par.best_fit_err)*bound[0]
+                delta_p = np.fabs(ref_val)*bound[1]
+                delta_m = np.fabs(ref_val)*bound[0]
         
-            _min = par.best_fit_val - delta_m
-            _max = par.best_fit_val + delta_p
+            _min = ref_val - delta_m
+            _max = ref_val + delta_p
+        else:
+            _min,_max=par_bounds
 
+        if par.fit_range_min is not None and preserve_fit_range is True:
+            _min= max(_min, par.fit_range_min )
+        elif par.val_min is not None:
+            _min= max(_min, par.val_min)
 
-            if par.fit_range_min is not None and preserve_fit_range is True:
-                _min= max(_min, par.fit_range_min )
-            elif par.val_min is not None:
-                _min= max(_min, par.val_min)
-
-            if par.fit_range_max is not None:
-                _max= min(_max, par.fit_range_max )
-            elif par.val_max is not None:
-                _max= min(_max, par.val_max)
-            
-            print('par:',par.name,' best fit value: ',par.best_fit_val,' mcmc bounds:',[_min, _max])
-            par.mcmc_bound_max=_max
-            par.mcmc_bound_min=_min
+        if par.fit_range_max is not None:
+            _max= min(_max, par.fit_range_max )
+        elif par.val_max is not None:
+            _max= min(_max, par.val_max)
+        
+        print('par:',par.name,' best fit value: ',par.best_fit_val,' mcmc bounds:',[_min, _max])
+        par.mcmc_bound_max=_max
+        par.mcmc_bound_min=_min
 
     def _build_sampler_bounds(self):
         self._bounds_sampler=[]
