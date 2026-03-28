@@ -4,10 +4,20 @@ __author__ = "Andrea Tramacere"
 
 
 import ast
-from astropy.table import Table
+from astropy.table import Table,MaskedColumn
 from .model_parameters import _show_table,CompositeModelParameterArray
+import numpy as np
 
 
+def sci_if_large(self,val):
+        try:
+            if val is None:
+                return "--"
+            if abs(val) > 1e4:
+                return f"{val:.3e}"
+            return f"{val}"
+        except Exception:
+            return "--"
 class McmcCompositeModelParameterArray(CompositeModelParameterArray):
 
     def _build_sampler_par_table(self, names_list=None):
@@ -105,10 +115,37 @@ class McmcCompositeModelParameterArray(CompositeModelParameterArray):
                 _val.append(par.val)
 
         t = Table(_fields, names=_names, masked=False)
+        #_numeric_fields =['val','bestfit mcmc','q16','q50','q84','mcmc bound min','mcmc bound max']
 
-       # self._fromat_column_entry(t)
-
+        #for n in _numeric_fields:
+        #    if n in t.colnames:
+        #        t[n].format = sci_if_large
+            
         return t
+    
+    def _fromat_column_entry(self, t):
+        _numeric_fields =['val','bestfit mcmc','q16','q50','q84','mcmc bound min','mcmc bound max']
+
+        for n in _numeric_fields:
+            if n in t.colnames:
+                try:
+                    if None in t[n].data:
+
+                        t[n] = MaskedColumn(t[n].data, name=n, dtype=np.float64, mask=t[n].data==None)
+                    else:
+                        t[n] = MaskedColumn(t[n].data, name=n, dtype=np.float64)
+                    t[n].format = '%e'
+                except:
+
+                    for ID,v in enumerate(t[n].data):
+                        try:
+                            c=ast.literal_eval(t[n].data[ID])
+                            if type(c) == int:
+                                t[n].data[ID] = '%d' % c
+                            else:
+                                t[n].data[ID] = '%e' % c
+                        except:
+                            pass
 
 def get_mcmc_bound_max(self):
     return self._mcmc_bound_max

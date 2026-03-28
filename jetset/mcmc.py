@@ -85,7 +85,7 @@ class McmcSampler(object):
     state, stores sampler outputs, and provides serialization-safe state
     handling for chain analysis and plotting.
     """
-    def __init__(self,model_minimizer):
+    def __init__(self,model_minimizer,build_mcmc_parameters=True):
         """Create a new `McmcSampler` instance.
         
         Parameters
@@ -101,7 +101,8 @@ class McmcSampler(object):
         
         self.model.parameters.__class__=McmcCompositeModelParameterArray
         self._progress_iter = cycle(['|', '/', '-', '\\'])
-        self._bulild_mcmc_paramters()
+        if build_mcmc_parameters:
+            self._bulild_mcmc_paramters()
     
     @property
     def _par_array_sampler(self):
@@ -116,6 +117,18 @@ class McmcSampler(object):
         state = self.__dict__.copy()
         state['_progress_iter'] = None
         state['sampler'] = None
+        state['sate_of_mcmc_parameters']={}
+        for model in self.model.components.components_list:
+            state['sate_of_mcmc_parameters'][model.name]={}
+            for p in self.model.parameters.par_array:
+                state['sate_of_mcmc_parameters'][model.name][p.name]={}
+                state['sate_of_mcmc_parameters'][model.name][p.name]['best_fit_mcmc_val']=p.best_fit_mcmc_val
+                state['sate_of_mcmc_parameters'][model.name][p.name]['q_16']=p.q_16
+                state['sate_of_mcmc_parameters'][model.name][p.name]['q_50']=p.q_50
+                state['sate_of_mcmc_parameters'][model.name][p.name]['q_84']=p.q_84
+                state['sate_of_mcmc_parameters'][model.name][p.name]['plot_label']=p.plot_label
+                state['sate_of_mcmc_parameters'][model.name][p.name]['mcmc_bound_min']=p.mcmc_bound_min
+                state['sate_of_mcmc_parameters'][model.name][p.name]['mcmc_bound_max']=p.mcmc_bound_max
         return state
 
     def __setstate__(self, state):
@@ -125,6 +138,7 @@ class McmcSampler(object):
             self.chain = self._as_walker_first_chain(self.chain)
         if hasattr(self, 'log_prob_chain') and self.log_prob_chain is not None:
             self.log_prob_chain = self._as_walker_first_log_prob(self.log_prob_chain)
+
 
     def _as_walker_first_chain(self, chain):
         _chain = np.asarray(chain)
@@ -199,8 +213,12 @@ class McmcSampler(object):
     
    
     @property
+    def best_fit_par_table(self):
+        return self.model.parameters.best_fit_par_table
+    
+    @property
     def parameters(self):
-        return self.model.parameters
+        return self.model.parameters._build_sampler_par_table()
 
     @property
     def sampler_parameters(self):
@@ -239,7 +257,7 @@ class McmcSampler(object):
             return
         
         elif comp_name is not None and par_name is not None:
-            if np.shape(par_bounds)!=2:
+            if np.shape(par_bounds)!=(2,):
                 raise RuntimeError('please provide par_bounds as [min_bound, max_bound], with min_bound<max_bound')
             if par_bounds[0]>=par_bounds[1]:
                 raise RuntimeError('please provide par_bounds as [min_bound, max_bound], with min_bound<max_bound')
@@ -255,7 +273,12 @@ class McmcSampler(object):
     
        
     def _set_bounds(self, par, bound=0.2,bound_rel=True,preserve_fit_range=True,par_bounds=None):
-        
+
+        if par.best_fit_val is None:
+            ref_val=par.val
+        else:
+            ref_val=par.best_fit_val 
+
         if par_bounds == [] or par_bounds is None:
             if np.shape(bound) == ():
                 bound=[bound,bound]
@@ -264,11 +287,6 @@ class McmcSampler(object):
             else:
                 raise RuntimeError('bound shape', np.shape(bound), 'it is wrong, has to be a scalar or (2,)')
             
-            if par.best_fit_val is None:
-                ref_val=par.val
-            else:
-                ref_val=par.best_fit_val 
-
             if  not bound_rel:
                 delta_p = ref_val * bound[1]
                 delta_m = ref_val  * bound[0]
@@ -292,7 +310,9 @@ class McmcSampler(object):
         elif par.val_max is not None:
             _max= min(_max, par.val_max)
         
-        print('par:',par.name,' best fit value: ',par.best_fit_val,' mcmc bounds:',[_min, _max])
+        if ref_val>=_max or ref_val<=_min:
+            raise RuntimeError(f'please set bounds for par: {par.name} of model comp: {par.model.name} such that  bound_min<{ref_val}<bound_max')
+        print('par:',par.name,' ref value: ',ref_val,' mcmc bounds:',[_min, _max])
         par.mcmc_bound_max=_max
         par.mcmc_bound_min=_min
 
@@ -364,8 +384,10 @@ class McmcSampler(object):
         This updates only the internal parameter dictionary used by the
         sampler helper; it does not run a new minimization.
         """
-        for par in  self._par_array_sampler:
-            par.val = par.best_fit_val
+       
+        for par in self._par_array_sampler:
+            if par.best_fit_val is not None:
+                par.val = par.best_fit_val
 
 
     def reset_to_mcmc_best_fit(self,verbose=True):
@@ -382,12 +404,19 @@ class McmcSampler(object):
         if verbose:
             print("----------------------------")
             print("MCMC best fit solution")
-            for ID,par in enumerate(self._par_array_sampler):
-                par.val= self.get_sample(ID)[_id_prob_max]
-                par.best_fit_mcmc_val= par.val
-                print(f"{par.name}: {par.val}")
-            print("----------------------------")
+        for ID,par in enumerate(self._par_array_sampler):
+            par.val= self.get_sample(ID)[_id_prob_max]
+            par.best_fit_mcmc_val= par.val
+            
 
+            quantiles=self.get_par_quantiles(par_name=par.name,comp_name=par.model.name,quantiles=(0.16,0.5,0.84))
+            par.q_16=quantiles[0]
+            par.q_50=quantiles[1]
+            par.q_84=quantiles[2]
+            if verbose:
+                print(f"comp: {par.model.name} par: {par.name}  mcmc best fit val: {par.val} quantiles(0.16,0.5,0.84): {quantiles} ")
+        if verbose:
+            print("----------------------------")
         
     def run_sampler(self,
                     nwalkers=None,
@@ -458,8 +487,8 @@ class McmcSampler(object):
         self.calls_tot = self.nwalkers * steps
 
         if pos is None:
-            pos = sample_ball(np.array([p.best_fit_val for p in self._par_array_sampler]),
-                              np.array([p.best_fit_val * walker_start_bound for p in self._par_array_sampler]),
+            pos = sample_ball(np.array([p.val for p in self._par_array_sampler]),
+                              np.array([p.val * walker_start_bound for p in self._par_array_sampler]),
                               self.nwalkers)
 
         
@@ -608,7 +637,7 @@ class McmcSampler(object):
             else:
                 par_names=np.atleast_1d(par_name)
 
-            f, axes = plt.subplots(len(par_names), sharex=True)
+            f, axes = plt.subplots(len(par_names),figsize=(5*len(par_names), 5*10), sharex=True)
             axes=np.atleast_1d(axes)
             for ID,_p_name in enumerate(par_names):
                 self._plot_chain(_p_name,axes[ID],comp_name=comp_name,log_plot=log_plot)
@@ -763,7 +792,7 @@ class McmcSampler(object):
         _p,p_idx=self.get_par(par_name,comp_name=comp_name,get_index=True)
         return self.samples[:,p_idx]
 
-    def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False,quantiles=None, get_model=False, plot_mcmc_best_fit_model=False,rnd_seed=0):
+    def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False,quantiles=None, get_model=False, plot_mcmc_best_fit_model=True,rnd_seed=0):
         """Plot model.
         
         Parameters
@@ -783,7 +812,7 @@ class McmcSampler(object):
         get_model : bool, optional
             If ``True``, return model values.
         plot_mcmc_best_fit_model : bool, optional
-            If ``True``, overlay MCMC best-fit model in plots.
+            If ``True``, overlay MCMC best-fit model in plots, otherwise the frequentist best-fit model
         rnd_seed : int, optional
             Random seed used for reproducible sampling.
         
@@ -819,12 +848,12 @@ class McmcSampler(object):
 
         p.lines_model_list.append(l)
         msk = y_min > self.model.flux_plot_lim
-        if plot_mcmc_best_fit_model is False:
+        if not plot_mcmc_best_fit_model :
             self.reset_to_minimizer_best_fit()
             label=None
         else:
             label='mcmc best fit'
-            self.reset_to_mcmc_best_fit()
+            self.reset_to_mcmc_best_fit(verbose=False)
         
         self.model.eval(fill_SED=True)
         p.add_model_plot(self.model, color='red',fit_range = fit_range,flim=self.model.flux_plot_lim,label=label)
@@ -896,9 +925,27 @@ class McmcSampler(object):
         try:
             c = pickle.load(open(file_name, "rb"))
             if isinstance(c, McmcSampler):
-                #c.__init__(c.minimizer)
+                c.model.parameters.__class__=McmcCompositeModelParameterArray
                 if hasattr(c,'model'):
                     c.model=c.model._build_model(c.model)
+                for p in c.model.parameters.par_array:
+                    Base = p.__class__
+                    if not Base.__name__.startswith("McmcParameter_"):
+                        McmcParameter = types.new_class(f"McmcParameter_{Base.__name__}", (Base,))
+                        McmcParameter.x = property(set_mcmc_bound_max,get_mcmc_bound_max)
+                        McmcParameter.x = property(set_mcmc_bound_min,get_mcmc_bound_min)
+                        p.__class__ = McmcParameter
+                        p._check_par_mcmc_bounds = types.MethodType(_check_par_mcmc_bounds, p)
+                        p.best_fit_mcmc_val=c.sate_of_mcmc_parameters[p.model.name][p.name]['best_fit_mcmc_val']
+                        p.q_16=c.sate_of_mcmc_parameters[p.model.name][p.name]['q_16']
+                        p.q_50=c.sate_of_mcmc_parameters[p.model.name][p.name]['q_50']
+                        p.q_84=c.sate_of_mcmc_parameters[p.model.name][p.name]['q_84']
+                        p.plot_label=c.sate_of_mcmc_parameters[p.model.name][p.name]['plot_label']
+                        p.mcmc_bound_min=c.sate_of_mcmc_parameters[p.model.name][p.name]['mcmc_bound_min']
+                        p.mcmc_bound_max=c.sate_of_mcmc_parameters[p.model.name][p.name]['mcmc_bound_max']
+
+                delattr(c,'sate_of_mcmc_parameters')
+               
                 return  c
             else:
                 raise RuntimeError('The model you loaded is not valid please check the file name')
