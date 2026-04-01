@@ -216,10 +216,7 @@ class McmcSampler(object):
     def best_fit_par_table(self):
         return self.model.parameters.best_fit_par_table
     
-    @property
-    def parameters(self):
-        return self.model.parameters._build_sampler_par_table()
-
+    
     @property
     def sampler_parameters(self):
         """sampler table.
@@ -361,17 +358,22 @@ class McmcSampler(object):
         
 
 
-    def set_plot_label(self,par_name,plot_label,comp_name=None):
-        """Set plot label.
-        
+    def set_plot_label(self,par_name,plot_label,comp_name):
+        """Set the display label used for a sampled parameter in plots.
+
         Parameters
         ----------
-        par_name : object
-            Parameter name.
-        plot_label : object
-            Custom label used in plots.
-        comp_name : object, optional
-            Model-component name.
+        par_name : str
+            Name of the parameter whose label must be updated.
+        plot_label : str
+            New text label used in corner and chain plots.
+        comp_name : str
+            Name of the model component that owns ``par_name``.
+
+        Raises
+        ------
+        RuntimeError
+            If the requested parameter/component pair is not found.
         """
         p=self.get_par(par_name,comp_name=comp_name)
         p.plot_label=plot_label
@@ -637,7 +639,7 @@ class McmcSampler(object):
             else:
                 par_names=np.atleast_1d(par_name)
 
-            f, axes = plt.subplots(len(par_names),figsize=(5*len(par_names), 5*10), sharex=True)
+            f, axes = plt.subplots(len(par_names),figsize=(10, 3*len(par_names)), sharex=True)
             axes=np.atleast_1d(axes)
             for ID,_p_name in enumerate(par_names):
                 self._plot_chain(_p_name,axes[ID],comp_name=comp_name,log_plot=log_plot)
@@ -792,34 +794,45 @@ class McmcSampler(object):
         _p,p_idx=self.get_par(par_name,comp_name=comp_name,get_index=True)
         return self.samples[:,p_idx]
 
-    def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False,quantiles=None, get_model=False, plot_mcmc_best_fit_model=True,rnd_seed=0):
-        """Plot model.
-        
+    def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False,quantiles=None, get_model=False, plot_mcmc_best_fit_model=True,rnd_seed=0,plot_components=False):
+        """Plot posterior model envelope and a best-fit reference curve.
+
         Parameters
         ----------
-        sed_data : object, optional
-            Observational SED data container.
-        fit_range : [float,float], optional
-            Range for fit.
+        sed_data : ObsData, optional
+            Observational SED data used for plotting and residuals. If ``None``,
+            ``self.sed_data`` is used.
+        fit_range : sequence of float, optional
+            Two-element fit interval ``[nu_min, nu_max]`` used for model and
+            residual overlays. If ``None``, ``[self.model.nu_min_fit,
+            self.model.nu_max_fit]`` is used.
         size : int, optional
-            Number of samples or sample size.
-        frame : str, optional
-            Reference frame for data/model values.
+            Number of posterior samples used to build the shaded model envelope.
+        frame : {'obs', 'src'}, optional
+            Frame used to evaluate and display model SED values.
         density : bool, optional
-            If ``True``, use density representation instead of integrated quantity.
-        quantiles : object, optional
-            Quantiles to evaluate/report.
+            If ``True``, convert sampled ``nuFnu`` curves to ``Fnu`` by dividing
+            by frequency before computing the envelope.
+        quantiles : tuple of float, optional
+            Lower/upper quantiles for the shaded envelope (for example
+            ``(0.16, 0.84)``). If ``None``, use the full min/max range.
         get_model : bool, optional
-            If ``True``, return model values.
+            If ``True``, also return the sampled envelope arrays
+            ``[x, y_min, y_max]`` after flux-limit masking.
         plot_mcmc_best_fit_model : bool, optional
-            If ``True``, overlay MCMC best-fit model in plots, otherwise the frequentist best-fit model
+            If ``True``, overlay the MCMC best-fit model. If ``False``, overlay
+            the minimizer best-fit model.
         rnd_seed : int, optional
-            Random seed used for reproducible sampling.
-        
+            Seed used to draw posterior samples reproducibly.
+        plot_components : bool, optional
+            If ``True``, plot component/sub-component curves before the final
+            reference curve.
+
         Returns
         -------
-        object
-            Plot object or generated visualization.
+        PlotSED or tuple
+            Plot object. If ``get_model`` is ``True``, returns
+            ``(plot_obj, [x, y_min, y_max])``.
         """
         if sed_data is None:
             sed_data=self.sed_data
@@ -854,8 +867,9 @@ class McmcSampler(object):
         else:
             label='mcmc best fit'
             self.reset_to_mcmc_best_fit(verbose=False)
-        
-        self.model.eval(fill_SED=True)
+        if plot_components:
+            self.model.eval()
+            self.model.plot_model(sed_data=sed_data,plot_obj=p,only_components=True)
         p.add_model_plot(self.model, color='red',fit_range = fit_range,flim=self.model.flux_plot_lim,label=label)
         p.add_model_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
         self.reset_to_mcmc_best_fit(verbose=False)

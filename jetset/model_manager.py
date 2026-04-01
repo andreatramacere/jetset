@@ -269,32 +269,37 @@ class FitModel(Model):
         if analytical is not None:
             self.add_component(analytical)
 
-    def plot_model(self,plot_obj=None,clean=False,sed_data=None,frame='obs',skip_components=False,label=None,skip_sub_components=False, density=False):
-        """Plot model.
-        
+    def plot_model(self,plot_obj=None,clean=False,sed_data=None,frame='obs',skip_components=False,label=None,skip_sub_components=False, only_components=False, density=False):
+        """Plot the composite model, optional components, and residuals.
+
         Parameters
         ----------
-        plot_obj : object, optional
-            Existing plot object to update.
+        plot_obj : PlotSED, optional
+            Existing plot object to update. If ``None``, a new one is created.
         clean : bool, optional
-            If ``True``, clear previously plotted content before plotting.
-        sed_data : object, optional
-            Observational SED data container.
-        frame : str, optional
-            Reference frame for data/model values.
+            If ``True``, clear previously drawn model lines before plotting.
+        sed_data : ObsData, optional
+            Observational SED data. Used to initialize the plot helper and to
+            compute residuals. If ``None``, residual points are not added.
+        frame : {'obs', 'src'}, optional
+            Frame used to display model curves.
         skip_components : bool, optional
-            If ``True``, skip components.
-        label : object, optional
-            Label used in output or plots.
+            If ``True``, do not plot top-level component models.
+        label : str, optional
+            Label for the total composite model curve. Defaults to ``self.name``.
         skip_sub_components : bool, optional
-            If ``True``, skip sub components.
+            If ``True``, do not plot sub-components for each component model.
+        only_components : bool, optional
+            If ``True``, skip plotting the total composite curve (``self.SED``)
+            and plot only component/sub-component curves (subject to skip flags).
         density : bool, optional
-            If ``True``, use density representation instead of integrated quantity.
-        
+            Passed to the plotting helper when creating a new plot object.
+
         Returns
         -------
-        object
-            Plot object or generated visualization.
+        PlotSED
+            Plot object with model curves (and residuals when ``sed_data`` is
+            provided).
         """
         plot_obj=self._set_up_plot(plot_obj,sed_data,frame,density)
 
@@ -305,6 +310,7 @@ class FitModel(Model):
             line_style = '--'
 
             for mc in self.components._components_list:
+              
                 comp_label = mc.name
                 if hasattr(mc,'SED'):
                     try:
@@ -338,7 +344,8 @@ class FitModel(Model):
         if label is None:
             label=self.name
 
-        plot_obj.add_model_plot(self.SED, line_style=line_style, label=label, flim=self.flux_plot_lim,fit_range=[self.nu_min_fit,self.nu_max_fit], frame=frame  )
+        if not only_components:
+            plot_obj.add_model_plot(self.SED, line_style=line_style, label=label, flim=self.flux_plot_lim,fit_range=[self.nu_min_fit,self.nu_max_fit], frame=frame  )
         plot_obj.add_model_residual_plot(data=sed_data, model=self, fit_range=[self.nu_min_fit, self.nu_max_fit])
 
         #if frame == 'src' and sed_data is not None:
