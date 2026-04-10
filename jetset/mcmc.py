@@ -542,7 +542,7 @@ class McmcSampler(object):
 
     
 
-    def corner_plot(self, comp_name=None,quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}, **kwargs):
+    def corner_plot(self, comp_name=None,quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}, per_component=True, **kwargs):
         """Corner plot.
         
         Parameters
@@ -563,50 +563,94 @@ class McmcSampler(object):
         object
             Computed value.
         """
-       
-        if comp_name is None:
-            components=np.unique([p.model.name for  p in self._par_array_sampler])
+        
+        if per_component:
+            if comp_name is None:
+                components=np.unique([p.model.name for  p in self._par_array_sampler])
+            else:
+                components=[comp_name]
+            f_list=[]
+            for c in components:
+                _idxs = []
+                truths = []                
+                msk=np.array([p.model.name==c for  p in self._par_array_sampler])
+                names=[p.name for p in np.array(self._par_array_sampler)[msk]]
+                plot_labels=[]
+                if msk.sum()>0:
+                    for name in names:
+                        
+                        _idx=self.get_par(name,comp_name=c,get_index=True)[1]        
+                        _idxs.append(_idx)
+        
+                        p=self.get_par(_idx)
+                        truths.append(p.best_fit_mcmc_val)
+                        if hasattr(p,'plot_label'):
+                            plot_labels.append(p.plot_label)
+                        else:
+                            plot_labels.append(p.name)
+
+                    f=self._do_corner_plot(c,
+                                        self.samples,
+                                        _idxs,
+                                        quantiles,
+                                        plot_labels,
+                                        truths,
+                                        title_kwargs,
+                                        levels,
+                                        **kwargs)
+                    f_list.append(f)
+            return f_list
+        
         else:
-            components=[comp_name]
-        f_list=[]
-        for c in components:
+            f_list=[]
             _idxs = []
             truths = []
-            
-            
-            msk=np.array([p.model.name==c for  p in self._par_array_sampler])
-
-
-            names=[p.name for p in np.array(self._par_array_sampler)[msk]]
             plot_labels=[]
-            if msk.sum()>0:
-                for name in names:
-                    
-                    _idxs.append(self.get_par(name,comp_name=c,get_index=True)[1])
+            components=np.unique([p.model.name for  p in self._par_array_sampler])
+            for c in components:
+                msk=np.array([p.model.name==c for  p in self._par_array_sampler])
+                if msk.sum()>0:
+                    _names=([p.name for p in np.array(self._par_array_sampler)[msk]])
+                    for name in _names:
+                        _idx=self.get_par(name,comp_name=c,get_index=True)[1]        
+                        _idxs.append(_idx)
 
-    
-                for _idx in _idxs:
-                    truths.append(self.get_par(_idx).best_fit_mcmc_val)
-                    if hasattr(self.get_par(_idx),'plot_label'):
-                        plot_labels.append(self.get_par(_idx).plot_label)
-                    else:
-                        plot_labels.append(self.get_par(_idx).name)
+                        p=self.get_par(_idx)
+                        truths.append(p.best_fit_mcmc_val)
+                        if hasattr(p,'plot_label'):
+                            plot_labels.append(f'{p.model.name}\n{p.plot_label}')
+                        else:
+                            plot_labels.append(f'{p.model.name}\n{p.name}')
 
-                f = corner.corner(self.samples[:, _idxs],
-                                quantiles=quantiles, 
-                                labels=plot_labels,
-                                truths=truths,
-                                title_kwargs=title_kwargs,
-                                show_titles = True,
-                                levels = levels,**kwargs)
+            f=self._do_corner_plot(self.model.name,
+                                self.samples,
+                                _idxs,
+                                quantiles,
+                                plot_labels,
+                                truths,
+                                title_kwargs,
+                                levels,
+                                **kwargs)
+            f_list.append(f)
+            return f_list
 
-                
-                #print(c,str(quantiles))
-                title = c + ' quantiles ='+str(quantiles)
 
-                f.suptitle(title,y=1.0)
-                f_list.append(f)
-        return f_list
+
+    def _do_corner_plot(self, c,samples,_idxs,quantiles,plot_labels,truths,title_kwargs,levels,**kwargs):
+        f = corner.corner(samples[:, _idxs],
+                        quantiles=quantiles, 
+                        labels=plot_labels,
+                        truths=truths,
+                        title_kwargs=title_kwargs,
+                        show_titles = True,
+                        levels = levels,
+                        **kwargs)
+
+        title = c + ' quantiles ='+str(quantiles)
+
+        f.suptitle(title,y=1.0)
+
+        return f
 
     
     def plot_chain(self,par_name=None, comp_name=None,log_plot=False):
