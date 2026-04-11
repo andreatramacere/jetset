@@ -120,7 +120,7 @@ class McmcCompositeModelParameterArray(CompositeModelParameterArray):
         #for n in _numeric_fields:
         #    if n in t.colnames:
         #        t[n].format = sci_if_large
-            
+        self._fromat_column_entry(t)
         return t
     
     def _fromat_column_entry(self, t):
@@ -147,6 +147,7 @@ class McmcCompositeModelParameterArray(CompositeModelParameterArray):
                         except:
                             pass
 
+# Methods added dynamically to the mcmc parameters
 def get_mcmc_bound_max(self):
     return self._mcmc_bound_max
 

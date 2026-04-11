@@ -904,16 +904,19 @@ class McmcSampler(object):
         l=p.sedplot.fill_between(x[msk],y_max[msk],y_min[msk],color='gray',alpha=0.3,label=_l)
 
         p.lines_model_list.append(l)
-        msk = y_min > self.model.flux_plot_lim
+        
         if not plot_mcmc_best_fit_model :
             self.reset_to_minimizer_best_fit()
             label=None
         else:
             label='mcmc best fit'
             self.reset_to_mcmc_best_fit(verbose=False)
-        if plot_components:
-            self.model.eval()
+       
+        self.model.eval()
+
+        if plot_components:            
             self.model.plot_model(sed_data=sed_data,plot_obj=p,only_components=True)
+       
         p.add_model_plot(self.model, color='red',fit_range = fit_range,flim=self.model.flux_plot_lim,label=label)
         p.add_model_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
         self.reset_to_mcmc_best_fit(verbose=False)
