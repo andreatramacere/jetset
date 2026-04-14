@@ -9,7 +9,8 @@ import numpy as np
 
 try:
     from ultranest import ReactiveNestedSampler
-
+    from ultranest.stepsampler import SliceSampler
+    from ultranest.stepsampler import generate_mixture_random_direction
     ultranest_installed = True
 except Exception:
     on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
@@ -255,7 +256,7 @@ class UltraNestSampler(McmcSampler):
             log_dir=log_dir,
             resume=resume,
         )
-
+        self.sampler.stepsampler = SliceSampler(nsteps=1 *self.ndim, generate_direction=generate_mixture_random_direction)
         run_args = {
             'min_num_live_points': min_num_live_points,
             'dlogz': dlogz,
