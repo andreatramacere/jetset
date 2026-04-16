@@ -191,6 +191,8 @@ class UltraNestSampler(McmcSampler):
         show_status=True,
         posterior_samples_size=None,
         rnd_seed=0,
+        use_stepsampler=True,
+        nsteps=2,
         **run_kwargs,
     ):
         """Run posterior sampling with UltraNest.
@@ -222,8 +224,18 @@ class UltraNestSampler(McmcSampler):
             nested-sampling samples. If ``None``, use all weighted points.
         rnd_seed : int, optional
             Seed for posterior resampling.
+        use_stepsampler : bool, optional
+            If ``True``, attach a ``SliceSampler`` to the UltraNest sampler.
+        nsteps : int, optional
+            Slice-sampler steps per parameter dimension. The effective value is
+            ``nsteps * self.ndim``. Default is ``2``.
         **run_kwargs : dict
             Additional keyword arguments passed to ``ReactiveNestedSampler.run``.
+
+        Notes
+        -----
+        On completion, posterior samples are stored in ``self.samples`` and
+        model parameters are reset to the mcmc best-fit point.
         """
         self._check_ultranest_bounds()
 
@@ -256,7 +268,10 @@ class UltraNestSampler(McmcSampler):
             log_dir=log_dir,
             resume=resume,
         )
-        self.sampler.stepsampler = SliceSampler(nsteps=1 *self.ndim, generate_direction=generate_mixture_random_direction)
+        
+        if use_stepsampler:
+            self.sampler.stepsampler = SliceSampler(nsteps=nsteps *self.ndim, generate_direction=generate_mixture_random_direction)
+        
         run_args = {
             'min_num_live_points': min_num_live_points,
             'dlogz': dlogz,
