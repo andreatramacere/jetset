@@ -516,6 +516,7 @@ class McmcSampler(object):
         
         self.samples = self.sampler.get_chain(flat=True,discard=burnin)
         self.samples_log_prob  = self.sampler.get_log_prob(flat=True,discard=burnin)
+        self.posterior_weights=None
         self._cache_sampler_chains()
         self.acceptance_fraction=np.mean(self.sampler.acceptance_fraction)
         self.reset_to_mcmc_best_fit()
@@ -563,7 +564,6 @@ class McmcSampler(object):
         object
             Computed value.
         """
-        
         if per_component:
             if comp_name is None:
                 components=np.unique([p.model.name for  p in self._par_array_sampler])
@@ -597,6 +597,7 @@ class McmcSampler(object):
                                         truths,
                                         title_kwargs,
                                         levels,
+                                        weights=self.posterior_weights,
                                         **kwargs)
                     f_list.append(f)
             return f_list
@@ -630,6 +631,7 @@ class McmcSampler(object):
                                 truths,
                                 title_kwargs,
                                 levels,
+                                weights=self.posterior_weights,
                                 **kwargs)
             f_list.append(f)
             return f_list
@@ -1040,21 +1042,46 @@ def emcee_log_like(theta,fit_model,data,use_UL,par_array,loglog):
         Computed value.
     """
     _warn = False
-    for pi in range(len(theta)):
-        
-        
-        par_array[pi].val=theta[pi]
-        fit_model.parameters.set_par(model_name= par_array[pi].model.name,par_name=par_array[pi].name,val=par_array[pi].val)
-        if np.isnan(theta[pi]):
-            _warn=True
 
-    _model = fit_model.eval(nu=data['x'], fill_SED=False, get_model=True, loglog=loglog)
+    theta = np.asarray(theta, dtype=float)
 
-    _res_sum, _res, _res_UL = _eval_res(data['y'],
-                                        _model,
-                                        data['dy'],
-                                        data['UL'],
-                                        use_UL=use_UL)
+    # Fast reject before mutating model
+    if not np.all(np.isfinite(theta)):
+        return -1e100
+
+    try:
+        for pi in range(len(theta)):
+            
+            
+            par_array[pi].val=theta[pi]
+            fit_model.parameters.set_par(model_name= par_array[pi].model.name,par_name=par_array[pi].name,val=par_array[pi].val)
+            if np.isnan(theta[pi]):
+                _warn=True
+    except Exception:
+        # Parameter-setting failure
+        return -1e100
+
+    try:
+        _model = fit_model.eval(nu=data['x'], fill_SED=False, get_model=True, loglog=loglog)
+    except Exception:
+        # Parameter-setting failure
+        return -1e100
+
+    _model = np.asarray(_model, dtype=float)
+    if not np.all(np.isfinite(_model)):
+        return -1e100
+    try:
+        _res_sum, _res, _res_UL = _eval_res(data['y'],
+                                            _model,
+                                            data['dy'],
+                                            data['UL'],
+                                            use_UL=use_UL)
+    except Exception:
+        return -1e100
+
+    if not np.isfinite(_res_sum):
+        return -1e100
+    
     return  _res_sum *-0.5
 
 
