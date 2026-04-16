@@ -927,7 +927,30 @@ class ModelParameter(object):
         return self._root_par.val
 
 
-
+    def make_log(self):
+        if self.islog:
+            pass
+        else:
+            if self.val_max is not None:
+                if self.val_max>0:
+                    self.val_max=np.log10(self.val_max)
+                else:
+                    self.val_max=-200
+            if self.val_min is not None:
+                if self.val_min>0:
+                    self.val_min=np.log10(self.val_min)
+                else:
+                    self.val_min=-200
+            
+            self._val.val=np.log10(self.val_lin)
+            self._val.islog=True
+            if self.val_start is not None:
+                self.val_start=np.log10(self.val_start)
+            if self.val_last_call is not None:
+                self.val_last_call=np.log10(self.val_last_call)
+         
+ 
+        
 
 
 # NOTE: obsolete, not used anymore
