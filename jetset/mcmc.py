@@ -276,6 +276,9 @@ class McmcSampler(object):
         else:
             ref_val=par.best_fit_val 
 
+        if par.islog:
+            ref_val=10**ref_val
+
         if par_bounds == [] or par_bounds is None:
             if np.shape(bound) == ():
                 bound=[bound,bound]
@@ -295,20 +298,51 @@ class McmcSampler(object):
             _min = ref_val - delta_m
             _max = ref_val + delta_p
         else:
-            _min,_max=par_bounds
+            if par.islog:
+                _min,_max=[10**par_bounds[0],10**par_bounds[1]]
+            else:
+                _min,_max=par_bounds
+
+      
 
         if par.fit_range_min is not None and preserve_fit_range is True:
-            _min= max(_min, par.fit_range_min )
+            if par.islog:
+                fit_range_min=10**par.fit_range_min
+            else:
+                fit_range_min=par.fit_range_min
+            _min= max(_min, fit_range_min )
         elif par.val_min is not None:
-            _min= max(_min, par.val_min)
+            if par.islog:
+                val_min=10**par.val_min
+            else:
+                val_min=par.val_min
+            _min= max(_min,val_min)
 
-        if par.fit_range_max is not None:
-            _max= min(_max, par.fit_range_max )
+        if par.fit_range_max is not None and preserve_fit_range is True:
+            if par.islog:
+                fit_range_max=10**par.fit_range_max
+            else:
+                fit_range_max=par.fit_range_max
+            _max= min(_max,fit_range_max )
         elif par.val_max is not None:
-            _max= min(_max, par.val_max)
+            if par.islog:
+                val_max=10**par.val_max
+            else:
+                val_max=par.val_max
+            _max= min(_max,val_max)
         
-        if ref_val>=_max or ref_val<=_min:
-            raise RuntimeError(f'please set bounds for par: {par.name} of model comp: {par.model.name} such that  bound_min<{ref_val}<bound_max')
+        if ref_val>_max or ref_val<_min:
+            if par.islog:
+                _max=np.log10(_max)
+                _min=np.log10(_min)
+                ref_val=np.log10(ref_val)
+            raise RuntimeError(f'please set bounds for par: {par.name} of model comp: {par.model.name} such that  {_min}<={ref_val}<={_max}')
+
+        if par.islog:
+            _max=np.log10(_max)
+            _min=np.log10(_min)
+            ref_val=np.log10(ref_val)
+
         print('par:',par.name,' ref value: ',ref_val,' mcmc bounds:',[_min, _max])
         par.mcmc_bound_max=_max
         par.mcmc_bound_min=_min
@@ -512,15 +546,24 @@ class McmcSampler(object):
         end = time.time()
         comp_time = end - start
         print("mcmc run done, with %d threads took %2.2f seconds"%(threads,comp_time))
-
+        self._set_samples_post_run()
         
-        self.samples = self.sampler.get_chain(flat=True,discard=burnin)
-        self.samples_log_prob  = self.sampler.get_log_prob(flat=True,discard=burnin)
+      
+
+    def tune_burnin(self, tau_cor_coeff=3):
+
+        tau = self.sampler.get_autocorr_time(tol=0)
+        self.burnin = int(tau_cor_coeff * np.max(tau))   # or a few times max(tau)
+        #thin = int(0.5 * np.min(tau))
+        self._set_samples_post_run()
+
+    def _set_samples_post_run(self):
+        self.samples = self.sampler.get_chain(flat=True,discard=self.burnin)
+        self.samples_log_prob  = self.sampler.get_log_prob(flat=True,discard=self.burnin)
         self.posterior_weights=None
         self._cache_sampler_chains()
         self.acceptance_fraction=np.mean(self.sampler.acceptance_fraction)
         self.reset_to_mcmc_best_fit()
-
 
     def get_par_quantiles(self,par_name,comp_name=None,quantiles=(0.16,0.5,0.84)):
         """Return par quantiles.
