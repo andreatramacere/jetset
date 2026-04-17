@@ -158,7 +158,6 @@ class JetBase(Model):
         self._emitting_region_dict = None
         self._electron_distribution_dic= None
         self._external_photon_fields_dic= None
-        self._original_emitters_distr = None
         self._original_inj_emitters_distr = None
         self.inj_emitters_distribution = None
         self._leptonic_equilibrium = False
@@ -233,6 +232,86 @@ class JetBase(Model):
         #        p=state['_internal_absorption_comp'][c]['pars']
         #        self.enable_internal_absorption(**p)
         
+    @staticmethod
+    def _copy_emitters_parameter_state(source_distr, target_distr):
+        for source_par in source_distr.parameters.par_array:
+            target_par = target_distr.parameters.get_par_by_name(source_par.name)
+            if target_par is None:
+                target_distr.add_par(
+                    source_par.name,
+                    par_type=source_par.par_type,
+                    val=source_par.val,
+                    vmin=source_par.val_min,
+                    vmax=source_par.val_max,
+                    unit=source_par.units,
+                    log=source_par.islog,
+                    frozen=source_par.frozen,
+                )
+                target_par = target_distr.parameters.get_par_by_name(source_par.name)
+
+            target_par.set(
+                val=source_par.val,
+                val_min=source_par.val_min,
+                val_max=source_par.val_max,
+                units=source_par.units,
+                frozen=source_par.frozen,
+                log=source_par.islog,
+                skip_dep_par_warning=True,
+            )
+
+    def _build_serializable_emitters_distribution(self):
+        src = self.emitters_distribution
+
+        if isinstance(src, EmittersArrayDistribution):
+            snapshot = EmittersArrayDistribution(
+                name=src.name,
+                emitters_type=src.emitters_type,
+                normalize=src.normalize,
+                gamma_array=np.asarray(src._array_gamma, dtype=np.float64).copy(),
+                n_gamma_array=np.asarray(src._array_n_gamma, dtype=np.float64).copy(),
+                gamma_grid_size=int(src._gamma_grid_size),
+            )
+            self._copy_emitters_parameter_state(src, snapshot)
+            snapshot._update_parameters_dict()
+            return snapshot
+
+        if isinstance(src, EmittersDistribution):
+            available = set(EmittersFactory.available_distributions_list())
+            is_factory_distribution = src.name in available
+            if is_factory_distribution:
+                snapshot = EmittersFactory().create_emitters(
+                    src.name,
+                    gamma_grid_size=int(src._gamma_grid_size),
+                    log_values=src._log_values,
+                    emitters_type=src.emitters_type,
+                    normalize=src.normalize,
+                )
+            else:
+                snapshot = EmittersDistribution(
+                    name=src.name,
+                    spectral_type=src.spectral_type,
+                    gamma_grid_size=int(src._gamma_grid_size),
+                    log_values=src._log_values,
+                    emitters_type=src.emitters_type,
+                    normalize=src.normalize,
+                )
+
+            self._copy_emitters_parameter_state(src, snapshot)
+
+            if is_factory_distribution is False or src.spectral_type == 'user_defined':
+                distr_func = getattr(src, '_py_distr_func', None)
+                if distr_func is None:
+                    distr_func = getattr(src, 'distr_func', None)
+                    if hasattr(distr_func, 'py_func'):
+                        distr_func = distr_func.py_func
+                if distr_func is not None:
+                    snapshot.set_distr_func(distr_func)
+
+            snapshot._update_parameters_dict()
+            return snapshot
+
+        raise RuntimeError('emitters distribution type not valid', type(src))
+
     def _serialize_model(self):
         _model = {}
         _model['version']=get_info()['version']
@@ -241,16 +320,14 @@ class JetBase(Model):
        
         if self.inj_emitters_distribution is None:
             if isinstance(self.emitters_distribution,EmittersDistribution):
-                self._original_emitters_distr._copy_from_jet(self)
-                _model['custom_emitters_distribution']=self._original_emitters_distr
+                _model['custom_emitters_distribution'] = self._build_serializable_emitters_distribution()
                 clean_numba(_model['custom_emitters_distribution'])
                 _model['emitters_distribution_class'] = 'EmittersDistribution'
             else:
-                raise  RuntimeError('emitters distribution type not valid',type(self._emitters_distribution))
+                raise RuntimeError('emitters distribution type not valid', type(self.emitters_distribution))
 
         else:
             if isinstance(self.inj_emitters_distribution ,InjEmittersDistribution):
-                #self._original_emitters_distr._copy_from_jet(self)
                 _model['custom_emitters_distribution']=self.inj_emitters_distribution
                 clean_numba(_model['custom_emitters_distribution'])
                 _model['emitters_distribution_class'] = 'InjEmittersDistribution'
@@ -356,7 +433,10 @@ class JetBase(Model):
         if _model['emitters_distribution_class'] == 'EmittersDistribution' or _model['emitters_distribution_class'] == 'InjEmittersDistribution':
             self.set_emitters_distribution(distr=_model['custom_emitters_distribution'], init=False)
         else:
-            raise RuntimeError('emitters distribution type not valid', type(self._emitters_distribution))
+            raise RuntimeError(
+                'emitters distribution type not valid',
+                type(_model.get('custom_emitters_distribution'))
+            )
 
     
         for c in self.basic_components_list:
@@ -871,7 +951,6 @@ class JetBase(Model):
             self._ensure_leptonic_equilibrium_parameters()
 
             self.emitters_distribution = self._build_equilibrium_carrier_distribution()
-            self._original_emitters_distr = copy.deepcopy(self.emitters_distribution)
             self.emitters_distribution.set_jet(self)
             self._sync_jet_parameters_from_inj_emitters_distribution()
             self.emitters_distribution._update_parameters_dict()
@@ -885,7 +964,6 @@ class JetBase(Model):
             self._disable_leptonic_equilibrium(remove_parameters=True)
             self._emitters_distribution_name = 'from_array'
             self.emitters_distribution = EmittersDistribution.from_array(self, distr, emitters_type=emitters_type)
-            self._original_emitters_distr = copy.deepcopy(self.emitters_distribution)
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
             self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
             self._attach_emitters_pars_to_jet(preserve_value_emitters=True)
@@ -895,7 +973,6 @@ class JetBase(Model):
             self._disable_leptonic_equilibrium(remove_parameters=True)
             if hasattr(distr,'_activate_numba'):
                 distr._activate_numba()
-            self._original_emitters_distr = copy.deepcopy(distr)
             self.emitters_distribution = copy.deepcopy(distr)
             self._update_emitters_pars_dependence()
             self.emitters_distribution.set_jet(self)
@@ -913,7 +990,6 @@ class JetBase(Model):
             self.emitters_distribution = nf.create_emitters(distr, log_values=log_values, emitters_type=emitters_type)
             if hasattr( self.emitters_distribution,'_activate_numba'):
                 self.emitters_distribution._activate_numba()
-            self._original_emitters_distr = copy.deepcopy(self.emitters_distribution)
             self.emitters_distribution.set_jet(self)
             self.emitters_distribution._update_parameters_dict()
             self._emitters_distribution_name = self.emitters_distribution.name

@@ -185,7 +185,7 @@ class JetParameter(ModelParameter):
         #_jetkernel = getattr(self._model, self._jetkernel_attr)
         _jetkernel_struct = getattr(self._model, self._jetkernel_struct_name)
 
-        if self._is_in_jetkernel is True:
+        if self._is_in_jetkernel:
             if '.' in name:
                 b = get_nested_attr(_jetkernel_struct, name)
             elif hasattr(_jetkernel_struct,name):
@@ -195,12 +195,12 @@ class JetParameter(ModelParameter):
 
             if b is not None:
                 if type(b)==int:
-                    if self._val.islog is True:
+                    if self._val.islog:
                         val=10**val
                     val=int(val)
 
                 elif type(b)==float:
-                    if self._val._islog is True:
+                    if self._val._islog:
                         val=10**val
                     val=float(val)
 
@@ -211,7 +211,6 @@ class JetParameter(ModelParameter):
                     set_nested_attr(_jetkernel_struct, name, val)
                 else:
                     setattr(_jetkernel_struct,name,val)
-
 
 
 class JetModelParameterArray(ModelParameterArray):

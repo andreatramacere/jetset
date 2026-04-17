@@ -419,7 +419,7 @@ class BaseEmittersDistribution(object):
         if self.normalize is True:
             self._Norm=1.0/np.trapezoid(self.f,self._gamma_grid)
 
-        self.f = self.f*self._Norm*self.parameters.get_par_by_name('N').val
+        self.f = self.f*self._Norm*self.parameters.get_par_by_name('N').val_lin
 
         #NOTE: to be added for leptonic-equilibrium
         # if self.emitters_type == 'electrons-equilibrium':
@@ -1235,7 +1235,7 @@ class InjEmittersDistribution(BaseEmittersDistribution):
             _integ = np.trapezoid(self.f,self._gamma_grid)
             if _integ > 0:
                 self._Norm=1.0/_integ
-        self.f = self.f*self._Norm*self.parameters.get_par_by_name('Q').val
+        self.f = self.f*self._Norm*self.parameters.get_par_by_name('Q').val_lin
         self.gamma_e = self._gamma_grid.copy()
         self.n_gamma_e = np.asarray(self.f, dtype=np.float64)
         self.n_gamma_e[np.isnan(self.n_gamma_e)] = 0
