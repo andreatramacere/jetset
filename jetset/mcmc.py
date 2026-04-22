@@ -14,7 +14,7 @@ import corner
 import dill as pickle
 
 import warnings
-import  time
+import  math
 
 from .plot_sedfit import  plt, set_mpl
 from .mcmc_parameters import(
@@ -232,7 +232,7 @@ class McmcSampler(object):
         
 
 
-    def set_bounds(self,par_name=None,comp_name=None,bound=0.2,bound_rel=False,preserve_fit_range=True,par_bounds=None):
+    def set_bounds(self,par_name=None,comp_name=None,bound=0.2,bound_rel=False,preserve_fit_range=True,par_bounds=None,zero_abs_tol=1E-200):
         """Set bounds.
         
         Parameters
@@ -250,7 +250,7 @@ class McmcSampler(object):
                 raise RuntimeError('if you pass par_bounds, please provide both model comp_name and par_name')
         
             for par in self._par_array_sampler:
-                self._set_bounds(par=par,bound=bound,bound_rel=bound_rel,preserve_fit_range=preserve_fit_range,par_bounds=par_bounds)
+                self._set_bounds(par=par,bound=bound,bound_rel=bound_rel,preserve_fit_range=preserve_fit_range,par_bounds=par_bounds,zero_abs_tol=zero_abs_tol)
             return
         
         elif comp_name is not None and par_name is not None:
@@ -260,7 +260,7 @@ class McmcSampler(object):
                 raise RuntimeError('please provide par_bounds as [min_bound, max_bound], with min_bound<max_bound')
 
             par=self.get_par(par_name,comp_name=comp_name)
-            self._set_bounds(par=par,bound=bound,bound_rel=bound_rel,preserve_fit_range=preserve_fit_range,par_bounds=par_bounds)
+            self._set_bounds(par=par,bound=bound,bound_rel=bound_rel,preserve_fit_range=preserve_fit_range,par_bounds=par_bounds,zero_abs_tol=zero_abs_tol)
             return
 
         else:
@@ -269,7 +269,7 @@ class McmcSampler(object):
 
     
        
-    def _set_bounds(self, par, bound=0.2,bound_rel=True,preserve_fit_range=True,par_bounds=None):
+    def _set_bounds(self, par, bound=0.2,bound_rel=True,preserve_fit_range=True,par_bounds=None,zero_abs_tol=1E-200):
 
         if par.best_fit_val is None:
             ref_val=par.val
@@ -292,8 +292,11 @@ class McmcSampler(object):
                 delta_m = ref_val  * bound[0]
 
             else:
-                delta_p = np.fabs(ref_val)*bound[1]
-                delta_m = np.fabs(ref_val)*bound[0]
+                if math.isclose(np.fabs(ref_val),0,abs_tol=zero_abs_tol):
+                    raise RuntimeError(f"You can't set relative bounds for reference value equal to 0, par={par.name}, of model comp: {par.model.name}, val={ref_val}")
+                else:
+                    delta_p = np.fabs(ref_val)*bound[1]
+                    delta_m = np.fabs(ref_val)*bound[0]
         
             _min = ref_val - delta_m
             _max = ref_val + delta_p
