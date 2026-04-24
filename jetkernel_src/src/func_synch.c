@@ -24,16 +24,27 @@
 //=========================================================================================
 // Sync F(X) log-log interpolation
 //=========================================================================================
+static double F_K_53_log(struct blob * pt, double log_x){
+    return log_log_interp(log_x, pt->Sync.log_F_Sync_x, pt->Sync.log_x_Bessel_min, pt->Sync.log_x_Bessel_max, pt->Sync.log_F_Sync_y, static_bess_table_size, 0);
+}
+
+static double F_K_23_log(struct blob * pt, double log_x){
+    return log_log_interp(log_x, pt->Sync.log_G_Sync_x, pt->Sync.log_x_Bessel_min, pt->Sync.log_x_Bessel_max, pt->Sync.log_G_Sync_y, static_bess_table_size, 0);
+}
+
+static double F_K_ave_log(struct blob *pt, double log_x){
+    return log_log_interp(log_x, pt->Sync.log_F_ave_Sync_x, pt->Sync.log_x_ave_Bessel_min, pt->Sync.log_x_ave_Bessel_max, pt->Sync.log_F_ave_Sync_y, static_bess_table_size, 0);
+}
+
 double F_K_53(struct blob * pt, double x){
-    return log_log_interp(log10(x), pt->Sync.log_F_Sync_x, pt->Sync.log_x_Bessel_min, pt->Sync.log_x_Bessel_max, pt->Sync.log_F_Sync_y,static_bess_table_size,0  );
+    return F_K_53_log(pt, log10(x));
 }
+
 double F_K_23(struct blob * pt, double x){
-    return log_log_interp(log10(x), pt->Sync.log_G_Sync_x, pt->Sync.log_x_Bessel_min, pt->Sync.log_x_Bessel_max, pt->Sync.log_G_Sync_y,static_bess_table_size,0  );
+    return F_K_23_log(pt, log10(x));
 }
-
 double F_K_ave(struct blob *pt, double x){
-    return log_log_interp(log10(x), pt->Sync.log_F_ave_Sync_x, pt->Sync.log_x_ave_Bessel_min, pt->Sync.log_x_ave_Bessel_max, pt->Sync.log_F_ave_Sync_y,static_bess_table_size,0  );
-
+    return F_K_ave_log(pt, log10(x));
 }
 //=========================================================================================
 
@@ -236,21 +247,83 @@ void set_R_Sync(struct blob * pt){
 
 
 
+
 //=========================================================================================
 //  Synchrotron emissivity j_nu_Sync
 //=========================================================================================
+static double integrale_Sync_j_nu_fix(struct blob *pt, double nu_sync){
+    unsigned int ID;
+    double *Integrand_over_gamma_grid;
+    double integral;
+    double log_nu_sync, log_c2;
+    double *log_gamma_grid;
+    double log_g;
+
+    Integrand_over_gamma_grid = (double *) calloc(pt->emitters.gamma_grid_size, sizeof (double));
+    if (Integrand_over_gamma_grid == NULL){
+        return 0.0;
+    }
+
+    log_nu_sync = log10(nu_sync);
+    log_c2 = log10(pt->Sync.C2_Sync_K53);
+    log_gamma_grid = pt->emitters.griglia_gamma_Ne_log_stat;
+
+    for (ID = 0; ID < pt->emitters.gamma_grid_size ; ID++){
+        if (log_gamma_grid != NULL){
+            log_g = log_gamma_grid[ID];
+        }
+        else{
+            log_g = log10(pt->emitters.griglia_gamma_Ne_log[ID]);
+        }
+        Integrand_over_gamma_grid[ID] = F_K_53_log(pt, log_nu_sync + log_c2 - 2.0 * log_g) * pt->emitters.Ne[ID];
+    }
+
+    integral = integr_simp_grid_equilog(pt->emitters.griglia_gamma_Ne_log, Integrand_over_gamma_grid, pt->emitters.gamma_grid_size);
+    free(Integrand_over_gamma_grid);
+    return integral;
+}
+
+static double integrale_Sync_j_nu_ave(struct blob *pt, double nu_sync){
+    unsigned int ID;
+    double *Integrand_over_gamma_grid;
+    double integral;
+    double log_nu_sync, log_c2;
+    double *log_gamma_grid;
+    double log_g;
+
+    Integrand_over_gamma_grid = (double *) calloc(pt->emitters.gamma_grid_size, sizeof (double));
+    if (Integrand_over_gamma_grid == NULL){
+        return 0.0;
+    }
+
+    log_nu_sync = log10(nu_sync);
+    log_c2 = log10(pt->Sync.C2_Sync_K_AVE);
+    log_gamma_grid = pt->emitters.griglia_gamma_Ne_log_stat;
+
+    for (ID = 0; ID < pt->emitters.gamma_grid_size ; ID++){
+        if (log_gamma_grid != NULL){
+            log_g = log_gamma_grid[ID];
+        }
+        else{
+            log_g = log10(pt->emitters.griglia_gamma_Ne_log[ID]);
+        }
+        Integrand_over_gamma_grid[ID] = F_K_ave_log(pt, log_nu_sync + log_c2 - 2.0 * log_g) * pt->emitters.Ne[ID];
+    }
+
+    integral = integr_simp_grid_equilog(pt->emitters.griglia_gamma_Ne_log, Integrand_over_gamma_grid, pt->emitters.gamma_grid_size);
+    free(Integrand_over_gamma_grid);
+    return integral;
+}
+
 double j_nu_Sync(struct blob * f, double nu_sync){
     double a;
-    double (*pf_fint) (struct blob * ,unsigned int  ID, double nu_sync);
     /*** segli in base al kernel ***/
     if (f->core.Sync_kernel==0){
-		pf_fint=&F_int_fix;
-		a=integrale_Sync(pf_fint, f,  nu_sync);
+		a=integrale_Sync_j_nu_fix(f,nu_sync);
 		return a*f->Sync.C1_Sync_K53;
     }
     else {
-    	pf_fint=&F_int_ave;
-    	a=integrale_Sync(pf_fint, f, nu_sync);
+    	a=integrale_Sync_j_nu_ave(f,nu_sync);
     	return a*f->Sync.C1_Sync_K_AVE;
     }
 }

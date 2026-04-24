@@ -52,6 +52,16 @@ void Genera_griglia_gamma_N_log(struct blob *pt, double * griglia_gamma_N_log, d
     }
 }
 
+static void cache_log10_gamma_grid(struct blob *pt){
+    unsigned int i;
+    if (pt->emitters.griglia_gamma_Ne_log_stat == NULL || pt->emitters.griglia_gamma_Ne_log == NULL){
+        return;
+    }
+    for (i = 0; i < pt->emitters.gamma_grid_size; i++){
+        pt->emitters.griglia_gamma_Ne_log_stat[i] = log10(pt->emitters.griglia_gamma_Ne_log[i]);
+    }
+}
+
 void setNgrid(struct blob *pt)
 {
     //==========================================
@@ -187,6 +197,7 @@ void build_Ne(struct blob *pt) {
 
     alloc_N_distr(&(pt->emitters.griglia_gamma_Ne_log_stat),pt->emitters.gamma_grid_size);
     alloc_N_distr(&(pt->emitters.Integrand_over_gamma_grid),pt->emitters.gamma_grid_size);
+    cache_log10_gamma_grid(pt);
 
 }
 
@@ -199,6 +210,7 @@ void build_Ne_secondaries(struct blob *pt) {
     alloc_N_distr(&(pt->emitters.griglia_gamma_Ne_log_stat),pt->emitters.gamma_grid_size);
    
     alloc_N_distr(&(pt->emitters.Integrand_over_gamma_grid),pt->emitters.gamma_grid_size);
+    cache_log10_gamma_grid(pt);
 
 }
 
