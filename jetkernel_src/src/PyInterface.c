@@ -562,11 +562,10 @@ void Init(struct blob *pt_base, double luminosity_distance) {
         } else {
             InitNe(pt_base);
         }
-        pt_base->emitters.N_tot_e_Sferic = pt_base->core.Vol_region * pt_base->emitters.N_e;
-        FindNe_NpGp(pt_base);
-        EvalU_e(pt_base);
-        
-        if (pt_base->core.verbose) {     
+        pt_base->emitters.N_tot_e_Sferic = pt_base->core.Vol_region * pt_base->emitters.N_e;  
+        if (pt_base->core.verbose) {
+            FindNe_NpGp(pt_base);
+            EvalU_e(pt_base);     
             printf("********************       Leptonic Scenario       ********************\n");
             if (pt_base->emitters.do_equilibrium == 1) {
                 printf("equilibrium mode=ON\n");
@@ -593,11 +592,14 @@ void Init(struct blob *pt_base, double luminosity_distance) {
     else if (strcmp(pt_base->core.PARTICLE, "protons") == 0) {
         Init_Np_Ne_pp(pt_base);        
         pt_base->emitters.N_tot_p_Sferic = pt_base->core.Vol_region * pt_base->emitters.N_p;             
-        EvalU_p(pt_base);             
+        //EvalU_p(pt_base);             
         pt_base->emitters.N_tot_e_Sferic = pt_base->core.Vol_region * pt_base->emitters.N_e_pp;
-        EvalU_e(pt_base);
-        FindNe_NpGp(pt_base);
+        //EvalU_e(pt_base);
+        //FindNe_NpGp(pt_base);
         if (pt_base->core.verbose) {
+            EvalU_p(pt_base);
+            EvalU_e(pt_base);
+            FindNe_NpGp(pt_base);           
             printf("***********************       Hadronic Scenario           ********************\n");
             printf("****** Generate Np and Ne form secondaries **************\n");
           
