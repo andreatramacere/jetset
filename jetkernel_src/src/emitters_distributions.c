@@ -54,11 +54,11 @@ void Genera_griglia_gamma_N_log(struct blob *pt, double * griglia_gamma_N_log, d
 
 static void cache_log10_gamma_grid(struct blob *pt){
     unsigned int i;
-    if (pt->emitters.griglia_gamma_Ne_log_stat == NULL || pt->emitters.griglia_gamma_Ne_log == NULL){
+    if (pt->emitters.log_of_griglia_gamma_Ne_log == NULL || pt->emitters.griglia_gamma_Ne_log == NULL){
         return;
     }
     for (i = 0; i < pt->emitters.gamma_grid_size; i++){
-        pt->emitters.griglia_gamma_Ne_log_stat[i] = log10(pt->emitters.griglia_gamma_Ne_log[i]);
+        pt->emitters.log_of_griglia_gamma_Ne_log[i] = log10(pt->emitters.griglia_gamma_Ne_log[i]);
     }
 }
 
@@ -195,7 +195,7 @@ void build_Ne(struct blob *pt) {
     Genera_griglia_gamma_N_log(pt, pt->emitters.griglia_gamma_Ne_log, pt->emitters.gmin_griglia, pt->emitters.gmax_griglia);
     alloc_N_distr(&(pt->emitters.Ne),pt->emitters.gamma_grid_size);
 
-    alloc_N_distr(&(pt->emitters.griglia_gamma_Ne_log_stat),pt->emitters.gamma_grid_size);
+    alloc_N_distr(&(pt->emitters.log_of_griglia_gamma_Ne_log),pt->emitters.gamma_grid_size);
     alloc_N_distr(&(pt->emitters.Integrand_over_gamma_grid),pt->emitters.gamma_grid_size);
     cache_log10_gamma_grid(pt);
 
@@ -207,7 +207,7 @@ void build_Ne_secondaries(struct blob *pt) {
     Genera_griglia_gamma_N_log(pt, pt->emitters.griglia_gamma_Ne_log,pt->emitters.gmin_griglia_secondaries, pt->emitters.gmax_griglia_secondaries);
     alloc_N_distr(&(pt->emitters.Ne),pt->emitters.gamma_grid_size);
 
-    alloc_N_distr(&(pt->emitters.griglia_gamma_Ne_log_stat),pt->emitters.gamma_grid_size);
+    alloc_N_distr(&(pt->emitters.log_of_griglia_gamma_Ne_log),pt->emitters.gamma_grid_size);
    
     alloc_N_distr(&(pt->emitters.Integrand_over_gamma_grid),pt->emitters.gamma_grid_size);
     cache_log10_gamma_grid(pt);
@@ -231,7 +231,7 @@ void build_Q_inj_e_primaries(struct blob *pt) {
 //     alloc_N_distr(&(pt->emitters.Ne),pt->emitters.gamma_grid_size);
 
      
-//     alloc_N_distr(&(pt->emitters.griglia_gamma_Ne_log_stat),pt->emitters.gamma_grid_size);
+//     alloc_N_distr(&(pt->emitters.log_of_griglia_gamma_Ne_log),pt->emitters.gamma_grid_size);
      
 //     alloc_N_distr(&(pt->emitters.Integrand_over_gamma_grid),pt->emitters.gamma_grid_size);
 

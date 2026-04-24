@@ -249,7 +249,7 @@ struct emitters {
     double *gamma_p_custom;
     double *gam;
     double *griglia_gamma_Ne_log;
-    double *griglia_gamma_Ne_log_stat;
+    double *log_of_griglia_gamma_Ne_log;
     double *griglia_gamma_Np_log;
     double *griglia_gamma_jetset_Ne_log;
     double *griglia_gamma_jetset_Np_log;

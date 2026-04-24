@@ -314,7 +314,7 @@ struct blob MakeBlob() {
     
     spettro_root.emitters.griglia_gamma_Ne_log=NULL;
     spettro_root.emitters.gamma_e_custom=NULL;
-    spettro_root.emitters.griglia_gamma_Ne_log_stat=NULL;
+    spettro_root.emitters.log_of_griglia_gamma_Ne_log=NULL;
     spettro_root.emitters.griglia_gamma_jetset_Ne_log=NULL;
 
     spettro_root.emitters.Np=NULL;

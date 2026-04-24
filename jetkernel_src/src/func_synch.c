@@ -251,79 +251,18 @@ void set_R_Sync(struct blob * pt){
 //=========================================================================================
 //  Synchrotron emissivity j_nu_Sync
 //=========================================================================================
-static double integrale_Sync_j_nu_fix(struct blob *pt, double nu_sync){
-    unsigned int ID;
-    double *Integrand_over_gamma_grid;
-    double integral;
-    double log_nu_sync, log_c2;
-    double *log_gamma_grid;
-    double log_g;
-
-    Integrand_over_gamma_grid = (double *) calloc(pt->emitters.gamma_grid_size, sizeof (double));
-    if (Integrand_over_gamma_grid == NULL){
-        return 0.0;
-    }
-
-    log_nu_sync = log10(nu_sync);
-    log_c2 = log10(pt->Sync.C2_Sync_K53);
-    log_gamma_grid = pt->emitters.griglia_gamma_Ne_log_stat;
-
-    for (ID = 0; ID < pt->emitters.gamma_grid_size ; ID++){
-        if (log_gamma_grid != NULL){
-            log_g = log_gamma_grid[ID];
-        }
-        else{
-            log_g = log10(pt->emitters.griglia_gamma_Ne_log[ID]);
-        }
-        Integrand_over_gamma_grid[ID] = F_K_53_log(pt, log_nu_sync + log_c2 - 2.0 * log_g) * pt->emitters.Ne[ID];
-    }
-
-    integral = integr_simp_grid_equilog(pt->emitters.griglia_gamma_Ne_log, Integrand_over_gamma_grid, pt->emitters.gamma_grid_size);
-    free(Integrand_over_gamma_grid);
-    return integral;
-}
-
-static double integrale_Sync_j_nu_ave(struct blob *pt, double nu_sync){
-    unsigned int ID;
-    double *Integrand_over_gamma_grid;
-    double integral;
-    double log_nu_sync, log_c2;
-    double *log_gamma_grid;
-    double log_g;
-
-    Integrand_over_gamma_grid = (double *) calloc(pt->emitters.gamma_grid_size, sizeof (double));
-    if (Integrand_over_gamma_grid == NULL){
-        return 0.0;
-    }
-
-    log_nu_sync = log10(nu_sync);
-    log_c2 = log10(pt->Sync.C2_Sync_K_AVE);
-    log_gamma_grid = pt->emitters.griglia_gamma_Ne_log_stat;
-
-    for (ID = 0; ID < pt->emitters.gamma_grid_size ; ID++){
-        if (log_gamma_grid != NULL){
-            log_g = log_gamma_grid[ID];
-        }
-        else{
-            log_g = log10(pt->emitters.griglia_gamma_Ne_log[ID]);
-        }
-        Integrand_over_gamma_grid[ID] = F_K_ave_log(pt, log_nu_sync + log_c2 - 2.0 * log_g) * pt->emitters.Ne[ID];
-    }
-
-    integral = integr_simp_grid_equilog(pt->emitters.griglia_gamma_Ne_log, Integrand_over_gamma_grid, pt->emitters.gamma_grid_size);
-    free(Integrand_over_gamma_grid);
-    return integral;
-}
-
 double j_nu_Sync(struct blob * f, double nu_sync){
     double a;
+    double (*pf_fint) (struct blob * ,unsigned int  ID, double nu_sync);
     /*** segli in base al kernel ***/
     if (f->core.Sync_kernel==0){
-		a=integrale_Sync_j_nu_fix(f,nu_sync);
+		pf_fint=&F_int_fix;
+		a=integrale_Sync(pf_fint, f,  nu_sync);
 		return a*f->Sync.C1_Sync_K53;
     }
     else {
-    	a=integrale_Sync_j_nu_ave(f,nu_sync);
+    	pf_fint=&F_int_ave;
+    	a=integrale_Sync(pf_fint, f, nu_sync);
     	return a*f->Sync.C1_Sync_K_AVE;
     }
 }
@@ -376,12 +315,38 @@ double integrale_Sync(double (*pf) (struct blob *, unsigned int  ID, double nu_s
     unsigned int  ID;
     double *Integrand_over_gamma_grid;
     double integral;
+    double log_nu_sync, log_c2;
+    int use_cached_jnu_path;
+    double *log_gamma_grid;
     integral =0;
     Integrand_over_gamma_grid = (double *) calloc(pt->emitters.gamma_grid_size, sizeof (double));
-    //double test;
-    for (ID = 0; ID < pt->emitters.gamma_grid_size ; ID++){
-        Integrand_over_gamma_grid[ID] =pf(pt,ID, nu_sync);
+
+    use_cached_jnu_path = (pf == &F_int_fix || pf == &F_int_ave) && (pt->emitters.log_of_griglia_gamma_Ne_log != NULL);
+    if (use_cached_jnu_path){
+        log_nu_sync = log10(nu_sync);
+        log_gamma_grid = pt->emitters.log_of_griglia_gamma_Ne_log;
+
+        if (pt->core.Sync_kernel==0){
+            log_c2 = log10(pt->Sync.C2_Sync_K53);
+            for (ID = 0; ID < pt->emitters.gamma_grid_size ; ID++){
+                double log_x = log_nu_sync + log_c2 - 2.0 * log_gamma_grid[ID];
+                Integrand_over_gamma_grid[ID] = F_K_53_log(pt, log_x) * pt->emitters.Ne[ID];
+            }
+        }
+        else{
+            log_c2 = log10(pt->Sync.C2_Sync_K_AVE);
+            for (ID = 0; ID < pt->emitters.gamma_grid_size ; ID++){
+                double log_x = log_nu_sync + log_c2 - 2.0 * log_gamma_grid[ID];
+                Integrand_over_gamma_grid[ID] = F_K_ave_log(pt, log_x) * pt->emitters.Ne[ID];
+            }
+        }
     }
+    else{
+        for (ID = 0; ID < pt->emitters.gamma_grid_size ; ID++){
+            Integrand_over_gamma_grid[ID] =pf(pt,ID, nu_sync);
+        }
+    }
+
     integral= integr_simp_grid_equilog(pt->emitters.griglia_gamma_Ne_log, Integrand_over_gamma_grid, pt->emitters.gamma_grid_size);
     free(Integrand_over_gamma_grid);
     return integral;
