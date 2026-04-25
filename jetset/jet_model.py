@@ -148,6 +148,7 @@ class JetBase(Model):
         self._spectral_components_list=[]
         self._hidden_spectral_components_list = []
         self._internal_absorption_comp={}
+        self._internal_abs_cache_signature = None
         self.spectral_components= SpecCompList(self._spectral_components_list)
 
         self.add_basic_components()
@@ -226,6 +227,7 @@ class JetBase(Model):
         self._decode_model(state)
         self._fix_par_dep_on_load(verbose=False)
         self._internal_absorption_comp = {}
+        self._internal_abs_cache_signature = None
         if '_internal_absorption_comp' in state:
             for _, p in self._extract_internal_abs_pars(state['_internal_absorption_comp']).items():
                 self.enable_internal_absorption(**p)
@@ -1421,12 +1423,14 @@ class JetBase(Model):
                                                                 N_theta=N_theta,
                                                                 use_R_H_profile_extrapolation=use_R_H_profile_extrapolation)
         self._configure_internal_absorption_on_blob(comp, self._internal_absorption_comp[comp]['pars'])
-    
+        self._internal_abs_cache_signature = None
+
     def remove_internal_absorption(self,comp):
         """Disable internal absorption for a component."""
         if comp in self._internal_absorption_comp.keys():
             self._disable_internal_absorption_on_blob(comp)
             del self._internal_absorption_comp[comp]
+            self._internal_abs_cache_signature = None
     
     def show_internal_absorption_components(self):
         """Print enabled internal-absorption components and settings."""
@@ -1923,21 +1927,131 @@ class JetBase(Model):
 
     def _configure_internal_absorption_on_blob(self, comp, pars):
         c_comp = self._get_internal_abs_component_on_blob(comp)
-        c_comp.is_enabled = 1
-        c_comp.is_valid = 0
-        c_comp.use_R_H_profile_extrapolation = int(bool(pars.get('use_R_H_profile_extrapolation', False)))
-        c_comp.peak_mode = 0
-        c_comp.N_soft = int(pars.get('N_soft', 50))
-        c_comp.N_hard = int(pars.get('N_hard', 50))
-        c_comp.N_R_H = int(pars.get('N_R_H', 50))
-        c_comp.N_theta = int(pars.get('N_theta', 50))
+        new_use_rh = int(bool(pars.get('use_R_H_profile_extrapolation', False)))
+        new_n_soft = int(pars.get('N_soft', 50))
+        new_n_hard = int(pars.get('N_hard', 50))
+        new_n_r_h = int(pars.get('N_R_H', 50))
+        new_n_theta = int(pars.get('N_theta', 50))
         nu_min = pars.get('nu_min', None)
-        c_comp.nu_min = -1.0 if nu_min is None else float(nu_min)
+        new_nu_min = -1.0 if nu_min is None else float(nu_min)
+
+        config_changed = (
+            int(c_comp.is_enabled) != 1 or
+            int(c_comp.use_R_H_profile_extrapolation) != new_use_rh or
+            int(c_comp.peak_mode) != 0 or
+            int(c_comp.N_soft) != new_n_soft or
+            int(c_comp.N_hard) != new_n_hard or
+            int(c_comp.N_R_H) != new_n_r_h or
+            int(c_comp.N_theta) != new_n_theta or
+            float(c_comp.nu_min) != float(new_nu_min)
+        )
+
+        c_comp.is_enabled = 1
+        if config_changed:
+            c_comp.is_valid = 0
+        c_comp.use_R_H_profile_extrapolation = new_use_rh
+        c_comp.peak_mode = 0
+        c_comp.N_soft = new_n_soft
+        c_comp.N_hard = new_n_hard
+        c_comp.N_R_H = new_n_r_h
+        c_comp.N_theta = new_n_theta
+        c_comp.nu_min = new_nu_min
 
     def _disable_internal_absorption_on_blob(self, comp):
         c_comp = self._get_internal_abs_component_on_blob(comp)
         c_comp.is_enabled = 0
         c_comp.is_valid = 0
+
+    def _invalidate_internal_abs_cache_on_blob(self):
+        for comp in self._internal_absorption_comp.keys():
+            c_comp = self._get_internal_abs_component_on_blob(comp)
+            if int(c_comp.is_enabled) == 1:
+                c_comp.is_valid = 0
+
+    def _build_internal_abs_cache_signature(self):
+        if len(self._internal_absorption_comp.keys()) == 0:
+            return None
+
+        comp_entries = []
+        for comp in sorted(self._internal_absorption_comp.keys()):
+            c_comp = self._get_internal_abs_component_on_blob(comp)
+            if int(c_comp.is_enabled) != 1:
+                continue
+
+            if comp == 'BLR':
+                seed_signature = (
+                    float(self._blob.BLR.R_BLR_in),
+                    float(self._blob.BLR.R_BLR_out),
+                    float(self._blob.BLR.tau_BLR),
+                    float(self._blob.Disk.L_Disk),
+                    float(self._blob.Disk.T_Disk),
+                    float(self._blob.Disk.accr_eff),
+                    float(self._blob.Disk.M_BH),
+                    float(self._blob.Disk.R_inner_Sw),
+                    float(self._blob.Disk.R_ext_Sw),
+                )
+            elif comp == 'DT':
+                seed_signature = (
+                    float(self._blob.DT.R_DT),
+                    float(self._blob.DT.tau_DT),
+                    float(self._blob.DT.T_DT),
+                    float(self._blob.Disk.L_Disk),
+                )
+            else:
+                seed_signature = tuple()
+
+            comp_entries.append((
+                comp,
+                int(c_comp.use_R_H_profile_extrapolation),
+                int(c_comp.peak_mode),
+                int(c_comp.N_soft),
+                int(c_comp.N_hard),
+                int(c_comp.N_R_H),
+                int(c_comp.N_theta),
+                float(c_comp.nu_min),
+                seed_signature,
+            ))
+
+        if len(comp_entries) == 0:
+            return None
+
+        return (
+            float(self._blob.core.R_H),
+            float(self._blob.core.R_H_orig),
+            float(self._blob.core.BulkFactor),
+            float(self._blob.core.beam_obj),
+            tuple(comp_entries),
+        )
+
+    def _apply_internal_abs_cache_policy(self):
+        if not hasattr(self._blob.core, 'internal_abs_cache_enabled'):
+            return None
+
+        user_cache_enabled = int(bool(self._blob.core.internal_abs_cache_enabled))
+        has_reuse_flag = hasattr(self._blob.core, 'internal_abs_cache_reuse')
+        if has_reuse_flag:
+            self._blob.core.internal_abs_cache_reuse = 0
+
+        current_signature = self._build_internal_abs_cache_signature()
+        if current_signature is None:
+            self._internal_abs_cache_signature = None
+            return None
+
+        can_reuse_cache = (
+            user_cache_enabled != 0 and
+            self._internal_abs_cache_signature is not None and
+            current_signature == self._internal_abs_cache_signature
+        )
+        if has_reuse_flag:
+            self._blob.core.internal_abs_cache_reuse = int(can_reuse_cache)
+        else:
+            # Backward compatibility with builds missing the per-eval reuse flag.
+            self._blob.core.internal_abs_cache_enabled = int(can_reuse_cache)
+
+        if not can_reuse_cache:
+            self._invalidate_internal_abs_cache_on_blob()
+
+        return current_signature
 
     def lin_func(self, lin_nu, init, phys_output=False, update_emitters=True):
         """Evaluate model spectrum in linear units on ``lin_nu``.
@@ -1950,7 +2064,9 @@ class JetBase(Model):
         if init is True:
             self.set_blob()
             self._update_spectral_components()
+        ia_signature = self._apply_internal_abs_cache_policy()
         BlazarSED.Run_SED(self._blob)
+        self._internal_abs_cache_signature = ia_signature
 
         if phys_output==True:
             BlazarSED.EnergeticOutput(self._blob)

@@ -8,9 +8,6 @@
 #define INTABS_MIN_Y 1.0e-200
 #define INTABS_MIN_ONE_MINUS_MU 1.0e-20
 
-#define IDX3(ID_RH, ID_THETA, ID_SOFT, N_THETA, N_SOFT) \
-    ((((size_t)(ID_RH)) * ((size_t)(N_THETA)) + (size_t)(ID_THETA)) * ((size_t)(N_SOFT)) + (size_t)(ID_SOFT))
-
 typedef enum {
     INTABS_COMP_INVALID = 0,
     INTABS_COMP_BLR = 1,
@@ -144,8 +141,13 @@ static int ensure_tau_arrays(struct internal_abs_component *comp, unsigned int t
 struct internal_abs_eval_workspace {
     double *nu_soft;
     double *n_soft;
+    double *eps_soft;
+    double *dnu_soft;
     double *mu_grid;
+    double *one_minus_mu;
+    double *dmu_grid;
     double *R_H_grid;
+    double *d_rh_grid;
     double *nu_soft_ref;
     double *n_soft_ref;
     double *nu_soft_tmp;
@@ -171,13 +173,33 @@ static void free_internal_abs_eval_workspace(struct internal_abs_eval_workspace 
         free(ws->n_soft);
         ws->n_soft = NULL;
     }
+    if (ws->eps_soft != NULL) {
+        free(ws->eps_soft);
+        ws->eps_soft = NULL;
+    }
+    if (ws->dnu_soft != NULL) {
+        free(ws->dnu_soft);
+        ws->dnu_soft = NULL;
+    }
     if (ws->mu_grid != NULL) {
         free(ws->mu_grid);
         ws->mu_grid = NULL;
     }
+    if (ws->one_minus_mu != NULL) {
+        free(ws->one_minus_mu);
+        ws->one_minus_mu = NULL;
+    }
+    if (ws->dmu_grid != NULL) {
+        free(ws->dmu_grid);
+        ws->dmu_grid = NULL;
+    }
     if (ws->R_H_grid != NULL) {
         free(ws->R_H_grid);
         ws->R_H_grid = NULL;
+    }
+    if (ws->d_rh_grid != NULL) {
+        free(ws->d_rh_grid);
+        ws->d_rh_grid = NULL;
     }
     if (ws->nu_soft_ref != NULL) {
         free(ws->nu_soft_ref);
@@ -536,10 +558,8 @@ int eval_internal_abs_tau(struct blob *pt,
     double ratio;
     double mu_min;
     double mu_max;
-    double mu_value;
     double one_minus_mu;
     double eps_gamma;
-    double eps_soft;
     double s_value;
     double integrand;
     double prev_integrand;
@@ -548,12 +568,11 @@ int eval_internal_abs_tau(struct blob *pt,
     double mu_integral;
     double prev_rh_integral;
     double tau_gamma;
-    double dnu;
-    double dmu;
-    double d_rh;
     double R_x;
     double scale;
     double nu_src_max_eff;
+    double nu_to_eps;
+    double soft_scale;
     unsigned int N_soft_eff;
     unsigned int tau_size;
     unsigned int i;
@@ -561,7 +580,10 @@ int eval_internal_abs_tau(struct blob *pt,
     unsigned int ID_THETA;
     unsigned int ID_SOFT;
     unsigned int ID_GAMMA;
-    size_t idx;
+    size_t rh_soft_base;
+    size_t rh_mu_base;
+    size_t idx_soft;
+    size_t idx_mu;
     struct internal_abs_eval_workspace ws;
 
     status = -1;
@@ -600,17 +622,24 @@ int eval_internal_abs_tau(struct blob *pt,
         R_seed = R_H_saved;
     }
 
-    ws.nu_soft = (double *)calloc((size_t)N_R_H * (size_t)N_theta * (size_t)N_soft_eff, sizeof(double));
-    ws.n_soft = (double *)calloc((size_t)N_R_H * (size_t)N_theta * (size_t)N_soft_eff, sizeof(double));
+    ws.nu_soft = (double *)calloc((size_t)N_R_H * (size_t)N_soft_eff, sizeof(double));
+    ws.n_soft = (double *)calloc((size_t)N_R_H * (size_t)N_soft_eff, sizeof(double));
+    ws.eps_soft = (double *)calloc((size_t)N_R_H * (size_t)N_soft_eff, sizeof(double));
+    ws.dnu_soft = (double *)calloc((size_t)N_R_H * (size_t)N_soft_eff, sizeof(double));
     ws.mu_grid = (double *)calloc((size_t)N_R_H * (size_t)N_theta, sizeof(double));
+    ws.one_minus_mu = (double *)calloc((size_t)N_R_H * (size_t)N_theta, sizeof(double));
+    ws.dmu_grid = (double *)calloc((size_t)N_R_H * (size_t)N_theta, sizeof(double));
     ws.R_H_grid = (double *)calloc((size_t)N_R_H, sizeof(double));
+    ws.d_rh_grid = (double *)calloc((size_t)N_R_H, sizeof(double));
     ws.nu_soft_ref = (double *)calloc((size_t)N_soft_eff, sizeof(double));
     ws.n_soft_ref = (double *)calloc((size_t)N_soft_eff, sizeof(double));
     ws.nu_soft_tmp = (double *)calloc((size_t)N_soft_eff, sizeof(double));
     ws.n_soft_tmp = (double *)calloc((size_t)N_soft_eff, sizeof(double));
 
-    if ((ws.nu_soft == NULL) || (ws.n_soft == NULL) || (ws.mu_grid == NULL) || (ws.R_H_grid == NULL) ||
-        (ws.nu_soft_ref == NULL) || (ws.n_soft_ref == NULL) || (ws.nu_soft_tmp == NULL) || (ws.n_soft_tmp == NULL)) {
+    if ((ws.nu_soft == NULL) || (ws.n_soft == NULL) || (ws.eps_soft == NULL) || (ws.dnu_soft == NULL) ||
+        (ws.mu_grid == NULL) || (ws.one_minus_mu == NULL) || (ws.dmu_grid == NULL) ||
+        (ws.R_H_grid == NULL) || (ws.d_rh_grid == NULL) || (ws.nu_soft_ref == NULL) ||
+        (ws.n_soft_ref == NULL) || (ws.nu_soft_tmp == NULL) || (ws.n_soft_tmp == NULL)) {
         return finalize_internal_abs_eval(pt, comp, R_H_saved, -1, &ws);
     }
 
@@ -618,6 +647,8 @@ int eval_internal_abs_tau(struct blob *pt,
     if (sample_seed_field(pt, comp_id, N_soft_eff, peak, ws.nu_soft_ref, ws.n_soft_ref) < 0) {
         return finalize_internal_abs_eval(pt, comp, R_H_saved, -1, &ws);
     }
+
+    nu_to_eps = HPLANCK / MEC2;
 
     if (nu_min > 0.0) {
         nu_min_eff = nu_min;
@@ -674,6 +705,7 @@ int eval_internal_abs_tau(struct blob *pt,
 
     for (ID_RH = 0; ID_RH < N_R_H; ++ID_RH) {
         pt->core.R_H = ws.R_H_grid[ID_RH];
+        rh_soft_base = ((size_t)ID_RH) * ((size_t)N_soft_eff);
 
         if (use_R_H_profile_extrapolation != 0) {
             if (ws.R_H_grid[ID_RH] <= R_seed) {
@@ -683,24 +715,30 @@ int eval_internal_abs_tau(struct blob *pt,
             }
             scale = R_x * R_x;
 
-            for (ID_THETA = 0; ID_THETA < N_theta; ++ID_THETA) {
-                for (ID_SOFT = 0; ID_SOFT < N_soft_eff; ++ID_SOFT) {
-                    idx = IDX3(ID_RH, ID_THETA, ID_SOFT, N_theta, N_soft_eff);
-                    ws.nu_soft[idx] = ws.nu_soft_ref[ID_SOFT];
-                    ws.n_soft[idx] = ws.n_soft_ref[ID_SOFT] * scale;
-                }
+            for (ID_SOFT = 0; ID_SOFT < N_soft_eff; ++ID_SOFT) {
+                idx_soft = rh_soft_base + (size_t)ID_SOFT;
+                ws.nu_soft[idx_soft] = ws.nu_soft_ref[ID_SOFT];
+                ws.n_soft[idx_soft] = ws.n_soft_ref[ID_SOFT] * scale;
             }
         } else {
             if (sample_seed_field(pt, comp_id, N_soft_eff, peak, ws.nu_soft_tmp, ws.n_soft_tmp) < 0) {
                 return finalize_internal_abs_eval(pt, comp, R_H_saved, -1, &ws);
             }
 
-            for (ID_THETA = 0; ID_THETA < N_theta; ++ID_THETA) {
-                for (ID_SOFT = 0; ID_SOFT < N_soft_eff; ++ID_SOFT) {
-                    idx = IDX3(ID_RH, ID_THETA, ID_SOFT, N_theta, N_soft_eff);
-                    ws.nu_soft[idx] = ws.nu_soft_tmp[ID_SOFT];
-                    ws.n_soft[idx] = ws.n_soft_tmp[ID_SOFT];
-                }
+            for (ID_SOFT = 0; ID_SOFT < N_soft_eff; ++ID_SOFT) {
+                idx_soft = rh_soft_base + (size_t)ID_SOFT;
+                ws.nu_soft[idx_soft] = ws.nu_soft_tmp[ID_SOFT];
+                ws.n_soft[idx_soft] = ws.n_soft_tmp[ID_SOFT];
+            }
+        }
+
+        for (ID_SOFT = 0; ID_SOFT < N_soft_eff; ++ID_SOFT) {
+            idx_soft = rh_soft_base + (size_t)ID_SOFT;
+            ws.eps_soft[idx_soft] = ws.nu_soft[idx_soft] * nu_to_eps;
+            if (ID_SOFT == 0U) {
+                ws.dnu_soft[idx_soft] = 0.0;
+            } else {
+                ws.dnu_soft[idx_soft] = ws.nu_soft[idx_soft] - ws.nu_soft[idx_soft - 1U];
             }
         }
 
@@ -718,61 +756,70 @@ int eval_internal_abs_tau(struct blob *pt,
             mu_min = sqrt(1.0 - ratio * ratio);
         }
 
+        rh_mu_base = ((size_t)ID_RH) * ((size_t)N_theta);
         if (N_theta == 1U) {
-            ws.mu_grid[(size_t)ID_RH * (size_t)N_theta] = mu_min;
+            ws.mu_grid[rh_mu_base] = mu_min;
+            ws.one_minus_mu[rh_mu_base] = fmax(1.0 - mu_min, INTABS_MIN_ONE_MINUS_MU);
+            ws.dmu_grid[rh_mu_base] = 0.0;
         } else {
             for (ID_THETA = 0; ID_THETA < N_theta; ++ID_THETA) {
-                ws.mu_grid[(size_t)ID_RH * (size_t)N_theta + (size_t)ID_THETA] =
-                    mu_min + (mu_max - mu_min) * (double)ID_THETA / (double)(N_theta - 1U);
+                idx_mu = rh_mu_base + (size_t)ID_THETA;
+                ws.mu_grid[idx_mu] = mu_min + (mu_max - mu_min) * (double)ID_THETA / (double)(N_theta - 1U);
+                ws.one_minus_mu[idx_mu] = fmax(1.0 - ws.mu_grid[idx_mu], INTABS_MIN_ONE_MINUS_MU);
+                if (ID_THETA == 0U) {
+                    ws.dmu_grid[idx_mu] = 0.0;
+                } else {
+                    ws.dmu_grid[idx_mu] = ws.mu_grid[idx_mu] - ws.mu_grid[idx_mu - 1U];
+                }
             }
         }
     }
 
+    ws.d_rh_grid[0] = 0.0;
+    for (ID_RH = 1; ID_RH < N_R_H; ++ID_RH) {
+        ws.d_rh_grid[ID_RH] = ws.R_H_grid[ID_RH] - ws.R_H_grid[ID_RH - 1U];
+    }
+
     for (ID_GAMMA = 0; ID_GAMMA < tau_size; ++ID_GAMMA) {
-        eps_gamma = comp->nu_tau[ID_GAMMA] * HPLANCK / MEC2;
+        eps_gamma = comp->nu_tau[ID_GAMMA] * nu_to_eps;
         tau_gamma = 0.0;
         prev_rh_integral = 0.0;
 
         for (ID_RH = 0; ID_RH < N_R_H; ++ID_RH) {
+            rh_mu_base = ((size_t)ID_RH) * ((size_t)N_theta);
+            rh_soft_base = ((size_t)ID_RH) * ((size_t)N_soft_eff);
             mu_integral = 0.0;
             prev_mu_integral = 0.0;
 
             for (ID_THETA = 0; ID_THETA < N_theta; ++ID_THETA) {
-                mu_value = ws.mu_grid[(size_t)ID_RH * (size_t)N_theta + (size_t)ID_THETA];
-                one_minus_mu = 1.0 - mu_value;
-                if (one_minus_mu < INTABS_MIN_ONE_MINUS_MU) {
-                    one_minus_mu = INTABS_MIN_ONE_MINUS_MU;
-                }
+                idx_mu = rh_mu_base + (size_t)ID_THETA;
+                one_minus_mu = ws.one_minus_mu[idx_mu];
+                soft_scale = eps_gamma * one_minus_mu * 0.5;
 
                 nu_integral = 0.0;
                 prev_integrand = 0.0;
                 for (ID_SOFT = 0; ID_SOFT < N_soft_eff; ++ID_SOFT) {
-                    idx = IDX3(ID_RH, ID_THETA, ID_SOFT, N_theta, N_soft_eff);
-                    eps_soft = ws.nu_soft[idx] * HPLANCK / MEC2;
-                    s_value = eps_gamma * eps_soft * one_minus_mu * 0.5;
+                    idx_soft = rh_soft_base + (size_t)ID_SOFT;
+                    s_value = soft_scale * ws.eps_soft[idx_soft];
                     integrand = 0.0;
                     if (s_value >= 1.0) {
-                        integrand = sigma_gamma_gamma(s_value) * ws.n_soft[idx] * one_minus_mu;
+                        integrand = sigma_gamma_gamma(s_value) * ws.n_soft[idx_soft] * one_minus_mu;
                     }
 
                     if (ID_SOFT > 0U) {
-                        dnu = ws.nu_soft[idx] - ws.nu_soft[idx - 1U];
-                        nu_integral += 0.5 * (prev_integrand + integrand) * dnu;
+                        nu_integral += 0.5 * (prev_integrand + integrand) * ws.dnu_soft[idx_soft];
                     }
                     prev_integrand = integrand;
                 }
 
                 if (ID_THETA > 0U) {
-                    dmu = ws.mu_grid[(size_t)ID_RH * (size_t)N_theta + (size_t)ID_THETA] -
-                          ws.mu_grid[(size_t)ID_RH * (size_t)N_theta + (size_t)(ID_THETA - 1U)];
-                    mu_integral += 0.5 * (prev_mu_integral + nu_integral) * dmu;
+                    mu_integral += 0.5 * (prev_mu_integral + nu_integral) * ws.dmu_grid[idx_mu];
                 }
                 prev_mu_integral = nu_integral;
             }
 
             if (ID_RH > 0U) {
-                d_rh = ws.R_H_grid[ID_RH] - ws.R_H_grid[ID_RH - 1U];
-                tau_gamma += 0.5 * (prev_rh_integral + mu_integral) * d_rh;
+                tau_gamma += 0.5 * (prev_rh_integral + mu_integral) * ws.d_rh_grid[ID_RH];
             }
             prev_rh_integral = mu_integral;
         }

@@ -245,6 +245,8 @@ struct blob_core {
     double R_H_scale_factor;
 
     double beaming_EC;
+    int internal_abs_cache_enabled;
+    int internal_abs_cache_reuse;
     struct internal_abs_store internal_abs;
 };
 
@@ -705,6 +707,17 @@ int eval_internal_abs_tau(struct blob *pt,
                           int use_R_H_profile_extrapolation,
                           int peak,
                           double nu_src_max);
+int eval_internal_abs_tau_isolated(struct blob *pt,
+                                   const char *seed_photons_name,
+                                   double nu_min,
+                                   unsigned int N_soft,
+                                   unsigned int N_hard,
+                                   unsigned int N_R_H,
+                                   unsigned int N_theta,
+                                   int use_R_H_profile_extrapolation,
+                                   int peak,
+                                   double nu_src_max,
+                                   double R_H_override);
 void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, struct temp_ev *pt_ev, int only_injection, int do_injection);
 void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, struct temp_ev *pt_ev, double luminosity_distance);
 
