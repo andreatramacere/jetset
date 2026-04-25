@@ -7,7 +7,7 @@ from .minimizer import  _eval_res
 import emcee
 from itertools import cycle
 import types
-
+import time
 
 import numpy as np
 import corner
