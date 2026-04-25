@@ -134,6 +134,27 @@ struct spectrum_external{
     double nuFnu_peak_obs;
 };
 
+struct internal_abs_component {
+    int is_enabled;
+    int is_valid;
+    int use_R_H_profile_extrapolation;
+    int peak_mode;
+    unsigned int N_soft;
+    unsigned int N_hard;
+    unsigned int N_R_H;
+    unsigned int N_theta;
+    unsigned int tau_size;
+    double nu_min;
+    double nu_src_max;
+    double *nu_tau;
+    double *tau;
+};
+
+struct internal_abs_store {
+    struct internal_abs_component BLR;
+    struct internal_abs_component DT;
+};
+
 struct blob_core {
     int verbose;
     int BESSEL_TABLE_DONE;
@@ -224,6 +245,7 @@ struct blob_core {
     double R_H_scale_factor;
 
     double beaming_EC;
+    struct internal_abs_store internal_abs;
 };
 
 struct emitters {
@@ -669,6 +691,20 @@ void InitRadiative(struct blob *pt_base, unsigned int update_EC);
 //void alloc_photons(double ** pt,int size);
 void set_seed_freq_start(struct blob *pt_base);
 void Run_SED(struct blob *pt_base);
+void reset_internal_abs_store(struct blob *pt);
+void free_internal_abs_store(struct blob *pt);
+void update_internal_absorption_cache(struct blob *pt);
+double get_internal_abs_tau_at_nu(struct blob *pt, double nu_obs);
+int eval_internal_abs_tau(struct blob *pt,
+                          const char *seed_photons_name,
+                          double nu_min,
+                          unsigned int N_soft,
+                          unsigned int N_hard,
+                          unsigned int N_R_H,
+                          unsigned int N_theta,
+                          int use_R_H_profile_extrapolation,
+                          int peak,
+                          double nu_src_max);
 void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, struct temp_ev *pt_ev, int only_injection, int do_injection);
 void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, struct temp_ev *pt_ev, double luminosity_distance);
 

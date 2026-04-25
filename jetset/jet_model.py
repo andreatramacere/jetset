@@ -162,7 +162,6 @@ class JetBase(Model):
         self.inj_emitters_distribution = None
         self._leptonic_equilibrium = False
         self._energetic = None
-        self.skip_internal_absorption_serial=False
         self._setup(emitters_distribution,emitters_distribution_log_values,beaming_expr,emitters_type)
 
 
@@ -226,11 +225,24 @@ class JetBase(Model):
         self.__init__()
         self._decode_model(state)
         self._fix_par_dep_on_load(verbose=False)
+        self._internal_absorption_comp = {}
         if '_internal_absorption_comp' in state:
-            self._internal_absorption_comp=state['_internal_absorption_comp']
-        #    for c in state['_internal_absorption_comp'].keys():
-        #        p=state['_internal_absorption_comp'][c]['pars']
-        #        self.enable_internal_absorption(**p)
+            for _, p in self._extract_internal_abs_pars(state['_internal_absorption_comp']).items():
+                self.enable_internal_absorption(**p)
+
+    @staticmethod
+    def _extract_internal_abs_pars(serialized_internal_abs):
+        out = {}
+        if not isinstance(serialized_internal_abs, dict):
+            return out
+
+        for comp, item in serialized_internal_abs.items():
+            if isinstance(item, dict) and isinstance(item.get('pars'), dict):
+                out[comp] = dict(item['pars'])
+                continue
+            if isinstance(item, dict) and ('comp' in item):
+                out[comp] = dict(item)
+        return out
         
     @staticmethod
     def _copy_emitters_parameter_state(source_distr, target_distr):
@@ -346,9 +358,10 @@ class JetBase(Model):
         _model['pars'] = {}
         _model['pars']=self.parameters._serialize_pars()
         _model['external_field_transf']=self.get_external_field_transf()
-        #print('self.skip_internal_absorption_serial',self.self.skip_internal_absorption_serial)
-        if self.skip_internal_absorption_serial is False:
-            _model['_internal_absorption_comp']=self._internal_absorption_comp
+        _model['_internal_absorption_comp'] = {}
+        for comp, item in self._internal_absorption_comp.items():
+            if isinstance(item, dict) and isinstance(item.get('pars'), dict):
+                _model['_internal_absorption_comp'][comp] = {'pars': dict(item['pars'])}
         _model['internal_pars'] = {}
         _model['internal_pars']['nu_size'] = self.nu_size
         _model['internal_pars']['nu_seed_size'] = self.nu_seed_size
@@ -385,10 +398,6 @@ class JetBase(Model):
             jet=cls._load_pickle(file_name_or_obj,from_string=from_string)
             jet.set_blob()
             jet._update_spectral_components()
-            if hasattr(jet,'_internal_absorption_comp'):
-                for c in jet._internal_absorption_comp:
-                    p=jet._internal_absorption_comp[c]['pars']
-                    jet.enable_internal_absorption(**p)
             return jet
         except Exception as e:
             raise RuntimeError('The model you loaded is not valid please check the file name', e)
@@ -1411,10 +1420,12 @@ class JetBase(Model):
                                                                 N_R_H=N_R_H,
                                                                 N_theta=N_theta,
                                                                 use_R_H_profile_extrapolation=use_R_H_profile_extrapolation)
+        self._configure_internal_absorption_on_blob(comp, self._internal_absorption_comp[comp]['pars'])
     
     def remove_internal_absorption(self,comp):
         """Disable internal absorption for a component."""
         if comp in self._internal_absorption_comp.keys():
+            self._disable_internal_absorption_on_blob(comp)
             del self._internal_absorption_comp[comp]
     
     def show_internal_absorption_components(self):
@@ -1893,6 +1904,9 @@ class JetBase(Model):
         BlazarSED.Init(self._blob, self.get_DL_cm())
         if self.emitters_distribution._user_defined is True:
             self.emitters_distribution._set_blob()
+        for comp, item in self._internal_absorption_comp.items():
+            if isinstance(item, dict) and isinstance(item.get('pars'), dict):
+                self._configure_internal_absorption_on_blob(comp, item['pars'])
 
     #@safe_run
     def set_external_fields(self):
@@ -1900,23 +1914,42 @@ class JetBase(Model):
         self.set_blob()
         BlazarSED.spectra_External_Fields(1,self._blob,1)
 
+    def _get_internal_abs_component_on_blob(self, comp):
+        if comp == 'BLR':
+            return self._blob.core.internal_abs.BLR
+        if comp == 'DT':
+            return self._blob.core.internal_abs.DT
+        raise RuntimeError('internal absorption component %s not valid' % comp)
+
+    def _configure_internal_absorption_on_blob(self, comp, pars):
+        c_comp = self._get_internal_abs_component_on_blob(comp)
+        c_comp.is_enabled = 1
+        c_comp.is_valid = 0
+        c_comp.use_R_H_profile_extrapolation = int(bool(pars.get('use_R_H_profile_extrapolation', False)))
+        c_comp.peak_mode = 0
+        c_comp.N_soft = int(pars.get('N_soft', 50))
+        c_comp.N_hard = int(pars.get('N_hard', 50))
+        c_comp.N_R_H = int(pars.get('N_R_H', 50))
+        c_comp.N_theta = int(pars.get('N_theta', 50))
+        nu_min = pars.get('nu_min', None)
+        c_comp.nu_min = -1.0 if nu_min is None else float(nu_min)
+
+    def _disable_internal_absorption_on_blob(self, comp):
+        c_comp = self._get_internal_abs_component_on_blob(comp)
+        c_comp.is_enabled = 0
+        c_comp.is_valid = 0
+
     def lin_func(self, lin_nu, init, phys_output=False, update_emitters=True):
         """Evaluate model spectrum in linear units on ``lin_nu``.
 
-        Applies internal absorption (if enabled) and returns the total model
-        after hidden components are removed.
+        Internal absorption is applied at C level during ``Run_SED``.
         """
         if self.emitters_distribution is None:
             raise RuntimeError('emitters distribution not defined')
-        tau_tot=np.zeros(lin_nu.shape)
-        for  iac in self._internal_absorption_comp.keys():
-                int_abs=self._internal_absorption_comp[iac]['obj']
-                tau_c,nu_src=int_abs.eval(get_tau=True,lin_nu=lin_nu)
-                tau_tot+=tau_c
 
         if init is True:
             self.set_blob()
-            self._update_spectral_components(tau=tau_tot)
+            self._update_spectral_components()
         BlazarSED.Run_SED(self._blob)
 
         if phys_output==True:
@@ -1938,7 +1971,7 @@ class JetBase(Model):
         
         nuFnu_sed_sum = nuFnu_sed_sum - nuFnu_sed_hidden
        
-        return nu_sed_sum, nuFnu_sed_sum*np.exp(-tau_tot)
+        return nu_sed_sum, nuFnu_sed_sum
 
     def _eval_model(self, lin_nu, log_nu, init, loglog, phys_output=False, update_emitters=True):
         log_model = None

@@ -325,6 +325,8 @@ struct blob MakeBlob() {
     spettro_root.emitters.griglia_gamma_jetset_Np_log=NULL;
     spettro_root.emitters.gamma_p_custom=NULL;
     spettro_root.emitters.Integrand_over_gamma_grid=NULL;
+
+    reset_internal_abs_store(&spettro_root);
     
     return spettro_root;
 }
@@ -745,6 +747,15 @@ void Run_SED(struct blob *pt_base){
     //==================================================
     //Sum Up all the Spectral Components
     //==================================================
+    if (pt_base->core.internal_abs.BLR.is_enabled || pt_base->core.internal_abs.DT.is_enabled) {
+        update_internal_absorption_cache(pt_base);
+        /*
+         * Internal-absorption cache evaluation sweeps R_H and rebuilds seed-field
+         * buffers. Rebuild seed fields at the model R_H before mapping components
+         * to the common output grid.
+         */
+        spectra_External_Fields(1, pt_base, 0);
+    }
     common_grid_spectra(1, pt_base);
 
     //==================================================
@@ -947,4 +958,3 @@ void SetBeaming(struct blob *pt){
 	     printf("beaming set to  %e\n",pt->core.beam_obj);
 	}
 }
-
