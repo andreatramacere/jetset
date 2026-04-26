@@ -630,7 +630,8 @@ class Model(object):
         for p in master_par_list:
 
             m = self.parameters.get_par_by_name(p)
-            if m._is_dependent is False and m.par_type == 'user_defined':
+            #trigger parameter update 
+            if m._is_dependent is False:
                 try:
                     m.val=m.val
                 except:
@@ -639,7 +640,7 @@ class Model(object):
             dep_par._set_par_expr_source_code()
             if verbose is True:
                 dep_par.par_expression_source_code
-        #print("  ===> make par: ",par, "depending on : ",depends_on, " END\n")
+        
     
     def add_user_par(self,name,val,units='',val_min=None,val_max=None):
         """Add a user-defined parameter to the model.
