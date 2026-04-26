@@ -81,10 +81,8 @@ class InternalAbsorption(object):
     def eval_tau_photons(self,
                          nu_src,
                          R_H,
-                         skip_check=True,
                          peak=False,
-                         use_R_H_profile_extrapolation=False,
-                         use_isolated_eval=None):
+                         use_R_H_profile_extrapolation=False):
 
         """Evaluate tau photons.
         
@@ -94,16 +92,15 @@ class InternalAbsorption(object):
             Source-frame frequency array in Hz.
         R_H : object
             Distance from black hole in cm.
-        skip_check : bool, optional
-            If ``True``, skip check.
         peak : bool, optional
             If ``True``, use peak-optimized seed-photon sampling.
         use_R_H_profile_extrapolation : bool, optional
             If ``True``, enable r h profile extrapolation.
-        use_isolated_eval : bool or None, optional
-            Controls which C backend path is used:
-            ``None`` (default) uses isolated when available, otherwise fallback;
-            ``True`` forces isolated path; ``False`` forces non-isolated path.
+
+        Notes
+        -----
+        Internal absorption is evaluated via
+        ``eval_internal_abs_tau_isolated`` only.
         
         Returns
         -------
@@ -117,58 +114,24 @@ class InternalAbsorption(object):
         nu_src_max = float(np.max(nu_src))
         r_h_override = -1.0 if R_H is None else float(R_H)
 
-        # Kept for API compatibility. C-side IA cache/state is authoritative.
-        _ = skip_check
-
-        if not hasattr(BlazarSED, 'eval_internal_abs_tau'):
-            raise RuntimeError('jetkernel extension is missing eval_internal_abs_tau; rebuild the C extension.')
-
         nu_min = -1.0 if self._nu_min is None else float(self._nu_min)
 
-        if use_isolated_eval not in (None, True, False):
-            raise RuntimeError('use_isolated_eval must be None, True, or False')
+        if not hasattr(BlazarSED, 'eval_internal_abs_tau_isolated'):
+            raise RuntimeError('jetkernel extension is missing eval_internal_abs_tau_isolated; rebuild the C extension.')
 
-        isolated_available = hasattr(BlazarSED, 'eval_internal_abs_tau_isolated')
-        if use_isolated_eval is None:
-            use_isolated = isolated_available
-        else:
-            use_isolated = bool(use_isolated_eval)
-
-        if use_isolated:
-            if not isolated_available:
-                raise RuntimeError('isolated IA evaluation requested but not available; rebuild the C extension.')
-            tau_size = BlazarSED.eval_internal_abs_tau_isolated(
-                self._jet._blob,
-                self._seed_photons_name,
-                nu_min,
-                int(self._N_soft),
-                int(self._N_hard),
-                int(self._N_R_H),
-                int(self._N_theta),
-                int(bool(use_R_H_profile_extrapolation)),
-                int(bool(peak)),
-                nu_src_max,
-                r_h_override,
-            )
-        else:
-            if R_H is not None:
-                self._jet.set_par('R_H', val=R_H)
-            tau_size = BlazarSED.eval_internal_abs_tau(
-                self._jet._blob,
-                self._seed_photons_name,
-                nu_min,
-                int(self._N_soft),
-                int(self._N_hard),
-                int(self._N_R_H),
-                int(self._N_theta),
-                int(bool(use_R_H_profile_extrapolation)),
-                int(bool(peak)),
-                nu_src_max,
-            )
-            # Non-isolated fallback evaluates IA on the live blob and can
-            # perturb seed-field buffers; rebuild them at the model R_H.
-            if hasattr(BlazarSED, 'spectra_External_Fields'):
-                BlazarSED.spectra_External_Fields(1, self._jet._blob, 0)
+        tau_size = BlazarSED.eval_internal_abs_tau_isolated(
+            self._jet._blob,
+            self._seed_photons_name,
+            nu_min,
+            int(self._N_soft),
+            int(self._N_hard),
+            int(self._N_R_H),
+            int(self._N_theta),
+            int(bool(use_R_H_profile_extrapolation)),
+            int(bool(peak)),
+            nu_src_max,
+            r_h_override,
+        )
 
         if tau_size < 0:
             raise RuntimeError('internal absorption C evaluation failed for component %s' % self._seed_photons_name)
@@ -183,23 +146,41 @@ class InternalAbsorption(object):
 
         return tau,nu_tau
 
+    def _get_default_nu_src(self):
+        sed_nu_src = None
+        if hasattr(self._jet, 'spectral_components'):
+            try:
+                sed_nu_src = self._jet.spectral_components.Sum.SED.nu_src
+            except Exception:
+                sed_nu_src = None
+
+        if sed_nu_src is not None:
+            try:
+                sed_nu_src = np.atleast_1d(np.asarray(sed_nu_src.value, dtype=np.float64))
+            except Exception:
+                sed_nu_src = None
+
+        if sed_nu_src is not None and sed_nu_src.size > 0 and np.all(np.isfinite(sed_nu_src)):
+            return sed_nu_src
+
+        nu_src, _ = self._jet._prepare_nu_model(nu=None, loglog=False)
+        nu_src = np.atleast_1d(np.asarray(nu_src, dtype=np.float64))
+        if nu_src.size == 0 or np.any(~np.isfinite(nu_src)):
+            raise RuntimeError('invalid jet frequency grid for internal absorption evaluation')
+        return nu_src
 
 
-    def eval(self, get_tau=False,skip_check=True,lin_nu=None,peak=False,use_isolated_eval=None):
+    def eval(self, get_tau=False, lin_nu=None, peak=False):
         """Evaluate model output.
         
         Parameters
         ----------
         get_tau : bool, optional
             If ``True``, return optical depth instead of attenuation.
-        skip_check : bool, optional
-            If ``True``, skip check.
         lin_nu : object, optional
             Linear-frequency array in Hz.
         peak : bool, optional
             If ``True``, use peak-optimized seed-photon sampling.
-        use_isolated_eval : bool or None, optional
-            Passed to ``eval_tau_photons`` to select isolated/non-isolated C path.
         
         Returns
         -------
@@ -208,18 +189,15 @@ class InternalAbsorption(object):
         """
 
         if lin_nu is None:
-            nu_src=self._jet.spectral_components.Sum.SED.nu_src.value
+            nu_src = self._get_default_nu_src()
         else:
-            nu_src=lin_nu
-            nu_src=np.atleast_1d(nu_src)
+            nu_src = np.atleast_1d(np.asarray(lin_nu, dtype=np.float64))
         
        
         tau,nu_tau=self.eval_tau_photons(nu_src,
                                         R_H=self._jet.parameters.R_H.val,
-                                        skip_check=skip_check,
                                         peak=peak,
-                                        use_R_H_profile_extrapolation=self._use_R_H_profile_extrapolation,
-                                        use_isolated_eval=use_isolated_eval)
+                                        use_R_H_profile_extrapolation=self._use_R_H_profile_extrapolation)
         EPS = 1e-300   
         nu_src_pos = np.maximum(nu_src, EPS)
         nu_tau_pos = np.maximum(nu_tau, EPS)

@@ -245,8 +245,6 @@ struct blob_core {
     double R_H_scale_factor;
 
     double beaming_EC;
-    int internal_abs_cache_enabled;
-    int internal_abs_cache_reuse;
     struct internal_abs_store internal_abs;
 };
 
@@ -695,8 +693,21 @@ void set_seed_freq_start(struct blob *pt_base);
 void Run_SED(struct blob *pt_base);
 void reset_internal_abs_store(struct blob *pt);
 void free_internal_abs_store(struct blob *pt);
-void update_internal_absorption_cache(struct blob *pt);
+void recompute_internal_absorption_tau(struct blob *pt);
 double get_internal_abs_tau_at_nu(struct blob *pt, double nu_obs);
+/*
+ * Internal gamma-gamma absorption solver entry points.
+ *
+ * eval_internal_abs_tau:
+ *   Core low-level integration routine. It updates the IA component on the
+ *   blob passed in (nu_tau/tau/is_valid/config), temporarily modifying R_H
+ *   during integration and restoring it before return.
+ *
+ * eval_internal_abs_tau_isolated:
+ *   Isolated/public IA path. Runs eval_internal_abs_tau() on a worker copy
+ *   and merges only IA outputs back to the live blob.
+ *   This is the path used by current Python APIs and Run_SED.
+ */
 int eval_internal_abs_tau(struct blob *pt,
                           const char *seed_photons_name,
                           double nu_min,

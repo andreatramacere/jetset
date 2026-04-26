@@ -537,6 +537,18 @@ static double interp_tau_component(const struct internal_abs_component *comp, do
     return pow(10.0, log_tau);
 }
 
+/*
+ * Core internal-absorption integration routine.
+ *
+ * This low-level solver updates pt->core.internal_abs.<component> in place
+ * (nu_tau/tau/is_valid/config). During integration it temporarily changes
+ * pt->core.R_H to sample the seed field along the path, then restores the
+ * original R_H before returning.
+ *
+ * Public IA evaluation paths are isolated at higher level (PyInterface.c):
+ * they run this solver on a worker blob and merge only IA outputs back to
+ * the live blob.
+ */
 int eval_internal_abs_tau(struct blob *pt,
                           const char *seed_photons_name,
                           double nu_min,
@@ -842,7 +854,7 @@ int eval_internal_abs_tau(struct blob *pt,
     return finalize_internal_abs_eval(pt, comp, R_H_saved, status, &ws);
 }
 
-void update_internal_absorption_cache(struct blob *pt) {
+void recompute_internal_absorption_tau(struct blob *pt) {
     struct internal_abs_component *comp_blr;
     struct internal_abs_component *comp_dt;
     double nu_src_max;

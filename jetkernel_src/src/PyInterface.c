@@ -29,7 +29,7 @@ static int internal_abs_enabled_on_blob(const struct blob *pt) {
     return (pt->core.internal_abs.BLR.is_enabled || pt->core.internal_abs.DT.is_enabled);
 }
 
-static int internal_abs_cache_valid_on_blob(const struct blob *pt) {
+static int internal_abs_eval_valid_on_blob(const struct blob *pt) {
     if (pt == NULL) {
         return 0;
     }
@@ -172,6 +172,12 @@ static int get_internal_abs_component_by_name(struct blob *pt, const char *seed_
     return -1;
 }
 
+/*
+ * Build a worker blob used by isolated IA evaluations.
+ *
+ * The worker starts as a shallow copy of src, then internal-absorption
+ * storage is re-initialized so the solver can allocate private tau buffers.
+ */
 static struct blob *make_internal_abs_worker_blob(const struct blob *src) {
     struct blob *worker;
 
@@ -200,11 +206,19 @@ static void *run_internal_abs_async(void *arg) {
         return NULL;
     }
 
-    update_internal_absorption_cache(ctx->pt_worker);
-    ctx->worker_status = internal_abs_cache_valid_on_blob(ctx->pt_worker) ? 0 : -1;
+    recompute_internal_absorption_tau(ctx->pt_worker);
+    ctx->worker_status = internal_abs_eval_valid_on_blob(ctx->pt_worker) ? 0 : -1;
     return NULL;
 }
 
+/*
+ * Isolated internal-absorption evaluation.
+ *
+ * This wrapper runs eval_internal_abs_tau() on a worker copy of the blob and
+ * merges back only the requested IA component result (tau grid + config flags)
+ * into the live blob. The main goal is to avoid side effects on live seed-field
+ * caches/buffers that can happen with direct live-blob evaluation.
+ */
 int eval_internal_abs_tau_isolated(struct blob *pt,
                                    const char *seed_photons_name,
                                    double nu_min,
@@ -522,8 +536,6 @@ struct blob MakeBlob() {
     spettro_root.core.R_H_orig = 1E17;
     spettro_root.core.R_H_scale_factor=1.0;
     spettro_root.core.R_ext_emit_factor=1.0;
-    spettro_root.core.internal_abs_cache_enabled = 0;
-    spettro_root.core.internal_abs_cache_reuse = 0;
     //spettro_root.EC_theta_lim=5.0;
     spettro_root.Disk.M_BH = 1E9;
 
@@ -885,12 +897,9 @@ void Init(struct blob *pt_base, double luminosity_distance) {
 void Run_SED(struct blob *pt_base){
     double nuFnu_obs_ref_EC;
     int ia_enabled;
-    int ia_cache_reuse;
-    int ia_need_refresh;
     int ia_async_started;
     int ia_thread_join_ok;
-    int ia_cache_ok;
-    int ia_seed_fields_rebuild_needed;
+    int ia_isolated_eval_ok;
     pthread_t ia_thread;
     struct blob *ia_worker_blob;
     struct internal_abs_async_ctx ia_ctx;
@@ -901,20 +910,14 @@ void Run_SED(struct blob *pt_base){
     }
 
     ia_enabled = internal_abs_enabled_on_blob(pt_base);
-    ia_cache_reuse = (pt_base->core.internal_abs_cache_reuse != 0);
-    ia_need_refresh = 1;
-    if (ia_enabled && ia_cache_reuse && internal_abs_cache_valid_on_blob(pt_base)) {
-        ia_need_refresh = 0;
-    }
     ia_async_started = 0;
     ia_thread_join_ok = 0;
-    ia_cache_ok = 0;
-    ia_seed_fields_rebuild_needed = 0;
+    ia_isolated_eval_ok = 0;
     ia_worker_blob = NULL;
     ia_ctx.pt_worker = NULL;
     ia_ctx.worker_status = -1;
 
-    if (ia_enabled && ia_need_refresh) {
+    if (ia_enabled) {
         /*
          * st_gamma() uses a lazy static initializer in func_math.c.
          * Force one serial call before starting a parallel IA worker.
@@ -926,10 +929,8 @@ void Run_SED(struct blob *pt_base){
             if (pthread_create(&ia_thread, NULL, run_internal_abs_async, &ia_ctx) == 0) {
                 ia_async_started = 1;
             } else {
-                ia_ctx.pt_worker = NULL;
-                free_internal_abs_store(ia_worker_blob);
-                free(ia_worker_blob);
-                ia_worker_blob = NULL;
+                recompute_internal_absorption_tau(ia_worker_blob);
+                ia_ctx.worker_status = internal_abs_eval_valid_on_blob(ia_worker_blob) ? 0 : -1;
             }
         }
     }
@@ -1048,37 +1049,38 @@ void Run_SED(struct blob *pt_base){
     //==================================================
     //Sum Up all the Spectral Components
     //==================================================
-    if (ia_enabled && ia_need_refresh) {
-        if (ia_async_started) {
-            if (pthread_join(ia_thread, NULL) == 0) {
+    if (ia_enabled) {
+        if (ia_worker_blob != NULL) {
+            if (ia_async_started) {
+                if (pthread_join(ia_thread, NULL) == 0) {
+                    ia_thread_join_ok = 1;
+                }
+            } else {
                 ia_thread_join_ok = 1;
             }
-        }
 
-        if (ia_thread_join_ok && (ia_ctx.worker_status == 0) && (ia_worker_blob != NULL)) {
-            if (merge_internal_abs_result(pt_base, ia_worker_blob) == 0) {
-                ia_cache_ok = 1;
+            if (ia_thread_join_ok && (ia_ctx.worker_status == 0)) {
+                if (merge_internal_abs_result(pt_base, ia_worker_blob) == 0) {
+                    ia_isolated_eval_ok = 1;
+                }
             }
-        }
 
-        if (ia_worker_blob != NULL) {
             free_internal_abs_store(ia_worker_blob);
             free(ia_worker_blob);
             ia_worker_blob = NULL;
         }
 
-        if (ia_cache_ok == 0) {
-            update_internal_absorption_cache(pt_base);
-            ia_seed_fields_rebuild_needed = 1;
-        }
-
         /*
-         * Internal-absorption cache evaluation sweeps R_H and rebuilds seed-field
-         * buffers. Rebuild seed fields at the model R_H before mapping components
-         * to the common output grid.
+         * No live-blob fallback: keep isolated-only IA behavior.
+         * If isolated evaluation failed, invalidate IA components.
          */
-        if (ia_seed_fields_rebuild_needed) {
-            spectra_External_Fields(1, pt_base, 0);
+        if (ia_isolated_eval_ok == 0) {
+            if (pt_base->core.internal_abs.BLR.is_enabled) {
+                pt_base->core.internal_abs.BLR.is_valid = 0;
+            }
+            if (pt_base->core.internal_abs.DT.is_enabled) {
+                pt_base->core.internal_abs.DT.is_valid = 0;
+            }
         }
     }
     common_grid_spectra(1, pt_base);

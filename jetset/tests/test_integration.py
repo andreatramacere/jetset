@@ -12,6 +12,7 @@ from .test_composite_model import TestCompositeModel
 from .test_temp_ev import TestTempEv
 from .test_galactic import TestGalactic
 from .test_set_normalization import TestSetNormalization, TestSetNormalizationLeptonicEquilibrium
+from .test_internal_absorption import TestInternalAbsorption
 
 @pytest.fixture
 def plot():
@@ -96,3 +97,7 @@ class TestIntegration(TestBase):
       t.test_set_N_from_F_sync_eq()
       t.test_set_N_from_nuLnu_eq()
       t.test_set_N_from_nuFnu_eq()
+
+   def test_internal_absorption(self,plot=plot):
+      t=TestInternalAbsorption()
+      t.integration_suite(plot=plot)
