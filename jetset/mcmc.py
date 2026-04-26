@@ -553,11 +553,13 @@ class McmcSampler(object):
         
       
 
-    def tune_burnin(self, tau_cor_coeff=3):
-
-        tau = self.sampler.get_autocorr_time(tol=0)
-        self.burnin = int(tau_cor_coeff * np.max(tau))   # or a few times max(tau)
-        #thin = int(0.5 * np.min(tau))
+    def tune_burnin(self, tau_coeff=None):
+        tau = np.asarray(self.sampler.get_autocorr_time(tol=0), dtype=float)
+        tau_max = float(np.max(tau))
+        if tau_coeff is None:
+            tau_coeff = min(1.0, (self.steps - 10) / max(tau_max, 1.0))
+       
+        self.burnin = int(tau_coeff * np.max(tau))   # or a few times max(tau)
         self._set_samples_post_run()
 
     def _set_samples_post_run(self):
