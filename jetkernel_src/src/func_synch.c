@@ -318,30 +318,37 @@ double integrale_Sync(double (*pf) (struct blob *, unsigned int  ID, double nu_s
     double log_nu_sync, log_c2;
     int use_cached_jnu_path;
     double *log_gamma_grid;
+    double log_y;
     integral =0;
     Integrand_over_gamma_grid = (double *) calloc(pt->emitters.gamma_grid_size, sizeof (double));
 
-    use_cached_jnu_path = (pf == &F_int_fix || pf == &F_int_ave) && (pt->emitters.log_of_griglia_gamma_Ne_log != NULL);
+    use_cached_jnu_path = (pf == &F_int_fix || pf == &F_int_ave || pf == &F_int_fix_parallel && (pt->emitters.log_of_griglia_gamma_Ne_log != NULL));
     if (use_cached_jnu_path){
         log_nu_sync = log10(nu_sync);
         log_gamma_grid = pt->emitters.log_of_griglia_gamma_Ne_log;
 
-        if (pt->core.Sync_kernel==0){
+        if (pf == &F_int_fix){
             log_c2 = log10(pt->Sync.C2_Sync_K53);
             for (ID = 0; ID < pt->emitters.gamma_grid_size ; ID++){
-                double log_x = log_nu_sync + log_c2 - 2.0 * log_gamma_grid[ID];
-                Integrand_over_gamma_grid[ID] = F_K_53_log(pt, log_x) * pt->emitters.Ne[ID];
+                log_y = log_nu_sync + log_c2 - 2.0 * log_gamma_grid[ID];
+                Integrand_over_gamma_grid[ID] = F_K_53_log(pt, log_y) * pt->emitters.Ne[ID];
             }
         }
-        else{
+        if (pf == &F_int_ave){
             log_c2 = log10(pt->Sync.C2_Sync_K_AVE);
             for (ID = 0; ID < pt->emitters.gamma_grid_size ; ID++){
-                double log_x = log_nu_sync + log_c2 - 2.0 * log_gamma_grid[ID];
-                Integrand_over_gamma_grid[ID] = F_K_ave_log(pt, log_x) * pt->emitters.Ne[ID];
+                log_y = log_nu_sync + log_c2 - 2.0 * log_gamma_grid[ID];
+                Integrand_over_gamma_grid[ID] = F_K_ave_log(pt, log_y) * pt->emitters.Ne[ID];
             }
         }
-    }
-    else{
+        if (pf == &F_int_fix_parallel){
+            log_c2 = log10(pt->Sync.C2_Sync_K53);
+            for (ID = 0; ID < pt->emitters.gamma_grid_size ; ID++){
+                log_y = log_nu_sync + log_c2 - 2.0 * log_gamma_grid[ID];
+                Integrand_over_gamma_grid[ID] = F_K_23_log(pt, log_y) * pt->emitters.Ne[ID];
+            }
+        }
+    }else{
         for (ID = 0; ID < pt->emitters.gamma_grid_size ; ID++){
             Integrand_over_gamma_grid[ID] =pf(pt,ID, nu_sync);
         }
