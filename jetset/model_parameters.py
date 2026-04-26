@@ -1444,16 +1444,14 @@ class CompositeModelParameterArray(object):
     def freeze_all(self):
         """Freeze all."""
         self.all_frozen = True
-        for p_arr in self._parameters:
-            for pi in range(len(p_arr)):
-                self.par_array[pi].freeze()
+        for p_arr in self.par_array:
+           p_arr.freeze()
 
     def free_all(self):
         """Free all."""
         self.all_frozen = False
-        for p_arr in self._parameters:
-            for pi in range(len(p_arr)):
-                self.par_array[pi].free()
+        for p_arr in self.par_array:
+            p_arr.free()
 
 
 class ModelParameterArray(object):
