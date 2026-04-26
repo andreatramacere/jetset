@@ -390,7 +390,10 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     struct jet_energetic energetic;
     //char f_Energetic[static_file_name_max_legth];
     //FILE *fp_Energetic;
-
+    EvalU_e(pt);
+     if (strcmp(pt->core.PARTICLE, "protons") == 0){
+        EvalU_p(pt);
+     }
     //lum_factor and  lum_factor_rad consistent with Eq. 3 and 4, Ghisellini 2010, doi:10.1111/j.1365-2966.2009.15898.x
     lum_factor_rad =0.25 *eval_beta_gamma(pt->core.BulkFactor) * pt->core.BulkFactor * pt->core.BulkFactor ;
     lum_factor = pi * pt->core.R * pt->core.R * vluce_cm * eval_beta_gamma(pt->core.BulkFactor) * pt->core.BulkFactor * pt->core.BulkFactor ;
