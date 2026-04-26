@@ -290,8 +290,11 @@ class JetBase(Model):
             return snapshot
 
         if isinstance(src, EmittersDistribution):
-            available = set(EmittersFactory.available_distributions_list())
-            is_factory_distribution = src.name in available
+            if hasattr(self,'_emitters_from_factory'):
+                is_factory_distribution =self._emitters_from_factory
+            else:
+                available = set(EmittersFactory.available_distributions_list())
+                is_factory_distribution = src.name in available
             if is_factory_distribution:
                 snapshot = EmittersFactory().create_emitters(
                     src.name,
@@ -931,6 +934,8 @@ class JetBase(Model):
             If ``True``, initialize backend state before replacing the
             distribution.
         """
+
+        self._emitters_from_factory=False
         if init is True:
             self.set_blob()
         self._emitters_distribution_log_values = log_values
@@ -998,6 +1003,7 @@ class JetBase(Model):
         elif isinstance(distr, str):
             self._disable_leptonic_equilibrium(remove_parameters=True)
             nf=EmittersFactory()
+            self._emitters_from_factory=True
             self.emitters_distribution = nf.create_emitters(distr, log_values=log_values, emitters_type=emitters_type)
             if hasattr( self.emitters_distribution,'_activate_numba'):
                 self.emitters_distribution._activate_numba()
