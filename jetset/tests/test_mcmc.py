@@ -30,12 +30,13 @@ class TestEmcee(TestBase):
 
         from jetset.mcmc import McmcSampler
         mcmc = McmcSampler(model_minimizer)
-        labels = ['N', 'B', 'beam_obj', 's', 'gamma0_log_parab']
-        model_name = 'jet_leptonic'
-        use_labels_dict = {model_name: labels}
-        mcmc.set_labels(use_labels_dict=use_labels_dict)
+        #labels = ['N', 'B', 'beam_obj', 's', 'gamma0_log_parab']
+        #model_name = 'jet_leptonic'
+        #use_labels_dict = {model_name: labels}
+        #mcmc.model.paramters.f
+        #mcmc.set_labels(use_labels_dict=use_labels_dict)
         mcmc.set_bounds(bound=5.0,bound_rel=True)
-        mcmc.run_sampler(nwalkers=64, burnin=10, steps=50)
+        mcmc.run_sampler(nwalkers=64, burnin=50, steps=500)
 
         print(mcmc.acceptance_fraction)
         if plot is True:
