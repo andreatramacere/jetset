@@ -391,7 +391,7 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     //char f_Energetic[static_file_name_max_legth];
     //FILE *fp_Energetic;
     EvalU_e(pt);
-    if (strcmp(pt->core.PARTICLE, "protons") == 0){
+    if (pt->core.PARTICLE == PARTICLE_PROTONS) {
         EvalU_p(pt);
      }
     //lum_factor and  lum_factor_rad consistent with Eq. 3 and 4, Ghisellini 2010, doi:10.1111/j.1365-2966.2009.15898.x
@@ -438,7 +438,7 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
         energetic.jet_L_SSC=0;
     }
 
-    if (strcmp(pt->core.PARTICLE, "protons") == 0) {
+    if (pt->core.PARTICLE == PARTICLE_PROTONS) {
         energetic.U_p_target = pt->PP_gamma.NH_pp  * MPC2;
         energetic.U_p = pt->emitters.U_p;
         energetic.L_pp_gamma_rf = PowerPhotons_blob_rest_frame(pt, pt->PP_gamma.spec.nu, pt->PP_gamma.spec.nuFnu_obs, pt->PP_gamma.NU_INT_STOP_PP_GAMMA);

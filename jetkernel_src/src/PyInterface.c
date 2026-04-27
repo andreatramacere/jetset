@@ -22,6 +22,21 @@ struct internal_abs_async_ctx {
     int worker_status;
 };
 
+static const char *particle_type_to_str(particle_type_t particle) {
+    switch (particle) {
+        case PARTICLE_ELECTRONS:
+            return "electrons";
+        case PARTICLE_PROTONS:
+            return "protons";
+        case PARTICLE_SECONDARIES_EL:
+            return "secondaries_el";
+        case PARTICLE_PRIMARIES_EL:
+            return "primaries_el";
+        default:
+            return "unknown";
+    }
+}
+
 static int internal_abs_enabled_on_blob(const struct blob *pt) {
     if (pt == NULL) {
         return 0;
@@ -291,7 +306,7 @@ void show_blob(struct blob pt ) {
     printf("do_Sync=%d\n", pt.core.do_Sync);
     printf("do_SSC=%d\n", pt.core.do_SSC);
     printf("MODE=%s\n", pt.core.MODE);
-    printf("PARTICLE=%s\n", pt.core.PARTICLE);
+    printf("PARTICLE=%s\n", particle_type_to_str(pt.core.PARTICLE));
     printf("nu_seed_size=%d\n", pt.core.nu_seed_size);
     printf("nu_IC_size=%d\n", pt.core.nu_IC_size);
     printf("nu_start_Sync=%e\n", pt.Sync.spec.nu_min);
@@ -447,7 +462,7 @@ struct blob MakeBlob() {
     sprintf(spettro_root.core.path, "./");
     sprintf(spettro_root.core.STEM, "TEST");
 
-    sprintf(spettro_root.core.PARTICLE, "electrons");
+    spettro_root.core.PARTICLE = PARTICLE_ELECTRONS;
     spettro_root.core.do_Sync = 1;
     spettro_root.core.Sync_kernel=1;
     spettro_root.core.do_SSC = 1;
@@ -826,7 +841,7 @@ void Init(struct blob *pt_base, double luminosity_distance) {
         printf("Volume Geom.=%e\n", pt_base->core.Vol_region);
     }
     
-    if (strcmp(pt_base->core.PARTICLE, "electrons") == 0) {
+    if (pt_base->core.PARTICLE == PARTICLE_ELECTRONS) {
         if (pt_base->emitters.do_equilibrium == 1) {
             InitNeEquilibrium(pt_base);
         } else {
@@ -859,7 +874,7 @@ void Init(struct blob *pt_base, double luminosity_distance) {
     //    pt_base->emitters.N_tot_e_Sferic = pt_base->core.Vol_region * pt_base->emitters.N_e;
     //    FindNe_NpGp(pt_base);
     //    EvalU_e(pt_base);
-    else if (strcmp(pt_base->core.PARTICLE, "protons") == 0) {
+    else if (pt_base->core.PARTICLE == PARTICLE_PROTONS) {
         Init_Np_Ne_pp(pt_base);        
         pt_base->emitters.N_tot_p_Sferic = pt_base->core.Vol_region * pt_base->emitters.N_p;             
         //EvalU_p(pt_base);             
@@ -937,12 +952,12 @@ void Run_SED(struct blob *pt_base){
     //==================================================
     // Evaluate hadronic pp Spectrum
     //==================================================
-    if ((strcmp(pt_base->core.PARTICLE, "protons") == 0) && pt_base->PP_gamma.do_pp_gamma) {
+    if ((pt_base->core.PARTICLE == PARTICLE_PROTONS) && pt_base->PP_gamma.do_pp_gamma) {
 
         spettro_pp_gamma(1, pt_base);
     }
 
-    if ((strcmp(pt_base->core.PARTICLE, "protons") == 0) && pt_base->PP_neutrino.do_pp_neutrino) {
+    if ((pt_base->core.PARTICLE == PARTICLE_PROTONS) && pt_base->PP_neutrino.do_pp_neutrino) {
         spettro_pp_neutrino(1,pt_base);
     }
 

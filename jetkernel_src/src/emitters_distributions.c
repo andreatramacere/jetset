@@ -71,7 +71,7 @@ void setNgrid(struct blob *pt)
     double  *gmin, *gmax , *gmin_griglia, *gmax_griglia;
     unsigned int *gamma_grid_size;
     
-    if (strcmp(pt->core.PARTICLE, "secondaries_el") == 0)
+    if (pt->core.PARTICLE == PARTICLE_SECONDARIES_EL)
     {
       gamma_grid_size = &(pt->emitters.gamma_grid_size);
       gmax = &(pt->emitters.gmax_secondaries);
@@ -172,7 +172,7 @@ void setNgrid(struct blob *pt)
     {
         *gmax_griglia = *gmax;
         *gmin_griglia = *gmin;
-        if (strcmp(pt->core.PARTICLE, "secondaries_el") == 0)
+        if (pt->core.PARTICLE == PARTICLE_SECONDARIES_EL)
         {
             *gmin_griglia=1.0;
         }
@@ -277,7 +277,7 @@ void Fill_Ne_IC(struct blob *pt, double g_min_IC, int stat_frame, double * Ne_IC
         printf("elements number is pt->emitters.gamma_grid_size=%d\n", pt->emitters.gamma_grid_size);
     }
 
-    if (strcmp(pt->core.PARTICLE, "protons") == 0) {
+    if (pt->core.PARTICLE == PARTICLE_PROTONS) {
         
         if(pt->core.IC_adaptive_e_binning ==1){
             Genera_griglia_gamma_N_log(pt, griglia_gamma_Ne_log_IC,g_min_IC, pt->emitters.gmax_griglia_secondaries);
@@ -435,7 +435,7 @@ void Init_Np_Ne_pp(struct blob *pt)
     // Secondaries e- from pp
 
     //Set N to e- from pp
-    sprintf(pt->core.PARTICLE, "secondaries_el");
+    pt->core.PARTICLE = PARTICLE_SECONDARIES_EL;
     setNgrid(pt);
     build_Ne_secondaries(pt);
     build_Q_inj_e_second(pt);
@@ -465,7 +465,7 @@ void Init_Np_Ne_pp(struct blob *pt)
     //set back pt->emitters.N_0 to the proton value and particle name
     pt->emitters.N_0 = pt->emitters.N_0p;
     pt->emitters.Q_inj_e = NULL;
-    sprintf(pt->core.PARTICLE, "protons");
+    pt->core.PARTICLE = PARTICLE_PROTONS;
     SetDistr(pt);
 }
 
@@ -512,7 +512,7 @@ void Fill_N(struct blob *pt, double * griglia_gamma_N_log, double * N) {
     //=========================================
     if (pt->emitters.TIPO_DISTR == EMIT_DISTR_FROM_ARRAY)
     {   
-        if (strcmp(pt->core.PARTICLE, "protons") == 0){
+        if (pt->core.PARTICLE == PARTICLE_PROTONS) {
             for (i = 0; i < pt->emitters.gamma_grid_size; i++)
             
             {
@@ -534,7 +534,7 @@ void Fill_N(struct blob *pt, double * griglia_gamma_N_log, double * N) {
 
     }
     else if (pt->emitters.TIPO_DISTR == EMIT_DISTR_JETSET) {
-        if (strcmp(pt->core.PARTICLE, "protons") == 0){
+        if (pt->core.PARTICLE == PARTICLE_PROTONS) {
             for (i = 0; i < pt->emitters.gamma_grid_size; i++)
             
             {
@@ -744,7 +744,7 @@ void SetDistr(struct blob *pt) {
 
     /*** Associo ad ogni distribuzione di elettroni ***/
 
-    if (strcmp(pt->core.PARTICLE, "secondaries_el") == 0)
+    if (pt->core.PARTICLE == PARTICLE_SECONDARIES_EL)
     {
         pt->emitters.TIPO_DISTR = EMIT_DISTR_SECONDARIES_EL;
     }

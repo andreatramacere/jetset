@@ -23,7 +23,7 @@ from .base_model import Model
 from .output import makedir,WorkPlace
 from  .plot_sedfit import plt
 from .cosmo_tools import Cosmo
-from .utils import set_str_attr, old_model_warning, get_info, clean_var_name, get_nested_attr
+from .utils import set_str_attr, set_particle_attr, old_model_warning, get_info, clean_var_name, get_nested_attr
 from .jet_paramters import *
 from .jet_emitters import *
 from .jet_emitters_factory import EmittersFactory, InjEmittersFactory
@@ -875,7 +875,7 @@ class JetBase(Model):
         self._blob.emitters.gamma_grid_size = int(self.inj_emitters_distribution._gamma_grid_size)
 
         set_str_attr(self._blob, 'core.DISTR', 'jetset')
-        set_str_attr(self._blob, 'core.PARTICLE', 'electrons')
+        set_particle_attr(self._blob, 'electrons')
 
         BlazarSED.setNgrid(self._blob)
         BlazarSED.build_Ne_jetset(self._blob)

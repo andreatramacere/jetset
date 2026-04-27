@@ -89,6 +89,13 @@ typedef enum {
     EMIT_DISTR_JETSET = 1
 } emitters_distr_t;
 
+typedef enum {
+    PARTICLE_ELECTRONS = 0,
+    PARTICLE_PROTONS = 1,
+    PARTICLE_SECONDARIES_EL = 2,
+    PARTICLE_PRIMARIES_EL = 3
+} particle_type_t;
+
 struct spectrum {
     double nu_min;
     double nu_max;
@@ -172,7 +179,7 @@ struct blob_core {
     char DISTR[16];
     char disk_type[16];
     char MODE[16];
-    char PARTICLE[16];
+    particle_type_t PARTICLE;
     int OUT_FILE;
     int START_FILE;
     unsigned int N_THREADS;

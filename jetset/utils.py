@@ -239,6 +239,42 @@ def set_str_attr(obj,name,val):
         raise RuntimeError('error setting attr',name,'execption:',e)
 
 
+def set_particle_attr(obj, emitters_type):
+    """Set ``core.PARTICLE`` using enum codes while keeping string fallback.
+
+    Parameters
+    ----------
+    obj : object
+        Backend blob-like object.
+    emitters_type : str
+        Particle selector (``'electrons'`` or ``'protons'``).
+    """
+    try:
+        from .jetkernel import jetkernel as BlazarSED
+        particle_map = {
+            'electrons': BlazarSED.PARTICLE_ELECTRONS,
+            'protons': BlazarSED.PARTICLE_PROTONS,
+            'secondaries_el': BlazarSED.PARTICLE_SECONDARIES_EL,
+            'primaries_el': BlazarSED.PARTICLE_PRIMARIES_EL,
+        }
+    except Exception:
+        particle_map = {
+            'electrons': 0,
+            'protons': 1,
+            'secondaries_el': 2,
+            'primaries_el': 3,
+        }
+
+    if emitters_type not in particle_map:
+        raise RuntimeError('emitters type', emitters_type, 'not valid', tuple(particle_map.keys()))
+
+    try:
+        set_nested_attr(obj, 'core.PARTICLE', particle_map[emitters_type])
+    except Exception:
+        # Compatibility with pre-enum builds where PARTICLE is still char[].
+        set_str_attr(obj, 'core.PARTICLE', emitters_type)
+
+
 
 def get_info():
     """Return info.
