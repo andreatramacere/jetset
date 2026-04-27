@@ -83,6 +83,12 @@ typedef enum {
     EXT_DISK, EXT_BLR, EXT_DT, EXT_STAR, EXT_CMB, NUM_EXT_COMP
 } ext_comp_t;
 
+typedef enum {
+    EMIT_DISTR_SECONDARIES_EL = -1,
+    EMIT_DISTR_FROM_ARRAY = 0,
+    EMIT_DISTR_JETSET = 1
+} emitters_distr_t;
+
 struct spectrum {
     double nu_min;
     double nu_max;
@@ -255,7 +261,7 @@ struct emitters {
     int Distr_e_pp_done;
     int do_equilibrium;
 
-    int TIPO_DISTR;
+    emitters_distr_t TIPO_DISTR;
     int grid_bounded_to_gamma;
 
     double *Ne;
