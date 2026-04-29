@@ -927,8 +927,35 @@ class ModelParameter(object):
         return self._root_par.val
 
 
+    def make_log(self):
+        if self.islog:
+            pass
+        else:
+            
+            if self.val_max is not None:
+               self.val_max=self._handle_zero_in_log_pars(self.val_max)
+            if self.val_min is not None:
+                self.val_min=self._handle_zero_in_log_pars(self.val_min)
+           
+            
+            if self.val_start is not None:
+                self.val_start=self._handle_zero_in_log_pars(self.val_start)
+            if self.val_last_call is not None:
+                self.val_last_call=self._handle_zero_in_log_pars(self.val_last_call)
+            if self.fit_range_min is not None:
+                self.fit_range_min=self._handle_zero_in_log_pars(self.fit_range_min)
+            if self.fit_range_max is not None:
+                self.fit_range_max=self._handle_zero_in_log_pars(self.fit_range_max)
 
-
+            lin_val=self.val_lin
+            #NOTE: get lin val before setting par log
+            self._val.islog=True
+            self.set(val=self._handle_zero_in_log_pars(lin_val))
+    def _handle_zero_in_log_pars(self,v):
+        if v<=0:
+            return -200
+        else:
+            return np.log10(v)
 
 # NOTE: obsolete, not used anymore
 # def compositr_parameter_setter(method):
@@ -1417,16 +1444,14 @@ class CompositeModelParameterArray(object):
     def freeze_all(self):
         """Freeze all."""
         self.all_frozen = True
-        for p_arr in self._parameters:
-            for pi in range(len(p_arr)):
-                self.par_array[pi].freeze()
+        for p_arr in self.par_array:
+           p_arr.freeze()
 
     def free_all(self):
         """Free all."""
         self.all_frozen = False
-        for p_arr in self._parameters:
-            for pi in range(len(p_arr)):
-                self.par_array[pi].free()
+        for p_arr in self.par_array:
+            p_arr.free()
 
 
 class ModelParameterArray(object):
@@ -1960,7 +1985,7 @@ class ModelParameterArray(object):
     def _serialize_pars(self):
         _par_keys=['val','val_min','val_max','val_start','val_last_call','fit_range_min','fit_range_max','best_fit_val',
                    'best_fit_err','frozen','allowed_values','_linked','_is_dependent','_func','_master_pars',
-                   '_linked_root_model','_depending_pars','_root_par','','_master_par_list','_depending_par_expr','_par_expr_text','units','par_type']
+                   '_linked_root_model','_depending_pars','_root_par','','_master_par_list','_depending_par_expr','_par_expr_text','units','par_type','log']
         _par_dict = {}
         for par in self.par_array:
             _val_dict={}
@@ -1972,7 +1997,13 @@ class ModelParameterArray(object):
                     else:
                         _val_dict[k]=getattr(par,k)
 
+            if par.islog:
+                _val_dict['log']=True
+            else:
+                _val_dict['log']=False
+            
             _par_dict[par.name] = _val_dict
+           
 
         return _par_dict
 

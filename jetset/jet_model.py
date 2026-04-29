@@ -23,7 +23,7 @@ from .base_model import Model
 from .output import makedir,WorkPlace
 from  .plot_sedfit import plt
 from .cosmo_tools import Cosmo
-from .utils import set_str_attr, old_model_warning, get_info, clean_var_name, get_nested_attr
+from .utils import set_str_attr, set_particle_attr, old_model_warning, get_info, clean_var_name, get_nested_attr
 from .jet_paramters import *
 from .jet_emitters import *
 from .jet_emitters_factory import EmittersFactory, InjEmittersFactory
@@ -158,12 +158,10 @@ class JetBase(Model):
         self._emitting_region_dict = None
         self._electron_distribution_dic= None
         self._external_photon_fields_dic= None
-        self._original_emitters_distr = None
         self._original_inj_emitters_distr = None
         self.inj_emitters_distribution = None
         self._leptonic_equilibrium = False
         self._energetic = None
-        self.skip_internal_absorption_serial=False
         self._setup(emitters_distribution,emitters_distribution_log_values,beaming_expr,emitters_type)
 
 
@@ -227,12 +225,108 @@ class JetBase(Model):
         self.__init__()
         self._decode_model(state)
         self._fix_par_dep_on_load(verbose=False)
+        self._internal_absorption_comp = {}
         if '_internal_absorption_comp' in state:
-            self._internal_absorption_comp=state['_internal_absorption_comp']
-        #    for c in state['_internal_absorption_comp'].keys():
-        #        p=state['_internal_absorption_comp'][c]['pars']
-        #        self.enable_internal_absorption(**p)
+            for _, p in self._extract_internal_abs_pars(state['_internal_absorption_comp']).items():
+                self.enable_internal_absorption(**p)
+
+    @staticmethod
+    def _extract_internal_abs_pars(serialized_internal_abs):
+        out = {}
+        if not isinstance(serialized_internal_abs, dict):
+            return out
+
+        for comp, item in serialized_internal_abs.items():
+            if isinstance(item, dict) and isinstance(item.get('pars'), dict):
+                out[comp] = dict(item['pars'])
+                continue
+            if isinstance(item, dict) and ('comp' in item):
+                out[comp] = dict(item)
+        return out
         
+    @staticmethod
+    def _copy_emitters_parameter_state(source_distr, target_distr):
+        for source_par in source_distr.parameters.par_array:
+            target_par = target_distr.parameters.get_par_by_name(source_par.name)
+            if target_par is None:
+                target_distr.add_par(
+                    source_par.name,
+                    par_type=source_par.par_type,
+                    val=source_par.val,
+                    vmin=source_par.val_min,
+                    vmax=source_par.val_max,
+                    unit=source_par.units,
+                    log=source_par.islog,
+                    frozen=source_par.frozen,
+                )
+                target_par = target_distr.parameters.get_par_by_name(source_par.name)
+
+            target_par.set(
+                val=source_par.val,
+                val_min=source_par.val_min,
+                val_max=source_par.val_max,
+                units=source_par.units,
+                frozen=source_par.frozen,
+                log=source_par.islog,
+                skip_dep_par_warning=True,
+            )
+
+    def _build_serializable_emitters_distribution(self):
+        src = self.emitters_distribution
+
+        if isinstance(src, EmittersArrayDistribution):
+            snapshot = EmittersArrayDistribution(
+                name=src.name,
+                emitters_type=src.emitters_type,
+                normalize=src.normalize,
+                gamma_array=np.asarray(src._array_gamma, dtype=np.float64).copy(),
+                n_gamma_array=np.asarray(src._array_n_gamma, dtype=np.float64).copy(),
+                gamma_grid_size=int(src._gamma_grid_size),
+            )
+            self._copy_emitters_parameter_state(src, snapshot)
+            snapshot._update_parameters_dict()
+            return snapshot
+
+        if isinstance(src, EmittersDistribution):
+            if hasattr(self,'_emitters_from_factory'):
+                is_factory_distribution =self._emitters_from_factory
+            else:
+                available = set(EmittersFactory.available_distributions_list())
+                is_factory_distribution = src.name in available
+            if is_factory_distribution:
+                snapshot = EmittersFactory().create_emitters(
+                    src.name,
+                    gamma_grid_size=int(src._gamma_grid_size),
+                    log_values=src._log_values,
+                    emitters_type=src.emitters_type,
+                    normalize=src.normalize,
+                )
+            else:
+                snapshot = EmittersDistribution(
+                    name=src.name,
+                    spectral_type=src.spectral_type,
+                    gamma_grid_size=int(src._gamma_grid_size),
+                    log_values=src._log_values,
+                    emitters_type=src.emitters_type,
+                    normalize=src.normalize,
+                )
+
+            self._copy_emitters_parameter_state(src, snapshot)
+
+            if is_factory_distribution is False or src.spectral_type == 'user_defined':
+                distr_func = getattr(src, '_py_distr_func', None)
+                if distr_func is None:
+                    distr_func = getattr(src, 'distr_func', None)
+                    if hasattr(distr_func, 'py_func'):
+                        distr_func = distr_func.py_func
+                if distr_func is not None:
+                    snapshot.set_distr_func(distr_func)
+
+            snapshot._update_parameters_dict()
+            return snapshot
+
+        raise RuntimeError('emitters distribution type not valid', type(src))
+
     def _serialize_model(self):
         _model = {}
         _model['version']=get_info()['version']
@@ -241,16 +335,14 @@ class JetBase(Model):
        
         if self.inj_emitters_distribution is None:
             if isinstance(self.emitters_distribution,EmittersDistribution):
-                self._original_emitters_distr._copy_from_jet(self)
-                _model['custom_emitters_distribution']=self._original_emitters_distr
+                _model['custom_emitters_distribution'] = self._build_serializable_emitters_distribution()
                 clean_numba(_model['custom_emitters_distribution'])
                 _model['emitters_distribution_class'] = 'EmittersDistribution'
             else:
-                raise  RuntimeError('emitters distribution type not valid',type(self._emitters_distribution))
+                raise RuntimeError('emitters distribution type not valid', type(self.emitters_distribution))
 
         else:
             if isinstance(self.inj_emitters_distribution ,InjEmittersDistribution):
-                #self._original_emitters_distr._copy_from_jet(self)
                 _model['custom_emitters_distribution']=self.inj_emitters_distribution
                 clean_numba(_model['custom_emitters_distribution'])
                 _model['emitters_distribution_class'] = 'InjEmittersDistribution'
@@ -269,9 +361,10 @@ class JetBase(Model):
         _model['pars'] = {}
         _model['pars']=self.parameters._serialize_pars()
         _model['external_field_transf']=self.get_external_field_transf()
-        #print('self.skip_internal_absorption_serial',self.self.skip_internal_absorption_serial)
-        if self.skip_internal_absorption_serial is False:
-            _model['_internal_absorption_comp']=self._internal_absorption_comp
+        _model['_internal_absorption_comp'] = {}
+        for comp, item in self._internal_absorption_comp.items():
+            if isinstance(item, dict) and isinstance(item.get('pars'), dict):
+                _model['_internal_absorption_comp'][comp] = {'pars': dict(item['pars'])}
         _model['internal_pars'] = {}
         _model['internal_pars']['nu_size'] = self.nu_size
         _model['internal_pars']['nu_seed_size'] = self.nu_seed_size
@@ -308,10 +401,6 @@ class JetBase(Model):
             jet=cls._load_pickle(file_name_or_obj,from_string=from_string)
             jet.set_blob()
             jet._update_spectral_components()
-            if hasattr(jet,'_internal_absorption_comp'):
-                for c in jet._internal_absorption_comp:
-                    p=jet._internal_absorption_comp[c]['pars']
-                    jet.enable_internal_absorption(**p)
             return jet
         except Exception as e:
             raise RuntimeError('The model you loaded is not valid please check the file name', e)
@@ -356,7 +445,10 @@ class JetBase(Model):
         if _model['emitters_distribution_class'] == 'EmittersDistribution' or _model['emitters_distribution_class'] == 'InjEmittersDistribution':
             self.set_emitters_distribution(distr=_model['custom_emitters_distribution'], init=False)
         else:
-            raise RuntimeError('emitters distribution type not valid', type(self._emitters_distribution))
+            raise RuntimeError(
+                'emitters distribution type not valid',
+                type(_model.get('custom_emitters_distribution'))
+            )
 
     
         for c in self.basic_components_list:
@@ -783,7 +875,7 @@ class JetBase(Model):
         self._blob.emitters.gamma_grid_size = int(self.inj_emitters_distribution._gamma_grid_size)
 
         set_str_attr(self._blob, 'core.DISTR', 'jetset')
-        set_str_attr(self._blob, 'core.PARTICLE', 'electrons')
+        set_particle_attr(self._blob, 'electrons')
 
         BlazarSED.setNgrid(self._blob)
         BlazarSED.build_Ne_jetset(self._blob)
@@ -840,6 +932,8 @@ class JetBase(Model):
             If ``True``, initialize backend state before replacing the
             distribution.
         """
+
+        self._emitters_from_factory=False
         if init is True:
             self.set_blob()
         self._emitters_distribution_log_values = log_values
@@ -871,7 +965,6 @@ class JetBase(Model):
             self._ensure_leptonic_equilibrium_parameters()
 
             self.emitters_distribution = self._build_equilibrium_carrier_distribution()
-            self._original_emitters_distr = copy.deepcopy(self.emitters_distribution)
             self.emitters_distribution.set_jet(self)
             self._sync_jet_parameters_from_inj_emitters_distribution()
             self.emitters_distribution._update_parameters_dict()
@@ -885,7 +978,6 @@ class JetBase(Model):
             self._disable_leptonic_equilibrium(remove_parameters=True)
             self._emitters_distribution_name = 'from_array'
             self.emitters_distribution = EmittersDistribution.from_array(self, distr, emitters_type=emitters_type)
-            self._original_emitters_distr = copy.deepcopy(self.emitters_distribution)
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
             self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
             self._attach_emitters_pars_to_jet(preserve_value_emitters=True)
@@ -895,7 +987,6 @@ class JetBase(Model):
             self._disable_leptonic_equilibrium(remove_parameters=True)
             if hasattr(distr,'_activate_numba'):
                 distr._activate_numba()
-            self._original_emitters_distr = copy.deepcopy(distr)
             self.emitters_distribution = copy.deepcopy(distr)
             self._update_emitters_pars_dependence()
             self.emitters_distribution.set_jet(self)
@@ -910,10 +1001,10 @@ class JetBase(Model):
         elif isinstance(distr, str):
             self._disable_leptonic_equilibrium(remove_parameters=True)
             nf=EmittersFactory()
+            self._emitters_from_factory=True
             self.emitters_distribution = nf.create_emitters(distr, log_values=log_values, emitters_type=emitters_type)
             if hasattr( self.emitters_distribution,'_activate_numba'):
                 self.emitters_distribution._activate_numba()
-            self._original_emitters_distr = copy.deepcopy(self.emitters_distribution)
             self.emitters_distribution.set_jet(self)
             self.emitters_distribution._update_parameters_dict()
             self._emitters_distribution_name = self.emitters_distribution.name
@@ -1335,10 +1426,12 @@ class JetBase(Model):
                                                                 N_R_H=N_R_H,
                                                                 N_theta=N_theta,
                                                                 use_R_H_profile_extrapolation=use_R_H_profile_extrapolation)
-    
+        self._configure_internal_absorption_on_blob(comp, self._internal_absorption_comp[comp]['pars'])
+
     def remove_internal_absorption(self,comp):
         """Disable internal absorption for a component."""
         if comp in self._internal_absorption_comp.keys():
+            self._disable_internal_absorption_on_blob(comp)
             del self._internal_absorption_comp[comp]
     
     def show_internal_absorption_components(self):
@@ -1353,8 +1446,23 @@ class JetBase(Model):
             print('internal absorption not enabled in this jet model')
             
 
-    def eval_internal_absorption(self,comp,skip_check=True,peak=False):
+    def eval_internal_absorption(self, comp, peak=False, nu=None):
         """Evaluate internal absorption for a component.
+
+        Parameters
+        ----------
+        comp : str
+            Enabled internal-absorption component name.
+        peak : bool, optional
+            If ``True``, use peak-optimized seed-photon sampling.
+        nu : array-like or None, optional
+            Source-frame frequency grid in Hz. If omitted, a default model
+            grid is used even when the model has not been evaluated yet.
+
+        Notes
+        -----
+        Internal absorption is evaluated through the isolated C path only
+        (worker-blob evaluation, then merge of IA output only).
 
         Returns
         -------
@@ -1362,7 +1470,9 @@ class JetBase(Model):
             ``(tau, nu_src)`` if available, otherwise ``(None, None)``.
         """
         if comp in self._internal_absorption_comp.keys():
-            return self._internal_absorption_comp[comp]['obj'].eval(get_tau=True,skip_check=skip_check,peak=peak)
+            return self._internal_absorption_comp[comp]['obj'].eval(get_tau=True,
+                                                                     lin_nu=nu,
+                                                                     peak=peak)
         return None,None
     
     def del_par_from_dic(self,model_dic):
@@ -1817,6 +1927,9 @@ class JetBase(Model):
         BlazarSED.Init(self._blob, self.get_DL_cm())
         if self.emitters_distribution._user_defined is True:
             self.emitters_distribution._set_blob()
+        for comp, item in self._internal_absorption_comp.items():
+            if isinstance(item, dict) and isinstance(item.get('pars'), dict):
+                self._configure_internal_absorption_on_blob(comp, item['pars'])
 
     #@safe_run
     def set_external_fields(self):
@@ -1824,23 +1937,61 @@ class JetBase(Model):
         self.set_blob()
         BlazarSED.spectra_External_Fields(1,self._blob,1)
 
+    def _get_internal_abs_component_on_blob(self, comp):
+        if comp == 'BLR':
+            return self._blob.core.internal_abs.BLR
+        if comp == 'DT':
+            return self._blob.core.internal_abs.DT
+        raise RuntimeError('internal absorption component %s not valid' % comp)
+
+    def _configure_internal_absorption_on_blob(self, comp, pars):
+        c_comp = self._get_internal_abs_component_on_blob(comp)
+        new_use_rh = int(bool(pars.get('use_R_H_profile_extrapolation', False)))
+        new_n_soft = int(pars.get('N_soft', 50))
+        new_n_hard = int(pars.get('N_hard', 50))
+        new_n_r_h = int(pars.get('N_R_H', 50))
+        new_n_theta = int(pars.get('N_theta', 50))
+        nu_min = pars.get('nu_min', None)
+        new_nu_min = -1.0 if nu_min is None else float(nu_min)
+
+        config_changed = (
+            int(c_comp.is_enabled) != 1 or
+            int(c_comp.use_R_H_profile_extrapolation) != new_use_rh or
+            int(c_comp.peak_mode) != 0 or
+            int(c_comp.N_soft) != new_n_soft or
+            int(c_comp.N_hard) != new_n_hard or
+            int(c_comp.N_R_H) != new_n_r_h or
+            int(c_comp.N_theta) != new_n_theta or
+            float(c_comp.nu_min) != float(new_nu_min)
+        )
+
+        c_comp.is_enabled = 1
+        if config_changed:
+            c_comp.is_valid = 0
+        c_comp.use_R_H_profile_extrapolation = new_use_rh
+        c_comp.peak_mode = 0
+        c_comp.N_soft = new_n_soft
+        c_comp.N_hard = new_n_hard
+        c_comp.N_R_H = new_n_r_h
+        c_comp.N_theta = new_n_theta
+        c_comp.nu_min = new_nu_min
+
+    def _disable_internal_absorption_on_blob(self, comp):
+        c_comp = self._get_internal_abs_component_on_blob(comp)
+        c_comp.is_enabled = 0
+        c_comp.is_valid = 0
+
     def lin_func(self, lin_nu, init, phys_output=False, update_emitters=True):
         """Evaluate model spectrum in linear units on ``lin_nu``.
 
-        Applies internal absorption (if enabled) and returns the total model
-        after hidden components are removed.
+        Internal absorption is applied at C level during ``Run_SED``.
         """
         if self.emitters_distribution is None:
             raise RuntimeError('emitters distribution not defined')
-        tau_tot=np.zeros(lin_nu.shape)
-        for  iac in self._internal_absorption_comp.keys():
-                int_abs=self._internal_absorption_comp[iac]['obj']
-                tau_c,nu_src=int_abs.eval(get_tau=True,lin_nu=lin_nu)
-                tau_tot+=tau_c
 
         if init is True:
             self.set_blob()
-            self._update_spectral_components(tau=tau_tot)
+            self._update_spectral_components()
         BlazarSED.Run_SED(self._blob)
 
         if phys_output==True:
@@ -1862,7 +2013,7 @@ class JetBase(Model):
         
         nuFnu_sed_sum = nuFnu_sed_sum - nuFnu_sed_hidden
        
-        return nu_sed_sum, nuFnu_sed_sum*np.exp(-tau_tot)
+        return nu_sed_sum, nuFnu_sed_sum
 
     def _eval_model(self, lin_nu, log_nu, init, loglog, phys_output=False, update_emitters=True):
         log_model = None

@@ -6,25 +6,27 @@ from .minimizer import  _eval_res
 
 import emcee
 from itertools import cycle
-
+import types
+import time
 
 import numpy as np
-import scipy as sp
-from scipy import stats
 import corner
 import dill as pickle
-from multiprocessing import cpu_count, Pool
-import multiprocessing as mp
+
 import warnings
-import  time
-import copy
-from collections import OrderedDict
-from astropy.table import Table
-from .plot_sedfit import  plt, PlotSED, set_mpl
-from .model_parameters import _show_table
+import  math
+
+from .plot_sedfit import  plt, set_mpl
+from .mcmc_parameters import(
+    McmcCompositeModelParameterArray,
+    get_mcmc_bound_max,
+    get_mcmc_bound_min,
+    set_mcmc_bound_max,
+    set_mcmc_bound_min,
+    _check_par_mcmc_bounds
+)
 
 __all__=['McmcSampler']
-
 
 
 class Counter(object):
@@ -51,15 +53,6 @@ class Counter(object):
         self._progress_iter = cycle(['|', '/', '-', '\\'])
 
 
-#class RunThread(object):
-#    def __init__(self, target_class):
-#        self.target_class = target_class
-
-#    def run(self):
-#        self.target_class.model=self.target_class.model.clone()
-#        self.target_class.sampler.run_mcmc(self.target_class._pos, self.target_class._npernode, rstate0=np.random.get_state(), progress=True,store = True)
-
-#to prevent from deprecation to error in emcee 
 def sample_ball(p0, std, size=1):
     """Sample ball.
     
@@ -92,7 +85,7 @@ class McmcSampler(object):
     state, stores sampler outputs, and provides serialization-safe state
     handling for chain analysis and plotting.
     """
-    def __init__(self,model_minimizer):
+    def __init__(self,model_minimizer,build_mcmc_parameters=True):
         """Create a new `McmcSampler` instance.
         
         Parameters
@@ -102,16 +95,19 @@ class McmcSampler(object):
         """
         if emcee.__version__ < "3":
             raise RuntimeError('Please update to emcee v>=3.0.0')
-        #self.model_minimizer
         self.model = model_minimizer.fit_model.clone()
         self.data = model_minimizer.data
-        #self._fit_par_free = self.model_minimizer.fit_par_free
-        self._par_array=None
-        self._bounds=None
+        self._bounds_sampler=[]
         
-        
+        self.model.parameters.__class__=McmcCompositeModelParameterArray
         self._progress_iter = cycle(['|', '/', '-', '\\'])
-       
+        if build_mcmc_parameters:
+            self._bulild_mcmc_paramters()
+    
+    @property
+    def _par_array_sampler(self):
+        return [p for p in self.model.parameters.par_array if p.frozen is False]
+
     @staticmethod
     def _new_progress_iter():
         return cycle(['|', '/', '-', '\\'])
@@ -121,6 +117,18 @@ class McmcSampler(object):
         state = self.__dict__.copy()
         state['_progress_iter'] = None
         state['sampler'] = None
+        state['sate_of_mcmc_parameters']={}
+        for model in self.model.components.components_list:
+            state['sate_of_mcmc_parameters'][model.name]={}
+            for p in self.model.parameters.par_array:
+                state['sate_of_mcmc_parameters'][model.name][p.name]={}
+                state['sate_of_mcmc_parameters'][model.name][p.name]['best_fit_mcmc_val']=p.best_fit_mcmc_val
+                state['sate_of_mcmc_parameters'][model.name][p.name]['q_16']=p.q_16
+                state['sate_of_mcmc_parameters'][model.name][p.name]['q_50']=p.q_50
+                state['sate_of_mcmc_parameters'][model.name][p.name]['q_84']=p.q_84
+                state['sate_of_mcmc_parameters'][model.name][p.name]['plot_label']=p.plot_label
+                state['sate_of_mcmc_parameters'][model.name][p.name]['mcmc_bound_min']=p.mcmc_bound_min
+                state['sate_of_mcmc_parameters'][model.name][p.name]['mcmc_bound_max']=p.mcmc_bound_max
         return state
 
     def __setstate__(self, state):
@@ -130,6 +138,7 @@ class McmcSampler(object):
             self.chain = self._as_walker_first_chain(self.chain)
         if hasattr(self, 'log_prob_chain') and self.log_prob_chain is not None:
             self.log_prob_chain = self._as_walker_first_log_prob(self.log_prob_chain)
+
 
     def _as_walker_first_chain(self, chain):
         _chain = np.asarray(chain)
@@ -171,165 +180,59 @@ class McmcSampler(object):
         self.log_prob_chain = self._as_walker_first_log_prob(_logp)
 
 
-    def set_labels(self,use_labels_dict=None):
-        """Set labels.
-        
-        Parameters
-        ----------
-        use_labels_dict : object, optional
-            If ``True``, enable labels dict.
-        """
+    def _bulild_mcmc_paramters(self):
+        """dynamically create McmcParameter with proper inheritance"""
 
-        self._par_array=[]
-        self._bounds=None
-        if use_labels_dict is None:
-            for comp in  self.model.components._components_list:
-                mod = getattr(self.model,comp.name)
-                for p in mod.parameters.par_array:
-                    if p.frozen == False:
-                        self._append_label_dict(comp.name,p)
-        else:
-            for model_name in use_labels_dict.keys():
-                for par_name in use_labels_dict[model_name]:
-                    p= self.model.parameters.get_par_by_name(model_name,par_name)
-                    if p is not None:
-                        if p.frozen == False:
-                            self._append_label_dict(model_name,p)
+        for p in self.model.parameters.par_array:
+            Base = p.__class__
+            if not Base.__name__.startswith("McmcParameter_"):
+                McmcParameter = types.new_class(f"McmcParameter_{Base.__name__}", (Base,))
+                McmcParameter.x = property(set_mcmc_bound_max,get_mcmc_bound_max)
+                McmcParameter.x = property(set_mcmc_bound_min,get_mcmc_bound_min)
+                p.__class__ = McmcParameter
+                p._check_par_mcmc_bounds = types.MethodType(_check_par_mcmc_bounds, p)
+               
 
-    def _append_label_dict(self,comp_name,p):
-        self._par_array.append(OrderedDict(comp_name=comp_name,
-                                            name=p.name,
-                                            full_name=f"{comp_name}.{p.name}",
-                                            val=p.val,
-                                            val_mix=p.val_min,
-                                            val_max=p.val_max,
-                                            labels_start_val=p.val,
-                                            minimizer_best_fit_val=p.best_fit_val,
-                                            minimizer_best_fit_err=p.best_fit_err,
-                                            minimizer_fit_range_min=p.fit_range_min,
-                                            minimizer_fit_range_max=p.fit_range_max,
-                                            units=p.units,
-                                            plot_label=p.name,
-                                            bounds=[None,None])) 
-
-    @property
-    def par_table(self):
-        """Par table.
-        
-        Returns
-        -------
-        object
-            Requested value.
-        """
-        self._build_par_table()
-        return self._par_table
-
-    def _build_par_table(self, names_list=None):
-        if hasattr(self,'samples_log_prob') and self.samples_log_prob is not None:
-            self.reset_to_mcmc_best_fit(verbose=False)
-            _prob_max = np.argmax(self.samples_log_prob)
-            _id_prob_max = np.unravel_index(_prob_max, self.samples_log_prob.shape)
-                
-        if self._par_array is None:
-            raise RuntimeError('please set labels, using .set_labels, before showing parameters')
-
-        _rows = []
-        for idx, par in enumerate(self._par_array):
-            if names_list is not None:
-                if par['name'] not in names_list and par['full_name'] not in names_list:
-                    continue
-
-            _bounds = par.get('bounds', [None, None])
-            if isinstance(_bounds, (list, tuple, np.ndarray)) and len(_bounds) == 2:
-                _bound_min, _bound_max = _bounds[0], _bounds[1]
-            else:
-                _bound_min, _bound_max = None, None
-
-            if hasattr(self,'samples_log_prob') and self.samples_log_prob is not None:
-                mcmc_best_fit_val = self.get_sample(idx)[_id_prob_max]
-                q_016,q_05,q_084=self.get_par_quantiles( par['name'] )
-            else:
-                mcmc_best_fit_val=None
-                q_016,q_05,q_084=[None,None,None]
-            _rows.append((
-                idx,
-                par.get('comp_name'),
-                par.get('name'),
-                #par.get('full_name'),
-                par.get('val'),
-                mcmc_best_fit_val,
-                q_016,
-                q_05,
-                q_084,
-                #par.get('minimizer_best_fit_val'),
-                #par.get('minimizer_best_fit_err'),
-                #par.get('minimizer_fit_range_min'),
-                #par.get('minimizer_fit_range_max'),
-                par.get('val_min', par.get('val_mix')),
-                par.get('val_max'),
-                _bound_min,
-                _bound_max,
-                str(par.get('units')),
-                par.get('plot_label'),
-            ))
-
-        _names = [
-            'idx',
-            'model name',
-            'name',
-            #'full name',
-            'current val',
-            'mcmc best fit val',
-            'quantile 0.16',
-            'quantile 0.50',
-            'quantile 0.84',
-            'val min',
-            'val max',
-            'mcmc bound min',
-            'mcmc bound max',
-            'units',
-            'plot label',
-        ]
-        self._par_table = Table(rows=_rows, names=_names, masked=False)
-
-    def show_pars(self, getstring=False, names_list=None, sort_key=None):
-        """Display pars.
-        
-        Parameters
-        ----------
-        getstring : bool, optional
-            If ``True``, return text output instead of printing.
-        names_list : object, optional
-            Ordered list of parameter/component names.
-        sort_key : object, optional
-            Key used to sort table-like outputs.
-        
-        Returns
-        -------
-        object
-            Computed value.
-        """
-        self._build_par_table(names_list=names_list)
-        if sort_key is not None:
-            self.par_table.sort(sort_key)
-
-        if getstring is True:
-            return self.par_table.pformat_all()
-        else:
-            _show_table(self.par_table)
-
-    @property
-    def labels(self):
-        """Labels.
-        
-        Returns
-        -------
-        object
-            Requested value.
-        """
-        return self.par_table
+                p.best_fit_mcmc_val=p.val
+                p.q_16=None
+                p.q_50=None
+                p.q_84=None
+                if not p.frozen:
+                    if p.fit_range_min is not None:
+                        p.mcmc_bound_min=p.fit_range_min
+                    else:
+                        p.mcmc_bound_min=None
+                    if  p.fit_range_max is not None:
+                        p.mcmc_bound_max= p.fit_range_max 
+                    else:
+                        p.mcmc_bound_max=None
+                else:
+                    p.mcmc_bound_min=p.val_min
+                    p.mcmc_bound_max=p.val_max
+                p.plot_label=p.name
     
-    def set_bounds(self,bound=0.2,bound_rel=False,preserve_fit_range=True):
+   
+    @property
+    def best_fit_par_table(self):
+        return self.model.parameters.best_fit_par_table
+    
+    
+    @property
+    def sampler_parameters(self):
+        """sampler table.
+        
+        Returns
+        -------
+        object
+            Requested value.
+        """
+    
+ 
+        return self.model.parameters._build_sampler_par_table()
+        
+
+
+    def set_bounds(self,par_name=None,comp_name=None,bound=0.2,bound_rel=False,preserve_fit_range=True,par_bounds=None,zero_abs_tol=1E-200):
         """Set bounds.
         
         Parameters
@@ -341,49 +244,116 @@ class McmcSampler(object):
         preserve_fit_range : bool, optional
             Range for preserve fit.
         """
-        self._set_bounds(bound=bound,bound_rel=bound_rel,preserve_fit_range=preserve_fit_range)
-    
-    def _set_bounds(self, bound=0.2,bound_rel=True,preserve_fit_range=True):
+        #all pars
+        if comp_name is None and par_name is None:
+            if par_bounds is not None:
+                raise RuntimeError('if you pass par_bounds, please provide both model comp_name and par_name')
+        
+            for par in self._par_array_sampler:
+                self._set_bounds(par=par,bound=bound,bound_rel=bound_rel,preserve_fit_range=preserve_fit_range,par_bounds=par_bounds,zero_abs_tol=zero_abs_tol)
+            return
+        
+        elif comp_name is not None and par_name is not None:
+            if np.shape(par_bounds)!=(2,):
+                raise RuntimeError('please provide par_bounds as [min_bound, max_bound], with min_bound<max_bound')
+            if par_bounds[0]>=par_bounds[1]:
+                raise RuntimeError('please provide par_bounds as [min_bound, max_bound], with min_bound<max_bound')
 
-        self._bounds=[]
+            par=self.get_par(par_name,comp_name=comp_name)
+            self._set_bounds(par=par,bound=bound,bound_rel=bound_rel,preserve_fit_range=preserve_fit_range,par_bounds=par_bounds,zero_abs_tol=zero_abs_tol)
+            return
 
-        if np.shape(bound) == ():
-            bound=[bound,bound]
-        elif np.shape(bound) == (2,):
-            pass
         else:
-            raise RuntimeError('bound shape', np.shape(bound), 'it is wrong, has to be a scalar or (2,)')
+            raise RuntimeError('please, provide both par_name and comp_name')
+        
 
-        for par in self._par_array:
-            if  not bound_rel  and par['best_fit_err'] is not None:
-                delta_p = par['minimizer_best_fit_err'] * bound[1]
-                delta_m = par['minimizer_best_fit_err'] * bound[0]
+    
+       
+    def _set_bounds(self, par, bound=0.2,bound_rel=True,preserve_fit_range=True,par_bounds=None,zero_abs_tol=1E-200):
+
+        if par.best_fit_val is None:
+            ref_val=par.val
+        else:
+            ref_val=par.best_fit_val 
+
+        if par.islog:
+            ref_val=10**ref_val
+
+        if par_bounds == [] or par_bounds is None:
+            if np.shape(bound) == ():
+                bound=[bound,bound]
+            elif np.shape(bound) == (2,):
+                pass
+            else:
+                raise RuntimeError('bound shape', np.shape(bound), 'it is wrong, has to be a scalar or (2,)')
+            
+            if  not bound_rel:
+                delta_p = ref_val * bound[1]
+                delta_m = ref_val  * bound[0]
 
             else:
-                delta_p = np.fabs(par['minimizer_best_fit_val'])*bound[1]
-                delta_m = np.fabs(par['minimizer_best_fit_val'])*bound[0]
+                if math.isclose(np.fabs(ref_val),0,abs_tol=zero_abs_tol):
+                    raise RuntimeError(f"You can't set relative bounds for reference value equal to 0, par={par.name}, of model comp: {par.model.name}, val={ref_val}")
+                else:
+                    delta_p = np.fabs(ref_val)*bound[1]
+                    delta_m = np.fabs(ref_val)*bound[0]
         
-            _min = par['minimizer_best_fit_val'] - delta_m
-            _max = par['minimizer_best_fit_val'] + delta_p
+            _min = ref_val - delta_m
+            _max = ref_val + delta_p
+        else:
+            if par.islog:
+                _min,_max=[10**par_bounds[0],10**par_bounds[1]]
+            else:
+                _min,_max=par_bounds
 
+      
 
-            if par['minimizer_fit_range_min'] is not None and preserve_fit_range is True:
-                _min= max(_min, par['minimizer_fit_range_min'] )
-            elif par['val_min'] is not None:
-                _min= max(_min, par['val_min'])
+        if par.fit_range_min is not None and preserve_fit_range is True:
+            if par.islog:
+                fit_range_min=10**par.fit_range_min
+            else:
+                fit_range_min=par.fit_range_min
+            _min= max(_min, fit_range_min )
+        elif par.val_min is not None:
+            if par.islog:
+                val_min=10**par.val_min
+            else:
+                val_min=par.val_min
+            _min= max(_min,val_min)
 
-            if par['minimizer_fit_range_max'] is not None:
-                _max= min(_max, par['minimizer_fit_range_max'])
-            elif par['val_max'] is not None:
-                _max= min(_max, par['val_max'])
-            
-            print('par:',par['name'],' best fit value: ',par['minimizer_best_fit_val'],' mcmc bounds:',[_min, _max])
-            par['bounds']=[_min, _max]
+        if par.fit_range_max is not None and preserve_fit_range is True:
+            if par.islog:
+                fit_range_max=10**par.fit_range_max
+            else:
+                fit_range_max=par.fit_range_max
+            _max= min(_max,fit_range_max )
+        elif par.val_max is not None:
+            if par.islog:
+                val_max=10**par.val_max
+            else:
+                val_max=par.val_max
+            _max= min(_max,val_max)
+        
+        if ref_val>_max or ref_val<_min:
+            if par.islog:
+                _max=np.log10(_max)
+                _min=np.log10(_min)
+                ref_val=np.log10(ref_val)
+            raise RuntimeError(f'please set bounds for par: {par.name} of model comp: {par.model.name} such that  {_min}<={ref_val}<={_max}')
+
+        if par.islog:
+            _max=np.log10(_max)
+            _min=np.log10(_min)
+            ref_val=np.log10(ref_val)
+
+        print('par:',par.name,' ref value: ',ref_val,' mcmc bounds:',[_min, _max])
+        par.mcmc_bound_max=_max
+        par.mcmc_bound_min=_min
 
     def _build_sampler_bounds(self):
-        self._bounds=[]
-        for par in self._par_array:
-            self._bounds.append(par['bounds'])
+        self._bounds_sampler=[]
+        for par in self._par_array_sampler:
+            self._bounds_sampler.append([par.mcmc_bound_min,par.mcmc_bound_max])
 
     def get_par(self, par_name_or_idx, comp_name=None, get_index=False):
         """Return par.
@@ -409,36 +379,41 @@ class McmcSampler(object):
             par_name=par_name_or_idx
             try:
                 if comp_name is None:
-                    par_idx = [par['name'] for par in self._par_array].index(par_name)
+                    par_idx = [par.name for par in self._par_array_sampler].index(par_name)
                 else:
-                    par_idx = [par['name']+par['comp_name'] for par in self._par_array].index(par_name+comp_name)
+                    par_idx = [par.name+par.model.name for par in self._par_array_sampler].index(par_name+comp_name)
             except:
                 raise RuntimeError('parameter p', par_name, 'not found')
 
-        if par_idx > len(self._par_array):
+        if par_idx > len(self._par_array_sampler):
             raise RuntimeError('label id larger then labels size')
 
         if get_index is True:
-            return self._par_array[par_idx], par_idx
+            return self._par_array_sampler[par_idx], par_idx
         else:
-            return self._par_array[par_idx]
+            return self._par_array_sampler[par_idx]
         
 
 
-    def set_plot_label(self,par_name,plot_label,comp_name=None):
-        """Set plot label.
-        
+    def set_plot_label(self,par_name,plot_label,comp_name):
+        """Set the display label used for a sampled parameter in plots.
+
         Parameters
         ----------
-        par_name : object
-            Parameter name.
-        plot_label : object
-            Custom label used in plots.
-        comp_name : object, optional
-            Model-component name.
+        par_name : str
+            Name of the parameter whose label must be updated.
+        plot_label : str
+            New text label used in corner and chain plots.
+        comp_name : str
+            Name of the model component that owns ``par_name``.
+
+        Raises
+        ------
+        RuntimeError
+            If the requested parameter/component pair is not found.
         """
         p=self.get_par(par_name,comp_name=comp_name)
-        p['plot_label']=plot_label
+        p.plot_label=plot_label
 
     def reset_to_minimizer_best_fit(self):
         """Reset sampled parameter values to minimizer best-fit values.
@@ -448,9 +423,10 @@ class McmcSampler(object):
         This updates only the internal parameter dictionary used by the
         sampler helper; it does not run a new minimization.
         """
-        for par in  self._par_array:
-            par['val'] = par['minimizer_best_fit_val']
-
+       
+        for par in self._par_array_sampler:
+            if par.best_fit_val is not None:
+                par.val = par.best_fit_val
 
 
     def reset_to_mcmc_best_fit(self,verbose=True):
@@ -467,11 +443,19 @@ class McmcSampler(object):
         if verbose:
             print("----------------------------")
             print("MCMC best fit solution")
-            for ID,par in enumerate(self._par_array):
-                par['val'] = self.get_sample(ID)[_id_prob_max]
-                print(f"{par['name']}: {par['val']}")
-            print("----------------------------")
+        for ID,par in enumerate(self._par_array_sampler):
+            par.val= self.get_sample(ID)[_id_prob_max]
+            par.best_fit_mcmc_val= par.val
+            
 
+            quantiles=self.get_par_quantiles(par_name=par.name,comp_name=par.model.name,quantiles=(0.16,0.5,0.84))
+            par.q_16=quantiles[0]
+            par.q_50=quantiles[1]
+            par.q_84=quantiles[2]
+            if verbose:
+                print(f"comp: {par.model.name} par: {par.name}  mcmc best fit val: {par.val} quantiles(0.16,0.5,0.84): {quantiles} ")
+        if verbose:
+            print("----------------------------")
         
     def run_sampler(self,
                     nwalkers=None,
@@ -508,8 +492,14 @@ class McmcSampler(object):
         progress : str, optional
             If ``True``, display sampling progress.
         """
-        if self._par_array is None:
-            raise RuntimeError('please set the labels, using .set_labels, before running the sampler')
+        to_fix=False
+        err_str='\n'
+        for par in self._par_array_sampler:
+            if par.mcmc_bound_min is None or par.mcmc_bound_max is None:
+                err_str+=f"please set mcmc_bound_min and mcmc_bound_max for par: {par.name} in model component: {par.model.name}\n"
+                to_fix=True
+        if to_fix:
+            raise RuntimeError(f"can not run sampler if you do not set bounds for these parameters: {err_str}")
 
         self._build_sampler_bounds()
 
@@ -518,17 +508,17 @@ class McmcSampler(object):
         self.use_UL = use_UL
     
        
-        self.ndim = len(self._par_array)
+        self.ndim = len(self._par_array_sampler)
         self.pos = pos
         self.burnin=burnin
        
         if nwalkers is None:
-            self.nwalkers = 4*len(self._par_array)
+            self.nwalkers = 4*len(self._par_array_sampler)
             print('setting nwalkers to:', self.nwalkers)
         else:
             self.nwalkers = nwalkers
         
-        if self.nwalkers < 2*len(self._par_array):
+        if self.nwalkers < 2*len(self._par_array_sampler):
             raise RuntimeError("numbers of walkers has to be at least two times the number of sampling pars")
 
         counter=Counter( self.nwalkers*steps)
@@ -536,8 +526,8 @@ class McmcSampler(object):
         self.calls_tot = self.nwalkers * steps
 
         if pos is None:
-            pos = sample_ball(np.array([p['minimizer_best_fit_val'] for p in self._par_array]),
-                              np.array([p['minimizer_best_fit_val'] * walker_start_bound for p in self._par_array]),
+            pos = sample_ball(np.array([p.val for p in self._par_array_sampler]),
+                              np.array([p.val * walker_start_bound for p in self._par_array_sampler]),
                               self.nwalkers)
 
         
@@ -547,11 +537,11 @@ class McmcSampler(object):
         if threads is not None and threads>1:
             warnings.warn('python multithreading is not effective, JetSeT uses C threads to speedup computation')
             threads=1
-            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds, self._par_array, loglog))
+            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds_sampler, self._par_array_sampler, loglog))
             self.sampler.run_mcmc(pos, steps, progress=progress)
         else:
             threads=1
-            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds, self._par_array, loglog))
+            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds_sampler, self._par_array_sampler, loglog))
             self.sampler.run_mcmc(pos, steps, progress=progress)
 
 
@@ -559,14 +549,26 @@ class McmcSampler(object):
         end = time.time()
         comp_time = end - start
         print("mcmc run done, with %d threads took %2.2f seconds"%(threads,comp_time))
-
+        self._set_samples_post_run()
         
-        self.samples = self.sampler.get_chain(flat=True,discard=burnin)
-        self.samples_log_prob  = self.sampler.get_log_prob(flat=True,discard=burnin)
+      
+
+    def tune_burnin(self, tau_coeff=None):
+        tau = np.asarray(self.sampler.get_autocorr_time(tol=0), dtype=float)
+        tau_max = float(np.max(tau))
+        if tau_coeff is None:
+            tau_coeff = min(1.0, (self.steps - 10) / max(tau_max, 1.0))
+       
+        self.burnin = int(tau_coeff * np.max(tau))   # or a few times max(tau)
+        self._set_samples_post_run()
+
+    def _set_samples_post_run(self):
+        self.samples = self.sampler.get_chain(flat=True,discard=self.burnin)
+        self.samples_log_prob  = self.sampler.get_log_prob(flat=True,discard=self.burnin)
+        self.posterior_weights=None
         self._cache_sampler_chains()
         self.acceptance_fraction=np.mean(self.sampler.acceptance_fraction)
         self.reset_to_mcmc_best_fit()
-
 
     def get_par_quantiles(self,par_name,comp_name=None,quantiles=(0.16,0.5,0.84)):
         """Return par quantiles.
@@ -589,7 +591,7 @@ class McmcSampler(object):
 
     
 
-    def corner_plot(self, comp_name=None,quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}, **kwargs):
+    def corner_plot(self, comp_name=None,quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}, per_component=True, **kwargs):
         """Corner plot.
         
         Parameters
@@ -610,53 +612,95 @@ class McmcSampler(object):
         object
             Computed value.
         """
-       
-        if comp_name is None:
-            components=np.unique([p['comp_name'] for  p in self._par_array])
+        if per_component:
+            if comp_name is None:
+                components=np.unique([p.model.name for  p in self._par_array_sampler])
+            else:
+                components=[comp_name]
+            f_list=[]
+            for c in components:
+                _idxs = []
+                truths = []                
+                msk=np.array([p.model.name==c for  p in self._par_array_sampler])
+                names=[p.name for p in np.array(self._par_array_sampler)[msk]]
+                plot_labels=[]
+                if msk.sum()>0:
+                    for name in names:
+                        
+                        _idx=self.get_par(name,comp_name=c,get_index=True)[1]        
+                        _idxs.append(_idx)
+        
+                        p=self.get_par(_idx)
+                        truths.append(p.best_fit_mcmc_val)
+                        if hasattr(p,'plot_label'):
+                            plot_labels.append(p.plot_label)
+                        else:
+                            plot_labels.append(p.name)
+
+                    f=self._do_corner_plot(c,
+                                        self.samples,
+                                        _idxs,
+                                        quantiles,
+                                        plot_labels,
+                                        truths,
+                                        title_kwargs,
+                                        levels,
+                                        weights=self.posterior_weights,
+                                        **kwargs)
+                    f_list.append(f)
+            return f_list
+        
         else:
-            components=[comp_name]
-        f_list=[]
-        for c in components:
+            f_list=[]
             _idxs = []
             truths = []
-            
-            
-            msk=np.array([p['comp_name']==c for  p in self._par_array])
-
-            #if labels is None:
-            #    plot_labels= [p['plot_label'] for p in np.array(self._par_array)[msk]]
-            
-            #elif type(labels) == list:
-            #    plot_labels=labels
-            #else:
-            #    plot_labels = [labels]
-            names=[p['name'] for p in np.array(self._par_array)[msk]]
             plot_labels=[]
-            if msk.sum()>0:
-                for name in names:
-                    
-                    _idxs.append(self.get_par(name,comp_name=c,get_index=True)[1])
+            components=np.unique([p.model.name for  p in self._par_array_sampler])
+            for c in components:
+                msk=np.array([p.model.name==c for  p in self._par_array_sampler])
+                if msk.sum()>0:
+                    _names=([p.name for p in np.array(self._par_array_sampler)[msk]])
+                    for name in _names:
+                        _idx=self.get_par(name,comp_name=c,get_index=True)[1]        
+                        _idxs.append(_idx)
 
-    
-                for _idx in _idxs:
-                    truths.append(self.get_par(_idx)['minimizer_best_fit_val'])
-                    plot_labels.append(self.get_par(_idx)['plot_label'])
+                        p=self.get_par(_idx)
+                        truths.append(p.best_fit_mcmc_val)
+                        if hasattr(p,'plot_label'):
+                            plot_labels.append(f'{p.model.name}\n{p.plot_label}')
+                        else:
+                            plot_labels.append(f'{p.model.name}\n{p.name}')
 
-                f = corner.corner(self.samples[:, _idxs],
-                                quantiles=quantiles, 
-                                labels=plot_labels,
-                                truths=truths,
-                                title_kwargs=title_kwargs,
-                                show_titles = True,
-                                levels = levels,**kwargs)
+            f=self._do_corner_plot(self.model.name,
+                                self.samples,
+                                _idxs,
+                                quantiles,
+                                plot_labels,
+                                truths,
+                                title_kwargs,
+                                levels,
+                                weights=self.posterior_weights,
+                                **kwargs)
+            f_list.append(f)
+            return f_list
 
-                
-                #print(c,str(quantiles))
-                title = c + ' quantiles ='+str(quantiles)
 
-                f.suptitle(title,y=1.0)
-                f_list.append(f)
-        return f_list
+
+    def _do_corner_plot(self, c,samples,_idxs,quantiles,plot_labels,truths,title_kwargs,levels,**kwargs):
+        f = corner.corner(samples[:, _idxs],
+                        quantiles=quantiles, 
+                        labels=plot_labels,
+                        truths=truths,
+                        title_kwargs=title_kwargs,
+                        show_titles = True,
+                        levels = levels,
+                        **kwargs)
+
+        title = c + ' quantiles ='+str(quantiles)
+
+        f.suptitle(title,y=1.0)
+
+        return f
 
     
     def plot_chain(self,par_name=None, comp_name=None,log_plot=False):
@@ -678,18 +722,18 @@ class McmcSampler(object):
         """
         f_list=[]
         if comp_name is None:
-            components=np.unique([p['comp_name'] for  p in self._par_array])
+            components=np.unique([p.model.name for  p in self._par_array_sampler])
         else:
             components=[comp_name]
         for c in components:
-            msk=np.array([p['comp_name']==c for  p in self._par_array])
+            msk=np.array([p.model.name==c for  p in self._par_array_sampler])
             if par_name is None:
                 
-                par_names=[par['name'] for par in  np.array(self._par_array)[msk]]
+                par_names=[par.name for par in  np.array(self._par_array_sampler)[msk]]
             else:
                 par_names=np.atleast_1d(par_name)
 
-            f, axes = plt.subplots(len(par_names), sharex=True)
+            f, axes = plt.subplots(len(par_names),figsize=(10, 3*len(par_names)), sharex=True)
             axes=np.atleast_1d(axes)
             for ID,_p_name in enumerate(par_names):
                 self._plot_chain(_p_name,axes[ID],comp_name=comp_name,log_plot=log_plot)
@@ -701,13 +745,13 @@ class McmcSampler(object):
 
     def _plot_chain(self, par_name,ax,comp_name=None, log_plot=False):
         par = self.get_par(par_name,comp_name=comp_name)
-
-        n = par['plot_label']
+      
+        n = par.plot_label
 
         traces=self.get_trace(par_name,comp_name=comp_name)
 
-        if par['units'] is not None:
-           n += ' (%s)' % par['units']
+        if par.units is not None:
+           n += ' (%s)' % par.units
 
         _s=self.get_sample(par_name,comp_name=comp_name)
         alpha_true = np.median(_s)       
@@ -787,11 +831,11 @@ class McmcSampler(object):
 
         par = self.get_par(par_name,comp_name=comp_name)
 
-        par_name = par['name']
+        par_name = par.name
 
         x_name = par_name
-        if par['units'] is not None:
-            x_name += ' (%s)' % par['units']
+        if par.units is not None:
+            x_name += ' (%s)' % par.units
 
         _d=self.get_sample(par_name,comp_name=comp_name)
         
@@ -844,34 +888,45 @@ class McmcSampler(object):
         _p,p_idx=self.get_par(par_name,comp_name=comp_name,get_index=True)
         return self.samples[:,p_idx]
 
-    def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False,quantiles=None, get_model=False, plot_mcmc_best_fit_model=False,rnd_seed=0):
-        """Plot model.
-        
+    def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False,quantiles=None, get_model=False, plot_mcmc_best_fit_model=True,rnd_seed=0,plot_components=False):
+        """Plot posterior model envelope and a best-fit reference curve.
+
         Parameters
         ----------
-        sed_data : object, optional
-            Observational SED data container.
-        fit_range : [float,float], optional
-            Range for fit.
+        sed_data : ObsData, optional
+            Observational SED data used for plotting and residuals. If ``None``,
+            ``self.sed_data`` is used.
+        fit_range : sequence of float, optional
+            Two-element fit interval ``[nu_min, nu_max]`` used for model and
+            residual overlays. If ``None``, ``[self.model.nu_min_fit,
+            self.model.nu_max_fit]`` is used.
         size : int, optional
-            Number of samples or sample size.
-        frame : str, optional
-            Reference frame for data/model values.
+            Number of posterior samples used to build the shaded model envelope.
+        frame : {'obs', 'src'}, optional
+            Frame used to evaluate and display model SED values.
         density : bool, optional
-            If ``True``, use density representation instead of integrated quantity.
-        quantiles : object, optional
-            Quantiles to evaluate/report.
+            If ``True``, convert sampled ``nuFnu`` curves to ``Fnu`` by dividing
+            by frequency before computing the envelope.
+        quantiles : tuple of float, optional
+            Lower/upper quantiles for the shaded envelope (for example
+            ``(0.16, 0.84)``). If ``None``, use the full min/max range.
         get_model : bool, optional
-            If ``True``, return model values.
+            If ``True``, also return the sampled envelope arrays
+            ``[x, y_min, y_max]`` after flux-limit masking.
         plot_mcmc_best_fit_model : bool, optional
-            If ``True``, overlay MCMC best-fit model in plots.
+            If ``True``, overlay the MCMC best-fit model. If ``False``, overlay
+            the minimizer best-fit model.
         rnd_seed : int, optional
-            Random seed used for reproducible sampling.
-        
+            Seed used to draw posterior samples reproducibly.
+        plot_components : bool, optional
+            If ``True``, plot component/sub-component curves before the final
+            reference curve.
+
         Returns
         -------
-        object
-            Plot object or generated visualization.
+        PlotSED or tuple
+            Plot object. If ``get_model`` is ``True``, returns
+            ``(plot_obj, [x, y_min, y_max])``.
         """
         if sed_data is None:
             sed_data=self.sed_data
@@ -899,15 +954,19 @@ class McmcSampler(object):
         l=p.sedplot.fill_between(x[msk],y_max[msk],y_min[msk],color='gray',alpha=0.3,label=_l)
 
         p.lines_model_list.append(l)
-        msk = y_min > self.model.flux_plot_lim
-        if plot_mcmc_best_fit_model is False:
+        
+        if not plot_mcmc_best_fit_model :
             self.reset_to_minimizer_best_fit()
             label=None
         else:
             label='mcmc best fit'
-            self.reset_to_mcmc_best_fit()
-        
-        self.model.eval(fill_SED=True)
+            self.reset_to_mcmc_best_fit(verbose=False)
+       
+        self.model.eval()
+
+        if plot_components:            
+            self.model.plot_model(sed_data=sed_data,plot_obj=p,only_components=True)
+       
         p.add_model_plot(self.model, color='red',fit_range = fit_range,flim=self.model.flux_plot_lim,label=label)
         p.add_model_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
         self.reset_to_mcmc_best_fit(verbose=False)
@@ -932,9 +991,9 @@ class McmcSampler(object):
         y = np.zeros((size,x.size))
 
         for ID,ID_rand in enumerate(ID_mcmc):
-            for id_p,par in enumerate(self._par_array):
-                par['val']=self.get_sample(id_p)[ID_rand]
-                self.model.parameters.set_par(model_name= par['comp_name'],par_name=par['name'],val=par['val'])
+            for id_p,par in enumerate(self._par_array_sampler):
+                par.val=self.get_sample(id_p)[ID_rand]
+                self.model.parameters.set_par(model_name= par.model.name,par_name=par.name,val=par.val)
                 
             self.model.eval(fill_SED=True)
             x, y[ID] = self.model.SED.get_model_points(log_log=False, frame=frame)
@@ -977,9 +1036,27 @@ class McmcSampler(object):
         try:
             c = pickle.load(open(file_name, "rb"))
             if isinstance(c, McmcSampler):
-                #c.__init__(c.minimizer)
+                c.model.parameters.__class__=McmcCompositeModelParameterArray
                 if hasattr(c,'model'):
                     c.model=c.model._build_model(c.model)
+                for p in c.model.parameters.par_array:
+                    Base = p.__class__
+                    if not Base.__name__.startswith("McmcParameter_"):
+                        McmcParameter = types.new_class(f"McmcParameter_{Base.__name__}", (Base,))
+                        McmcParameter.x = property(set_mcmc_bound_max,get_mcmc_bound_max)
+                        McmcParameter.x = property(set_mcmc_bound_min,get_mcmc_bound_min)
+                        p.__class__ = McmcParameter
+                        p._check_par_mcmc_bounds = types.MethodType(_check_par_mcmc_bounds, p)
+                        p.best_fit_mcmc_val=c.sate_of_mcmc_parameters[p.model.name][p.name]['best_fit_mcmc_val']
+                        p.q_16=c.sate_of_mcmc_parameters[p.model.name][p.name]['q_16']
+                        p.q_50=c.sate_of_mcmc_parameters[p.model.name][p.name]['q_50']
+                        p.q_84=c.sate_of_mcmc_parameters[p.model.name][p.name]['q_84']
+                        p.plot_label=c.sate_of_mcmc_parameters[p.model.name][p.name]['plot_label']
+                        p.mcmc_bound_min=c.sate_of_mcmc_parameters[p.model.name][p.name]['mcmc_bound_min']
+                        p.mcmc_bound_max=c.sate_of_mcmc_parameters[p.model.name][p.name]['mcmc_bound_max']
+
+                delattr(c,'sate_of_mcmc_parameters')
+               
                 return  c
             else:
                 raise RuntimeError('The model you loaded is not valid please check the file name')
@@ -1013,21 +1090,46 @@ def emcee_log_like(theta,fit_model,data,use_UL,par_array,loglog):
         Computed value.
     """
     _warn = False
-    for pi in range(len(theta)):
-        
-        
-        par_array[pi]['val']=theta[pi]
-        fit_model.parameters.set_par(model_name= par_array[pi]['comp_name'],par_name=par_array[pi]['name'],val=par_array[pi]['val'])
-        if np.isnan(theta[pi]):
-            _warn=True
 
-    _model = fit_model.eval(nu=data['x'], fill_SED=False, get_model=True, loglog=loglog)
+    theta = np.asarray(theta, dtype=float)
 
-    _res_sum, _res, _res_UL = _eval_res(data['y'],
-                                        _model,
-                                        data['dy'],
-                                        data['UL'],
-                                        use_UL=use_UL)
+    # Fast reject before mutating model
+    if not np.all(np.isfinite(theta)):
+        return -1e100
+
+    try:
+        for pi in range(len(theta)):
+            
+            
+            par_array[pi].val=theta[pi]
+            fit_model.parameters.set_par(model_name= par_array[pi].model.name,par_name=par_array[pi].name,val=par_array[pi].val)
+            if np.isnan(theta[pi]):
+                _warn=True
+    except Exception:
+        # Parameter-setting failure
+        return -1e100
+
+    try:
+        _model = fit_model.eval(nu=data['x'], fill_SED=False, get_model=True, loglog=loglog)
+    except Exception:
+        # Parameter-setting failure
+        return -1e100
+
+    _model = np.asarray(_model, dtype=float)
+    if not np.all(np.isfinite(_model)):
+        return -1e100
+    try:
+        _res_sum, _res, _res_UL = _eval_res(data['y'],
+                                            _model,
+                                            data['dy'],
+                                            data['UL'],
+                                            use_UL=use_UL)
+    except Exception:
+        return -1e100
+
+    if not np.isfinite(_res_sum):
+        return -1e100
+    
     return  _res_sum *-0.5
 
 

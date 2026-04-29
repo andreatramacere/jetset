@@ -13,10 +13,13 @@ you can use the :class:`.ModelMinimizer` class from the :mod:`.minimizer` module
 
 - :ref:`gammapy_plugin`
 
-
+Frequentist
 .. _least_squares:  https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.least_squares.html
 .. _iminuit: https://scikit-hep.org/iminuit/ 
+
+Bayesian
 .. _emcee: https://emcee.readthedocs.io/en/stable/   
+.. _ultranest: https://johannesbuchner.github.io/UltraNest/index.html   
 In the following we will describe the frequentist model fitting using the :class:`.ModelMinimizer`  using the ``minuit``  minimizer (wrapping the `iminuit`_ package ) and the ``lsb`` minimizer (wrapping the scipy `least_squares`_
 package),  and the Bayesian approach using the :class:`.McmcSampler` interface to ecee `emcee`_ package. 
 
@@ -174,7 +177,7 @@ Bayesian model fitting with emcee
 
 Building the mcmc object
 ^^^^^^^^^^^^^^^^^^^^^^^^
-The  :class:`.McmcSampler` interface to emcee `emcee`_ package, in the following we show how to perform a sampling of the
+The  :class:`.McmcSampler` interface to emcee `emcee`_ and `ultranest`_ package, in the following we show how to perform a sampling of the
 model parameter space, starting from a frequentist best fit result.
 
 it could either a:

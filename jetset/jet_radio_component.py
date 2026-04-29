@@ -67,10 +67,10 @@ class RadioSpectrum(Model):
         object
             Computed result.
         """
-        s2=self.parameters.get_par_by_name('alpha_radio').val
-        nu_ssa=self.parameters.get_par_by_name('nu_ssa').val
-        nuFnu_p=self.parameters.get_par_by_name('nuFnu_p').val
-        nu_cut=self.parameters.get_par_by_name('nu_cut').val
+        s2=self.parameters.get_par_by_name('alpha_radio').val_lin
+        nu_ssa=self.parameters.get_par_by_name('nu_ssa').val_lin
+        nuFnu_p=self.parameters.get_par_by_name('nuFnu_p').val_lin
+        nu_cut=self.parameters.get_par_by_name('nu_cut').val_lin
         res= self._func(nu,nu_ssa,s2,nu_cut)
         _Norm=nuFnu_p/self._func(nu_cut,nu_ssa,s2,nu_cut)
         return res*_Norm

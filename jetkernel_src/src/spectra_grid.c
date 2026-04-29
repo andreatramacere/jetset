@@ -16,8 +16,53 @@
  *
  */
 
+static void apply_internal_absorption_to_grid(struct blob *pt, unsigned int i, double attenuation) {
+	if ((pt == NULL) || (attenuation >= 1.0) || (attenuation <= 0.0)) {
+		return;
+	}
+
+	pt->core.nuFnu_sum_grid[i] *= attenuation;
+
+	if (pt->core.do_Sync >= 1) {
+		pt->Sync.spec.nuFnu_grid[i] *= attenuation;
+	}
+	if (pt->core.do_SSC) {
+		pt->SSC.spec.nuFnu_grid[i] *= attenuation;
+	}
+	if (pt->core.do_EC_Disk == 1) {
+		pt->Disk.ec.spec.nuFnu_grid[i] *= attenuation;
+	}
+	if (pt->core.do_EC_BLR == 1) {
+		pt->BLR.ec.spec.nuFnu_grid[i] *= attenuation;
+	}
+	if (pt->core.do_EC_DT == 1) {
+		pt->DT.ec.spec.nuFnu_grid[i] *= attenuation;
+	}
+	if (pt->core.do_EC_Star == 1) {
+		pt->Star.ec.spec.nuFnu_grid[i] *= attenuation;
+	}
+	if (pt->core.do_EC_CMB == 1) {
+		pt->CMB.ec.spec.nuFnu_grid[i] *= attenuation;
+	}
+	if (pt->PP_gamma.do_pp_gamma == 1) {
+		pt->PP_gamma.spec.nuFnu_grid[i] *= attenuation;
+	}
+	if (pt->Bremss_ep.do_bremss_ep == 1) {
+		pt->Bremss_ep.spec.nuFnu_grid[i] *= attenuation;
+	}
+	if (pt->core.do_EC_Disk == 1 || pt->core.do_EC_BLR == 1 || pt->core.do_Disk == 1) {
+		pt->Disk.spec.nuFnu_grid[i] *= attenuation;
+	}
+	if (pt->core.do_EC_DT == 1 || pt->core.do_DT == 1) {
+		pt->DT.spec.nuFnu_grid[i] *= attenuation;
+	}
+	if (pt->core.do_Star == 1) {
+		pt->Star.spec.nuFnu_grid[i] *= attenuation;
+	}
+}
+
 void common_grid_spectra(int Num_file, struct blob * pt) {
-	double nu_obs, nu_min, nu_max;
+	double nu_obs, nu_min, nu_max, tau_tot;
 	//char somma_obs_log_log[static_file_name_max_legth];
 	//char somma_obs[static_file_name_max_legth],somma_obs_src[static_file_name_max_legth];
 	double log_nu_start,k;
@@ -45,15 +90,20 @@ void common_grid_spectra(int Num_file, struct blob * pt) {
 
 
 		//nu_obs=pt->core.beam_obj*nu/(1+pt->core.z_cosm);
-		//printf("nu=%e nu_obs=%e, i=%d, i_max=%d\n",nu,nu_obs,i,I_MAX);
-		interpola_somma(pt, nu_obs,i);
-		//pt->nuF_nu_Sum_obs[i]= pt->nuFnu_somma_grid;
-		pt->core.nu_grid[i] = nu_obs;
+			//printf("nu=%e nu_obs=%e, i=%d, i_max=%d\n",nu,nu_obs,i,I_MAX);
+			interpola_somma(pt, nu_obs,i);
+			//pt->nuF_nu_Sum_obs[i]= pt->nuFnu_somma_grid;
+			pt->core.nu_grid[i] = nu_obs;
 
-		//if(nuF_nu_obs>1.e-60){
-		//printf("nuF_nu_obs=%e\n********************\n",nuF_nu_obs);
-		
-		if (pt->core.nuFnu_sum_grid[i] == 0)
+			tau_tot = get_internal_abs_tau_at_nu(pt, nu_obs);
+			if (tau_tot > 0.0) {
+				apply_internal_absorption_to_grid(pt, i, exp(-tau_tot));
+			}
+
+			//if(nuF_nu_obs>1.e-60){
+			//printf("nuF_nu_obs=%e\n********************\n",nuF_nu_obs);
+			
+			if (pt->core.nuFnu_sum_grid[i] == 0)
 		{
 			pt->core.nuFnu_sum_grid[i] = pt->core.emiss_lim;
 		}
@@ -340,6 +390,4 @@ void interpola_somma(struct blob *pt_j, double nu_obs, unsigned int i)
 
 	return;
 }
-
-
 

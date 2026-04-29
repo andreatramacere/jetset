@@ -105,7 +105,13 @@ else
 fi
 
 # Install package from source with pip (deps already handled above)
-python -m pip install --no-deps .
+PIP_INSTALL_ARGS=(--no-deps)
+if [[ "$SKIP_DEP" -eq 1 ]]; then
+  # In skip-dep mode, rely on already-installed build tools and avoid networked
+  # build-isolation environments created from pyproject.toml requirements.
+  PIP_INSTALL_ARGS+=(--no-build-isolation)
+fi
+python -m pip install "${PIP_INSTALL_ARGS[@]}" .
 mkdir -p tmp
 cd tmp
 python - <<'PY'

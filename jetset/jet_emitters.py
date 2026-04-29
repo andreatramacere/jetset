@@ -14,7 +14,7 @@ from scipy import interpolate
 from .jetkernel_models_dic import gamma_dic_e, gamma_dic_p, gamma_dic_pp_e_second, gamma_dic_e_equilibrium, available_emitters_type
 from .plot_sedfit import PlotPdistr
 from .jet_paramters import *
-from .utils import set_str_attr, get_nested_attr, set_nested_attr
+from .utils import set_str_attr, set_particle_attr, get_nested_attr, set_nested_attr
 from .model_parameters import ModelParameterArray, ModelParameter
 from .jet_kernel_tools import get_emitters_c_array1d_fast as get_emitters
 from .jet_kernel_tools import set_emitters_c_array1d_fast as set_emitters
@@ -419,7 +419,7 @@ class BaseEmittersDistribution(object):
         if self.normalize is True:
             self._Norm=1.0/np.trapezoid(self.f,self._gamma_grid)
 
-        self.f = self.f*self._Norm*self.parameters.get_par_by_name('N').val
+        self.f = self.f*self._Norm*self.parameters.get_par_by_name('N').val_lin
 
         #NOTE: to be added for leptonic-equilibrium
         # if self.emitters_type == 'electrons-equilibrium':
@@ -879,7 +879,7 @@ class EmittersDistribution(BaseEmittersDistribution):
 
             self._jet = jet
             set_str_attr(jet._blob, 'core.DISTR', name)
-            set_str_attr(jet._blob, 'core.PARTICLE', self.emitters_type)
+            set_particle_attr(jet._blob, self.emitters_type)
 
             p = self._jet.get_par_by_name('gmin')
             if p is not None:
@@ -1235,7 +1235,7 @@ class InjEmittersDistribution(BaseEmittersDistribution):
             _integ = np.trapezoid(self.f,self._gamma_grid)
             if _integ > 0:
                 self._Norm=1.0/_integ
-        self.f = self.f*self._Norm*self.parameters.get_par_by_name('Q').val
+        self.f = self.f*self._Norm*self.parameters.get_par_by_name('Q').val_lin
         self.gamma_e = self._gamma_grid.copy()
         self.n_gamma_e = np.asarray(self.f, dtype=np.float64)
         self.n_gamma_e[np.isnan(self.n_gamma_e)] = 0

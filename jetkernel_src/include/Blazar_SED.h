@@ -83,6 +83,19 @@ typedef enum {
     EXT_DISK, EXT_BLR, EXT_DT, EXT_STAR, EXT_CMB, NUM_EXT_COMP
 } ext_comp_t;
 
+typedef enum {
+    EMIT_DISTR_SECONDARIES_EL = -1,
+    EMIT_DISTR_FROM_ARRAY = 0,
+    EMIT_DISTR_JETSET = 1
+} emitters_distr_t;
+
+typedef enum {
+    PARTICLE_ELECTRONS = 0,
+    PARTICLE_PROTONS = 1,
+    PARTICLE_SECONDARIES_EL = 2,
+    PARTICLE_PRIMARIES_EL = 3
+} particle_type_t;
+
 struct spectrum {
     double nu_min;
     double nu_max;
@@ -134,6 +147,27 @@ struct spectrum_external{
     double nuFnu_peak_obs;
 };
 
+struct internal_abs_component {
+    int is_enabled;
+    int is_valid;
+    int use_R_H_profile_extrapolation;
+    int peak_mode;
+    unsigned int N_soft;
+    unsigned int N_hard;
+    unsigned int N_R_H;
+    unsigned int N_theta;
+    unsigned int tau_size;
+    double nu_min;
+    double nu_src_max;
+    double *nu_tau;
+    double *tau;
+};
+
+struct internal_abs_store {
+    struct internal_abs_component BLR;
+    struct internal_abs_component DT;
+};
+
 struct blob_core {
     int verbose;
     int BESSEL_TABLE_DONE;
@@ -145,7 +179,7 @@ struct blob_core {
     char DISTR[16];
     char disk_type[16];
     char MODE[16];
-    char PARTICLE[16];
+    particle_type_t PARTICLE;
     int OUT_FILE;
     int START_FILE;
     unsigned int N_THREADS;
@@ -224,6 +258,7 @@ struct blob_core {
     double R_H_scale_factor;
 
     double beaming_EC;
+    struct internal_abs_store internal_abs;
 };
 
 struct emitters {
@@ -233,7 +268,7 @@ struct emitters {
     int Distr_e_pp_done;
     int do_equilibrium;
 
-    int TIPO_DISTR;
+    emitters_distr_t TIPO_DISTR;
     int grid_bounded_to_gamma;
 
     double *Ne;
@@ -249,7 +284,7 @@ struct emitters {
     double *gamma_p_custom;
     double *gam;
     double *griglia_gamma_Ne_log;
-    double *griglia_gamma_Ne_log_stat;
+    double *log_of_griglia_gamma_Ne_log;
     double *griglia_gamma_Np_log;
     double *griglia_gamma_jetset_Ne_log;
     double *griglia_gamma_jetset_Np_log;
@@ -669,6 +704,44 @@ void InitRadiative(struct blob *pt_base, unsigned int update_EC);
 //void alloc_photons(double ** pt,int size);
 void set_seed_freq_start(struct blob *pt_base);
 void Run_SED(struct blob *pt_base);
+void reset_internal_abs_store(struct blob *pt);
+void free_internal_abs_store(struct blob *pt);
+void recompute_internal_absorption_tau(struct blob *pt);
+double get_internal_abs_tau_at_nu(struct blob *pt, double nu_obs);
+/*
+ * Internal gamma-gamma absorption solver entry points.
+ *
+ * eval_internal_abs_tau:
+ *   Core low-level integration routine. It updates the IA component on the
+ *   blob passed in (nu_tau/tau/is_valid/config), temporarily modifying R_H
+ *   during integration and restoring it before return.
+ *
+ * eval_internal_abs_tau_isolated:
+ *   Isolated/public IA path. Runs eval_internal_abs_tau() on a worker copy
+ *   and merges only IA outputs back to the live blob.
+ *   This is the path used by current Python APIs and Run_SED.
+ */
+int eval_internal_abs_tau(struct blob *pt,
+                          const char *seed_photons_name,
+                          double nu_min,
+                          unsigned int N_soft,
+                          unsigned int N_hard,
+                          unsigned int N_R_H,
+                          unsigned int N_theta,
+                          int use_R_H_profile_extrapolation,
+                          int peak,
+                          double nu_src_max);
+int eval_internal_abs_tau_isolated(struct blob *pt,
+                                   const char *seed_photons_name,
+                                   double nu_min,
+                                   unsigned int N_soft,
+                                   unsigned int N_hard,
+                                   unsigned int N_R_H,
+                                   unsigned int N_theta,
+                                   int use_R_H_profile_extrapolation,
+                                   int peak,
+                                   double nu_src_max,
+                                   double R_H_override);
 void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, struct temp_ev *pt_ev, int only_injection, int do_injection);
 void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, struct temp_ev *pt_ev, double luminosity_distance);
 

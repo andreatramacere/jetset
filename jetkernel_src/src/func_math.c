@@ -300,25 +300,40 @@ double log_quad_interp(double x,  double * x_grid, double x_min, double x_max, d
 double log_log_interp(double log_x,  double * log_x_grid, double log_x_min, double log_x_max, double *  log_y_grid , unsigned int SIZE, double emiss_lim){
     unsigned int ID;
 	double y1,y2,x1,x2,a_c;
-	ID=x_to_grid_index(log_x_grid,  log_x,   SIZE);
+    double delta_log_x, t;
 
-	if (ID<0 || ID>SIZE-2){
+    if (SIZE < 2){
+        return emiss_lim;
+    }
+
+	if (log_x<log_x_min || log_x>log_x_max){
 		return emiss_lim;
 	}
-	else if (log_x<log_x_min || log_x>log_x_max){
-			return emiss_lim;
-		}
-	else{
-		y1 = log_y_grid[ID];
-		y2 = log_y_grid[ID + 1];
-		x1 = log_x_grid[ID];
-		x2 = log_x_grid[ID + 1];
-		a_c = (log_x - x1)*(y2 - y1) / (x2 - x1);
-		a_c += y1;
-		//printf("nu=%e, ID=%lu, SIZE=%d x1=%e x2=%e y1=%e y2=%e a_c=%e  return=%e    %e %e\n",log_x,ID,SIZE,x1,x2,y1,y2,a_c,pow(10,a_c),log_y_grid[ID],log_y_grid[ID + 1]);
 
-		return pow(10,a_c);
-	}
+    /*
+     * Bessel tables are log-uniform, so map log_x directly to the segment index
+     * instead of scanning the full grid.
+     */
+    delta_log_x = (log_x_max - log_x_min) / ((double) SIZE - 1.0);
+    if (delta_log_x <= 0.0){
+        return emiss_lim;
+    }
+
+    t = (log_x - log_x_min) / delta_log_x;
+    ID = (unsigned int) t;
+    if (ID > SIZE - 2){
+        ID = SIZE - 2;
+    }
+
+	y1 = log_y_grid[ID];
+	y2 = log_y_grid[ID + 1];
+	x1 = log_x_grid[ID];
+	x2 = log_x_grid[ID + 1];
+	a_c = (log_x - x1)*(y2 - y1) / (x2 - x1);
+	a_c += y1;
+	//printf("nu=%e, ID=%lu, SIZE=%d x1=%e x2=%e y1=%e y2=%e a_c=%e  return=%e    %e %e\n",log_x,ID,SIZE,x1,x2,y1,y2,a_c,pow(10,a_c),log_y_grid[ID],log_y_grid[ID + 1]);
+
+	return pow(10,a_c);
 }
 //=========================================================================================
 

@@ -283,7 +283,7 @@ class ModelMinimizer(object):
         minimizer_type : object
             Backend minimizer identifier.
         """
-        __accepted__ = ['lsb', 'minuit', 'sherpa']
+        __accepted__ = ['lsb', 'minuit', 'sherpa', 'mcmc']
 
         if minimizer_type=='lsb':
             self.minimizer=LSBMinimizerScipy(self)
@@ -294,6 +294,9 @@ class ModelMinimizer(object):
         elif minimizer_type == 'sherpa':
             from .sherpa_plugin import  SherpaMinimizer
             self.minimizer = SherpaMinimizer(self)
+        
+        elif minimizer_type == 'mcmc':            
+            self.minimizer = None
 
         elif minimizer_type not in __accepted__:
             raise RuntimeError('minimizer ', minimizer_type, 'not accepted, please choose among', __accepted__)
@@ -498,13 +501,6 @@ class ModelMinimizer(object):
             if fit_model.parameters.par_array[pi].frozen == False:
                 free_pars += 1
 
-        if silent == False:
-            print(section_separator)
-            print("*** start fit process ***")
-            #print("initial pars: ")
-            #fit_model.parameters.show_pars()
-            print("----- ")
-
         self.out_dir=out_dir
         self.pinit=pinit
         self.pout=None
@@ -522,6 +518,24 @@ class ModelMinimizer(object):
         if len(fit_par_free)>self.data['x'].size and isinstance(self.minimizer,LSBMinimizerScipy):
             m='number of data points: %d is lower than number of free pars: %d'%(self.data['x'], len(fit_par_free))
             raise  JetkerneltException(message=m)
+
+    def prepare_fit(self,   
+                fit_model,
+                sed_data,
+                nu_fit_start,
+                nu_fit_stop,
+                fitname=None,
+                fit_workplace=None,
+                loglog=False,
+                silent=False,
+                get_conf_int=False,
+                use_fake_err=False,
+                use_UL=False):
+
+        self._prepare_fit( fit_model, sed_data, nu_fit_start, nu_fit_stop, fitname=fitname, fit_workplace=fit_workplace,
+                     loglog=loglog, silent=silent, get_conf_int=get_conf_int, use_fake_err=use_fake_err,use_UL=use_UL)
+
+        fit_model.set_nu_grid(nu_min=nu_fit_start*0.5, nu_max=nu_fit_stop*1.5)
 
     def fit(self,
             fit_model,
@@ -577,15 +591,25 @@ class ModelMinimizer(object):
         object
             Computed value.
         """
-        self.silent=silent
-
-        self._prepare_fit( fit_model, sed_data, nu_fit_start, nu_fit_stop, fitname=fitname, fit_workplace=fit_workplace,
-                     loglog=loglog, silent=silent, get_conf_int=get_conf_int, use_fake_err=use_fake_err,use_UL=use_UL)
-
-        fit_model.set_nu_grid(nu_min=nu_fit_start*0.5, nu_max=nu_fit_stop*1.5)
-
+        self.prepare_fit(fit_model,
+                        sed_data,
+                        nu_fit_start,
+                        nu_fit_stop,
+                        fitname=fitname,
+                        fit_workplace=fit_workplace,
+                        loglog=loglog,
+                        silent=silent,
+                        get_conf_int=get_conf_int,
+                        use_fake_err=use_fake_err,
+                        use_UL=False)
         self.corr=[]
         self.covar=[]
+        if silent == False:
+            print(section_separator)
+            print("*** start fit process ***")
+            #print("initial pars: ")
+            #fit_model.parameters.show_pars()
+            print("----- ")
         for i in range(repeat):
             if skip_minimizer == False:
                 if repeat>1:
@@ -844,7 +868,7 @@ class Minimizer(object):
 
 
     def _progess_bar(self, _res_sum, res_sum_UL):
-        if (np.mod(self.calls, 10) == 0 and self.calls != 0)  :
+        if (np.mod(self.calls, 50) == 0 and self.calls != 0)  :
     
             m="minim. function calls=%d, chisq=%5.5e UL part=%f" %(self.calls, _res_sum, res_sum_UL)
             self.pbar.n=self.calls

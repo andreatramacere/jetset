@@ -10,6 +10,23 @@
 #include <unistd.h>
 //#include "libmia.h"
 #include "Blazar_SED.h"
+
+static unsigned int lower_bound_gamma_grid(const double *gamma_grid, unsigned int gamma_grid_size, double gmin) {
+    unsigned int lo, hi, mid;
+
+    lo = 0;
+    hi = gamma_grid_size;
+    while (lo < hi) {
+        mid = lo + (hi - lo) / 2;
+        if (gamma_grid[mid] < gmin) {
+            lo = mid + 1;
+        } else {
+            hi = mid;
+        }
+    }
+
+    return lo;
+}
 /**
  * \file funzioni_compton.c
  * \author Andrea Tramacere
@@ -393,45 +410,86 @@ void set_N_distr_for_Compton(struct blob * pt, double nu_in, double nu_out, int 
 //double integrale_IC( struct blob * pt, double a, double b, int stat_frame, double nu_IC_out) 
 double integrale_IC(struct blob *pt, const double *nu_seed, const double *n_seed, unsigned int nu_seed_size, double a, double b, int stat_frame, double nu_IC_out){
     double integr_nu, nu_IC_in;
-    
-    unsigned int ID,ID_gamma;
+    unsigned int ID, ID_gamma, gamma_start, gamma_grid_size;
     double *Integrand_over_gamma_grid, *Ne_IC, *griglia_gamma_Ne_log_IC, *integr_gamma;
-    Integrand_over_gamma_grid = (double *) calloc(pt->emitters.gamma_grid_size, sizeof (double));
-    griglia_gamma_Ne_log_IC =  (double *) calloc(pt->emitters.gamma_grid_size, sizeof (double));
-    integr_gamma = (double *) calloc(nu_seed_size, sizeof (double));
-    Ne_IC = (double *) calloc(pt->emitters.gamma_grid_size, sizeof (double));
     double ic_kernel;
-    integr_nu = 0.0;
-   
 
+    gamma_grid_size = pt->emitters.gamma_grid_size;
+    integr_nu = 0.0;
+    Integrand_over_gamma_grid = (double *) calloc(gamma_grid_size, sizeof(double));
+    griglia_gamma_Ne_log_IC = (double *) calloc(gamma_grid_size, sizeof(double));
+    integr_gamma = (double *) calloc(nu_seed_size, sizeof(double));
+    Ne_IC = (double *) calloc(gamma_grid_size, sizeof(double));
+
+    if (Integrand_over_gamma_grid == NULL || griglia_gamma_Ne_log_IC == NULL || integr_gamma == NULL || Ne_IC == NULL) {
+        free(Integrand_over_gamma_grid);
+        free(griglia_gamma_Ne_log_IC);
+        free(integr_gamma);
+        free(Ne_IC);
+        return 0.0;
+    }
 
     set_N_distr_for_Compton(pt, b, nu_IC_out, stat_frame, Ne_IC, griglia_gamma_Ne_log_IC);
 
-    for (ID=0; ID<nu_seed_size; ID++){
-        if (nu_seed[ID] <= b && nu_seed[ID] >= a){
-            nu_IC_in= nu_seed[ID];
+    for (ID = 0; ID < nu_seed_size; ID++) {
+        if (nu_seed[ID] <= b && nu_seed[ID] >= a) {
+            nu_IC_in = nu_seed[ID];
 
-            //Integration over electron Lorentz factor
-            for (ID_gamma = 0; ID_gamma < pt->emitters.gamma_grid_size ; ID_gamma++){
-                if (pt->core.bulk_compton == 0){
-                    ic_kernel=f_compton_K1(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out, nu_IC_in);
-                }else{
-                    if (ID<nu_seed_size-1){
-                        ic_kernel=f_compton_bulk(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out,   nu_seed[ID],  nu_seed[ID+1]);
-                    }else{
-                        ic_kernel=f_compton_bulk(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out,   nu_seed[ID-1],  nu_seed[ID]);
+            if (pt->core.bulk_compton == 0) {
+                if (pt->core.do_IC_down_scattering == 0 && nu_IC_in > nu_IC_out) {
+                    integr_gamma[ID] = 0.0;
+                    continue;
+                }
+
+                if (nu_IC_in > 0.0 && nu_IC_out > 0.0) {
+                    double g_min_kin;
+                    if (nu_IC_in > nu_IC_out) {
+                        g_min_kin = sqrt(nu_IC_in / (4.0 * nu_IC_out));
+                    } else {
+                        double epsilon_0, epsilon_1;
+                        epsilon_0 = HPLANCK * nu_IC_in * one_by_MEC2;
+                        epsilon_1 = HPLANCK * nu_IC_out * one_by_MEC2;
+                        g_min_kin = 0.5 * epsilon_1 * (1.0 + sqrt(1.0 + (1.0 / (epsilon_1 * epsilon_0))));
                     }
-                }    
-                Integrand_over_gamma_grid[ID_gamma] =ic_kernel * Ne_IC[ID_gamma];
-                
-            }
-            integr_gamma[ID]= n_seed[ID]*integr_simp_grid_equilog(griglia_gamma_Ne_log_IC, Integrand_over_gamma_grid, pt->emitters.gamma_grid_size);
+                    gamma_start = lower_bound_gamma_grid(griglia_gamma_Ne_log_IC, gamma_grid_size, g_min_kin);
+                } else {
+                    gamma_start = 0;
+                }
 
-        }else{
-            integr_gamma[ID]=0;
+                for (ID_gamma = 0; ID_gamma < gamma_start; ID_gamma++) {
+                    Integrand_over_gamma_grid[ID_gamma] = 0.0;
+                }
+                for (ID_gamma = gamma_start; ID_gamma < gamma_grid_size; ID_gamma++) {
+                    ic_kernel = f_compton_K1(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out, nu_IC_in);
+                    Integrand_over_gamma_grid[ID_gamma] = ic_kernel * Ne_IC[ID_gamma];
+                }
+            } else {
+                double nu_left, nu_right;
+                if (ID < nu_seed_size - 1) {
+                    nu_left = nu_seed[ID];
+                    nu_right = nu_seed[ID + 1];
+                } else {
+                    nu_left = (ID == 0) ? nu_seed[ID] : nu_seed[ID - 1];
+                    nu_right = nu_seed[ID];
+                }
+
+                ic_kernel = f_compton_bulk(pt, 1.0, nu_IC_out, nu_left, nu_right);
+                if (ic_kernel == 0.0) {
+                    integr_gamma[ID] = 0.0;
+                    continue;
+                }
+
+                for (ID_gamma = 0; ID_gamma < gamma_grid_size; ID_gamma++) {
+                    Integrand_over_gamma_grid[ID_gamma] = ic_kernel * Ne_IC[ID_gamma];
+                }
+            }
+
+            integr_gamma[ID] = n_seed[ID] * integr_simp_grid_equilog(griglia_gamma_Ne_log_IC, Integrand_over_gamma_grid, gamma_grid_size);
+        } else {
+            integr_gamma[ID] = 0.0;
         }
     }
-    integr_nu=trapzd_array_arbritary_grid( nu_seed,integr_gamma, nu_seed_size);
+    integr_nu = trapzd_array_arbritary_grid((double *) nu_seed, integr_gamma, nu_seed_size);
 
     //============================================================
     //0.75 fattore di correzione di GOULD
