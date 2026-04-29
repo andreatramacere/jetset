@@ -33,14 +33,11 @@ class McmcCompositeModelParameterArray(CompositeModelParameterArray):
         _mcmc_bound_max=[]
         _frozen=[]
         _val=[]
+        _log=[]
 
-        _fields=[_model_name,_name,_val,_best_fit_mcmc_val,_q16,_q50,_q84,_mcmc_bound_min,_mcmc_bound_max,_frozen]
-        _names=['model name','name','val','bestfit mcmc','q16','q50','q84','mcmc bound min','mcmc bound max','frozen']
-      
-        #if self.model is None:
-        #   _fields.pop(0)
-        #   _names.pop(0)
-
+        _fields=[_model_name,_name,_val,_log,_best_fit_mcmc_val,_q16,_q50,_q84,_mcmc_bound_min,_mcmc_bound_max,_frozen]
+        _names=['model name','name','val','log','bestfit mcmc','q16','q50','q84','mcmc bound min','mcmc bound max','frozen']
+    
         for par in self.par_array:
 
             append=False
@@ -63,6 +60,7 @@ class McmcCompositeModelParameterArray(CompositeModelParameterArray):
             if append:
                 #if self.model is not None:
                 _model_name.append(par.model.name)
+                _log.append(par.islog)
                 #else:
                 #    _model_name.append('no_name')
 
@@ -115,12 +113,9 @@ class McmcCompositeModelParameterArray(CompositeModelParameterArray):
                 _val.append(par.val)
 
         t = Table(_fields, names=_names, masked=False)
-        #_numeric_fields =['val','bestfit mcmc','q16','q50','q84','mcmc bound min','mcmc bound max']
-
-        #for n in _numeric_fields:
-        #    if n in t.colnames:
-        #        t[n].format = sci_if_large
+        
         self._fromat_column_entry(t)
+        t=t.group_by('frozen')
         return t
     
     def _fromat_column_entry(self, t):
