@@ -75,12 +75,12 @@
 
 typedef enum {
     RAD_SYNC, RAD_SSC, RAD_EC_DISK, RAD_EC_BLR, RAD_EC_DT,
-    RAD_EC_STAR, RAD_EC_CMB, RAD_PP_GAMMA, RAD_BREMSS_EP,
+    RAD_EC_CORONA, RAD_EC_STAR, RAD_EC_CMB, RAD_PP_GAMMA, RAD_BREMSS_EP,
     NUM_RAD_COMP
 } rad_comp_t;
 
 typedef enum {
-    EXT_DISK, EXT_BLR, EXT_DT, EXT_STAR, EXT_CMB, NUM_EXT_COMP
+    EXT_DISK, EXT_BLR, EXT_DT, EXT_CORONA, EXT_STAR, EXT_CMB, NUM_EXT_COMP
 } ext_comp_t;
 
 typedef enum {
@@ -166,6 +166,7 @@ struct internal_abs_component {
 struct internal_abs_store {
     struct internal_abs_component BLR;
     struct internal_abs_component DT;
+    struct internal_abs_component Corona;
 };
 
 struct blob_core {
@@ -238,8 +239,8 @@ struct blob_core {
     unsigned int nu_IC_size;
 
     //-----------EC--------------//
-    int do_EC_Disk, do_EC_BLR, do_EC_DT, do_EC_Star, do_EC_CMB, EC_stat, EC_stat_orig;
-    int do_Disk, do_DT, do_Star;
+    int do_EC_Disk, do_EC_BLR, do_EC_DT, do_EC_Corona, do_EC_Star, do_EC_CMB, EC_stat, EC_stat_orig;
+    int do_Disk, do_DT, do_Corona, do_Star;
     double nu_planck_min_factor;
     double nu_planck_max_factor;
     double mono_planck_min_factor;
@@ -477,6 +478,25 @@ struct ext_dt {
     struct ec_comp ec;
 };
 
+struct ext_corona {
+    double L_Corona;
+    double R_Corona;
+    double R_H_Corona;
+    double alpha_Corona;
+    double nu_cut_low_Corona;
+    double nu_cut_Corona;
+    double f_Corona_norm;
+    double R_Corona_interp_val;
+    double R_Corona_interp_start;
+
+    double Corona_mu_1, Corona_mu_2;
+    double Corona_surface;
+    double Corona_geom_factor;
+
+    struct spectrum_external spec;
+    struct ec_comp ec;
+};
+
 struct ext_star {
     double L_Star;
     double T_Star;
@@ -511,6 +531,7 @@ struct blob {
     struct ext_disk Disk;
     struct ext_blr BLR;
     struct ext_dt DT;
+    struct ext_corona Corona;
     struct ext_star Star;
     struct ext_cmb CMB;
 };
@@ -521,11 +542,11 @@ struct jet_energetic{
     double U_e, U_p_cold,U_B;
     double U_p, U_p_target;
     double U_Synch, U_Synch_DRF;
-    double U_Disk, U_BLR, U_DT, U_CMB, U_Star;
-    double U_Disk_DRF, U_BLR_DRF, U_DT_DRF, U_CMB_DRF, U_Star_DRF;
+    double U_Disk, U_BLR, U_DT, U_Corona, U_CMB, U_Star;
+    double U_Disk_DRF, U_BLR_DRF, U_DT_DRF, U_Corona_DRF, U_CMB_DRF, U_Star_DRF;
     double U_seed_tot;
-    double L_Sync_rf, L_SSC_rf, L_EC_Disk_rf,L_EC_BLR_rf, L_EC_DT_rf,L_EC_CMB_rf, L_EC_Star_rf, L_pp_gamma_rf;
-    double jet_L_Sync,jet_L_SSC, jet_L_EC_Disk, jet_L_EC_BLR, jet_L_EC_Star, jet_L_EC_DT,jet_L_EC_CMB,jet_L_pp_gamma;
+    double L_Sync_rf, L_SSC_rf, L_EC_Disk_rf, L_EC_BLR_rf, L_EC_DT_rf, L_EC_Corona_rf, L_EC_CMB_rf, L_EC_Star_rf, L_pp_gamma_rf;
+    double jet_L_Sync, jet_L_SSC, jet_L_EC_Disk, jet_L_EC_BLR, jet_L_EC_DT, jet_L_EC_Corona, jet_L_EC_Star, jet_L_EC_CMB, jet_L_pp_gamma;
     double jet_L_rad,jet_L_kin, jet_L_tot, jet_L_e, jet_L_B, jet_L_p_cold, jet_L_p;
 };
 
@@ -1147,6 +1168,19 @@ double integrand_I_nu_DT_blob_RF(struct blob *pt, double theta);
 double eval_DT_L_nu(struct blob *pt, double DT_disk_RF);
 double eval_theta_max_DT(struct blob *pt);
 double eval_l_DT(struct blob *pt, double mu);
+
+/***  FUNCTIONS Seed Photons EC CORONA  ***/
+void Build_I_nu_Corona(struct blob *pt);
+double f_nu_Corona(struct blob *pt, double nu_Corona_disk_RF);
+double eval_Corona_L_nu(struct blob *pt, double nu_Corona_disk_RF);
+double eval_I_nu_theta_Corona(struct blob *pt, double mu);
+double integrand_I_nu_Corona_blob_RF(struct blob *pt, double mu);
+double integrand_I_nu_Corona_disk_RF(struct blob *pt, double mu);
+double eval_I_nu_Corona_disk_RF(struct blob *pt, double nu_Corona_disk_RF);
+double eval_I_nu_Corona_blob_RF(struct blob *pt, double nu_Corona_disk_RF);
+void set_Corona_angles(struct blob *pt);
+void set_Corona_geometry(struct blob *pt);
+
 double eval_circle_secant(double z,double R,double mu);
 //===========================================================================================
 

@@ -72,7 +72,7 @@ void spectra_External_Fields(int Num_file, struct blob *pt, int set_EC){
 		//	set_EC_stat_post(pt);
 		//}
 	}
-    if (pt->core.do_EC_DT==1 || pt->core.do_DT==1){
+	if (pt->core.do_EC_DT==1 || pt->core.do_DT==1){
 		//printf("EC_stat=%d, R_H=%e\n",pt->core.EC_stat,pt->core.R_H);
 		//if (set_EC == 1)
 		//{
@@ -83,6 +83,9 @@ void spectra_External_Fields(int Num_file, struct blob *pt, int set_EC){
 		//{
 		//	set_EC_stat_post(pt);
 		//}
+	}
+	if (pt->core.do_EC_Corona==1 || pt->core.do_Corona==1){
+		Build_I_nu_Corona(pt);
 	}
 	if (pt->core.do_EC_CMB==1){
 		//if (set_EC == 1)
@@ -1459,6 +1462,228 @@ double eval_l_DT(struct blob *pt, double mu)
 		l = 0.;
 	}
 	return l;
+}
+
+//=========================================================================================
+
+static double integrand_f_nu_Corona_norm(struct blob *pt, double nu_Corona_disk_RF)
+{
+	return f_nu_Corona(pt, nu_Corona_disk_RF);
+}
+
+static double eval_R_blob_Corona(struct blob *pt)
+{
+	return fabs(pt->core.R_H - pt->Corona.R_H_Corona);
+}
+
+void Build_I_nu_Corona(struct blob *pt)
+{
+	unsigned int NU_INT, NU_INT_MAX;
+	double nu_start_Corona_disk_RF, nu_stop_Corona_disk_RF;
+	double nu_ref_low, nu_ref_high;
+	double nu_obs;
+	double nuL_nu_Corona, F_nu_Corona_obs;
+	double norm_int;
+	double (*pf)(struct blob *, double x);
+
+	if (pt->core.verbose){
+		printf("-----------  Building I_nu Corona     ----------- \n");
+	}
+
+	set_Corona_geometry(pt);
+	set_Corona_angles(pt);
+
+	nu_ref_high = pt->Corona.nu_cut_Corona;
+	if (nu_ref_high <= 0.0){
+		nu_ref_high = 1.0;
+	}
+	nu_ref_low = nu_ref_high;
+	if (pt->Corona.nu_cut_low_Corona > 0.0){
+		nu_ref_low = min(nu_ref_low, pt->Corona.nu_cut_low_Corona);
+		nu_ref_high = max(nu_ref_high, pt->Corona.nu_cut_low_Corona);
+	}
+	nu_start_Corona_disk_RF = nu_ref_low * pt->core.nu_planck_min_factor;
+	nu_stop_Corona_disk_RF = nu_ref_high * pt->core.nu_planck_max_factor;
+	if (nu_start_Corona_disk_RF <= 0.0){
+		nu_start_Corona_disk_RF = 1.0;
+	}
+	if (nu_stop_Corona_disk_RF <= nu_start_Corona_disk_RF){
+		nu_stop_Corona_disk_RF = nu_start_Corona_disk_RF * 10.0;
+	}
+
+	pt->Corona.spec.nu_min = eval_nu_min_blob_RF(pt, pt->Corona.Corona_mu_1, pt->Corona.Corona_mu_2, nu_start_Corona_disk_RF);
+	pt->Corona.spec.nu_max = eval_nu_max_blob_RF(pt, pt->Corona.Corona_mu_1, pt->Corona.Corona_mu_2, nu_stop_Corona_disk_RF);
+	pt->Corona.spec.nu_min_DRF = nu_start_Corona_disk_RF;
+	pt->Corona.spec.nu_max_DRF = nu_stop_Corona_disk_RF;
+	pt->Corona.spec.nu_min_obs = nu_disk_to_nu_obs_disk(nu_start_Corona_disk_RF, pt->core.z_cosm);
+	pt->Corona.spec.nu_max_obs = nu_disk_to_nu_obs_disk(nu_stop_Corona_disk_RF, pt->core.z_cosm);
+
+	NU_INT_MAX = pt->core.nu_seed_size - 1;
+	pt->Corona.spec.NU_INT_MAX = NU_INT_MAX;
+	pt->Corona.R_Corona_interp_val = pt->Corona.R_Corona * 50.0;
+	pt->Corona.R_Corona_interp_start = pt->Corona.R_Corona * 50.0;
+
+	pf = &integrand_f_nu_Corona_norm;
+	norm_int = integrale_trap_log_struct(pf, pt, nu_start_Corona_disk_RF, nu_stop_Corona_disk_RF, 400);
+	if (norm_int > 0.0){
+		pt->Corona.f_Corona_norm = 1.0 / norm_int;
+	}
+	else{
+		pt->Corona.f_Corona_norm = 0.0;
+	}
+
+	build_log_grid(nu_start_Corona_disk_RF, nu_stop_Corona_disk_RF, pt->core.nu_seed_size, pt->Corona.spec.nu_DRF);
+	for (NU_INT = 0; NU_INT <= NU_INT_MAX; NU_INT++) {
+		pt->Corona.spec.L_nu_DRF[NU_INT] = eval_Corona_L_nu(pt, pt->Corona.spec.nu_DRF[NU_INT]);
+		pt->Corona.spec.I_nu_DRF[NU_INT] = eval_I_nu_Corona_disk_RF(pt, pt->Corona.spec.nu_DRF[NU_INT]);
+	}
+
+	build_log_grid(pt->Corona.spec.nu_min, pt->Corona.spec.nu_max, pt->core.nu_seed_size, pt->Corona.spec.nu);
+	for (NU_INT = 0; NU_INT <= NU_INT_MAX; NU_INT++) {
+		nu_obs = nu_disk_to_nu_obs_disk(pt->Corona.spec.nu_DRF[NU_INT], pt->core.z_cosm);
+		pt->Corona.spec.nu_obs[NU_INT] = nu_obs;
+		pt->Corona.spec.I_nu[NU_INT] = eval_I_nu_Corona_blob_RF(pt, pt->Corona.spec.nu_DRF[NU_INT]);
+		pt->Corona.spec.n_nu[NU_INT] = I_nu_to_n(pt->Corona.spec.I_nu[NU_INT], pt->Corona.spec.nu[NU_INT]);
+		pt->Corona.spec.n_nu_DRF[NU_INT] = I_nu_to_n(pt->Corona.spec.I_nu_DRF[NU_INT], pt->Corona.spec.nu_DRF[NU_INT]);
+
+		if (pt->Corona.spec.I_nu[NU_INT] > pt->core.emiss_lim){
+			pt->Corona.spec.nu_max = pt->Corona.spec.nu[NU_INT];
+			pt->Corona.spec.NU_INT_MAX = NU_INT;
+		}
+		else{
+			pt->Corona.spec.I_nu[NU_INT] = pt->core.emiss_lim;
+			pt->Corona.spec.n_nu[NU_INT] = I_nu_to_n(pt->Corona.spec.I_nu[NU_INT], pt->Corona.spec.nu[NU_INT]);
+		}
+
+		nuL_nu_Corona = pt->Corona.spec.L_nu_DRF[NU_INT] * pt->Corona.spec.nu_DRF[NU_INT];
+		F_nu_Corona_obs = L_nu_Disk_to_F_nu(nuL_nu_Corona / pt->Corona.spec.nu_DRF[NU_INT], pt->core.z_cosm, pt->core.dist);
+		pt->Corona.spec.nuFnu_obs[NU_INT] = F_nu_Corona_obs * nu_obs;
+	}
+}
+
+double f_nu_Corona(struct blob *pt, double nu_Corona_disk_RF)
+{
+	double f;
+	if (nu_Corona_disk_RF <= 0.0 || pt->Corona.nu_cut_Corona <= 0.0){
+		return 0.0;
+	}
+	f = pow(nu_Corona_disk_RF, -pt->Corona.alpha_Corona) * exp(-nu_Corona_disk_RF / pt->Corona.nu_cut_Corona);
+	if (pt->Corona.nu_cut_low_Corona > 0.0){
+		f *= exp(-pt->Corona.nu_cut_low_Corona / nu_Corona_disk_RF);
+	}
+	return f;
+}
+
+double eval_Corona_L_nu(struct blob *pt, double nu_Corona_disk_RF)
+{
+	return pt->Corona.L_Corona * pt->Corona.f_Corona_norm * f_nu_Corona(pt, nu_Corona_disk_RF);
+}
+
+double eval_I_nu_theta_Corona(struct blob *pt, double mu)
+{
+	(void)mu;
+	return eval_Corona_L_nu(pt, pt->core.nu_disk_RF) * pt->Corona.Corona_geom_factor;
+}
+
+double integrand_I_nu_Corona_blob_RF(struct blob *pt, double mu)
+{
+	double f;
+	f = pt->core.BulkFactor * (1.0 - pt->core.beta_Gamma * mu);
+	return 2 * pi * eval_I_nu_theta_Corona(pt, mu) * f;
+}
+
+double integrand_I_nu_Corona_disk_RF(struct blob *pt, double mu)
+{
+	return 2 * pi * eval_I_nu_theta_Corona(pt, mu);
+}
+
+double eval_I_nu_Corona_disk_RF(struct blob *pt, double nu_Corona_disk_RF)
+{
+	double (*pf)(struct blob *, double x);
+	double I, R_H_orig, R_blob_Corona_orig, c, R_H_test;
+
+	pt->core.nu_disk_RF = nu_Corona_disk_RF;
+	pf = &integrand_I_nu_Corona_disk_RF;
+
+	c = 1.0;
+	R_H_orig = pt->core.R_H;
+	R_blob_Corona_orig = eval_R_blob_Corona(pt);
+	if (R_blob_Corona_orig > pt->Corona.R_Corona_interp_start && R_blob_Corona_orig > 0.0)
+	{
+		if (pt->core.R_H >= pt->Corona.R_H_Corona){
+			R_H_test = pt->Corona.R_H_Corona + pt->Corona.R_Corona_interp_val;
+		}
+		else{
+			R_H_test = pt->Corona.R_H_Corona - pt->Corona.R_Corona_interp_val;
+		}
+		pt->core.R_H = max(R_H_test, 0.0);
+		c = (pt->Corona.R_Corona_interp_val / R_blob_Corona_orig) * (pt->Corona.R_Corona_interp_val / R_blob_Corona_orig);
+	}
+
+	set_Corona_angles(pt);
+	I = integrale_simp_struct(pf, pt, pt->Corona.Corona_mu_1, pt->Corona.Corona_mu_2, pt->core.theta_n_int);
+	pt->core.R_H = R_H_orig;
+	set_Corona_angles(pt);
+
+	return I * one_by_four_pi * c;
+}
+
+double eval_I_nu_Corona_blob_RF(struct blob *pt, double nu_Corona_disk_RF)
+{
+	double (*pf)(struct blob *, double x);
+	double I, R_H_orig, R_blob_Corona_orig, c, R_H_test;
+
+	pt->core.nu_disk_RF = nu_Corona_disk_RF;
+	pf = &integrand_I_nu_Corona_blob_RF;
+
+	c = 1.0;
+	R_H_orig = pt->core.R_H;
+	R_blob_Corona_orig = eval_R_blob_Corona(pt);
+	if (R_blob_Corona_orig > pt->Corona.R_Corona_interp_start && R_blob_Corona_orig > 0.0)
+	{
+		if (pt->core.R_H >= pt->Corona.R_H_Corona){
+			R_H_test = pt->Corona.R_H_Corona + pt->Corona.R_Corona_interp_val;
+		}
+		else{
+			R_H_test = pt->Corona.R_H_Corona - pt->Corona.R_Corona_interp_val;
+		}
+		pt->core.R_H = max(R_H_test, 0.0);
+		c = (pt->Corona.R_Corona_interp_val / R_blob_Corona_orig) * (pt->Corona.R_Corona_interp_val / R_blob_Corona_orig);
+	}
+
+	set_Corona_angles(pt);
+	I = integrale_simp_struct(pf, pt, pt->Corona.Corona_mu_1, pt->Corona.Corona_mu_2, pt->core.theta_n_int);
+	pt->core.R_H = R_H_orig;
+	set_Corona_angles(pt);
+
+	return I * one_by_four_pi * c;
+}
+
+void set_Corona_angles(struct blob *pt)
+{
+	double mu1, mu2, denom, R_blob_Corona;
+	mu1 = 1.0;
+	R_blob_Corona = eval_R_blob_Corona(pt);
+	denom = sqrt(R_blob_Corona * R_blob_Corona + pt->Corona.R_Corona * pt->Corona.R_Corona);
+	if (denom > 0.0){
+		mu2 = R_blob_Corona / denom;
+	}
+	else{
+		mu2 = 0.0;
+	}
+	pt->Corona.Corona_mu_1 = min(mu1, mu2);
+	pt->Corona.Corona_mu_2 = max(mu1, mu2);
+}
+
+void set_Corona_geometry(struct blob *pt)
+{
+	pt->Corona.Corona_surface = pi * pt->Corona.R_Corona * pt->Corona.R_Corona;
+	if (pt->Corona.Corona_surface > 0.0){
+		pt->Corona.Corona_geom_factor = 1.0 / (four_pi * pt->Corona.Corona_surface);
+	}
+	else{
+		pt->Corona.Corona_geom_factor = 0.0;
+	}
 }
 
 //=========================================================================================

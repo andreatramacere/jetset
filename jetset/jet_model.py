@@ -133,6 +133,8 @@ class JetBase(Model):
         self._allowed_EC_components_list=['EC_BLR',
                                           'DT',
                                           'EC_DT',
+                                          'Corona',
+                                          'EC_Corona',
                                           'Star',
                                           'EC_Star',
                                           #CMB',
@@ -612,6 +614,12 @@ class JetBase(Model):
         blob.Disk.L_Disk = 1E45
 
         blob.DT.L_DT = 1E45
+        blob.Corona.L_Corona = 1E45
+        blob.Corona.R_Corona = 1E15
+        blob.Corona.R_H_Corona = 0.0
+        blob.Corona.alpha_Corona = 1.0
+        blob.Corona.nu_cut_low_Corona = 0.0
+        blob.Corona.nu_cut_Corona = 1E20
 
         blob.emitters.gmin = 2
 
@@ -1247,6 +1255,22 @@ class JetBase(Model):
                     self._del_spectral_component('EC_DT', verbose=False)
                     self.EC_components_list.remove('EC_DT')
 
+            if EC_component=='Corona':
+                if self.get_spectral_component_by_name('Corona', verbose=False) is not None:
+                    self._blob.core.do_Corona=0
+                    self._del_spectral_component('Corona', verbose=False)
+                    self.EC_components_list.remove('Corona')
+                if self.get_spectral_component_by_name('EC_Corona', verbose=False) is not None:
+                    self._blob.core.do_EC_Corona=0
+                    self._del_spectral_component('EC_Corona', verbose=False)
+                    self.EC_components_list.remove('EC_Corona')
+
+            if EC_component=='EC_Corona':
+                if self.get_spectral_component_by_name('EC_Corona', verbose=False) is not None:
+                    self._blob.core.do_EC_Corona=0
+                    self._del_spectral_component('EC_Corona', verbose=False)
+                    self.EC_components_list.remove('EC_Corona')
+
             if EC_component=='EC_CMB':
                 if self.get_spectral_component_by_name('EC_CMB', verbose=False) is not None:
                     self._blob.core.do_EC_CMB=0
@@ -1366,6 +1390,20 @@ class JetBase(Model):
                 if self.get_spectral_component_by_name('Disk',verbose=False) is None:
                     self._add_spectral_component('Disk',var_name='core.do_Disk', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('Disk')
+
+            if EC_component == 'Corona':
+                if self.get_spectral_component_by_name('Corona',verbose=False) is None:
+                    self._add_spectral_component('Corona',var_name='core.do_Corona', state_dict=dict((('on', 1), ('off', 0))))
+                    self.EC_components_list.append('Corona')
+
+            if EC_component == 'EC_Corona':
+                if self.get_spectral_component_by_name('EC_Corona',verbose=False) is None:
+                    self._add_spectral_component('EC_Corona', var_name='core.do_EC_Corona', state_dict=dict((('on', 1), ('off', 0))))
+                    self.EC_components_list.append('EC_Corona')
+
+                if self.get_spectral_component_by_name('Corona',verbose=False) is None:
+                    self._add_spectral_component('Corona',var_name='core.do_Corona', state_dict=dict((('on', 1), ('off', 0))))
+                    self.EC_components_list.append('Corona')
 
             if EC_component=='EC_CMB':
                 #self._blob.core.do_EC_CMB=1
@@ -1942,6 +1980,8 @@ class JetBase(Model):
             return self._blob.core.internal_abs.BLR
         if comp == 'DT':
             return self._blob.core.internal_abs.DT
+        if comp == 'Corona':
+            return self._blob.core.internal_abs.Corona
         raise RuntimeError('internal absorption component %s not valid' % comp)
 
     def _configure_internal_absorption_on_blob(self, comp, pars):
@@ -2188,7 +2228,7 @@ class JetBase(Model):
             i=np.argwhere(i==True)
             self.energetic_report_table.remove_rows(i)
 
-            _d_l=['U_Disk','U_BLR','U_DT','U_CMB','U_Synch_DRF','U_Star']
+            _d_l=['U_Disk','U_BLR','U_DT','U_Corona','U_CMB','U_Synch_DRF','U_Star']
             i=[]
             for n in self.energetic_report_table['name']:
                 if n in _d_l:

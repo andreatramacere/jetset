@@ -404,15 +404,17 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     energetic.U_Synch = PowerPhotons_blob_rest_frame (pt, pt->Sync.spec.nu, pt->Sync.spec.nuFnu_obs, pt->Sync.NU_INT_STOP_Sync_SSC)/(4*pi*pt->core.R*pt->core.R*vluce_cm);
     energetic.U_BLR = I_nu_to_Uph(pt->BLR.spec.nu, pt->BLR.spec.I_nu, pt->BLR.spec.NU_INT_MAX);
     energetic.U_DT=I_nu_to_Uph(pt->DT.spec.nu, pt->DT.spec.I_nu, pt->DT.spec.NU_INT_MAX);
+    energetic.U_Corona = I_nu_to_Uph(pt->Corona.spec.nu, pt->Corona.spec.I_nu, pt->Corona.spec.NU_INT_MAX);
     energetic.U_CMB = I_nu_to_Uph(pt->CMB.spec.nu, pt->CMB.spec.I_nu, pt->CMB.spec.NU_INT_MAX);
     energetic.U_Disk = I_nu_to_Uph(pt->Disk.spec.nu, pt->Disk.spec.I_nu, pt->Disk.spec.NU_INT_MAX);
     energetic.U_Star = I_nu_to_Uph(pt->Star.spec.nu, pt->Star.spec.I_nu, pt->Star.spec.NU_INT_MAX);
 
-    energetic.U_seed_tot = energetic.U_Synch+ energetic.U_BLR + energetic.U_DT + energetic.U_Disk + energetic.U_Star;
+    energetic.U_seed_tot = energetic.U_Synch + energetic.U_BLR + energetic.U_DT + energetic.U_Corona + energetic.U_Disk + energetic.U_Star;
 
     energetic.U_Synch_DRF = energetic.U_Synch*(pt->core.beam_obj*pt->core.beam_obj*pt->core.beam_obj*pt->core.beam_obj);
     energetic.U_BLR_DRF = I_nu_to_Uph(pt->BLR.spec.nu_DRF, pt->BLR.spec.I_nu_DRF, pt->BLR.spec.NU_INT_MAX);
     energetic.U_DT_DRF = I_nu_to_Uph(pt->DT.spec.nu_DRF, pt->DT.spec.I_nu_DRF, pt->DT.spec.NU_INT_MAX);
+    energetic.U_Corona_DRF = I_nu_to_Uph(pt->Corona.spec.nu_DRF, pt->Corona.spec.I_nu_DRF, pt->Corona.spec.NU_INT_MAX);
     energetic.U_CMB_DRF = I_nu_to_Uph(pt->CMB.spec.nu_DRF, pt->CMB.spec.I_nu_DRF, pt->CMB.spec.NU_INT_MAX);
     energetic.U_Disk_DRF = I_nu_to_Uph(pt->Disk.spec.nu_DRF, pt->Disk.spec.I_nu_DRF, pt->Disk.spec.NU_INT_MAX);
     energetic.U_Star_DRF =  I_nu_to_Uph(pt->Star.spec.nu_DRF, pt->Star.spec.I_nu_DRF, pt->Star.spec.NU_INT_MAX);
@@ -495,6 +497,17 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     {
         energetic.jet_L_EC_DT = 0;
         energetic.L_EC_DT_rf = 0;
+    }
+
+    if (pt->core.do_EC_Corona == 1) {
+        energetic.L_EC_Corona_rf = PowerPhotons_blob_rest_frame(pt, pt->Corona.ec.spec.nu, pt->Corona.ec.spec.nuFnu_obs, pt->Corona.ec.NU_INT_STOP);
+        energetic.jet_L_EC_Corona = energetic.L_EC_Corona_rf * lum_factor_rad;
+        energetic.jet_L_rad += energetic.jet_L_EC_Corona;
+    }
+    else
+    {
+        energetic.jet_L_EC_Corona = 0;
+        energetic.L_EC_Corona_rf = 0;
     }
     
     if (pt->core.do_EC_CMB == 1)

@@ -100,12 +100,22 @@ double scaling_function_EC(double theta_s, double R_ext, double R_H_in, double R
 	return y_theta / y_theta_0;
 }
 
+static double eval_R_H_EC(struct blob *pt, double R_H)
+{
+	if (pt->core.EC == 6){
+		return fabs(R_H - pt->Corona.R_H_Corona);
+	}
+	return R_H;
+}
+
 void update_EC_for_bp(struct blob *pt, double nuFnu_obs_ref, double R_ext_emit, unsigned int SIZE, double *nuFnu_obs, double *nu_obs)
 {
-	double s_bp, s_actual, nuFnu_obs_max;
+	double s_bp, s_actual, nuFnu_obs_max, R_H_orig_eval;
 	unsigned int I_MAX, NU_INT;
+	(void)SIZE;
 
-	s_bp = scaling_function_EC(pt->core.theta, R_ext_emit, 0, pt->core.R_H_orig, pt->core.BulkFactor);
+	R_H_orig_eval = eval_R_H_EC(pt, pt->core.R_H_orig);
+	s_bp = scaling_function_EC(pt->core.theta, R_ext_emit, 0, R_H_orig_eval, pt->core.BulkFactor);
 
 	I_MAX = pt->core.nu_IC_size - 1;	
 	nuFnu_obs_max = nuFnu_obs[0];
@@ -154,8 +164,10 @@ double get_EC_reference(struct blob *pt, double *nuFnu_obs)
 
 int set_condition_EC_correction(struct blob *pt,double R_ext_emit)
 {
+	double R_H_eval;
 	int do_EC_correction =0;
-	if ((pt->core.R_H > (R_ext_emit * pt->core.R_ext_emit_factor)) && (pt->core.EC_stat == 1) && R_ext_emit > 0){
+	R_H_eval = eval_R_H_EC(pt, pt->core.R_H);
+	if ((R_H_eval > (R_ext_emit * pt->core.R_ext_emit_factor)) && (pt->core.EC_stat == 1) && R_ext_emit > 0){
 		do_EC_correction =1;
 	}
 	//printf("do_EC_correction=%d \n",do_EC_correction);
@@ -164,13 +176,15 @@ int set_condition_EC_correction(struct blob *pt,double R_ext_emit)
 
 void set_EC_stat_pre(struct blob *pt, double R_ext_emit)
 {
+	double R_H_eval;
 	
 	//printf("set_EC_stat_pre 1 R_ext_emit =%e, R_H_orig=%e, R_H=%e\n", R_ext_emit, pt->core.R_H_orig, pt->core.R_H);
+	R_H_eval = eval_R_H_EC(pt, pt->core.R_H);
 
 	if (set_condition_EC_correction(pt, R_ext_emit) > 0 && R_ext_emit > 0 && pt->core.EC_stat==1)
 	{
 		pt->core.R_H_scale_factor = pt->core.BulkFactor / get_beaming( pt->core.BulkFactor,pt->core.theta);
-		if ((pt->core.R_H / (R_ext_emit * pt->core.R_ext_emit_factor)) > pt->core.R_H_scale_factor)
+		if ((R_H_eval / (R_ext_emit * pt->core.R_ext_emit_factor)) > pt->core.R_H_scale_factor)
 		{
 			pt->core.EC_stat = 0;
 		}
@@ -302,9 +316,9 @@ void spettro_EC(int Num_file, struct blob *pt) {
     	}
 
     }
-    else if (pt->core.EC == 5) {
-    	ec = &pt->CMB.ec;
-    	freq_array_obs=pt->CMB.ec.spec.nu_obs;
+	    else if (pt->core.EC == 5) {
+	    	ec = &pt->CMB.ec;
+	    	freq_array_obs=pt->CMB.ec.spec.nu_obs;
     	nuFnu_obs_array=pt->CMB.ec.spec.nuFnu_obs;
     	freq_array=pt->CMB.ec.spec.nu;
     	nu_seed_max =  pt->CMB.spec.nu_max;
@@ -320,12 +334,33 @@ void spettro_EC(int Num_file, struct blob *pt) {
     				pt->CMB.spec.nu_min,
     				pt->CMB.spec.nu_max);
     		printf("these freq. are boosted from the DISK frame  into the BLOB frame\n");
-    		printf("-----------------------------------------------------------------\n");
-    	}
+	    		printf("-----------------------------------------------------------------\n");
+	    	}
 
-    }else{
-		printf("wrong EC \n ");
-        exit(0);
+	    }
+	    else if (pt->core.EC == 6) {
+	    	ec = &pt->Corona.ec;
+	    	freq_array_obs=pt->Corona.ec.spec.nu_obs;
+	    	nuFnu_obs_array=pt->Corona.ec.spec.nuFnu_obs;
+	    	freq_array=pt->Corona.ec.spec.nu;
+	    	nu_seed_max =  pt->Corona.spec.nu_max;
+	    	nu_start_EC = &(pt->Corona.ec.spec.nu_min);
+	    	nu_stop_EC = &(pt->Corona.ec.spec.nu_max);
+	    	nu_start_EC_obs = &(pt->Corona.ec.spec.nu_min_obs);
+	    	nu_stop_EC_obs = &(pt->Corona.ec.spec.nu_max_obs);
+	    	NU_INT_STOP_EC= &(pt->Corona.ec.NU_INT_STOP);
+			R_ext_emit = pt->Corona.R_Corona;
+			if (pt->core.verbose>0) {
+	    		printf("nu_start_Corona=%e    nu_stop_Corona=%e\n",
+	    				pt->Corona.spec.nu_min,
+	    				pt->Corona.spec.nu_max);
+	    		printf("these freq. are boosted from the DISK frame  into the BLOB frame\n");
+	    		printf("-----------------------------------------------------------------\n");
+	    	}
+
+	    }else{
+			printf("wrong EC \n ");
+	        exit(0);
 		
 	}
 	//printf("spettro_EC 1 R_H=%e c=%d \n", pt->core.R_H, set_condition_EC_correction(pt, pt->DT.R_DT));
@@ -497,10 +532,14 @@ void spettro_EC(int Num_file, struct blob *pt) {
 
 				printf("nu_stop_EC_Star=%e NU_INT_STOP_EC_Star=%d\n", pt->Star.ec.spec.nu_max, pt->Star.ec.NU_INT_STOP);
 			}
-			if (pt->core.EC == 5) {
+				if (pt->core.EC == 5) {
 
-				printf("nu_stop_EC_CMB=%e NU_INT_STOP_EC_CMB=%d\n", pt->CMB.ec.spec.nu_max, pt->CMB.ec.NU_INT_STOP);
-			}
+					printf("nu_stop_EC_CMB=%e NU_INT_STOP_EC_CMB=%d\n", pt->CMB.ec.spec.nu_max, pt->CMB.ec.NU_INT_STOP);
+				}
+				if (pt->core.EC == 6) {
+
+					printf("nu_stop_EC_Corona=%e NU_INT_STOP_EC_Corona=%d\n", pt->Corona.ec.spec.nu_max, pt->Corona.ec.NU_INT_STOP);
+				}
             //if (pt->core.EC == 6) {
 
             //    printf("nu_stop_EC_CMB_stat=%e NU_INT_STOP_EC_CMB_stat=%d\n", pt->nu_stop_EC_CMB_stat, pt->NU_INT_STOP_EC_CMB_stat);
@@ -585,11 +624,34 @@ void spettro_EC(int Num_file, struct blob *pt) {
 			printf("nuFnu EC  blob    peak=%e\n", pt->DT.ec.spec.nuFnu_peak_obs);
 			printf("nuLnu EC  src     peak=%e\n", pt->DT.ec.spec.nuLnu_peak_src);
 			printf("nuLnu EC  obs     peak=%e\n", pt->DT.ec.spec.nuLnu_peak_blob);
+			}
+		}
+
+	if (pt->core.EC == 6)
+	{
+		FindEpSp(pt->Corona.ec.spec.nu, nuFnu_obs_array, pt->Corona.ec.NU_INT_STOP, pt,
+					&(pt->Corona.ec.spec.nu_peak_obs),
+					&(pt->Corona.ec.spec.nu_peak_src),
+					&(pt->Corona.ec.spec.nu_peak_blob),
+					&(pt->Corona.ec.spec.nuFnu_peak_obs),
+					&(pt->Corona.ec.spec.nuLnu_peak_src),
+					&(pt->Corona.ec.spec.nuLnu_peak_blob));
+		if (pt->core.verbose > 0)
+		{
+			printf("nu_stop_EC_Corona=%e NU_INT_STOP_EC_Corona=%d\n", pt->Corona.ec.spec.nu_max, pt->Corona.ec.NU_INT_STOP);
+			printf("EC Corona ");
+			printf("nu_EC_blob peak=%e\n", pt->Corona.ec.spec.nu_peak_blob);
+			printf("nu_EC_src  peak=%e\n", pt->Corona.ec.spec.nu_peak_src);
+			printf("nu_EC_obs  peak=%e\n", pt->Corona.ec.spec.nu_peak_obs);
+
+			printf("nuFnu EC  blob    peak=%e\n", pt->Corona.ec.spec.nuFnu_peak_obs);
+			printf("nuLnu EC  src     peak=%e\n", pt->Corona.ec.spec.nuLnu_peak_src);
+			printf("nuLnu EC  obs     peak=%e\n", pt->Corona.ec.spec.nuLnu_peak_blob);
 		}
 	}
 
-	//printf("=>done\n");
-	return;
+		//printf("=>done\n");
+		return;
 }
 //=========================================================================================
 
@@ -626,5 +688,3 @@ void  * eval_j_EC(void *data){
     }
 	return NULL; 
 }
-
-

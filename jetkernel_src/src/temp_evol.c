@@ -728,6 +728,7 @@ void CoolingEquilibrium(struct blob * pt, double T_esc){
     Uph += I_nu_to_Uph(pt->CMB.spec.nu, pt->CMB.spec.I_nu, pt->CMB.spec.NU_INT_MAX);
     Uph += I_nu_to_Uph(pt->Disk.spec.nu, pt->Disk.spec.I_nu, pt->Disk.spec.NU_INT_MAX);
     Uph += I_nu_to_Uph(pt->Star.spec.nu, pt->Star.spec.I_nu, pt->Star.spec.NU_INT_MAX);
+    Uph += I_nu_to_Uph(pt->Corona.spec.nu, pt->Corona.spec.I_nu, pt->Corona.spec.NU_INT_MAX);
 
     if (pt->emitters.Q_inj_e == NULL && pt->emitters.Q_inj_e_second == NULL) {
         if (pt->core.verbose > 0) {

@@ -47,6 +47,8 @@ nuFnu_obs_dict['EC_BLR']=['BLR.ec.spec.nuFnu_grid', 'core.nu_grid']
 nuFnu_obs_dict['BLR']=['BLR.spec.nuFnu_grid', 'core.nu_grid']
 nuFnu_obs_dict['EC_DT']=['DT.ec.spec.nuFnu_grid', 'core.nu_grid']
 nuFnu_obs_dict['DT']=['DT.spec.nuFnu_grid', 'core.nu_grid']
+nuFnu_obs_dict['EC_Corona']=['Corona.ec.spec.nuFnu_grid', 'core.nu_grid']
+nuFnu_obs_dict['Corona']=['Corona.spec.nuFnu_grid', 'core.nu_grid']
 nuFnu_obs_dict['Star']=['Star.spec.nuFnu_grid', 'core.nu_grid']
 nuFnu_obs_dict['EC_Star']=['Star.ec.spec.nuFnu_grid', 'core.nu_grid']
 nuFnu_obs_dict['EC_Disk']=['Disk.ec.spec.nuFnu_grid', 'core.nu_grid']
@@ -67,6 +69,8 @@ nuFnu_obs_dict['PP_neutrino_mu']=['PP_neutrino.spec_mu.nuFnu_grid', 'core.nu_gri
 #seed-photon fields components
 n_seed_dic={'DT':['DT.spec.n_nu','DT.spec.nu']}
 n_seed_dic['EC_DT']=['DT.spec.n_nu','DT.spec.nu']
+n_seed_dic['Corona']=['Corona.spec.n_nu','Corona.spec.nu']
+n_seed_dic['EC_Corona']=['Corona.spec.n_nu','Corona.spec.nu']
 
 n_seed_dic['EC_Disk']=['Disk.spec.n_nu','Disk.spec.nu']
 n_seed_dic['Disk']=['Disk.spec.n_nu','Disk.spec.nu']

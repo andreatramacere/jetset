@@ -12,13 +12,18 @@ class TestInternalAbsorption(TestBase):
         from jetset.jet_model import Jet
 
         j = Jet(name='compact_int_abs', emitters_distribution='bkn', beaming_expr='bulk_theta')
-        j.add_EC_component(EC_components_list=['EC_DT', 'EC_BLR'], disk_type='BB')
+        j.add_EC_component(EC_components_list=['EC_DT', 'EC_BLR', 'EC_Corona'], disk_type='BB')
 
         j.parameters.z_cosm.val = 0.03
         j.parameters.L_Disk.val = 2E45
         j.parameters.R_H.val = 1E18
         j.parameters.tau_DT.val = 0.1
         j.parameters.tau_BLR.val = 0.1
+        j.parameters.L_Corona.val = 5E44
+        j.parameters.R_Corona.val = 5E15
+        j.parameters.R_H_Corona.val = 2E17
+        j.parameters.alpha_Corona.val = 1.1
+        j.parameters.nu_cut_Corona.val = 1E20
         j.parameters.B.val = 0.2
 
         j.set_gamma_grid_size(120)
@@ -34,13 +39,16 @@ class TestInternalAbsorption(TestBase):
 
         j.enable_internal_absorption('DT', N_soft=12, N_hard=12, N_R_H=10, N_theta=10)
         j.enable_internal_absorption('BLR', N_soft=12, N_hard=12, N_R_H=10, N_theta=10)
+        j.enable_internal_absorption('Corona', N_soft=12, N_hard=12, N_R_H=10, N_theta=10)
         assert 'DT' in j._internal_absorption_comp.keys()
         assert 'BLR' in j._internal_absorption_comp.keys()
+        assert 'Corona' in j._internal_absorption_comp.keys()
 
         tau_dt, nu_dt = j.eval_internal_absorption(comp='DT', peak=False)
         tau_blr, nu_blr = j.eval_internal_absorption(comp='BLR', peak=False)
+        tau_corona, nu_corona = j.eval_internal_absorption(comp='Corona', peak=False)
 
-        for tau_arr, nu_arr in ((tau_dt, nu_dt), (tau_blr, nu_blr)):
+        for tau_arr, nu_arr in ((tau_dt, nu_dt), (tau_blr, nu_blr), (tau_corona, nu_corona)):
             tau_arr = np.asarray(tau_arr, dtype=float)
             nu_arr = np.asarray(nu_arr, dtype=float)
             assert tau_arr.ndim == 1
@@ -66,6 +74,7 @@ class TestInternalAbsorption(TestBase):
         assert nu_none is None
         assert 'DT' not in j._internal_absorption_comp.keys()
         assert 'BLR' in j._internal_absorption_comp.keys()
+        assert 'Corona' in j._internal_absorption_comp.keys()
 
     def test_internal_absorption_serialization(self, plot=False):
         from jetset.jet_model import Jet
@@ -89,15 +98,25 @@ class TestInternalAbsorption(TestBase):
             N_theta=7,
             use_R_H_profile_extrapolation=False
         )
+        corona_cfg = dict(
+            comp='Corona',
+            nu_min=1E20,
+            N_soft=8,
+            N_hard=9,
+            N_R_H=7,
+            N_theta=6,
+            use_R_H_profile_extrapolation=True
+        )
 
         j.enable_internal_absorption(**dt_cfg)
         j.enable_internal_absorption(**blr_cfg)
+        j.enable_internal_absorption(**corona_cfg)
         j.save_model('test_internal_absorption.pkl')
 
         new_j = Jet.load_model('test_internal_absorption.pkl')
-        assert set(new_j._internal_absorption_comp.keys()) == {'DT', 'BLR'}
+        assert set(new_j._internal_absorption_comp.keys()) == {'DT', 'BLR', 'Corona'}
 
-        for cfg in (dt_cfg, blr_cfg):
+        for cfg in (dt_cfg, blr_cfg, corona_cfg):
             comp = cfg['comp']
             p = new_j._internal_absorption_comp[comp]['pars']
             assert p['comp'] == comp
@@ -128,8 +147,10 @@ class TestInternalAbsorption(TestBase):
 
         c_dt = new_j._get_internal_abs_component_on_blob('DT')
         c_blr = new_j._get_internal_abs_component_on_blob('BLR')
+        c_corona = new_j._get_internal_abs_component_on_blob('Corona')
         assert int(c_dt.is_enabled) == 1
         assert int(c_blr.is_enabled) == 1
+        assert int(c_corona.is_enabled) == 1
 
         y = np.asarray(new_j.eval(nu=np.logspace(20, 29, 80), get_model=True), dtype=float)
         assert np.all(np.isfinite(y))

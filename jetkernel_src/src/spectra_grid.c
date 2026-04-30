@@ -38,6 +38,9 @@ static void apply_internal_absorption_to_grid(struct blob *pt, unsigned int i, d
 	if (pt->core.do_EC_DT == 1) {
 		pt->DT.ec.spec.nuFnu_grid[i] *= attenuation;
 	}
+	if (pt->core.do_EC_Corona == 1) {
+		pt->Corona.ec.spec.nuFnu_grid[i] *= attenuation;
+	}
 	if (pt->core.do_EC_Star == 1) {
 		pt->Star.ec.spec.nuFnu_grid[i] *= attenuation;
 	}
@@ -55,6 +58,9 @@ static void apply_internal_absorption_to_grid(struct blob *pt, unsigned int i, d
 	}
 	if (pt->core.do_EC_DT == 1 || pt->core.do_DT == 1) {
 		pt->DT.spec.nuFnu_grid[i] *= attenuation;
+	}
+	if (pt->core.do_EC_Corona == 1 || pt->core.do_Corona == 1) {
+		pt->Corona.spec.nuFnu_grid[i] *= attenuation;
 	}
 	if (pt->core.do_Star == 1) {
 		pt->Star.spec.nuFnu_grid[i] *= attenuation;
@@ -143,26 +149,34 @@ void common_grid_spectra(int Num_file, struct blob * pt) {
 			pt->BLR.ec.spec.nuFnu_grid[i] = pt->core.emiss_lim;
 		}
 
-		if (pt->DT.ec.spec.nuFnu_grid[i] == 0)
-		{
-			pt->DT.ec.spec.nuFnu_grid[i] = pt->core.emiss_lim;
-		}
+			if (pt->DT.ec.spec.nuFnu_grid[i] == 0)
+			{
+				pt->DT.ec.spec.nuFnu_grid[i] = pt->core.emiss_lim;
+			}
+			if (pt->Corona.ec.spec.nuFnu_grid[i] == 0)
+			{
+				pt->Corona.ec.spec.nuFnu_grid[i] = pt->core.emiss_lim;
+			}
 
-		if (pt->Star.ec.spec.nuFnu_grid[i] == 0)
-		{
+			if (pt->Star.ec.spec.nuFnu_grid[i] == 0)
+			{
 			pt->Star.ec.spec.nuFnu_grid[i] = pt->core.emiss_lim;
 		}
 		if (pt->CMB.ec.spec.nuFnu_grid[i] == 0)
 		{
 			pt->CMB.ec.spec.nuFnu_grid[i] = pt->core.emiss_lim;
 		}
-		if (pt->Bremss_ep.spec.nuFnu_grid[i] == 0)
-		{
-			pt->Bremss_ep.spec.nuFnu_grid[i] = pt->core.emiss_lim;
-		}
-		if (pt->PP_gamma.spec.nuFnu_grid[i] == 0)
-		{
-			pt->PP_gamma.spec.nuFnu_grid[i] = pt->core.emiss_lim;
+			if (pt->Bremss_ep.spec.nuFnu_grid[i] == 0)
+			{
+				pt->Bremss_ep.spec.nuFnu_grid[i] = pt->core.emiss_lim;
+			}
+			if (pt->Corona.spec.nuFnu_grid[i] == 0)
+			{
+				pt->Corona.spec.nuFnu_grid[i] = pt->core.emiss_lim;
+			}
+			if (pt->PP_gamma.spec.nuFnu_grid[i] == 0)
+			{
+				pt->PP_gamma.spec.nuFnu_grid[i] = pt->core.emiss_lim;
 		}
 		if (pt->PP_neutrino.spec_tot.nuFnu_obs[i] == 0)
 		{
@@ -270,7 +284,7 @@ void interpola_somma(struct blob *pt_j, double nu_obs, unsigned int i)
 		pt_j->core.nuFnu_sum_grid[i] += pt_j->Star.ec.spec.nuFnu_grid[i];
 	}
 
-	//EC CMB
+		//EC CMB
 	if (pt_j->core.do_EC_CMB == 1) {
 		interp_flux=log_lin_interp( nu_obs,  pt_j->CMB.ec.spec.nu_obs,  pt_j->CMB.ec.spec.nu_min_obs,pt_j->CMB.ec.spec.nu_max_obs, pt_j->CMB.ec.spec.nuFnu_obs , pt_j->core.nu_IC_size, pt_j->core.emiss_lim);
 
@@ -280,7 +294,20 @@ void interpola_somma(struct blob *pt_j, double nu_obs, unsigned int i)
 		else {
 			pt_j->CMB.ec.spec.nuFnu_grid[i] = 0;
 		}
-		pt_j->core.nuFnu_sum_grid[i] += pt_j->CMB.ec.spec.nuFnu_grid[i];
+			pt_j->core.nuFnu_sum_grid[i] += pt_j->CMB.ec.spec.nuFnu_grid[i];
+		}
+
+		//EC Corona
+	if (pt_j->core.do_EC_Corona == 1) {
+		interp_flux=log_lin_interp( nu_obs,  pt_j->Corona.ec.spec.nu_obs,  pt_j->Corona.ec.spec.nu_min_obs,pt_j->Corona.ec.spec.nu_max_obs, pt_j->Corona.ec.spec.nuFnu_obs , pt_j->core.nu_IC_size, pt_j->core.emiss_lim);
+
+		if (interp_flux > pt_j->core.emiss_lim) {
+			pt_j->Corona.ec.spec.nuFnu_grid[i] = interp_flux;
+		}
+		else {
+			pt_j->Corona.ec.spec.nuFnu_grid[i] = 0;
+		}
+		pt_j->core.nuFnu_sum_grid[i] += pt_j->Corona.ec.spec.nuFnu_grid[i];
 	}
 
 	//nuFnu_pp_gamma_grid
@@ -325,7 +352,7 @@ void interpola_somma(struct blob *pt_j, double nu_obs, unsigned int i)
 	}
 
 
-	//Dusty Torus
+		//Dusty Torus
 	if (pt_j->core.do_EC_DT==1 || pt_j->core.do_DT==1) {
 		interp_flux=log_lin_interp( nu_obs,  pt_j->DT.spec.nu_obs,  pt_j->DT.spec.nu_min_obs,pt_j->DT.spec.nu_max_obs, pt_j->DT.spec.nuFnu_obs , pt_j->core.nu_seed_size, pt_j->core.emiss_lim);
 
@@ -335,10 +362,23 @@ void interpola_somma(struct blob *pt_j, double nu_obs, unsigned int i)
 		else {
 			pt_j->DT.spec.nuFnu_grid[i] = 0;
 		}
-		pt_j->core.nuFnu_sum_grid[i] += pt_j->DT.spec.nuFnu_grid[i];
+			pt_j->core.nuFnu_sum_grid[i] += pt_j->DT.spec.nuFnu_grid[i];
+		}
+
+		//Corona
+	if (pt_j->core.do_EC_Corona==1 || pt_j->core.do_Corona==1) {
+		interp_flux=log_lin_interp( nu_obs,  pt_j->Corona.spec.nu_obs,  pt_j->Corona.spec.nu_min_obs,pt_j->Corona.spec.nu_max_obs, pt_j->Corona.spec.nuFnu_obs , pt_j->core.nu_seed_size, pt_j->core.emiss_lim);
+
+		if (interp_flux > pt_j->core.emiss_lim) {
+			pt_j->Corona.spec.nuFnu_grid[i] = interp_flux;
+		}
+		else {
+			pt_j->Corona.spec.nuFnu_grid[i] = 0;
+		}
+		pt_j->core.nuFnu_sum_grid[i] += pt_j->Corona.spec.nuFnu_grid[i];
 	}
 
-	//Star
+		//Star
 	if (pt_j->core.do_Star==1) {
 		interp_flux=log_lin_interp( nu_obs,  pt_j->Star.spec.nu_obs,  pt_j->Star.spec.nu_min_obs,pt_j->Star.spec.nu_max_obs, pt_j->Star.spec.nuFnu_obs , pt_j->core.nu_seed_size, pt_j->core.emiss_lim);
 
@@ -390,4 +430,3 @@ void interpola_somma(struct blob *pt_j, double nu_obs, unsigned int i)
 
 	return;
 }
-

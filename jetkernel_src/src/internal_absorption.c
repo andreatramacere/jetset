@@ -11,7 +11,8 @@
 typedef enum {
     INTABS_COMP_INVALID = 0,
     INTABS_COMP_BLR = 1,
-    INTABS_COMP_DT = 2
+    INTABS_COMP_DT = 2,
+    INTABS_COMP_CORONA = 3
 } intabs_comp_t;
 
 static void init_internal_abs_component(struct internal_abs_component *comp) {
@@ -57,6 +58,7 @@ void reset_internal_abs_store(struct blob *pt) {
     }
     init_internal_abs_component(&(pt->core.internal_abs.BLR));
     init_internal_abs_component(&(pt->core.internal_abs.DT));
+    init_internal_abs_component(&(pt->core.internal_abs.Corona));
 }
 
 void free_internal_abs_store(struct blob *pt) {
@@ -65,6 +67,7 @@ void free_internal_abs_store(struct blob *pt) {
     }
     free_internal_abs_component(&(pt->core.internal_abs.BLR));
     free_internal_abs_component(&(pt->core.internal_abs.DT));
+    free_internal_abs_component(&(pt->core.internal_abs.Corona));
 }
 
 static intabs_comp_t parse_internal_abs_component(const char *seed_photons_name) {
@@ -76,6 +79,9 @@ static intabs_comp_t parse_internal_abs_component(const char *seed_photons_name)
     }
     if (strcmp(seed_photons_name, "DT") == 0) {
         return INTABS_COMP_DT;
+    }
+    if (strcmp(seed_photons_name, "Corona") == 0) {
+        return INTABS_COMP_CORONA;
     }
     return INTABS_COMP_INVALID;
 }
@@ -90,6 +96,9 @@ static struct internal_abs_component *get_internal_abs_component_ptr(struct blob
     }
     if (comp_id == INTABS_COMP_DT) {
         return &(pt->core.internal_abs.DT);
+    }
+    if (comp_id == INTABS_COMP_CORONA) {
+        return &(pt->core.internal_abs.Corona);
     }
 
     return NULL;
@@ -248,12 +257,18 @@ static void build_seed_spectrum(struct blob *pt,
         *n_grid = pt->BLR.spec.n_nu_DRF;
         *nu_start = pt->BLR.spec.nu_min_DRF;
         *nu_stop = pt->BLR.spec.nu_max_DRF;
-    } else {
+    } else if (comp_id == INTABS_COMP_DT) {
         Build_I_nu_DT(pt);
         *nu_grid = pt->DT.spec.nu_DRF;
         *n_grid = pt->DT.spec.n_nu_DRF;
         *nu_start = pt->DT.spec.nu_min_DRF;
         *nu_stop = pt->DT.spec.nu_max_DRF;
+    } else {
+        Build_I_nu_Corona(pt);
+        *nu_grid = pt->Corona.spec.nu_DRF;
+        *n_grid = pt->Corona.spec.n_nu_DRF;
+        *nu_start = pt->Corona.spec.nu_min_DRF;
+        *nu_stop = pt->Corona.spec.nu_max_DRF;
     }
 }
 
@@ -562,9 +577,14 @@ int eval_internal_abs_tau(struct blob *pt,
     int status;
     intabs_comp_t comp_id;
     struct internal_abs_component *comp;
+    double R_H_saved_input;
     double R_H_saved;
+    double R_H_saved_eval;
+    double R_H_sample;
+    double R_blob_seed;
     double R_seed;
     double R_H_ref;
+    double corona_side;
     double nu_min_eff;
     double nu_soft_max;
     double ratio;
@@ -620,18 +640,36 @@ int eval_internal_abs_tau(struct blob *pt,
         N_soft_eff = 1U;
     }
 
-    R_H_saved = pt->core.R_H;
+    R_H_saved_input = pt->core.R_H;
+    R_H_saved = R_H_saved_input;
     if (R_H_saved <= 0.0) {
         R_H_saved = 1.0;
     }
 
     if (comp_id == INTABS_COMP_BLR) {
         R_seed = pt->BLR.R_BLR_out;
-    } else {
+    } else if (comp_id == INTABS_COMP_DT) {
         R_seed = pt->DT.R_DT;
+    } else {
+        R_seed = pt->Corona.R_Corona;
     }
     if (R_seed <= 0.0) {
         R_seed = R_H_saved;
+    }
+
+    if (comp_id == INTABS_COMP_CORONA) {
+        R_H_saved_eval = fabs(R_H_saved - pt->Corona.R_H_Corona);
+        if (R_H_saved_input >= pt->Corona.R_H_Corona) {
+            corona_side = 1.0;
+        } else {
+            corona_side = -1.0;
+        }
+    } else {
+        R_H_saved_eval = R_H_saved;
+        corona_side = 1.0;
+    }
+    if (R_H_saved_eval <= 0.0) {
+        R_H_saved_eval = 1.0;
     }
 
     ws.nu_soft = (double *)calloc((size_t)N_R_H * (size_t)N_soft_eff, sizeof(double));
@@ -652,12 +690,18 @@ int eval_internal_abs_tau(struct blob *pt,
         (ws.mu_grid == NULL) || (ws.one_minus_mu == NULL) || (ws.dmu_grid == NULL) ||
         (ws.R_H_grid == NULL) || (ws.d_rh_grid == NULL) || (ws.nu_soft_ref == NULL) ||
         (ws.n_soft_ref == NULL) || (ws.nu_soft_tmp == NULL) || (ws.n_soft_tmp == NULL)) {
-        return finalize_internal_abs_eval(pt, comp, R_H_saved, -1, &ws);
+        return finalize_internal_abs_eval(pt, comp, R_H_saved_input, -1, &ws);
     }
 
-    pt->core.R_H = R_seed / 1000.0;
+    R_blob_seed = R_seed / 1000.0;
+    if (comp_id == INTABS_COMP_CORONA) {
+        R_H_sample = pt->Corona.R_H_Corona + corona_side * R_blob_seed;
+        pt->core.R_H = fmax(R_H_sample, 0.0);
+    } else {
+        pt->core.R_H = R_blob_seed;
+    }
     if (sample_seed_field(pt, comp_id, N_soft_eff, peak, ws.nu_soft_ref, ws.n_soft_ref) < 0) {
-        return finalize_internal_abs_eval(pt, comp, R_H_saved, -1, &ws);
+        return finalize_internal_abs_eval(pt, comp, R_H_saved_input, -1, &ws);
     }
 
     nu_to_eps = HPLANCK / MEC2;
@@ -693,7 +737,7 @@ int eval_internal_abs_tau(struct blob *pt,
     }
 
     if (ensure_tau_arrays(comp, tau_size) < 0) {
-        return finalize_internal_abs_eval(pt, comp, R_H_saved, -1, &ws);
+        return finalize_internal_abs_eval(pt, comp, R_H_saved_input, -1, &ws);
     }
 
     if (tau_size == 1U) {
@@ -706,7 +750,7 @@ int eval_internal_abs_tau(struct blob *pt,
         }
     }
 
-    R_H_ref = R_H_saved;
+    R_H_ref = R_H_saved_eval;
     if (N_R_H == 1U) {
         ws.R_H_grid[0] = R_H_ref;
     } else {
@@ -716,14 +760,20 @@ int eval_internal_abs_tau(struct blob *pt,
     }
 
     for (ID_RH = 0; ID_RH < N_R_H; ++ID_RH) {
-        pt->core.R_H = ws.R_H_grid[ID_RH];
+        R_blob_seed = ws.R_H_grid[ID_RH];
+        if (comp_id == INTABS_COMP_CORONA) {
+            R_H_sample = pt->Corona.R_H_Corona + corona_side * R_blob_seed;
+            pt->core.R_H = fmax(R_H_sample, 0.0);
+        } else {
+            pt->core.R_H = R_blob_seed;
+        }
         rh_soft_base = ((size_t)ID_RH) * ((size_t)N_soft_eff);
 
         if (use_R_H_profile_extrapolation != 0) {
-            if (ws.R_H_grid[ID_RH] <= R_seed) {
+            if (R_blob_seed <= R_seed) {
                 R_x = 1.0;
             } else {
-                R_x = R_seed / ws.R_H_grid[ID_RH];
+                R_x = R_seed / R_blob_seed;
             }
             scale = R_x * R_x;
 
@@ -734,7 +784,7 @@ int eval_internal_abs_tau(struct blob *pt,
             }
         } else {
             if (sample_seed_field(pt, comp_id, N_soft_eff, peak, ws.nu_soft_tmp, ws.n_soft_tmp) < 0) {
-                return finalize_internal_abs_eval(pt, comp, R_H_saved, -1, &ws);
+                return finalize_internal_abs_eval(pt, comp, R_H_saved_input, -1, &ws);
             }
 
             for (ID_SOFT = 0; ID_SOFT < N_soft_eff; ++ID_SOFT) {
@@ -755,10 +805,10 @@ int eval_internal_abs_tau(struct blob *pt,
         }
 
         mu_max = 1.0;
-        if (ws.R_H_grid[ID_RH] < R_seed) {
+        if (R_blob_seed < R_seed) {
             mu_min = -1.0;
         } else {
-            ratio = R_seed / ws.R_H_grid[ID_RH];
+            ratio = R_seed / R_blob_seed;
             if (ratio > 1.0) {
                 ratio = 1.0;
             }
@@ -851,12 +901,13 @@ int eval_internal_abs_tau(struct blob *pt,
     comp->nu_src_max = nu_src_max_eff;
 
     status = (int)tau_size;
-    return finalize_internal_abs_eval(pt, comp, R_H_saved, status, &ws);
+    return finalize_internal_abs_eval(pt, comp, R_H_saved_input, status, &ws);
 }
 
 void recompute_internal_absorption_tau(struct blob *pt) {
     struct internal_abs_component *comp_blr;
     struct internal_abs_component *comp_dt;
+    struct internal_abs_component *comp_corona;
     double nu_src_max;
     int status;
 
@@ -902,6 +953,23 @@ void recompute_internal_absorption_tau(struct blob *pt) {
             comp_dt->is_valid = 0;
         }
     }
+
+    comp_corona = &(pt->core.internal_abs.Corona);
+    if (comp_corona->is_enabled != 0) {
+        status = eval_internal_abs_tau(pt,
+                                       "Corona",
+                                       comp_corona->nu_min,
+                                       sanitize_grid_size(comp_corona->N_soft, 50U),
+                                       sanitize_grid_size(comp_corona->N_hard, 50U),
+                                       sanitize_grid_size(comp_corona->N_R_H, 50U),
+                                       sanitize_grid_size(comp_corona->N_theta, 50U),
+                                       comp_corona->use_R_H_profile_extrapolation,
+                                       comp_corona->peak_mode,
+                                       nu_src_max);
+        if (status < 0) {
+            comp_corona->is_valid = 0;
+        }
+    }
 }
 
 double get_internal_abs_tau_at_nu(struct blob *pt, double nu_obs) {
@@ -914,6 +982,7 @@ double get_internal_abs_tau_at_nu(struct blob *pt, double nu_obs) {
     tau_tot = 0.0;
     tau_tot += interp_tau_component(&(pt->core.internal_abs.BLR), nu_obs);
     tau_tot += interp_tau_component(&(pt->core.internal_abs.DT), nu_obs);
+    tau_tot += interp_tau_component(&(pt->core.internal_abs.Corona), nu_obs);
 
     if (!isfinite(tau_tot) || (tau_tot < 0.0)) {
         return 0.0;

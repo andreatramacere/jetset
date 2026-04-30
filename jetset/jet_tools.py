@@ -184,6 +184,20 @@ def build_ExtFields_dic(EC_model_list,disk_type ):
                                                         jetkernel_par_name='DT.tau_DT')
             # ['DT',0.0,1.0,'']
 
+        if 'Corona' in EC_model:
+            model_dic['L_Corona'] = JetModelDictionaryPar(ptype='Corona', vmin=0, vmax=None, punit='erg/s',
+                                                          jetkernel_par_name='Corona.L_Corona')
+            model_dic['R_Corona'] = JetModelDictionaryPar(ptype='Corona', vmin=0, vmax=None, punit='cm',
+                                                          jetkernel_par_name='Corona.R_Corona')
+            model_dic['R_H_Corona'] = JetModelDictionaryPar(ptype='Corona', vmin=0, vmax=None, punit='cm',
+                                                            jetkernel_par_name='Corona.R_H_Corona')
+            model_dic['alpha_Corona'] = JetModelDictionaryPar(ptype='Corona', vmin=0, vmax=None, punit='',
+                                                              jetkernel_par_name='Corona.alpha_Corona')
+            model_dic['nu_cut_low_Corona'] = JetModelDictionaryPar(ptype='Corona', vmin=0, vmax=None, punit='Hz',
+                                                                   jetkernel_par_name='Corona.nu_cut_low_Corona')
+            model_dic['nu_cut_Corona'] = JetModelDictionaryPar(ptype='Corona', vmin=0, vmax=None, punit='Hz',
+                                                               jetkernel_par_name='Corona.nu_cut_Corona')
+
         if 'Star' in EC_model:
             model_dic['L_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='erg s-1',
                                                         jetkernel_par_name='Star.L_Star')

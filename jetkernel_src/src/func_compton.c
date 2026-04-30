@@ -240,9 +240,9 @@ double rate_compton_GR(struct blob *pt_GR, double nu_IC_out) {
        }
     }
 
-    //EC CMB
-    if (nu_IC_out < pt_GR->CMB.ec.spec.nu_max && pt_GR->core.ord_comp == 1) {
-    	if (pt_GR->core.SSC == 0 && pt_GR->core.EC == 5) {
+	    //EC CMB
+	    if (nu_IC_out < pt_GR->CMB.ec.spec.nu_max && pt_GR->core.ord_comp == 1) {
+	    	if (pt_GR->core.SSC == 0 && pt_GR->core.EC == 5) {
 
     		if (pt_GR->core.verbose>1) {
     			printf("CMB\n");
@@ -275,13 +275,51 @@ double rate_compton_GR(struct blob *pt_GR, double nu_IC_out) {
                                          pt_GR->CMB.spec.nu_max_DRF,
                                          pt_GR->core.EC_stat,
                                          nu_IC_out_stat);
-            }
-        }
-    }
+	            }
+	        }
+	    }
 
-    
+	    //EC Corona
+	    if (nu_IC_out < pt_GR->Corona.ec.spec.nu_max && pt_GR->core.ord_comp == 1) {
+	    	if (pt_GR->core.SSC == 0 && pt_GR->core.EC == 6) {
 
-    return rate_comp;
+	    		if (pt_GR->core.verbose>1) {
+	    			printf("Corona\n");
+	    			printf("(blob rest frame) nu_start_EC_seed Corona=%e\n", pt_GR->Corona.spec.nu_min);
+	    			printf("(blob rest frame) nu_stop_EC_seed=%e\n", pt_GR->Corona.spec.nu_max);
+	    		}
+	            if (pt_GR->core.EC_stat == 0)
+	            {
+	                nu_seed = pt_GR->Corona.spec.nu;
+	                n_seed = pt_GR->Corona.spec.n_nu;
+	                rate_comp = integrale_IC(pt_GR,
+	                                         nu_seed,
+	                                         n_seed,
+	                                         nu_seed_size,
+	                                         pt_GR->Corona.spec.nu_min,
+	                                         pt_GR->Corona.spec.nu_max,
+	                                         pt_GR->core.EC_stat,
+	                                         nu_IC_out);
+	            }
+	            else
+	            {
+	                nu_seed = pt_GR->Corona.spec.nu_DRF;
+	                n_seed = pt_GR->Corona.spec.n_nu_DRF;
+	                rate_comp = integrale_IC(pt_GR,
+	                                         nu_seed,
+	                                         n_seed,
+	                                         nu_seed_size,
+	                                         pt_GR->Corona.spec.nu_min_DRF,
+	                                         pt_GR->Corona.spec.nu_max_DRF,
+	                                         pt_GR->core.EC_stat,
+	                                         nu_IC_out_stat);
+	            }
+	        }
+	    }
+
+	    
+
+	    return rate_comp;
 }
 //=========================================================================================
 
@@ -635,8 +673,8 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
     	//printf("%e\n",rate_comp);
     }
 
-    //EC CMB
-    if (pt_spec->core.do_EC_CMB == 1 ) {
+	    //EC CMB
+	    if (pt_spec->core.do_EC_CMB == 1 ) {
 
     	if (pt_spec->core.verbose>1) {
     		printf("CMB\n");
@@ -652,11 +690,30 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
     			pt_spec->CMB.spec.nu_min,
     			pt_spec->CMB.spec.nu_max,
     			gamma);
-    	//printf("%e\n",rate_comp);
-    }
+	    	//printf("%e\n",rate_comp);
+	    }
 
-    //printf("evaluate IC cooling, gamma=%e cooling_rate=%e\n",gamma,comp_cooling);
-    return comp_cooling;
+	    //EC Corona
+	    if (pt_spec->core.do_EC_Corona == 1 ) {
+
+	    	if (pt_spec->core.verbose>1) {
+	    		printf("Corona\n");
+	    		printf("nu_start_EC_seed=%e\n", pt_spec->Corona.spec.nu_min);
+	    		printf("nu_stop_EC_seed=%e\n", pt_spec->Corona.spec.nu_max);
+	    	}
+	    	nu_seed = pt_spec->Corona.spec.nu;
+	    	n_seed = pt_spec->Corona.spec.n_nu;
+	    	comp_cooling += integrale_IC_cooling(pt_spec,
+	                nu_seed,
+	                n_seed,
+	                nu_seed_size,
+	    			pt_spec->Corona.spec.nu_min,
+	    			pt_spec->Corona.spec.nu_max,
+	    			gamma);
+	    }
+
+	    //printf("evaluate IC cooling, gamma=%e cooling_rate=%e\n",gamma,comp_cooling);
+	    return comp_cooling;
 }
 //=========================================================================================
 

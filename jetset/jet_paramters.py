@@ -121,6 +121,7 @@ class JetParameter(ModelParameter):
                               'Disk',
                               'BLR',
                               'DT',
+                              'Corona',
                               'Star',
                               'region_size',
                               'radius_expansion_index',

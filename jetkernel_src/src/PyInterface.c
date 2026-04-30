@@ -41,7 +41,9 @@ static int internal_abs_enabled_on_blob(const struct blob *pt) {
     if (pt == NULL) {
         return 0;
     }
-    return (pt->core.internal_abs.BLR.is_enabled || pt->core.internal_abs.DT.is_enabled);
+    return (pt->core.internal_abs.BLR.is_enabled ||
+            pt->core.internal_abs.DT.is_enabled ||
+            pt->core.internal_abs.Corona.is_enabled);
 }
 
 static int internal_abs_eval_valid_on_blob(const struct blob *pt) {
@@ -52,6 +54,9 @@ static int internal_abs_eval_valid_on_blob(const struct blob *pt) {
         return 0;
     }
     if (pt->core.internal_abs.DT.is_enabled && (pt->core.internal_abs.DT.is_valid == 0)) {
+        return 0;
+    }
+    if (pt->core.internal_abs.Corona.is_enabled && (pt->core.internal_abs.Corona.is_valid == 0)) {
         return 0;
     }
     return 1;
@@ -168,6 +173,9 @@ static int merge_internal_abs_result(struct blob *dst, const struct blob *src) {
     if (merge_internal_abs_component_result(&(dst->core.internal_abs.DT), &(src->core.internal_abs.DT)) < 0) {
         return -1;
     }
+    if (merge_internal_abs_component_result(&(dst->core.internal_abs.Corona), &(src->core.internal_abs.Corona)) < 0) {
+        return -1;
+    }
 
     return 0;
 }
@@ -182,6 +190,10 @@ static int get_internal_abs_component_by_name(struct blob *pt, const char *seed_
     }
     if (strcmp(seed_photons_name, "DT") == 0) {
         *out = &(pt->core.internal_abs.DT);
+        return 0;
+    }
+    if (strcmp(seed_photons_name, "Corona") == 0) {
+        *out = &(pt->core.internal_abs.Corona);
         return 0;
     }
     return -1;
@@ -209,6 +221,7 @@ static struct blob *make_internal_abs_worker_blob(const struct blob *src) {
     reset_internal_abs_store(worker);
     copy_internal_abs_component_config(&(worker->core.internal_abs.BLR), &(src->core.internal_abs.BLR));
     copy_internal_abs_component_config(&(worker->core.internal_abs.DT), &(src->core.internal_abs.DT));
+    copy_internal_abs_component_config(&(worker->core.internal_abs.Corona), &(src->core.internal_abs.Corona));
 
     return worker;
 }
@@ -330,6 +343,7 @@ void show_blob(struct blob pt ) {
     printf("do_EC_Disk=%d\n", pt.core.do_EC_Disk);
     printf("do_EC_BLR=%d\n", pt.core.do_EC_BLR);
     printf("do_EC_DT=%d\n", pt.core.do_EC_DT);
+    printf("do_EC_Corona=%d\n", pt.core.do_EC_Corona);
     printf("disk type =%s\n", pt.core.disk_type);
     printf("nu_start_EC_BLR %e\n", pt.BLR.ec.spec.nu_min);
     printf("nu_stop_EC_BLR %e\n", pt.BLR.ec.spec.nu_max);
@@ -346,6 +360,14 @@ void show_blob(struct blob pt ) {
     printf("T_DT (T Dusty Torus) %e\n", pt.DT.T_DT);
     printf("dist disk DT (cm))%e\n", pt.DT.R_DT);
     printf("tau DT %e\n", pt.DT.tau_DT);
+    printf("nu_start_EC_Corona %e\n", pt.Corona.ec.spec.nu_min);
+    printf("nu_stop_EC_Corona %e\n", pt.Corona.ec.spec.nu_max);
+    printf("L_Corona %e\n", pt.Corona.L_Corona);
+    printf("R_Corona %e\n", pt.Corona.R_Corona);
+    printf("R_H_Corona %e\n", pt.Corona.R_H_Corona);
+    printf("alpha_Corona %e\n", pt.Corona.alpha_Corona);
+    printf("nu_cut_low_Corona %e\n", pt.Corona.nu_cut_low_Corona);
+    printf("nu_cut_Corona %e\n", pt.Corona.nu_cut_Corona);
 }
 
 void show_temp_ev(  struct temp_ev pt_ev){
@@ -536,11 +558,13 @@ struct blob MakeBlob() {
     spettro_root.core.do_EC_Disk = 0;
     spettro_root.core.do_EC_BLR = 0;
     spettro_root.core.do_EC_DT = 0;
+    spettro_root.core.do_EC_Corona = 0;
     spettro_root.core.do_EC_CMB=0;
 
     spettro_root.core.do_EC_Star=0;
     spettro_root.core.do_Disk=0;
     spettro_root.core.do_DT=0;
+    spettro_root.core.do_Corona=0;
 
     spettro_root.core.nu_planck_min_factor=1E-4;
     spettro_root.core.nu_planck_max_factor=1E2;
@@ -562,6 +586,8 @@ struct blob MakeBlob() {
     spettro_root.BLR.ec.spec.nu_max = 1e26;
     spettro_root.DT.ec.spec.nu_min = 1e13;
     spettro_root.BLR.ec.spec.nu_max = 1e26;
+    spettro_root.Corona.ec.spec.nu_min = 1e13;
+    spettro_root.Corona.ec.spec.nu_max = 1e30;
     spettro_root.CMB.ec.spec.nu_min = 1e13;
     spettro_root.CMB.ec.spec.nu_max = 1e30;
 
@@ -578,6 +604,13 @@ struct blob MakeBlob() {
     spettro_root.DT.T_DT = 100;
     spettro_root.DT.R_DT = 5.0e18;
     spettro_root.DT.tau_DT = 1e-1;
+    spettro_root.Corona.L_Corona = 1e45;
+    spettro_root.Corona.R_Corona = 1e15;
+    spettro_root.Corona.R_H_Corona = 0.0;
+    spettro_root.Corona.alpha_Corona = 1.0;
+    spettro_root.Corona.nu_cut_low_Corona = 0.0;
+    spettro_root.Corona.nu_cut_Corona = 1e20;
+    spettro_root.Corona.f_Corona_norm = 1.0;
     spettro_root.Star.L_Star = 1e33;
     spettro_root.Star.R_H_Star = 1e14;
     spettro_root.Star.T_Star =6000.;
@@ -642,6 +675,9 @@ void set_seed_freq_start(struct blob *pt_base){
     
     pt_base->DT.ec.spec.nu_min = 1E13;
     pt_base->DT.spec.NU_INT_MAX=0;
+    pt_base->Corona.ec.spec.nu_min = 1E13;
+    pt_base->Corona.ec.spec.nu_max = 1E30;
+    pt_base->Corona.spec.NU_INT_MAX=0;
     pt_base->CMB.ec.spec.nu_min = 1E13;
     pt_base->CMB.spec.NU_INT_MAX=0;
     pt_base->Star.spec.NU_INT_MAX=0;
@@ -722,7 +758,7 @@ void InitRadiative(struct blob *pt_base,unsigned int update_EC){
     pt_base->core.R_H_orig=pt_base->core.R_H;
     pt_base->core.EC_stat_orig = pt_base->core.EC_stat;
     if (update_EC>0){
-        if (pt_base->core.do_EC_Disk == 1 || pt_base->core.do_EC_BLR == 1 || pt_base->core.do_EC_DT == 1  || pt_base->core.do_EC_Star == 1 || pt_base->core.do_EC_CMB == 1 || pt_base->core.do_Disk==1 || pt_base->core.do_DT==1 || pt_base->core.do_Star==1) 
+        if (pt_base->core.do_EC_Disk == 1 || pt_base->core.do_EC_BLR == 1 || pt_base->core.do_EC_DT == 1  || pt_base->core.do_EC_Corona == 1 || pt_base->core.do_EC_Star == 1 || pt_base->core.do_EC_CMB == 1 || pt_base->core.do_Disk==1 || pt_base->core.do_DT==1 || pt_base->core.do_Corona==1 || pt_base->core.do_Star==1) 
             {
                 spectra_External_Fields(1, pt_base, 1);
         }
@@ -782,6 +818,7 @@ void Init(struct blob *pt_base, double luminosity_distance) {
         pt_base->Disk.ec.spec.j_nu[i] = 0.0;
         pt_base->BLR.ec.spec.j_nu[i] = 0.0;
         pt_base->DT.ec.spec.j_nu[i] = 0.0;
+        pt_base->Corona.ec.spec.j_nu[i] = 0.0;
         pt_base->Star.ec.spec.j_nu[i] = 0.0;
         pt_base->CMB.ec.spec.j_nu[i] = 0.0;
         pt_base->Sync.alfa_Sync[i] = 0.0;
@@ -799,10 +836,12 @@ void Init(struct blob *pt_base, double luminosity_distance) {
         pt_base->Disk.ec.spec.nuFnu_obs[i]=0;
         pt_base->BLR.ec.spec.nuFnu_obs[i]=0;
         pt_base->DT.ec.spec.nuFnu_obs[i]=0;
+        pt_base->Corona.ec.spec.nuFnu_obs[i]=0;
         pt_base->Star.ec.spec.nuFnu_obs[i]=0;
         pt_base->CMB.ec.spec.nuFnu_obs[i]=0;
         pt_base->Disk.spec.nuFnu_obs[i]=0;
         pt_base->DT.spec.nuFnu_obs[i]=0;
+        pt_base->Corona.spec.nuFnu_obs[i]=0;
         pt_base->Star.spec.nuFnu_obs[i]=0;
         pt_base->PP_gamma.spec.nuFnu_obs[i]=0;
         pt_base->PP_neutrino.spec_tot.nuFnu_obs[i]=0;
@@ -990,7 +1029,7 @@ void Run_SED(struct blob *pt_base){
     // Evaluate EC Spectrum
     //==================================================
 	if (pt_base->core.do_IC) {
-		if (pt_base->core.do_EC_Disk == 1 || pt_base->core.do_EC_BLR == 1 || pt_base->core.do_EC_DT == 1  || pt_base->core.do_EC_Star == 1 || pt_base->core.do_EC_CMB == 1 || pt_base->core.do_Disk==1 || pt_base->core.do_DT==1 || pt_base->core.do_Star==1) 
+		if (pt_base->core.do_EC_Disk == 1 || pt_base->core.do_EC_BLR == 1 || pt_base->core.do_EC_DT == 1  || pt_base->core.do_EC_Corona == 1 || pt_base->core.do_EC_Star == 1 || pt_base->core.do_EC_CMB == 1 || pt_base->core.do_Disk==1 || pt_base->core.do_DT==1 || pt_base->core.do_Corona==1 || pt_base->core.do_Star==1) 
         {
                 if (pt_base->core.do_EC_Star == 1) {
                     
@@ -1057,6 +1096,31 @@ void Run_SED(struct blob *pt_base){
                     pt_base->core.EC = 5;
                     spettro_EC(1, pt_base);
                 }
+                if (pt_base->core.do_EC_Corona == 1) {
+                    pt_base->core.EC = 6;
+                    if (set_condition_EC_correction(pt_base, pt_base->Corona.R_Corona) > 0)
+                    {
+                        double R_blob_Corona_ref, R_H_Corona_ref;
+                        R_blob_Corona_ref = max(1, pt_base->Corona.R_Corona / 1E10);
+                        if (pt_base->core.R_H >= pt_base->Corona.R_H_Corona){
+                            R_H_Corona_ref = pt_base->Corona.R_H_Corona + R_blob_Corona_ref;
+                        }
+                        else{
+                            R_H_Corona_ref = pt_base->Corona.R_H_Corona - R_blob_Corona_ref;
+                        }
+                        pt_base->core.R_H = max(R_H_Corona_ref, 0.0);
+                        Build_I_nu_Corona(pt_base);
+                        spettro_EC(1, pt_base);
+                        nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->Corona.ec.spec.nuFnu_obs);
+                        pt_base->core.R_H = pt_base->core.R_H_orig;
+                        Build_I_nu_Corona(pt_base);
+                    }
+                    spettro_EC(1, pt_base);
+                    if (set_condition_EC_correction(pt_base, pt_base->Corona.R_Corona) > 0)
+                    {
+                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->Corona.R_Corona, pt_base->core.nu_IC_size, pt_base->Corona.ec.spec.nuFnu_obs, pt_base->Corona.ec.spec.nu_obs);
+                    }
+                }
               
             }
         //printf("=>done\n");
@@ -1095,6 +1159,9 @@ void Run_SED(struct blob *pt_base){
             }
             if (pt_base->core.internal_abs.DT.is_enabled) {
                 pt_base->core.internal_abs.DT.is_valid = 0;
+            }
+            if (pt_base->core.internal_abs.Corona.is_enabled) {
+                pt_base->core.internal_abs.Corona.is_valid = 0;
             }
         }
     }

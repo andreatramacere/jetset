@@ -29,7 +29,7 @@ class InternalAbsorption(object):
 
     Notes
     -----
-    Evaluates optical depth ``tau(nu)`` using BLR or DT photon distributions
+    Evaluates optical depth ``tau(nu)`` using BLR, DT, or Corona photon distributions
     through the C backend and provides attenuation factors for integration into
     jet spectral component calculations.
     """
@@ -52,7 +52,7 @@ class InternalAbsorption(object):
         nu_min : object, optional
             Minimum frequency in Hz.
         seed_photons_name : str, optional
-            Seed-photon field identifier (for example ``BLR`` or ``DT``).
+            Seed-photon field identifier (for example ``BLR``, ``DT``, or ``Corona``).
         N_soft : int, optional
             Number of soft-photon energy samples.
         N_hard : int, optional
@@ -64,7 +64,7 @@ class InternalAbsorption(object):
         use_R_H_profile_extrapolation : bool, optional
             If ``True``, enable r h profile extrapolation.
         """
-        if seed_photons_name in ['BLR','DT']:
+        if seed_photons_name in ['BLR','DT','Corona']:
             self._seed_photons_name=seed_photons_name
         else:
             raise RuntimeError('seed_photons_name %s not valid'%seed_photons_name)
@@ -138,8 +138,10 @@ class InternalAbsorption(object):
 
         if self._seed_photons_name == "BLR":
             comp = self._jet._blob.core.internal_abs.BLR
-        else:
+        elif self._seed_photons_name == "DT":
             comp = self._jet._blob.core.internal_abs.DT
+        else:
+            comp = self._jet._blob.core.internal_abs.Corona
 
         nu_tau = _get_c_array_read_only(comp.nu_tau, comp.tau_size)
         tau = _get_c_array_read_only(comp.tau, comp.tau_size)
