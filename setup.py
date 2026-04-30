@@ -114,14 +114,14 @@ req=[n.strip() for n in req  if n.startswith('#') is False]
 
 src_files=['jetset/jetkernel/jetkernel.i']
 src_files.extend(glob.glob ('jetkernel_src/src/*.c'))
-_module=Extension('jetset.jetkernel/_jetkernel',
-                  sources=src_files,
-                  #extra_compile_args=['-lpthread','-O3'],
-                  language='c',
-                  #extra_compile_options='-fPIC  -v  -c -m64 -I',
-                  #extra_link_options='-suppress',
-                  swig_opts=['-v','-threads', ],
-include_dirs=['jetkernel_src/include'])
+_module = Extension(
+    'jetset.jetkernel/_jetkernel',
+    sources=src_files,
+    extra_compile_args=['-O3', '-pthread'],
+    extra_link_args=['-pthread'],
+    language='c',
+    swig_opts=['-v', '-threads'],
+    include_dirs=['jetkernel_src/include'])
 
 
  
