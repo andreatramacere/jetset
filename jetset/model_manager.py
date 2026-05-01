@@ -772,3 +772,26 @@ class FitModel(Model):
                     self._sed_tables_dict[comp.name]=comp.sed_table(restframe=restframe)
         
         return self._sed_tables_dict
+
+    def set_num_c_threads(self,num_c_threads=None,verbose=True):
+        """Set C-backend thread count on all compatible model components.
+
+        Parameters
+        ----------
+        num_c_threads : int, optional
+            Thread count forwarded unchanged
+            to each component exposing ``set_num_c_threads``.
+        verbose : bool, optional
+            Verbosity flag forwarded to each component
+            ``set_num_c_threads`` call.
+
+        Notes
+        -----
+        Components without a ``set_num_c_threads`` method are skipped.
+        Validation of ``num_c_threads`` is delegated to each component implementation.
+        ``num_c_threads`` None, will trigger per-component automatic setup, such as multiprocessing.cpu_count().
+        
+        """
+        for c in self.components.components_list:
+            if hasattr(c,'set_num_c_threads'):
+                c.set_num_c_threads(num_c_threads,verbose=verbose)

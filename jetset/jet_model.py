@@ -112,8 +112,10 @@ class JetBase(Model):
         self.nu_size = nu_size
         self.nu_grid_size=self._get_nu_grid_size_blob()
         N=multiprocessing.cpu_count()
-        if N>2:
-            N=min(N,20)
+        if N>20:
+            print("*** limiting number of C threads to 20, use set_num_c_threads to override this configuration ***")
+            N=20
+            
         self.set_num_c_threads(N=N)
         if jet_workplace is None:
             jet_workplace=WorkPlace()
@@ -2321,9 +2323,26 @@ class JetBase(Model):
 
         return x_p, y_p
 
-    def set_num_c_threads(self,N):
-        """Set number of C threads used by the backend."""
-        if self.verbose:
+    def set_num_c_threads(self,N=None,verbose=True):
+        """Configure the number of C backend threads used by jetkernel.
+
+        Parameters
+        ----------
+        N : int, optional
+            Number of threads to assign to ``self._blob.core.N_THREADS``.
+            If ``None``, use ``multiprocessing.cpu_count()``.
+        verbose : bool, optional
+            If ``True``, print the selected thread count.
+
+        Raises
+        ------
+        RuntimeError
+            If ``N`` is not an integer value.
+        """
+
+        if N is None:
+            N=multiprocessing.cpu_count()
+        if verbose:
             print("===> setting C threads to",N)
         if isinstance(N,int):
             self._blob.core.N_THREADS=N

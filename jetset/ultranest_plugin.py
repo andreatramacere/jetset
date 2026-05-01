@@ -4,7 +4,9 @@ __author__ = "Andrea Tramacere"
 
 import os
 import time
-
+import shutil
+import subprocess
+from pathlib import Path
 import numpy as np
 
 try:
@@ -22,7 +24,7 @@ except Exception:
 
 from .mcmc import McmcSampler, emcee_log_like
 
-__all__ = ['UltraNestSampler', 'UltranestSampler']
+__all__ = ['UltraNestSampler']
 
 
 class UltraNestSampler(McmcSampler):
@@ -387,4 +389,104 @@ class UltraNestSampler(McmcSampler):
         return self.log_evidence_err
 
 
-UltranestSampler = UltraNestSampler
+
+def run_open_mpi(sampler,n_proc=8,
+                 out_dir='sampler_output',
+                 min_num_live_points=64,
+                 nsteps=1,
+                 max_num_improvement_loops=1,
+                 min_ess=100,
+                 num_c_threads=1,
+                 extra_mpirun_args=''):
+
+    """Run ``UltraNestSampler.run_sampler`` through ``mpirun``.
+
+    Parameters
+    ----------
+    sampler : UltraNestSampler
+        Configured sampler instance to serialize and execute.
+    n_proc : int, optional
+        Number of MPI ranks passed to ``mpirun -np``. Default is ``8``.
+    out_dir : str, optional
+        Name of an output subdirectory created inside ``run_mpi``.
+    min_num_live_points : int, optional
+        Minimum live points forwarded to ``run_sampler``.
+    nsteps : int, optional
+        Slice-sampler step multiplier forwarded to ``run_sampler``.
+    max_num_improvement_loops : int, optional
+        Value forwarded to ``run_sampler``.
+    min_ess : int, optional
+        Minimum effective sample size target forwarded to ``run_sampler``.
+    num_c_threads : int, optional
+        Thread count forwarded to ``mcmc.model.set_num_c_threads`` in the
+        generated MPI worker script.
+    extra_mpirun_args : str, optional
+        Extra command-line arguments inserted after ``mpirun`` and before
+        ``-np`` (for example hostfile or binding flags).
+
+    Returns
+    -------
+    UltraNestSampler
+        Sampler reloaded from ``run_mpi/sampler.pkl`` after MPI completion.
+
+    Notes
+    -----
+    The function deletes and recreates ``./run_mpi`` in the current working
+    directory, writes a helper Python script there, and temporarily sets
+    ``OMP_NUM_THREADS`` to ``n_proc`` for the parent process while the MPI
+    command runs.
+    """
+    CURRENT_DIR = Path.cwd().resolve()
+    run_dir = CURRENT_DIR / 'run_mpi'
+    script_name = 'run_jetset_ultranest.py'
+    OMP_NUM_THREADS_INITIAL=os.getenv("OMP_NUM_THREADS")
+    os.environ["OMP_NUM_THREADS"] = "%s"%str(int(n_proc))
+
+    command = f"mpirun {extra_mpirun_args} -np {n_proc} python {script_name}"
+    try:
+        if run_dir.exists():
+            shutil.rmtree(run_dir)
+        run_dir.mkdir(parents=True, exist_ok=True)
+
+        sampler_path = run_dir / 'sampler.pkl'
+        sampler.save(str(sampler_path))
+        (run_dir / out_dir).mkdir(parents=True, exist_ok=True)
+    
+        sampler_run = f"""
+mcmc.model.set_num_c_threads({int(num_c_threads)})
+
+mcmc.run_sampler(
+                min_num_live_points={int(min_num_live_points)},
+                nsteps={int(nsteps)},
+                max_num_improvement_loops={int(max_num_improvement_loops)},
+                min_ess={float(min_ess)},
+            )
+    """
+
+        script = "from jetset.ultranest_plugin import UltraNestSampler\n"
+        script += "mcmc=UltraNestSampler.load('sampler.pkl')\n"
+        script += f"{sampler_run}\n"
+        script += "mcmc.save('sampler.pkl')\n"
+        print("====== ultranest script ========")
+        print(script)
+        script_path = run_dir / script_name
+        with open(script_path, 'w') as f:
+            f.write(script)
+        print("================================")
+
+        print("executing", command)
+        subprocess.run(command, shell=True, check=True, cwd=run_dir)
+        mcmc= UltraNestSampler.load(str(sampler_path))
+        
+    except Exception as e:
+        raise RuntimeError(e)
+
+    finally:
+
+        if OMP_NUM_THREADS_INITIAL is not None:
+            os.environ["OMP_NUM_THREADS"] = "%s"%str(int(OMP_NUM_THREADS_INITIAL))
+        else:
+            os.unsetenv("OMP_NUM_THREADS")
+
+
+    return mcmc
