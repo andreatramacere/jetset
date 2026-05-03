@@ -50,6 +50,11 @@ static int internal_abs_eval_valid_on_blob(const struct blob *pt) {
     if (pt == NULL) {
         return 0;
     }
+    if (internal_abs_enabled_on_blob(pt) &&
+        pt->core.internal_abs.Total.is_enabled &&
+        (pt->core.internal_abs.Total.is_valid != 0)) {
+        return 1;
+    }
     if (pt->core.internal_abs.BLR.is_enabled && (pt->core.internal_abs.BLR.is_valid == 0)) {
         return 0;
     }
@@ -176,6 +181,9 @@ static int merge_internal_abs_result(struct blob *dst, const struct blob *src) {
         return -1;
     }
     if (merge_internal_abs_component_result(&(dst->core.internal_abs.Corona), &(src->core.internal_abs.Corona)) < 0) {
+        return -1;
+    }
+    if (merge_internal_abs_component_result(&(dst->core.internal_abs.Total), &(src->core.internal_abs.Total)) < 0) {
         return -1;
     }
 
@@ -307,6 +315,9 @@ int eval_internal_abs_tau_isolated(struct blob *pt,
     } else {
         dst_comp->is_valid = 0;
     }
+
+    pt->core.internal_abs.Total.is_valid = 0;
+    pt->core.internal_abs.Total.is_enabled = 0;
 
     free_internal_abs_store(worker);
     free(worker);
@@ -1166,6 +1177,8 @@ void Run_SED(struct blob *pt_base){
             if (pt_base->core.internal_abs.Corona.is_enabled) {
                 pt_base->core.internal_abs.Corona.is_valid = 0;
             }
+            pt_base->core.internal_abs.Total.is_valid = 0;
+            pt_base->core.internal_abs.Total.is_enabled = 0;
         }
     }
     common_grid_spectra(1, pt_base);

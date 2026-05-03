@@ -32,7 +32,8 @@ typedef enum {
     INTABS_COMP_INVALID = 0,
     INTABS_COMP_BLR = 1,
     INTABS_COMP_DT = 2,
-    INTABS_COMP_CORONA = 3
+    INTABS_COMP_CORONA = 3,
+    INTABS_COMP_TOTAL = 4
 } intabs_comp_t;
 
 /* Reset one component bookkeeping and cached tau pointers to a known empty state. */
@@ -86,6 +87,7 @@ void reset_internal_abs_store(struct blob *pt) {
     init_internal_abs_component(&(pt->core.internal_abs.BLR));
     init_internal_abs_component(&(pt->core.internal_abs.DT));
     init_internal_abs_component(&(pt->core.internal_abs.Corona));
+    init_internal_abs_component(&(pt->core.internal_abs.Total));
 }
 
 /* Release all per-component tau caches stored in the blob. */
@@ -96,6 +98,7 @@ void free_internal_abs_store(struct blob *pt) {
     free_internal_abs_component(&(pt->core.internal_abs.BLR));
     free_internal_abs_component(&(pt->core.internal_abs.DT));
     free_internal_abs_component(&(pt->core.internal_abs.Corona));
+    free_internal_abs_component(&(pt->core.internal_abs.Total));
 }
 
 /* Map the user-facing seed field name to the internal component identifier. */
@@ -129,6 +132,9 @@ static struct internal_abs_component *get_internal_abs_component_ptr(struct blob
     }
     if (comp_id == INTABS_COMP_CORONA) {
         return &(pt->core.internal_abs.Corona);
+    }
+    if (comp_id == INTABS_COMP_TOTAL) {
+        return &(pt->core.internal_abs.Total);
     }
 
     return NULL;
@@ -620,6 +626,188 @@ static unsigned int sanitize_grid_size(unsigned int value, unsigned int fallback
     return value;
 }
 
+static double get_component_seed_radius(const struct blob *pt, intabs_comp_t comp_id, double fallback_radius) {
+    double radius;
+
+    radius = fallback_radius;
+    if ((pt != NULL) && (comp_id == INTABS_COMP_BLR)) {
+        radius = pt->BLR.R_BLR_out;
+    } else if ((pt != NULL) && (comp_id == INTABS_COMP_DT)) {
+        radius = pt->DT.R_DT;
+    } else if ((pt != NULL) && (comp_id == INTABS_COMP_CORONA)) {
+        radius = pt->Corona.R_Corona;
+    }
+
+    if (radius <= 0.0) {
+        radius = fallback_radius;
+    }
+    if (radius <= 0.0) {
+        radius = 1.0;
+    }
+
+    return radius;
+}
+
+static void set_component_sampling_position(struct blob *pt,
+                                            intabs_comp_t comp_id,
+                                            double distance_from_center,
+                                            double corona_side) {
+    double R_H_sample;
+
+    if (pt == NULL) {
+        return;
+    }
+
+    if (comp_id == INTABS_COMP_CORONA) {
+        R_H_sample = pt->Corona.R_H_Corona + corona_side * distance_from_center;
+        pt->core.R_H = fmax(R_H_sample, 0.0);
+    } else {
+        pt->core.R_H = distance_from_center;
+    }
+}
+
+static double compute_seed_scale_extrapolated(intabs_comp_t comp_id, double distance_from_center, double R_seed) {
+    double denom;
+    double mu;
+    double scale;
+
+    if ((distance_from_center <= 0.0) || (R_seed <= 0.0)) {
+        return 1.0;
+    }
+
+    if (comp_id != INTABS_COMP_CORONA) {
+        if (distance_from_center <= R_seed) {
+            return 1.0;
+        }
+
+        denom = sqrt(distance_from_center * distance_from_center + R_seed * R_seed);
+        if (denom > 0.0) {
+            mu = distance_from_center / denom;
+        } else {
+            mu = 0.0;
+        }
+        scale = 1.0 - mu;
+        return (scale > 0.0) ? scale : INTABS_MIN_Y;
+    }
+
+    denom = sqrt(distance_from_center * distance_from_center + R_seed * R_seed);
+    if (denom > 0.0) {
+        mu = distance_from_center / denom;
+    } else {
+        mu = 0.0;
+    }
+    scale = (1.0 - mu) * pi;
+    return (scale > 0.0) ? scale : INTABS_MIN_Y;
+}
+
+static double compute_mu_min_for_geometry(double distance_from_center, double R_seed) {
+    double ratio;
+
+    if (distance_from_center <= 0.0) {
+        return -1.0;
+    }
+
+    if (distance_from_center < R_seed) {
+        return -1.0;
+    }
+
+    ratio = R_seed / distance_from_center;
+    if (ratio > 1.0) {
+        ratio = 1.0;
+    }
+    if (ratio < 0.0) {
+        ratio = 0.0;
+    }
+
+    return sqrt(1.0 - ratio * ratio);
+}
+
+static void resample_soft_field_to_common_grid(const double *nu_src,
+                                               const double *n_src,
+                                               unsigned int src_size,
+                                               const double *nu_dst,
+                                               unsigned int dst_size,
+                                               double *n_dst) {
+    unsigned int i;
+    unsigned int left;
+    unsigned int best_idx;
+    double best_diff;
+    double diff;
+    double log_x;
+    double log_x0;
+    double log_x1;
+    double log_y0;
+    double log_y1;
+    double t;
+
+    if ((n_dst == NULL) || (nu_dst == NULL) || (dst_size == 0U)) {
+        return;
+    }
+
+    for (i = 0; i < dst_size; ++i) {
+        n_dst[i] = INTABS_MIN_Y;
+    }
+
+    if ((nu_src == NULL) || (n_src == NULL) || (src_size == 0U)) {
+        return;
+    }
+
+    if (src_size == 1U) {
+        best_idx = 0U;
+        best_diff = fabs(nu_dst[0] - nu_src[0]);
+        for (i = 1U; i < dst_size; ++i) {
+            diff = fabs(nu_dst[i] - nu_src[0]);
+            if (diff < best_diff) {
+                best_diff = diff;
+                best_idx = i;
+            }
+        }
+        if (n_src[0] > 0.0) {
+            n_dst[best_idx] = n_src[0];
+        }
+        return;
+    }
+
+    left = 0U;
+    for (i = 0U; i < dst_size; ++i) {
+        if ((nu_dst[i] < nu_src[0]) || (nu_dst[i] > nu_src[src_size - 1U])) {
+            n_dst[i] = INTABS_MIN_Y;
+            continue;
+        }
+
+        while (((left + 1U) < src_size) && (nu_dst[i] > nu_src[left + 1U])) {
+            left += 1U;
+        }
+
+        if (left >= (src_size - 1U)) {
+            n_dst[i] = INTABS_MIN_Y;
+            continue;
+        }
+
+        if ((nu_src[left] <= 0.0) || (nu_src[left + 1U] <= nu_src[left]) || (n_src[left] <= 0.0) || (n_src[left + 1U] <= 0.0)) {
+            n_dst[i] = INTABS_MIN_Y;
+            continue;
+        }
+
+        log_x = log10(nu_dst[i]);
+        log_x0 = log10(nu_src[left]);
+        log_x1 = log10(nu_src[left + 1U]);
+        log_y0 = log10(n_src[left]);
+        log_y1 = log10(n_src[left + 1U]);
+
+        if (log_x1 == log_x0) {
+            n_dst[i] = n_src[left];
+        } else {
+            t = (log_x - log_x0) / (log_x1 - log_x0);
+            n_dst[i] = pow(10.0, log_y0 + t * (log_y1 - log_y0));
+        }
+
+        if ((!isfinite(n_dst[i])) || (n_dst[i] <= 0.0)) {
+            n_dst[i] = INTABS_MIN_Y;
+        }
+    }
+}
+
 /*
  * Interpolate one component tau table at `nu_obs` in log-log space.
  * Returns a tiny positive floor outside the low-energy side to avoid zeros.
@@ -665,6 +853,524 @@ static double interp_tau_component(const struct internal_abs_component *comp, do
     log_tau = log10(tau1) + t * (log10(tau2) - log10(tau1));
 
     return pow(10.0, log_tau);
+}
+
+/*
+ * Build one combined internal-absorption tau table by summing all enabled
+ * seed fields first, then running a single 3D integration.
+ */
+static int eval_internal_abs_tau_total(struct blob *pt,
+                                       double nu_min,
+                                       unsigned int N_soft,
+                                       unsigned int N_hard,
+                                       unsigned int N_R_H,
+                                       unsigned int N_theta,
+                                       double nu_src_max) {
+    int status;
+    unsigned int n_enabled;
+    unsigned int c;
+    unsigned int i;
+    unsigned int ID_RH;
+    unsigned int ID_THETA;
+    unsigned int ID_SOFT;
+    unsigned int ID_GAMMA;
+    intabs_comp_t comp_ids[3];
+    struct internal_abs_component *comp_cfg[3];
+    struct internal_abs_component *comp_tot;
+    double comp_R_seed[3];
+    double comp_R_H_ref[3];
+    double comp_corona_side[3];
+    double comp_mu_min;
+    int comp_use_extrapolation[3];
+    int comp_peak_mode[3];
+    unsigned int comp_N_soft_eff[3];
+    double *nu_soft_ref[3];
+    double *n_soft_ref[3];
+    double *nu_soft_tmp[3];
+    double *n_soft_tmp[3];
+    double R_H_saved_input;
+    double R_H_saved;
+    double distance_ref;
+    double distance_from_center;
+    double nu_min_eff;
+    double nu_src_max_eff;
+    double nu_soft_min_common;
+    double nu_soft_max_common;
+    double nu_soft_max_ref;
+    double log_nu_min;
+    double log_nu_max;
+    int use_fast_sigma;
+    int use_extrapolation_all;
+    double mu_min_global;
+    double mu_max;
+    double eps_gamma;
+    double one_minus_mu;
+    double s_value;
+    double sigma_val;
+    double integrand;
+    double prev_integrand;
+    double nu_integral;
+    double prev_mu_integral;
+    double mu_integral;
+    double prev_rh_integral;
+    double tau_gamma;
+    double soft_scale;
+    double nu_to_eps;
+    unsigned int tau_size;
+    size_t idx_soft;
+    size_t idx_mu;
+    size_t idx_sum_base;
+    size_t idx_comp_soft;
+    size_t idx_comp_mu;
+    const struct internal_abs_store *ia_store;
+    double *nu_soft_common;
+    double *eps_soft_common;
+    double *dnu_soft_common;
+    double *x_grid;
+    double *dx_grid;
+    double *mu_grid;
+    double *dmu_grid;
+    double *one_minus_mu_grid;
+    double *sum_soft_mu;
+    double *comp_soft_interp;
+    double *comp_mu_min_grid;
+    double *tmp_resampled;
+
+    status = -1;
+    n_enabled = 0U;
+    ia_store = NULL;
+    nu_soft_common = NULL;
+    eps_soft_common = NULL;
+    dnu_soft_common = NULL;
+    x_grid = NULL;
+    dx_grid = NULL;
+    mu_grid = NULL;
+    dmu_grid = NULL;
+    one_minus_mu_grid = NULL;
+    sum_soft_mu = NULL;
+    comp_soft_interp = NULL;
+    comp_mu_min_grid = NULL;
+    tmp_resampled = NULL;
+
+    for (c = 0U; c < 3U; ++c) {
+        nu_soft_ref[c] = NULL;
+        n_soft_ref[c] = NULL;
+        nu_soft_tmp[c] = NULL;
+        n_soft_tmp[c] = NULL;
+    }
+
+    if ((pt == NULL) || (N_soft == 0U) || (N_hard == 0U) || (N_R_H == 0U) || (N_theta == 0U)) {
+        return -1;
+    }
+
+    comp_tot = &(pt->core.internal_abs.Total);
+    comp_tot->is_enabled = 0;
+    comp_tot->is_valid = 0;
+
+    if (pt->core.internal_abs.BLR.is_enabled) {
+        comp_ids[n_enabled] = INTABS_COMP_BLR;
+        comp_cfg[n_enabled] = &(pt->core.internal_abs.BLR);
+        n_enabled += 1U;
+    }
+    if (pt->core.internal_abs.DT.is_enabled) {
+        comp_ids[n_enabled] = INTABS_COMP_DT;
+        comp_cfg[n_enabled] = &(pt->core.internal_abs.DT);
+        n_enabled += 1U;
+    }
+    if (pt->core.internal_abs.Corona.is_enabled) {
+        comp_ids[n_enabled] = INTABS_COMP_CORONA;
+        comp_cfg[n_enabled] = &(pt->core.internal_abs.Corona);
+        n_enabled += 1U;
+    }
+
+    if (n_enabled == 0U) {
+        return 0;
+    }
+
+    ia_store = &(pt->core.internal_abs);
+
+    R_H_saved_input = pt->core.R_H;
+    R_H_saved = R_H_saved_input;
+    if (R_H_saved <= 0.0) {
+        R_H_saved = 1.0;
+    }
+
+    use_fast_sigma = 1;
+    use_extrapolation_all = 1;
+    nu_soft_min_common = 0.0;
+    nu_soft_max_common = 0.0;
+    nu_soft_max_ref = 0.0;
+
+    for (c = 0U; c < n_enabled; ++c) {
+        comp_peak_mode[c] = (comp_cfg[c]->peak_mode != 0) ? 1 : 0;
+        comp_use_extrapolation[c] = (comp_cfg[c]->use_R_H_profile_extrapolation != 0) ? 1 : 0;
+        comp_N_soft_eff[c] = (comp_peak_mode[c] != 0) ? 1U : N_soft;
+        if (comp_N_soft_eff[c] == 0U) {
+            comp_N_soft_eff[c] = 1U;
+        }
+
+        if (comp_cfg[c]->use_sigma_gamma_gamma_fast == 0) {
+            use_fast_sigma = 0;
+        }
+        if (comp_use_extrapolation[c] == 0) {
+            use_extrapolation_all = 0;
+        }
+
+        comp_R_seed[c] = get_component_seed_radius(pt, comp_ids[c], R_H_saved);
+        if (comp_ids[c] == INTABS_COMP_CORONA) {
+            comp_R_H_ref[c] = fabs(R_H_saved - pt->Corona.R_H_Corona);
+            if (R_H_saved_input >= pt->Corona.R_H_Corona) {
+                comp_corona_side[c] = 1.0;
+            } else {
+                comp_corona_side[c] = -1.0;
+            }
+        } else {
+            comp_R_H_ref[c] = R_H_saved;
+            comp_corona_side[c] = 1.0;
+        }
+        if (comp_R_H_ref[c] <= 0.0) {
+            comp_R_H_ref[c] = 1.0;
+        }
+
+        nu_soft_ref[c] = (double *)calloc((size_t)comp_N_soft_eff[c], sizeof(double));
+        n_soft_ref[c] = (double *)calloc((size_t)comp_N_soft_eff[c], sizeof(double));
+        nu_soft_tmp[c] = (double *)calloc((size_t)comp_N_soft_eff[c], sizeof(double));
+        n_soft_tmp[c] = (double *)calloc((size_t)comp_N_soft_eff[c], sizeof(double));
+        if ((nu_soft_ref[c] == NULL) || (n_soft_ref[c] == NULL) || (nu_soft_tmp[c] == NULL) || (n_soft_tmp[c] == NULL)) {
+            goto cleanup;
+        }
+
+        if (comp_ids[c] == INTABS_COMP_CORONA) {
+            distance_ref = comp_R_seed[c];
+        } else {
+            distance_ref = comp_R_seed[c] / 1000.0;
+        }
+        if (distance_ref <= 0.0) {
+            distance_ref = comp_R_H_ref[c];
+        }
+
+        set_component_sampling_position(pt, comp_ids[c], distance_ref, comp_corona_side[c]);
+        if (sample_seed_field(pt, comp_ids[c], comp_N_soft_eff[c], comp_peak_mode[c], nu_soft_ref[c], n_soft_ref[c]) < 0) {
+            goto cleanup;
+        }
+
+        for (i = 0U; i < comp_N_soft_eff[c]; ++i) {
+            if (nu_soft_ref[c][i] > 0.0) {
+                if ((nu_soft_min_common <= 0.0) || (nu_soft_ref[c][i] < nu_soft_min_common)) {
+                    nu_soft_min_common = nu_soft_ref[c][i];
+                }
+                if (nu_soft_ref[c][i] > nu_soft_max_common) {
+                    nu_soft_max_common = nu_soft_ref[c][i];
+                }
+                if (nu_soft_ref[c][i] > nu_soft_max_ref) {
+                    nu_soft_max_ref = nu_soft_ref[c][i];
+                }
+            }
+        }
+    }
+
+    if ((nu_soft_min_common <= 0.0) || (nu_soft_max_common <= 0.0)) {
+        goto cleanup;
+    }
+
+    if (nu_min > 0.0) {
+        nu_min_eff = nu_min;
+    } else if (nu_soft_max_ref > 0.0) {
+        nu_min_eff = 1.0e40 / nu_soft_max_ref;
+    } else {
+        nu_min_eff = 1.0e20;
+    }
+    if (nu_min_eff <= 0.0) {
+        nu_min_eff = 1.0e20;
+    }
+
+    nu_src_max_eff = nu_src_max;
+    if (nu_src_max_eff <= 0.0) {
+        nu_src_max_eff = nu_min_eff;
+    }
+
+    if (nu_src_max_eff < nu_min_eff) {
+        tau_size = 1U;
+    } else {
+        tau_size = N_hard;
+    }
+
+    if (ensure_tau_arrays(comp_tot, tau_size) < 0) {
+        goto cleanup;
+    }
+
+    if (tau_size == 1U) {
+        comp_tot->nu_tau[0] = nu_min_eff;
+    } else {
+        for (i = 0U; i < tau_size; ++i) {
+            comp_tot->nu_tau[i] = pow(10.0,
+                                      log10(nu_min_eff) +
+                                          (log10(nu_src_max_eff) - log10(nu_min_eff)) * (double)i / (double)(tau_size - 1U));
+        }
+    }
+
+    nu_soft_common = (double *)calloc((size_t)N_soft, sizeof(double));
+    eps_soft_common = (double *)calloc((size_t)N_soft, sizeof(double));
+    dnu_soft_common = (double *)calloc((size_t)N_soft, sizeof(double));
+    x_grid = (double *)calloc((size_t)N_R_H, sizeof(double));
+    dx_grid = (double *)calloc((size_t)N_R_H, sizeof(double));
+    mu_grid = (double *)calloc((size_t)N_R_H * (size_t)N_theta, sizeof(double));
+    dmu_grid = (double *)calloc((size_t)N_R_H * (size_t)N_theta, sizeof(double));
+    one_minus_mu_grid = (double *)calloc((size_t)N_R_H * (size_t)N_theta, sizeof(double));
+    sum_soft_mu = (double *)calloc((size_t)N_R_H * (size_t)N_theta * (size_t)N_soft, sizeof(double));
+    comp_soft_interp = (double *)calloc((size_t)n_enabled * (size_t)N_R_H * (size_t)N_soft, sizeof(double));
+    comp_mu_min_grid = (double *)calloc((size_t)n_enabled * (size_t)N_R_H, sizeof(double));
+    tmp_resampled = (double *)calloc((size_t)N_soft, sizeof(double));
+
+    if ((nu_soft_common == NULL) || (eps_soft_common == NULL) || (dnu_soft_common == NULL) || (x_grid == NULL) || (dx_grid == NULL) ||
+        (mu_grid == NULL) || (dmu_grid == NULL) || (one_minus_mu_grid == NULL) || (sum_soft_mu == NULL) ||
+        (comp_soft_interp == NULL) || (comp_mu_min_grid == NULL) || (tmp_resampled == NULL)) {
+        goto cleanup;
+    }
+
+    if (N_soft == 1U) {
+        nu_soft_common[0] = nu_soft_min_common;
+    } else if (nu_soft_max_common > nu_soft_min_common) {
+        log_nu_min = log10(nu_soft_min_common);
+        log_nu_max = log10(nu_soft_max_common);
+        for (ID_SOFT = 0U; ID_SOFT < N_soft; ++ID_SOFT) {
+            nu_soft_common[ID_SOFT] = pow(10.0,
+                                          log_nu_min + (log_nu_max - log_nu_min) * (double)ID_SOFT / (double)(N_soft - 1U));
+        }
+    } else {
+        for (ID_SOFT = 0U; ID_SOFT < N_soft; ++ID_SOFT) {
+            nu_soft_common[ID_SOFT] = nu_soft_min_common;
+        }
+    }
+
+    nu_to_eps = HPLANCK / MEC2;
+    for (ID_SOFT = 0U; ID_SOFT < N_soft; ++ID_SOFT) {
+        eps_soft_common[ID_SOFT] = nu_soft_common[ID_SOFT] * nu_to_eps;
+        if (ID_SOFT == 0U) {
+            dnu_soft_common[ID_SOFT] = 0.0;
+        } else {
+            dnu_soft_common[ID_SOFT] = nu_soft_common[ID_SOFT] - nu_soft_common[ID_SOFT - 1U];
+        }
+    }
+
+    if (N_R_H == 1U) {
+        x_grid[0] = 1.0;
+    } else {
+        for (ID_RH = 0U; ID_RH < N_R_H; ++ID_RH) {
+            x_grid[ID_RH] = pow(10.0, 3.0 * (double)ID_RH / (double)(N_R_H - 1U));
+        }
+    }
+    dx_grid[0] = 0.0;
+    for (ID_RH = 1U; ID_RH < N_R_H; ++ID_RH) {
+        dx_grid[ID_RH] = x_grid[ID_RH] - x_grid[ID_RH - 1U];
+    }
+
+    for (ID_RH = 0U; ID_RH < N_R_H; ++ID_RH) {
+        for (c = 0U; c < n_enabled; ++c) {
+            distance_from_center = x_grid[ID_RH] * comp_R_H_ref[c];
+            set_component_sampling_position(pt, comp_ids[c], distance_from_center, comp_corona_side[c]);
+
+            if (comp_use_extrapolation[c] != 0) {
+                sigma_val = compute_seed_scale_extrapolated(comp_ids[c], distance_from_center, comp_R_seed[c]);
+                for (ID_SOFT = 0U; ID_SOFT < comp_N_soft_eff[c]; ++ID_SOFT) {
+                    nu_soft_tmp[c][ID_SOFT] = nu_soft_ref[c][ID_SOFT];
+                    n_soft_tmp[c][ID_SOFT] = n_soft_ref[c][ID_SOFT] * sigma_val;
+                }
+            } else {
+                if (sample_seed_field(pt, comp_ids[c], comp_N_soft_eff[c], comp_peak_mode[c], nu_soft_tmp[c], n_soft_tmp[c]) < 0) {
+                    goto cleanup;
+                }
+            }
+
+            resample_soft_field_to_common_grid(nu_soft_tmp[c], n_soft_tmp[c], comp_N_soft_eff[c], nu_soft_common, N_soft, tmp_resampled);
+
+            idx_comp_soft = (((size_t)c) * ((size_t)N_R_H) + (size_t)ID_RH) * ((size_t)N_soft);
+            for (ID_SOFT = 0U; ID_SOFT < N_soft; ++ID_SOFT) {
+                comp_soft_interp[idx_comp_soft + (size_t)ID_SOFT] = tmp_resampled[ID_SOFT];
+            }
+
+            idx_comp_mu = ((size_t)c) * ((size_t)N_R_H) + (size_t)ID_RH;
+            comp_mu_min_grid[idx_comp_mu] = compute_mu_min_for_geometry(distance_from_center, comp_R_seed[c]);
+        }
+
+        mu_min_global = 1.0;
+        for (c = 0U; c < n_enabled; ++c) {
+            idx_comp_mu = ((size_t)c) * ((size_t)N_R_H) + (size_t)ID_RH;
+            comp_mu_min = comp_mu_min_grid[idx_comp_mu];
+            if (comp_mu_min < mu_min_global) {
+                mu_min_global = comp_mu_min;
+            }
+        }
+        if (mu_min_global < -1.0) {
+            mu_min_global = -1.0;
+        }
+        mu_max = 1.0;
+
+        for (ID_THETA = 0U; ID_THETA < N_theta; ++ID_THETA) {
+            idx_mu = ((size_t)ID_RH) * ((size_t)N_theta) + (size_t)ID_THETA;
+            if (N_theta == 1U) {
+                mu_grid[idx_mu] = mu_min_global;
+                dmu_grid[idx_mu] = 0.0;
+            } else {
+                mu_grid[idx_mu] = mu_min_global + (mu_max - mu_min_global) * (double)ID_THETA / (double)(N_theta - 1U);
+                if (ID_THETA == 0U) {
+                    dmu_grid[idx_mu] = 0.0;
+                } else {
+                    dmu_grid[idx_mu] = mu_grid[idx_mu] - mu_grid[idx_mu - 1U];
+                }
+            }
+            one_minus_mu_grid[idx_mu] = fmax(1.0 - mu_grid[idx_mu], INTABS_MIN_ONE_MINUS_MU);
+        }
+
+        for (ID_THETA = 0U; ID_THETA < N_theta; ++ID_THETA) {
+            idx_mu = ((size_t)ID_RH) * ((size_t)N_theta) + (size_t)ID_THETA;
+            idx_sum_base = (((size_t)ID_RH) * ((size_t)N_theta) + (size_t)ID_THETA) * ((size_t)N_soft);
+
+            for (ID_SOFT = 0U; ID_SOFT < N_soft; ++ID_SOFT) {
+                sum_soft_mu[idx_sum_base + (size_t)ID_SOFT] = 0.0;
+            }
+
+            for (c = 0U; c < n_enabled; ++c) {
+                idx_comp_mu = ((size_t)c) * ((size_t)N_R_H) + (size_t)ID_RH;
+                if (mu_grid[idx_mu] < comp_mu_min_grid[idx_comp_mu]) {
+                    continue;
+                }
+
+                idx_comp_soft = (((size_t)c) * ((size_t)N_R_H) + (size_t)ID_RH) * ((size_t)N_soft);
+                for (ID_SOFT = 0U; ID_SOFT < N_soft; ++ID_SOFT) {
+                    sum_soft_mu[idx_sum_base + (size_t)ID_SOFT] +=
+                        comp_soft_interp[idx_comp_soft + (size_t)ID_SOFT] * comp_R_H_ref[c];
+                }
+            }
+        }
+    }
+
+    for (ID_GAMMA = 0U; ID_GAMMA < tau_size; ++ID_GAMMA) {
+        eps_gamma = comp_tot->nu_tau[ID_GAMMA] * nu_to_eps;
+        tau_gamma = 0.0;
+        prev_rh_integral = 0.0;
+
+        for (ID_RH = 0U; ID_RH < N_R_H; ++ID_RH) {
+            mu_integral = 0.0;
+            prev_mu_integral = 0.0;
+
+            for (ID_THETA = 0U; ID_THETA < N_theta; ++ID_THETA) {
+                idx_mu = ((size_t)ID_RH) * ((size_t)N_theta) + (size_t)ID_THETA;
+                one_minus_mu = one_minus_mu_grid[idx_mu];
+                soft_scale = eps_gamma * one_minus_mu * 0.5;
+                idx_sum_base = (((size_t)ID_RH) * ((size_t)N_theta) + (size_t)ID_THETA) * ((size_t)N_soft);
+
+                nu_integral = 0.0;
+                prev_integrand = 0.0;
+                for (ID_SOFT = 0U; ID_SOFT < N_soft; ++ID_SOFT) {
+                    s_value = soft_scale * eps_soft_common[ID_SOFT];
+                    integrand = 0.0;
+                    if (s_value >= 1.0) {
+                        if (use_fast_sigma != 0) {
+                            sigma_val = sigma_gamma_gamma_fast(ia_store, s_value);
+                        } else {
+                            sigma_val = sigma_gamma_gamma(s_value);
+                        }
+                        idx_soft = idx_sum_base + (size_t)ID_SOFT;
+                        integrand = sigma_val * sum_soft_mu[idx_soft] * one_minus_mu;
+                    }
+
+                    if (ID_SOFT > 0U) {
+                        nu_integral += 0.5 * (prev_integrand + integrand) * dnu_soft_common[ID_SOFT];
+                    }
+                    prev_integrand = integrand;
+                }
+
+                if (ID_THETA > 0U) {
+                    mu_integral += 0.5 * (prev_mu_integral + nu_integral) * dmu_grid[idx_mu];
+                }
+                prev_mu_integral = nu_integral;
+            }
+
+            if (ID_RH > 0U) {
+                tau_gamma += 0.5 * (prev_rh_integral + mu_integral) * dx_grid[ID_RH];
+            }
+            prev_rh_integral = mu_integral;
+        }
+
+        comp_tot->tau[ID_GAMMA] = 2.0 * pi * tau_gamma;
+    }
+
+    comp_tot->is_enabled = 1;
+    comp_tot->is_valid = 1;
+    comp_tot->use_R_H_profile_extrapolation = (use_extrapolation_all != 0) ? 1 : 0;
+    comp_tot->use_sigma_gamma_gamma_fast = (use_fast_sigma != 0) ? 1 : 0;
+    comp_tot->peak_mode = 0;
+    comp_tot->N_soft = N_soft;
+    comp_tot->N_hard = N_hard;
+    comp_tot->N_R_H = N_R_H;
+    comp_tot->N_theta = N_theta;
+    comp_tot->nu_min = nu_min_eff;
+    comp_tot->nu_src_max = nu_src_max_eff;
+
+    status = (int)tau_size;
+
+cleanup:
+    pt->core.R_H = R_H_saved_input;
+
+    if (status < 0) {
+        comp_tot->is_valid = 0;
+        comp_tot->is_enabled = 0;
+    }
+
+    for (c = 0U; c < 3U; ++c) {
+        if (nu_soft_ref[c] != NULL) {
+            free(nu_soft_ref[c]);
+        }
+        if (n_soft_ref[c] != NULL) {
+            free(n_soft_ref[c]);
+        }
+        if (nu_soft_tmp[c] != NULL) {
+            free(nu_soft_tmp[c]);
+        }
+        if (n_soft_tmp[c] != NULL) {
+            free(n_soft_tmp[c]);
+        }
+    }
+
+    if (nu_soft_common != NULL) {
+        free(nu_soft_common);
+    }
+    if (eps_soft_common != NULL) {
+        free(eps_soft_common);
+    }
+    if (dnu_soft_common != NULL) {
+        free(dnu_soft_common);
+    }
+    if (x_grid != NULL) {
+        free(x_grid);
+    }
+    if (dx_grid != NULL) {
+        free(dx_grid);
+    }
+    if (mu_grid != NULL) {
+        free(mu_grid);
+    }
+    if (dmu_grid != NULL) {
+        free(dmu_grid);
+    }
+    if (one_minus_mu_grid != NULL) {
+        free(one_minus_mu_grid);
+    }
+    if (sum_soft_mu != NULL) {
+        free(sum_soft_mu);
+    }
+    if (comp_soft_interp != NULL) {
+        free(comp_soft_interp);
+    }
+    if (comp_mu_min_grid != NULL) {
+        free(comp_mu_min_grid);
+    }
+    if (tmp_resampled != NULL) {
+        free(tmp_resampled);
+    }
+
+    return status;
 }
 
 /*
@@ -753,6 +1459,14 @@ int eval_internal_abs_tau(struct blob *pt,
     if (pt == NULL) {
         return -1;
     }
+
+    /*
+     * Single-component evaluations invalidate the cached total table,
+     * because the total cache is only consistent after a dedicated
+     * combined recomputation.
+     */
+    pt->core.internal_abs.Total.is_valid = 0;
+    pt->core.internal_abs.Total.is_enabled = 0;
 
     comp_id = parse_internal_abs_component(seed_photons_name);
     comp = get_internal_abs_component_ptr(pt, comp_id);
@@ -1112,14 +1826,20 @@ int eval_internal_abs_tau(struct blob *pt,
 }
 
 /*
- * Recompute tau tables for all components currently marked as enabled,
- * preserving per-component numerical settings whenever available.
+ * Recompute one combined tau table from all currently enabled components.
+ * The solver first sums soft-photon fields and then runs a single integral.
  */
 void recompute_internal_absorption_tau(struct blob *pt) {
     struct internal_abs_component *comp_blr;
     struct internal_abs_component *comp_dt;
     struct internal_abs_component *comp_corona;
     double nu_src_max;
+    double nu_min_total;
+    unsigned int N_soft_total;
+    unsigned int N_hard_total;
+    unsigned int N_R_H_total;
+    unsigned int N_theta_total;
+    int any_enabled;
     int status;
 
     if (pt == NULL) {
@@ -1132,66 +1852,124 @@ void recompute_internal_absorption_tau(struct blob *pt) {
     }
 
     comp_blr = &(pt->core.internal_abs.BLR);
-    if (comp_blr->is_enabled != 0) {
-        status = eval_internal_abs_tau(pt,
-                                       "BLR",
-                                       comp_blr->nu_min,
-                                       sanitize_grid_size(comp_blr->N_soft, 50U),
-                                       sanitize_grid_size(comp_blr->N_hard, 50U),
-                                       sanitize_grid_size(comp_blr->N_R_H, 50U),
-                                       sanitize_grid_size(comp_blr->N_theta, 50U),
-                                       comp_blr->use_R_H_profile_extrapolation,
-                                       comp_blr->peak_mode,
-                                       nu_src_max);
-        if (status < 0) {
-            comp_blr->is_valid = 0;
-        }
-    }
-
     comp_dt = &(pt->core.internal_abs.DT);
-    if (comp_dt->is_enabled != 0) {
-        status = eval_internal_abs_tau(pt,
-                                       "DT",
-                                       comp_dt->nu_min,
-                                       sanitize_grid_size(comp_dt->N_soft, 50U),
-                                       sanitize_grid_size(comp_dt->N_hard, 50U),
-                                       sanitize_grid_size(comp_dt->N_R_H, 50U),
-                                       sanitize_grid_size(comp_dt->N_theta, 50U),
-                                       comp_dt->use_R_H_profile_extrapolation,
-                                       comp_dt->peak_mode,
-                                       nu_src_max);
-        if (status < 0) {
-            comp_dt->is_valid = 0;
+    comp_corona = &(pt->core.internal_abs.Corona);
+
+    any_enabled = 0;
+    nu_min_total = 0.0;
+    N_soft_total = 0U;
+    N_hard_total = 0U;
+    N_R_H_total = 0U;
+    N_theta_total = 0U;
+
+    if (comp_blr->is_enabled != 0) {
+        any_enabled = 1;
+        if (sanitize_grid_size(comp_blr->N_soft, 50U) > N_soft_total) {
+            N_soft_total = sanitize_grid_size(comp_blr->N_soft, 50U);
         }
+        if (sanitize_grid_size(comp_blr->N_hard, 50U) > N_hard_total) {
+            N_hard_total = sanitize_grid_size(comp_blr->N_hard, 50U);
+        }
+        if (sanitize_grid_size(comp_blr->N_R_H, 50U) > N_R_H_total) {
+            N_R_H_total = sanitize_grid_size(comp_blr->N_R_H, 50U);
+        }
+        if (sanitize_grid_size(comp_blr->N_theta, 50U) > N_theta_total) {
+            N_theta_total = sanitize_grid_size(comp_blr->N_theta, 50U);
+        }
+        if ((comp_blr->nu_min > 0.0) && ((nu_min_total <= 0.0) || (comp_blr->nu_min < nu_min_total))) {
+            nu_min_total = comp_blr->nu_min;
+        }
+        comp_blr->is_valid = 0;
+    }
+    if (comp_dt->is_enabled != 0) {
+        any_enabled = 1;
+        if (sanitize_grid_size(comp_dt->N_soft, 50U) > N_soft_total) {
+            N_soft_total = sanitize_grid_size(comp_dt->N_soft, 50U);
+        }
+        if (sanitize_grid_size(comp_dt->N_hard, 50U) > N_hard_total) {
+            N_hard_total = sanitize_grid_size(comp_dt->N_hard, 50U);
+        }
+        if (sanitize_grid_size(comp_dt->N_R_H, 50U) > N_R_H_total) {
+            N_R_H_total = sanitize_grid_size(comp_dt->N_R_H, 50U);
+        }
+        if (sanitize_grid_size(comp_dt->N_theta, 50U) > N_theta_total) {
+            N_theta_total = sanitize_grid_size(comp_dt->N_theta, 50U);
+        }
+        if ((comp_dt->nu_min > 0.0) && ((nu_min_total <= 0.0) || (comp_dt->nu_min < nu_min_total))) {
+            nu_min_total = comp_dt->nu_min;
+        }
+        comp_dt->is_valid = 0;
+    }
+    if (comp_corona->is_enabled != 0) {
+        any_enabled = 1;
+        if (sanitize_grid_size(comp_corona->N_soft, 50U) > N_soft_total) {
+            N_soft_total = sanitize_grid_size(comp_corona->N_soft, 50U);
+        }
+        if (sanitize_grid_size(comp_corona->N_hard, 50U) > N_hard_total) {
+            N_hard_total = sanitize_grid_size(comp_corona->N_hard, 50U);
+        }
+        if (sanitize_grid_size(comp_corona->N_R_H, 50U) > N_R_H_total) {
+            N_R_H_total = sanitize_grid_size(comp_corona->N_R_H, 50U);
+        }
+        if (sanitize_grid_size(comp_corona->N_theta, 50U) > N_theta_total) {
+            N_theta_total = sanitize_grid_size(comp_corona->N_theta, 50U);
+        }
+        if ((comp_corona->nu_min > 0.0) && ((nu_min_total <= 0.0) || (comp_corona->nu_min < nu_min_total))) {
+            nu_min_total = comp_corona->nu_min;
+        }
+        comp_corona->is_valid = 0;
     }
 
-    comp_corona = &(pt->core.internal_abs.Corona);
-    if (comp_corona->is_enabled != 0) {
-        status = eval_internal_abs_tau(pt,
-                                       "Corona",
-                                       comp_corona->nu_min,
-                                       sanitize_grid_size(comp_corona->N_soft, 50U),
-                                       sanitize_grid_size(comp_corona->N_hard, 50U),
-                                       sanitize_grid_size(comp_corona->N_R_H, 50U),
-                                       sanitize_grid_size(comp_corona->N_theta, 50U),
-                                       comp_corona->use_R_H_profile_extrapolation,
-                                       comp_corona->peak_mode,
-                                       nu_src_max);
-        if (status < 0) {
-            comp_corona->is_valid = 0;
-        }
+    if (any_enabled == 0) {
+        pt->core.internal_abs.Total.is_enabled = 0;
+        pt->core.internal_abs.Total.is_valid = 0;
+        return;
+    }
+
+    if (N_soft_total == 0U) {
+        N_soft_total = 50U;
+    }
+    if (N_hard_total == 0U) {
+        N_hard_total = 50U;
+    }
+    if (N_R_H_total == 0U) {
+        N_R_H_total = 50U;
+    }
+    if (N_theta_total == 0U) {
+        N_theta_total = 50U;
+    }
+
+    status = eval_internal_abs_tau_total(pt,
+                                         nu_min_total,
+                                         N_soft_total,
+                                         N_hard_total,
+                                         N_R_H_total,
+                                         N_theta_total,
+                                         nu_src_max);
+    if (status < 0) {
+        pt->core.internal_abs.Total.is_valid = 0;
+        pt->core.internal_abs.Total.is_enabled = 0;
     }
 }
 
 /*
- * Return total internal opacity at `nu_obs` by summing BLR/DT/Corona
- * interpolated tau contributions. Invalid/non-finite totals are clamped to 0.
+ * Return total internal opacity at `nu_obs`.
+ * If a combined cache is available, use it directly; otherwise fallback to
+ * BLR/DT/Corona interpolation and sum. Invalid totals are clamped to 0.
  */
 double get_internal_abs_tau_at_nu(struct blob *pt, double nu_obs) {
     double tau_tot;
 
     if (pt == NULL) {
         return 0.0;
+    }
+
+    if ((pt->core.internal_abs.Total.is_enabled != 0) && (pt->core.internal_abs.Total.is_valid != 0)) {
+        tau_tot = interp_tau_component(&(pt->core.internal_abs.Total), nu_obs);
+        if (!isfinite(tau_tot) || (tau_tot < 0.0)) {
+            return 0.0;
+        }
+        return tau_tot;
     }
 
     tau_tot = 0.0;

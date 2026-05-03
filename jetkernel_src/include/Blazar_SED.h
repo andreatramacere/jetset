@@ -170,6 +170,7 @@ struct internal_abs_store {
     struct internal_abs_component BLR;
     struct internal_abs_component DT;
     struct internal_abs_component Corona;
+    struct internal_abs_component Total;
     double gg_tab[GG_NTAB + 1];
 };
 

@@ -65,6 +65,9 @@ class TestInternalAbsorption(TestBase):
 
         y_ia = np.asarray(j.eval(nu=nu, get_model=True), dtype=float)
         assert np.all(np.isfinite(y_ia))
+        if hasattr(j._blob.core.internal_abs, 'Total'):
+            assert int(j._blob.core.internal_abs.Total.is_enabled) == 1
+            assert int(j._blob.core.internal_abs.Total.is_valid) == 1
 
         m = y_no_ia > 0
         assert np.any(m)
@@ -79,6 +82,16 @@ class TestInternalAbsorption(TestBase):
         assert 'DT' not in j._internal_absorption_comp.keys()
         assert 'BLR' in j._internal_absorption_comp.keys()
         assert 'Corona' in j._internal_absorption_comp.keys()
+        if hasattr(j._blob.core.internal_abs, 'Total'):
+            assert int(j._blob.core.internal_abs.Total.is_enabled) == 1
+            assert int(j._blob.core.internal_abs.Total.is_valid) == 1
+
+        j.remove_internal_absorption('BLR')
+        j.remove_internal_absorption('Corona')
+        assert len(j._internal_absorption_comp.keys()) == 0
+        if hasattr(j._blob.core.internal_abs, 'Total'):
+            assert int(j._blob.core.internal_abs.Total.is_enabled) == 0
+            assert int(j._blob.core.internal_abs.Total.is_valid) == 0
 
     def test_internal_absorption_serialization(self, plot=False):
         from jetset.jet_model import Jet
