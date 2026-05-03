@@ -42,6 +42,7 @@ class InternalAbsorption(object):
                  N_R_H=20,
                  N_theta=20,
                  use_R_H_profile_extrapolation=False,
+                 use_sigma_gamma_gamma_fast=False,
                  ):
         """Create a new `InternalAbsorption` instance.
         
@@ -63,6 +64,8 @@ class InternalAbsorption(object):
             Number of angular samples.
         use_R_H_profile_extrapolation : bool, optional
             If ``True``, enable r h profile extrapolation.
+        use_sigma_gamma_gamma_fast : bool, optional
+            If ``True``, enable tabulated/interpolated sigma_gamma_gamma in C backend.
         """
         if seed_photons_name in ['BLR','DT','Corona']:
             self._seed_photons_name=seed_photons_name
@@ -77,6 +80,10 @@ class InternalAbsorption(object):
         self._nu_min=nu_min
         self._jet=jet
         self._use_R_H_profile_extrapolation=use_R_H_profile_extrapolation
+        self._use_sigma_gamma_gamma_fast=bool(use_sigma_gamma_gamma_fast)
+
+    def set_use_sigma_gamma_gamma_fast(self, use_fast):
+        self._use_sigma_gamma_gamma_fast = bool(use_fast)
 
     def eval_tau_photons(self,
                          nu_src,
@@ -118,6 +125,14 @@ class InternalAbsorption(object):
 
         if not hasattr(BlazarSED, 'eval_internal_abs_tau_isolated'):
             raise RuntimeError('jetkernel extension is missing eval_internal_abs_tau_isolated; rebuild the C extension.')
+
+        if self._seed_photons_name == "BLR":
+            comp_cfg = self._jet._blob.core.internal_abs.BLR
+        elif self._seed_photons_name == "DT":
+            comp_cfg = self._jet._blob.core.internal_abs.DT
+        else:
+            comp_cfg = self._jet._blob.core.internal_abs.Corona
+        comp_cfg.use_sigma_gamma_gamma_fast = int(self._use_sigma_gamma_gamma_fast)
 
         tau_size = BlazarSED.eval_internal_abs_tau_isolated(
             self._jet._blob,

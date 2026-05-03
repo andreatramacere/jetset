@@ -1434,7 +1434,8 @@ class JetBase(Model):
                                 N_hard=50,
                                 N_R_H=50,
                                 N_theta=50,
-                                use_R_H_profile_extrapolation=False):
+                                use_R_H_profile_extrapolation=False,
+                                use_sigma_gamma_gamma_fast=False):
         
         """Enable internal gamma-gamma absorption for a seed component.
 
@@ -1448,6 +1449,8 @@ class JetBase(Model):
             Numerical grid sizes used by the absorption solver.
         use_R_H_profile_extrapolation : bool, optional
             If ``True``, extrapolate the radial profile when required.
+        use_sigma_gamma_gamma_fast : bool, optional
+            If ``True``, enable tabulated/interpolated sigma_gamma_gamma in C backend.
         """
         self._internal_absorption_comp[comp]={}
         self._internal_absorption_comp[comp]['pars']=dict(N_hard=N_hard,
@@ -1456,7 +1459,8 @@ class JetBase(Model):
                                                           N_R_H=N_R_H,
                                                           nu_min=nu_min,
                                                           comp=comp,
-                                                          use_R_H_profile_extrapolation=use_R_H_profile_extrapolation)
+                                                          use_R_H_profile_extrapolation=use_R_H_profile_extrapolation,
+                                                          use_sigma_gamma_gamma_fast=use_sigma_gamma_gamma_fast)
         
         self._internal_absorption_comp[comp]['obj']=InternalAbsorption(jet=self,
                                                                 nu_min=nu_min,
@@ -1465,7 +1469,8 @@ class JetBase(Model):
                                                                 N_hard=N_hard,
                                                                 N_R_H=N_R_H,
                                                                 N_theta=N_theta,
-                                                                use_R_H_profile_extrapolation=use_R_H_profile_extrapolation)
+                                                                use_R_H_profile_extrapolation=use_R_H_profile_extrapolation,
+                                                                use_sigma_gamma_gamma_fast=use_sigma_gamma_gamma_fast)
         self._configure_internal_absorption_on_blob(comp, self._internal_absorption_comp[comp]['pars'])
 
     def remove_internal_absorption(self,comp):
@@ -1989,6 +1994,7 @@ class JetBase(Model):
     def _configure_internal_absorption_on_blob(self, comp, pars):
         c_comp = self._get_internal_abs_component_on_blob(comp)
         new_use_rh = int(bool(pars.get('use_R_H_profile_extrapolation', False)))
+        new_use_sigma_fast = int(bool(pars.get('use_sigma_gamma_gamma_fast', False)))
         new_n_soft = int(pars.get('N_soft', 50))
         new_n_hard = int(pars.get('N_hard', 50))
         new_n_r_h = int(pars.get('N_R_H', 50))
@@ -1999,6 +2005,7 @@ class JetBase(Model):
         config_changed = (
             int(c_comp.is_enabled) != 1 or
             int(c_comp.use_R_H_profile_extrapolation) != new_use_rh or
+            int(c_comp.use_sigma_gamma_gamma_fast) != new_use_sigma_fast or
             int(c_comp.peak_mode) != 0 or
             int(c_comp.N_soft) != new_n_soft or
             int(c_comp.N_hard) != new_n_hard or
@@ -2011,6 +2018,7 @@ class JetBase(Model):
         if config_changed:
             c_comp.is_valid = 0
         c_comp.use_R_H_profile_extrapolation = new_use_rh
+        c_comp.use_sigma_gamma_gamma_fast = new_use_sigma_fast
         c_comp.peak_mode = 0
         c_comp.N_soft = new_n_soft
         c_comp.N_hard = new_n_hard

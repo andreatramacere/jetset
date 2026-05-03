@@ -63,6 +63,8 @@
 #define LIM_LOSS_KN 1.0
 #define min(a,b) (a<b) ? a:b;
 #define max(a,b) (a>b) ? a:b;
+#define GG_NTAB 512
+#define GG_A    4.0
 
 /**
  * \file Blazar_SED.h
@@ -151,6 +153,7 @@ struct internal_abs_component {
     int is_enabled;
     int is_valid;
     int use_R_H_profile_extrapolation;
+    int use_sigma_gamma_gamma_fast;
     int peak_mode;
     unsigned int N_soft;
     unsigned int N_hard;
@@ -167,6 +170,7 @@ struct internal_abs_store {
     struct internal_abs_component BLR;
     struct internal_abs_component DT;
     struct internal_abs_component Corona;
+    double gg_tab[GG_NTAB + 1];
 };
 
 struct blob_core {
@@ -729,6 +733,7 @@ void reset_internal_abs_store(struct blob *pt);
 void free_internal_abs_store(struct blob *pt);
 void recompute_internal_absorption_tau(struct blob *pt);
 double get_internal_abs_tau_at_nu(struct blob *pt, double nu_obs);
+void init_sigma_gamma_gamma_table(struct blob *pt);
 /*
  * Internal gamma-gamma absorption solver entry points.
  *

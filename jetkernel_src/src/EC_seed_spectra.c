@@ -1471,7 +1471,7 @@ static double integrand_f_nu_Corona_norm(struct blob *pt, double nu_Corona_disk_
 	return f_nu_Corona(pt, nu_Corona_disk_RF);
 }
 
-static double eval_R_blob_Corona(struct blob *pt)
+static double eval_dist_blob_corona(struct blob *pt)
 {
 	return fabs(pt->core.R_H - pt->Corona.R_H_Corona);
 }
@@ -1600,15 +1600,15 @@ double integrand_I_nu_Corona_disk_RF(struct blob *pt, double mu)
 double eval_I_nu_Corona_disk_RF(struct blob *pt, double nu_Corona_disk_RF)
 {
 	double (*pf)(struct blob *, double x);
-	double I, R_H_orig, R_blob_Corona_orig, c, R_H_test;
+	double I, R_H_orig, dist_blob_corona, c, R_H_test;
 
 	pt->core.nu_disk_RF = nu_Corona_disk_RF;
 	pf = &integrand_I_nu_Corona_disk_RF;
 
 	c = 1.0;
 	R_H_orig = pt->core.R_H;
-	R_blob_Corona_orig = eval_R_blob_Corona(pt);
-	if (R_blob_Corona_orig > pt->Corona.R_Corona_interp_start && R_blob_Corona_orig > 0.0)
+	dist_blob_corona = eval_dist_blob_corona(pt);
+	if (dist_blob_corona > pt->Corona.R_Corona_interp_start && dist_blob_corona > 0.0)
 	{
 		if (pt->core.R_H >= pt->Corona.R_H_Corona){
 			R_H_test = pt->Corona.R_H_Corona + pt->Corona.R_Corona_interp_val;
@@ -1617,7 +1617,7 @@ double eval_I_nu_Corona_disk_RF(struct blob *pt, double nu_Corona_disk_RF)
 			R_H_test = pt->Corona.R_H_Corona - pt->Corona.R_Corona_interp_val;
 		}
 		pt->core.R_H = max(R_H_test, 0.0);
-		c = (pt->Corona.R_Corona_interp_val / R_blob_Corona_orig) * (pt->Corona.R_Corona_interp_val / R_blob_Corona_orig);
+		c = (pt->Corona.R_Corona_interp_val / dist_blob_corona) * (pt->Corona.R_Corona_interp_val / dist_blob_corona);
 	}
 
 	set_Corona_angles(pt);
@@ -1631,15 +1631,15 @@ double eval_I_nu_Corona_disk_RF(struct blob *pt, double nu_Corona_disk_RF)
 double eval_I_nu_Corona_blob_RF(struct blob *pt, double nu_Corona_disk_RF)
 {
 	double (*pf)(struct blob *, double x);
-	double I, R_H_orig, R_blob_Corona_orig, c, R_H_test;
+	double I, R_H_orig, dist_blob_corona, c, R_H_test;
 
 	pt->core.nu_disk_RF = nu_Corona_disk_RF;
 	pf = &integrand_I_nu_Corona_blob_RF;
 
 	c = 1.0;
 	R_H_orig = pt->core.R_H;
-	R_blob_Corona_orig = eval_R_blob_Corona(pt);
-	if (R_blob_Corona_orig > pt->Corona.R_Corona_interp_start && R_blob_Corona_orig > 0.0)
+	dist_blob_corona = eval_dist_blob_corona(pt);
+	if (dist_blob_corona > pt->Corona.R_Corona_interp_start && dist_blob_corona > 0.0)
 	{
 		if (pt->core.R_H >= pt->Corona.R_H_Corona){
 			R_H_test = pt->Corona.R_H_Corona + pt->Corona.R_Corona_interp_val;
@@ -1648,7 +1648,7 @@ double eval_I_nu_Corona_blob_RF(struct blob *pt, double nu_Corona_disk_RF)
 			R_H_test = pt->Corona.R_H_Corona - pt->Corona.R_Corona_interp_val;
 		}
 		pt->core.R_H = max(R_H_test, 0.0);
-		c = (pt->Corona.R_Corona_interp_val / R_blob_Corona_orig) * (pt->Corona.R_Corona_interp_val / R_blob_Corona_orig);
+		c = (pt->Corona.R_Corona_interp_val / dist_blob_corona) * (pt->Corona.R_Corona_interp_val / dist_blob_corona);
 	}
 
 	set_Corona_angles(pt);
@@ -1661,12 +1661,12 @@ double eval_I_nu_Corona_blob_RF(struct blob *pt, double nu_Corona_disk_RF)
 
 void set_Corona_angles(struct blob *pt)
 {
-	double mu1, mu2, denom, R_blob_Corona;
+	double mu1, mu2, denom, dist_blob_corona;
 	mu1 = 1.0;
-	R_blob_Corona = eval_R_blob_Corona(pt);
-	denom = sqrt(R_blob_Corona * R_blob_Corona + pt->Corona.R_Corona * pt->Corona.R_Corona);
+	dist_blob_corona = eval_dist_blob_corona(pt);
+	denom = sqrt(dist_blob_corona * dist_blob_corona + pt->Corona.R_Corona * pt->Corona.R_Corona);
 	if (denom > 0.0){
-		mu2 = R_blob_Corona / denom;
+		mu2 = dist_blob_corona / denom;
 	}
 	else{
 		mu2 = 0.0;

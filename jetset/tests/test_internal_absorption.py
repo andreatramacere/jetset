@@ -37,12 +37,16 @@ class TestInternalAbsorption(TestBase):
         y_no_ia = np.asarray(j.eval(nu=nu, get_model=True), dtype=float)
         assert np.all(np.isfinite(y_no_ia))
 
-        j.enable_internal_absorption('DT', N_soft=12, N_hard=12, N_R_H=10, N_theta=10)
+        j.enable_internal_absorption('DT', N_soft=12, N_hard=12, N_R_H=10, N_theta=10, use_sigma_gamma_gamma_fast=True)
         j.enable_internal_absorption('BLR', N_soft=12, N_hard=12, N_R_H=10, N_theta=10)
         j.enable_internal_absorption('Corona', N_soft=12, N_hard=12, N_R_H=10, N_theta=10)
         assert 'DT' in j._internal_absorption_comp.keys()
         assert 'BLR' in j._internal_absorption_comp.keys()
         assert 'Corona' in j._internal_absorption_comp.keys()
+        assert j._internal_absorption_comp['DT']['pars']['use_sigma_gamma_gamma_fast'] is True
+        assert int(j._get_internal_abs_component_on_blob('DT').use_sigma_gamma_gamma_fast) == 1
+        assert int(j._get_internal_abs_component_on_blob('BLR').use_sigma_gamma_gamma_fast) == 0
+        assert int(j._get_internal_abs_component_on_blob('Corona').use_sigma_gamma_gamma_fast) == 0
 
         tau_dt, nu_dt = j.eval_internal_absorption(comp='DT', peak=False)
         tau_blr, nu_blr = j.eval_internal_absorption(comp='BLR', peak=False)
@@ -87,7 +91,8 @@ class TestInternalAbsorption(TestBase):
             N_hard=11,
             N_R_H=9,
             N_theta=8,
-            use_R_H_profile_extrapolation=True
+            use_R_H_profile_extrapolation=True,
+            use_sigma_gamma_gamma_fast=True
         )
         blr_cfg = dict(
             comp='BLR',
@@ -96,7 +101,8 @@ class TestInternalAbsorption(TestBase):
             N_hard=10,
             N_R_H=8,
             N_theta=7,
-            use_R_H_profile_extrapolation=False
+            use_R_H_profile_extrapolation=False,
+            use_sigma_gamma_gamma_fast=False
         )
         corona_cfg = dict(
             comp='Corona',
@@ -105,7 +111,8 @@ class TestInternalAbsorption(TestBase):
             N_hard=9,
             N_R_H=7,
             N_theta=6,
-            use_R_H_profile_extrapolation=True
+            use_R_H_profile_extrapolation=True,
+            use_sigma_gamma_gamma_fast=True
         )
 
         j.enable_internal_absorption(**dt_cfg)
@@ -125,7 +132,9 @@ class TestInternalAbsorption(TestBase):
             assert p['N_R_H'] == cfg['N_R_H']
             assert p['N_theta'] == cfg['N_theta']
             assert p['use_R_H_profile_extrapolation'] == cfg['use_R_H_profile_extrapolation']
+            assert p['use_sigma_gamma_gamma_fast'] == cfg['use_sigma_gamma_gamma_fast']
             np.testing.assert_allclose(p['nu_min'], cfg['nu_min'], rtol=1E-12)
+            assert int(new_j._get_internal_abs_component_on_blob(comp).use_sigma_gamma_gamma_fast) == int(cfg['use_sigma_gamma_gamma_fast'])
 
             tau, nu_tau = new_j.eval_internal_absorption(comp=comp)
             tau = np.asarray(tau, dtype=float)

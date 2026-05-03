@@ -44,6 +44,7 @@ static void init_internal_abs_component(struct internal_abs_component *comp) {
     comp->is_enabled = 0;
     comp->is_valid = 0;
     comp->use_R_H_profile_extrapolation = 0;
+    comp->use_sigma_gamma_gamma_fast = 0;
     comp->peak_mode = 0;
     comp->N_soft = 0;
     comp->N_hard = 0;
@@ -555,6 +556,62 @@ static double sigma_gamma_gamma(double s) {
     return (0.75 * SIGTH * 0.5) * (1.0 - beta2) * term;
 }
 
+/*
+ * Precompute sigma_{gamma-gamma}(s) on a compact transformed grid:
+ * u = (s - 1) / (s + GG_A),  s = (1 + GG_A*u) / (1 - u),  u in [0, 1).
+ */
+void init_sigma_gamma_gamma_table(struct blob *pt) {
+    int i;
+    double u;
+    double s;
+    struct internal_abs_store *store;
+
+    if (pt == NULL) {
+        return;
+    }
+
+    store = &(pt->core.internal_abs);
+    for (i = 0; i <= GG_NTAB; ++i) {
+        u = (double)i / (double)GG_NTAB;
+
+        if ((i == 0) || (i == GG_NTAB)) {
+            store->gg_tab[i] = 0.0;
+        } else {
+            s = (1.0 + GG_A * u) / (1.0 - u);
+            store->gg_tab[i] = sigma_gamma_gamma(s);
+        }
+    }
+}
+
+/* Fast linear-interpolated sigma_{gamma-gamma}(s) lookup on the precomputed table. */
+static inline double sigma_gamma_gamma_fast(const struct internal_abs_store *store, double s) {
+    double u;
+    double x;
+    double f;
+    int i;
+
+    if ((store == NULL) || (s < 1.0)) {
+        return 0.0;
+    }
+
+    u = (s - 1.0) / (s + GG_A);
+    if (u <= 0.0) {
+        return 0.0;
+    }
+    if (u >= 1.0) {
+        return 0.0;
+    }
+
+    x = u * GG_NTAB;
+    i = (int)x;
+    if (i >= GG_NTAB) {
+        return 0.0;
+    }
+
+    f = x - (double)i;
+    return store->gg_tab[i] * (1.0 - f) + store->gg_tab[i + 1] * f;
+}
+
 /* Replace a zero/undefined saved grid size with a conservative default value. */
 static unsigned int sanitize_grid_size(unsigned int value, unsigned int fallback_value) {
     if (value == 0U) {
@@ -649,7 +706,7 @@ int eval_internal_abs_tau(struct blob *pt,
     double R_H_saved;
     double R_H_saved_eval;
     double R_H_sample;
-    double R_blob_seed;
+    double distance_blob_from_seed_field_geom_center;
     double R_seed;
     double R_H_ref;
     double corona_side;
@@ -673,6 +730,7 @@ int eval_internal_abs_tau(struct blob *pt,
     double nu_src_max_eff;
     double nu_to_eps;
     double soft_scale;
+    double sigma_val;
     unsigned int N_soft_eff;
     unsigned int tau_size;
     unsigned int i;
@@ -684,6 +742,8 @@ int eval_internal_abs_tau(struct blob *pt,
     size_t rh_mu_base;
     size_t idx_soft;
     size_t idx_mu;
+    const struct internal_abs_store *ia_store;
+    int use_fast_sigma;
     struct internal_abs_eval_workspace ws;
 
     status = -1;
@@ -705,6 +765,9 @@ int eval_internal_abs_tau(struct blob *pt,
         return -1;
     }
 
+    ia_store = &(pt->core.internal_abs);
+    use_fast_sigma = (comp->use_sigma_gamma_gamma_fast != 0) ? 1 : 0;
+
     /* In peak mode the soft field is collapsed to one representative point. */
     N_soft_eff = (peak != 0) ? 1U : N_soft;
     if (N_soft_eff == 0U) {
@@ -724,6 +787,7 @@ int eval_internal_abs_tau(struct blob *pt,
     } else if (comp_id == INTABS_COMP_DT) {
         R_seed = pt->DT.R_DT;
     } else {
+        // better working with R_corona for disk geometry
         R_seed = pt->Corona.R_Corona;
     }
     if (R_seed <= 0.0) {
@@ -739,6 +803,7 @@ int eval_internal_abs_tau(struct blob *pt,
         if (R_H_saved_input >= pt->Corona.R_H_Corona) {
             corona_side = 1.0;
         } else {
+            //between corona and BH
             corona_side = -1.0;
         }
     } else {
@@ -772,12 +837,23 @@ int eval_internal_abs_tau(struct blob *pt,
     }
 
     /* Build one reference seed spectrum close to the source field scale. */
-    R_blob_seed = R_seed / 1000.0;
+    distance_blob_from_seed_field_geom_center = R_seed/1000;
     if (comp_id == INTABS_COMP_CORONA) {
-        R_H_sample = pt->Corona.R_H_Corona + corona_side * R_blob_seed;
+        /*
+         * In corona mode, this quantity is interpreted as distance from the
+         * corona center along the jet axis, not as absolute R_H.
+         */
+        distance_blob_from_seed_field_geom_center = R_seed;
+        /*
+         * Convert center-relative distance to absolute jet coordinate:
+         *   R_H = R_H_corona_center +/- distance_from_center
+         * `corona_side` preserves which side of the corona the blob is on.
+         */
+        R_H_sample = pt->Corona.R_H_Corona + corona_side * distance_blob_from_seed_field_geom_center;
         pt->core.R_H = fmax(R_H_sample, 0.0);
     } else {
-        pt->core.R_H = R_blob_seed;
+        /* BLR/DT path: integration coordinate is already absolute R_H. */
+        pt->core.R_H = distance_blob_from_seed_field_geom_center;
     }
     if (sample_seed_field(pt, comp_id, N_soft_eff, peak, ws.nu_soft_ref, ws.n_soft_ref) < 0) {
         return finalize_internal_abs_eval(pt, comp, R_H_saved_input, -1, &ws);
@@ -853,23 +929,47 @@ int eval_internal_abs_tau(struct blob *pt,
      * - convert soft photons to epsilon and dnu bins,
      * - build angular grid limits from source geometry.
      */
+    double denom,mu;
     for (ID_RH = 0; ID_RH < N_R_H; ++ID_RH) {
-        R_blob_seed = ws.R_H_grid[ID_RH];
+        distance_blob_from_seed_field_geom_center = ws.R_H_grid[ID_RH];
         if (comp_id == INTABS_COMP_CORONA) {
-            R_H_sample = pt->Corona.R_H_Corona + corona_side * R_blob_seed;
+            /*
+             * Corona grid is built in distance-from-center. Map each sample to
+             * absolute R_H before evaluating geometry-dependent seed fields.
+             */
+            R_H_sample = pt->Corona.R_H_Corona + corona_side * distance_blob_from_seed_field_geom_center;
             pt->core.R_H = fmax(R_H_sample, 0.0);
         } else {
-            pt->core.R_H = R_blob_seed;
+            pt->core.R_H = distance_blob_from_seed_field_geom_center;
         }
         rh_soft_base = ((size_t)ID_RH) * ((size_t)N_soft_eff);
 
         if (use_R_H_profile_extrapolation != 0) {
-            if (R_blob_seed <= R_seed) {
-                R_x = 1.0;
-            } else {
-                R_x = R_seed / R_blob_seed;
+
+            if (comp_id != INTABS_COMP_CORONA){
+                if (distance_blob_from_seed_field_geom_center <= R_seed) {
+                    scale = 1.0;
+                } else {
+                    denom = sqrt(distance_blob_from_seed_field_geom_center * distance_blob_from_seed_field_geom_center + R_seed *R_seed);
+                    if (denom > 0.0){
+                        mu = distance_blob_from_seed_field_geom_center / denom;
+                    }
+                    else{
+                        mu = 0.0;
+                    }
+                    scale = (1-mu);
+                    }
+            }else{
+                denom = sqrt(distance_blob_from_seed_field_geom_center * distance_blob_from_seed_field_geom_center + R_seed *R_seed);
+                if (denom > 0.0){
+                    mu = distance_blob_from_seed_field_geom_center / denom;
+                }
+                else{
+                    mu = 0.0;
+                }
+                scale = (1-mu)*pi;
             }
-            scale = R_x * R_x;
+            
 
             for (ID_SOFT = 0; ID_SOFT < N_soft_eff; ++ID_SOFT) {
                 idx_soft = rh_soft_base + (size_t)ID_SOFT;
@@ -899,10 +999,10 @@ int eval_internal_abs_tau(struct blob *pt,
         }
 
         mu_max = 1.0;
-        if (R_blob_seed < R_seed) {
+        if (distance_blob_from_seed_field_geom_center < R_seed) {
             mu_min = -1.0;
         } else {
-            ratio = R_seed / R_blob_seed;
+            ratio = R_seed / distance_blob_from_seed_field_geom_center;
             if (ratio > 1.0) {
                 ratio = 1.0;
             }
@@ -966,7 +1066,12 @@ int eval_internal_abs_tau(struct blob *pt,
                     s_value = soft_scale * ws.eps_soft[idx_soft];
                     integrand = 0.0;
                     if (s_value >= 1.0) {
-                        integrand = sigma_gamma_gamma(s_value) * ws.n_soft[idx_soft] * one_minus_mu;
+                        if (use_fast_sigma != 0) {
+                            sigma_val = sigma_gamma_gamma_fast(ia_store, s_value);
+                        } else {
+                            sigma_val = sigma_gamma_gamma(s_value);
+                        }
+                        integrand = sigma_val * ws.n_soft[idx_soft] * one_minus_mu;
                     }
 
                     if (ID_SOFT > 0U) {

@@ -70,6 +70,7 @@ static void copy_internal_abs_component_config(struct internal_abs_component *ds
     dst->is_enabled = src->is_enabled;
     dst->is_valid = 0;
     dst->use_R_H_profile_extrapolation = src->use_R_H_profile_extrapolation;
+    dst->use_sigma_gamma_gamma_fast = src->use_sigma_gamma_gamma_fast;
     dst->peak_mode = src->peak_mode;
     dst->N_soft = src->N_soft;
     dst->N_hard = src->N_hard;
@@ -136,6 +137,7 @@ static int merge_internal_abs_component_result(struct internal_abs_component *ds
 
     dst->is_enabled = src->is_enabled;
     dst->use_R_H_profile_extrapolation = src->use_R_H_profile_extrapolation;
+    dst->use_sigma_gamma_gamma_fast = src->use_sigma_gamma_gamma_fast;
     dst->peak_mode = src->peak_mode;
     dst->N_soft = src->N_soft;
     dst->N_hard = src->N_hard;
@@ -643,6 +645,7 @@ struct blob MakeBlob() {
     spettro_root.emitters.Integrand_over_gamma_grid=NULL;
 
     reset_internal_abs_store(&spettro_root);
+    init_sigma_gamma_gamma_table(&spettro_root);
     
     return spettro_root;
 }
