@@ -2323,7 +2323,7 @@ class JetBase(Model):
 
         return x_p, y_p
 
-    def set_num_c_threads(self,N=None,verbose=True):
+    def set_num_c_threads(self,N=None,verbose=False):
         """Configure the number of C backend threads used by jetkernel.
 
         Parameters

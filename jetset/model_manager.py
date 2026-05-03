@@ -773,7 +773,7 @@ class FitModel(Model):
         
         return self._sed_tables_dict
 
-    def set_num_c_threads(self,num_c_threads=None,verbose=True):
+    def set_num_c_threads(self,num_c_threads=None,verbose=False):
         """Set C-backend thread count on all compatible model components.
 
         Parameters
