@@ -289,6 +289,92 @@ static int finalize_internal_abs_eval(struct blob *pt,
     return status;
 }
 
+static int finalize_internal_abs_total_eval(struct blob *pt,
+                                            struct internal_abs_component *comp_tot,
+                                            double R_H_saved_input,
+                                            int status,
+                                            double *nu_soft_ref[3],
+                                            double *n_soft_ref[3],
+                                            double *nu_soft_tmp[3],
+                                            double *n_soft_tmp[3],
+                                            double *nu_soft_common,
+                                            double *eps_soft_common,
+                                            double *dnu_soft_common,
+                                            double *x_grid,
+                                            double *dx_grid,
+                                            double *mu_grid,
+                                            double *dmu_grid,
+                                            double *one_minus_mu_grid,
+                                            double *sum_soft_mu,
+                                            double *comp_soft_interp,
+                                            double *comp_mu_min_grid,
+                                            double *tmp_resampled) {
+    unsigned int c;
+
+    if (pt != NULL) {
+        pt->core.R_H = R_H_saved_input;
+    }
+
+    if ((status < 0) && (comp_tot != NULL)) {
+        comp_tot->is_valid = 0;
+        comp_tot->is_enabled = 0;
+    }
+
+    for (c = 0U; c < 3U; ++c) {
+        if (nu_soft_ref[c] != NULL) {
+            free(nu_soft_ref[c]);
+        }
+        if (n_soft_ref[c] != NULL) {
+            free(n_soft_ref[c]);
+        }
+        if (nu_soft_tmp[c] != NULL) {
+            free(nu_soft_tmp[c]);
+        }
+        if (n_soft_tmp[c] != NULL) {
+            free(n_soft_tmp[c]);
+        }
+    }
+
+    if (nu_soft_common != NULL) {
+        free(nu_soft_common);
+    }
+    if (eps_soft_common != NULL) {
+        free(eps_soft_common);
+    }
+    if (dnu_soft_common != NULL) {
+        free(dnu_soft_common);
+    }
+    if (x_grid != NULL) {
+        free(x_grid);
+    }
+    if (dx_grid != NULL) {
+        free(dx_grid);
+    }
+    if (mu_grid != NULL) {
+        free(mu_grid);
+    }
+    if (dmu_grid != NULL) {
+        free(dmu_grid);
+    }
+    if (one_minus_mu_grid != NULL) {
+        free(one_minus_mu_grid);
+    }
+    if (sum_soft_mu != NULL) {
+        free(sum_soft_mu);
+    }
+    if (comp_soft_interp != NULL) {
+        free(comp_soft_interp);
+    }
+    if (comp_mu_min_grid != NULL) {
+        free(comp_mu_min_grid);
+    }
+    if (tmp_resampled != NULL) {
+        free(tmp_resampled);
+    }
+
+    return status;
+}
+
 /*
  * Build the target seed-photon intensity field and expose the sampled DRF
  * arrays plus active frequency bounds for the requested component.
@@ -648,6 +734,63 @@ static double get_component_seed_radius(const struct blob *pt, intabs_comp_t com
     return radius;
 }
 
+struct internal_abs_geometry_ctx {
+    double R_seed;
+    double R_H_ref;
+    double corona_side;
+};
+
+static void resolve_component_geometry_ctx(const struct blob *pt,
+                                           intabs_comp_t comp_id,
+                                           double R_H_saved_input,
+                                           double R_H_saved_fallback,
+                                           struct internal_abs_geometry_ctx *ctx) {
+    if (ctx == NULL) {
+        return;
+    }
+
+    ctx->R_seed = get_component_seed_radius(pt, comp_id, R_H_saved_fallback);
+
+    if ((pt != NULL) && (comp_id == INTABS_COMP_CORONA)) {
+        ctx->R_H_ref = fabs(R_H_saved_fallback - pt->Corona.R_H_Corona);
+        if (R_H_saved_input >= pt->Corona.R_H_Corona) {
+            ctx->corona_side = 1.0;
+        } else {
+            ctx->corona_side = -1.0;
+        }
+    } else {
+        ctx->R_H_ref = R_H_saved_fallback;
+        ctx->corona_side = 1.0;
+    }
+
+    if (ctx->R_H_ref <= 0.0) {
+        ctx->R_H_ref = 1.0;
+    }
+}
+
+static double get_seed_reference_distance(intabs_comp_t comp_id, const struct internal_abs_geometry_ctx *ctx) {
+    double distance_ref;
+
+    if (ctx == NULL) {
+        return 1.0;
+    }
+
+    if (comp_id == INTABS_COMP_CORONA) {
+        distance_ref = ctx->R_seed;
+    } else {
+        distance_ref = ctx->R_seed / 1000.0;
+    }
+
+    if (distance_ref <= 0.0) {
+        distance_ref = ctx->R_H_ref;
+    }
+    if (distance_ref <= 0.0) {
+        distance_ref = 1.0;
+    }
+
+    return distance_ref;
+}
+
 static void set_component_sampling_position(struct blob *pt,
                                             intabs_comp_t comp_id,
                                             double distance_from_center,
@@ -935,6 +1078,7 @@ static int eval_internal_abs_tau_total(struct blob *pt,
     double *comp_soft_interp;
     double *comp_mu_min_grid;
     double *tmp_resampled;
+    struct internal_abs_geometry_ctx geom_ctx;
 
     status = -1;
     n_enabled = 0U;
@@ -1016,42 +1160,32 @@ static int eval_internal_abs_tau_total(struct blob *pt,
             use_extrapolation_all = 0;
         }
 
-        comp_R_seed[c] = get_component_seed_radius(pt, comp_ids[c], R_H_saved);
-        if (comp_ids[c] == INTABS_COMP_CORONA) {
-            comp_R_H_ref[c] = fabs(R_H_saved - pt->Corona.R_H_Corona);
-            if (R_H_saved_input >= pt->Corona.R_H_Corona) {
-                comp_corona_side[c] = 1.0;
-            } else {
-                comp_corona_side[c] = -1.0;
-            }
-        } else {
-            comp_R_H_ref[c] = R_H_saved;
-            comp_corona_side[c] = 1.0;
-        }
-        if (comp_R_H_ref[c] <= 0.0) {
-            comp_R_H_ref[c] = 1.0;
-        }
+        resolve_component_geometry_ctx(pt, comp_ids[c], R_H_saved_input, R_H_saved, &geom_ctx);
+        comp_R_seed[c] = geom_ctx.R_seed;
+        comp_R_H_ref[c] = geom_ctx.R_H_ref;
+        comp_corona_side[c] = geom_ctx.corona_side;
 
         nu_soft_ref[c] = (double *)calloc((size_t)comp_N_soft_eff[c], sizeof(double));
         n_soft_ref[c] = (double *)calloc((size_t)comp_N_soft_eff[c], sizeof(double));
         nu_soft_tmp[c] = (double *)calloc((size_t)comp_N_soft_eff[c], sizeof(double));
         n_soft_tmp[c] = (double *)calloc((size_t)comp_N_soft_eff[c], sizeof(double));
         if ((nu_soft_ref[c] == NULL) || (n_soft_ref[c] == NULL) || (nu_soft_tmp[c] == NULL) || (n_soft_tmp[c] == NULL)) {
-            goto cleanup;
+            return finalize_internal_abs_total_eval(pt, comp_tot, R_H_saved_input, -1,
+                                                    nu_soft_ref, n_soft_ref, nu_soft_tmp, n_soft_tmp,
+                                                    nu_soft_common, eps_soft_common, dnu_soft_common,
+                                                    x_grid, dx_grid, mu_grid, dmu_grid, one_minus_mu_grid,
+                                                    sum_soft_mu, comp_soft_interp, comp_mu_min_grid, tmp_resampled);
         }
 
-        if (comp_ids[c] == INTABS_COMP_CORONA) {
-            distance_ref = comp_R_seed[c];
-        } else {
-            distance_ref = comp_R_seed[c] / 1000.0;
-        }
-        if (distance_ref <= 0.0) {
-            distance_ref = comp_R_H_ref[c];
-        }
+        distance_ref = get_seed_reference_distance(comp_ids[c], &geom_ctx);
 
         set_component_sampling_position(pt, comp_ids[c], distance_ref, comp_corona_side[c]);
         if (sample_seed_field(pt, comp_ids[c], comp_N_soft_eff[c], comp_peak_mode[c], nu_soft_ref[c], n_soft_ref[c]) < 0) {
-            goto cleanup;
+            return finalize_internal_abs_total_eval(pt, comp_tot, R_H_saved_input, -1,
+                                                    nu_soft_ref, n_soft_ref, nu_soft_tmp, n_soft_tmp,
+                                                    nu_soft_common, eps_soft_common, dnu_soft_common,
+                                                    x_grid, dx_grid, mu_grid, dmu_grid, one_minus_mu_grid,
+                                                    sum_soft_mu, comp_soft_interp, comp_mu_min_grid, tmp_resampled);
         }
 
         for (i = 0U; i < comp_N_soft_eff[c]; ++i) {
@@ -1070,7 +1204,11 @@ static int eval_internal_abs_tau_total(struct blob *pt,
     }
 
     if ((nu_soft_min_common <= 0.0) || (nu_soft_max_common <= 0.0)) {
-        goto cleanup;
+        return finalize_internal_abs_total_eval(pt, comp_tot, R_H_saved_input, -1,
+                                                nu_soft_ref, n_soft_ref, nu_soft_tmp, n_soft_tmp,
+                                                nu_soft_common, eps_soft_common, dnu_soft_common,
+                                                x_grid, dx_grid, mu_grid, dmu_grid, one_minus_mu_grid,
+                                                sum_soft_mu, comp_soft_interp, comp_mu_min_grid, tmp_resampled);
     }
 
     if (nu_min > 0.0) {
@@ -1096,7 +1234,11 @@ static int eval_internal_abs_tau_total(struct blob *pt,
     }
 
     if (ensure_tau_arrays(comp_tot, tau_size) < 0) {
-        goto cleanup;
+        return finalize_internal_abs_total_eval(pt, comp_tot, R_H_saved_input, -1,
+                                                nu_soft_ref, n_soft_ref, nu_soft_tmp, n_soft_tmp,
+                                                nu_soft_common, eps_soft_common, dnu_soft_common,
+                                                x_grid, dx_grid, mu_grid, dmu_grid, one_minus_mu_grid,
+                                                sum_soft_mu, comp_soft_interp, comp_mu_min_grid, tmp_resampled);
     }
 
     if (tau_size == 1U) {
@@ -1125,7 +1267,11 @@ static int eval_internal_abs_tau_total(struct blob *pt,
     if ((nu_soft_common == NULL) || (eps_soft_common == NULL) || (dnu_soft_common == NULL) || (x_grid == NULL) || (dx_grid == NULL) ||
         (mu_grid == NULL) || (dmu_grid == NULL) || (one_minus_mu_grid == NULL) || (sum_soft_mu == NULL) ||
         (comp_soft_interp == NULL) || (comp_mu_min_grid == NULL) || (tmp_resampled == NULL)) {
-        goto cleanup;
+        return finalize_internal_abs_total_eval(pt, comp_tot, R_H_saved_input, -1,
+                                                nu_soft_ref, n_soft_ref, nu_soft_tmp, n_soft_tmp,
+                                                nu_soft_common, eps_soft_common, dnu_soft_common,
+                                                x_grid, dx_grid, mu_grid, dmu_grid, one_minus_mu_grid,
+                                                sum_soft_mu, comp_soft_interp, comp_mu_min_grid, tmp_resampled);
     }
 
     if (N_soft == 1U) {
@@ -1178,7 +1324,11 @@ static int eval_internal_abs_tau_total(struct blob *pt,
                 }
             } else {
                 if (sample_seed_field(pt, comp_ids[c], comp_N_soft_eff[c], comp_peak_mode[c], nu_soft_tmp[c], n_soft_tmp[c]) < 0) {
-                    goto cleanup;
+                    return finalize_internal_abs_total_eval(pt, comp_tot, R_H_saved_input, -1,
+                                                            nu_soft_ref, n_soft_ref, nu_soft_tmp, n_soft_tmp,
+                                                            nu_soft_common, eps_soft_common, dnu_soft_common,
+                                                            x_grid, dx_grid, mu_grid, dmu_grid, one_minus_mu_grid,
+                                                            sum_soft_mu, comp_soft_interp, comp_mu_min_grid, tmp_resampled);
                 }
             }
 
@@ -1309,68 +1459,11 @@ static int eval_internal_abs_tau_total(struct blob *pt,
     comp_tot->nu_src_max = nu_src_max_eff;
 
     status = (int)tau_size;
-
-cleanup:
-    pt->core.R_H = R_H_saved_input;
-
-    if (status < 0) {
-        comp_tot->is_valid = 0;
-        comp_tot->is_enabled = 0;
-    }
-
-    for (c = 0U; c < 3U; ++c) {
-        if (nu_soft_ref[c] != NULL) {
-            free(nu_soft_ref[c]);
-        }
-        if (n_soft_ref[c] != NULL) {
-            free(n_soft_ref[c]);
-        }
-        if (nu_soft_tmp[c] != NULL) {
-            free(nu_soft_tmp[c]);
-        }
-        if (n_soft_tmp[c] != NULL) {
-            free(n_soft_tmp[c]);
-        }
-    }
-
-    if (nu_soft_common != NULL) {
-        free(nu_soft_common);
-    }
-    if (eps_soft_common != NULL) {
-        free(eps_soft_common);
-    }
-    if (dnu_soft_common != NULL) {
-        free(dnu_soft_common);
-    }
-    if (x_grid != NULL) {
-        free(x_grid);
-    }
-    if (dx_grid != NULL) {
-        free(dx_grid);
-    }
-    if (mu_grid != NULL) {
-        free(mu_grid);
-    }
-    if (dmu_grid != NULL) {
-        free(dmu_grid);
-    }
-    if (one_minus_mu_grid != NULL) {
-        free(one_minus_mu_grid);
-    }
-    if (sum_soft_mu != NULL) {
-        free(sum_soft_mu);
-    }
-    if (comp_soft_interp != NULL) {
-        free(comp_soft_interp);
-    }
-    if (comp_mu_min_grid != NULL) {
-        free(comp_mu_min_grid);
-    }
-    if (tmp_resampled != NULL) {
-        free(tmp_resampled);
-    }
-
-    return status;
+    return finalize_internal_abs_total_eval(pt, comp_tot, R_H_saved_input, status,
+                                            nu_soft_ref, n_soft_ref, nu_soft_tmp, n_soft_tmp,
+                                            nu_soft_common, eps_soft_common, dnu_soft_common,
+                                            x_grid, dx_grid, mu_grid, dmu_grid, one_minus_mu_grid,
+                                            sum_soft_mu, comp_soft_interp, comp_mu_min_grid, tmp_resampled);
 }
 
 /*
@@ -1410,15 +1503,10 @@ int eval_internal_abs_tau(struct blob *pt,
     struct internal_abs_component *comp;
     double R_H_saved_input;
     double R_H_saved;
-    double R_H_saved_eval;
-    double R_H_sample;
     double distance_blob_from_seed_field_geom_center;
-    double R_seed;
     double R_H_ref;
-    double corona_side;
     double nu_min_eff;
     double nu_soft_max;
-    double ratio;
     double mu_min;
     double mu_max;
     double one_minus_mu;
@@ -1431,7 +1519,6 @@ int eval_internal_abs_tau(struct blob *pt,
     double mu_integral;
     double prev_rh_integral;
     double tau_gamma;
-    double R_x;
     double scale;
     double nu_src_max_eff;
     double nu_to_eps;
@@ -1451,6 +1538,7 @@ int eval_internal_abs_tau(struct blob *pt,
     const struct internal_abs_store *ia_store;
     int use_fast_sigma;
     struct internal_abs_eval_workspace ws;
+    struct internal_abs_geometry_ctx geom_ctx;
 
     status = -1;
     init_internal_abs_eval_workspace(&ws);
@@ -1495,38 +1583,7 @@ int eval_internal_abs_tau(struct blob *pt,
         R_H_saved = 1.0;
     }
 
-    /* Select characteristic size of the target photon field. */
-    if (comp_id == INTABS_COMP_BLR) {
-        R_seed = pt->BLR.R_BLR_out;
-    } else if (comp_id == INTABS_COMP_DT) {
-        R_seed = pt->DT.R_DT;
-    } else {
-        // better working with R_corona for disk geometry
-        R_seed = pt->Corona.R_Corona;
-    }
-    if (R_seed <= 0.0) {
-        R_seed = R_H_saved;
-    }
-
-    /*
-     * Corona integration is done in distance from the corona center and keeps
-     * track of which side of the corona the blob is located on.
-     */
-    if (comp_id == INTABS_COMP_CORONA) {
-        R_H_saved_eval = fabs(R_H_saved - pt->Corona.R_H_Corona);
-        if (R_H_saved_input >= pt->Corona.R_H_Corona) {
-            corona_side = 1.0;
-        } else {
-            //between corona and BH
-            corona_side = -1.0;
-        }
-    } else {
-        R_H_saved_eval = R_H_saved;
-        corona_side = 1.0;
-    }
-    if (R_H_saved_eval <= 0.0) {
-        R_H_saved_eval = 1.0;
-    }
+    resolve_component_geometry_ctx(pt, comp_id, R_H_saved_input, R_H_saved, &geom_ctx);
 
     /* Allocate all temporary grids used by the 3D trapezoidal integration. */
     ws.nu_soft = (double *)calloc((size_t)N_R_H * (size_t)N_soft_eff, sizeof(double));
@@ -1551,24 +1608,8 @@ int eval_internal_abs_tau(struct blob *pt,
     }
 
     /* Build one reference seed spectrum close to the source field scale. */
-    distance_blob_from_seed_field_geom_center = R_seed/1000;
-    if (comp_id == INTABS_COMP_CORONA) {
-        /*
-         * In corona mode, this quantity is interpreted as distance from the
-         * corona center along the jet axis, not as absolute R_H.
-         */
-        distance_blob_from_seed_field_geom_center = R_seed;
-        /*
-         * Convert center-relative distance to absolute jet coordinate:
-         *   R_H = R_H_corona_center +/- distance_from_center
-         * `corona_side` preserves which side of the corona the blob is on.
-         */
-        R_H_sample = pt->Corona.R_H_Corona + corona_side * distance_blob_from_seed_field_geom_center;
-        pt->core.R_H = fmax(R_H_sample, 0.0);
-    } else {
-        /* BLR/DT path: integration coordinate is already absolute R_H. */
-        pt->core.R_H = distance_blob_from_seed_field_geom_center;
-    }
+    distance_blob_from_seed_field_geom_center = get_seed_reference_distance(comp_id, &geom_ctx);
+    set_component_sampling_position(pt, comp_id, distance_blob_from_seed_field_geom_center, geom_ctx.corona_side);
     if (sample_seed_field(pt, comp_id, N_soft_eff, peak, ws.nu_soft_ref, ws.n_soft_ref) < 0) {
         return finalize_internal_abs_eval(pt, comp, R_H_saved_input, -1, &ws);
     }
@@ -1628,7 +1669,7 @@ int eval_internal_abs_tau(struct blob *pt,
     }
 
     /* Build propagation-distance grid (R_H) over up to 3 decades. */
-    R_H_ref = R_H_saved_eval;
+    R_H_ref = geom_ctx.R_H_ref;
     if (N_R_H == 1U) {
         ws.R_H_grid[0] = R_H_ref;
     } else {
@@ -1643,47 +1684,15 @@ int eval_internal_abs_tau(struct blob *pt,
      * - convert soft photons to epsilon and dnu bins,
      * - build angular grid limits from source geometry.
      */
-    double denom,mu;
     for (ID_RH = 0; ID_RH < N_R_H; ++ID_RH) {
         distance_blob_from_seed_field_geom_center = ws.R_H_grid[ID_RH];
-        if (comp_id == INTABS_COMP_CORONA) {
-            /*
-             * Corona grid is built in distance-from-center. Map each sample to
-             * absolute R_H before evaluating geometry-dependent seed fields.
-             */
-            R_H_sample = pt->Corona.R_H_Corona + corona_side * distance_blob_from_seed_field_geom_center;
-            pt->core.R_H = fmax(R_H_sample, 0.0);
-        } else {
-            pt->core.R_H = distance_blob_from_seed_field_geom_center;
-        }
+        set_component_sampling_position(pt, comp_id, distance_blob_from_seed_field_geom_center, geom_ctx.corona_side);
         rh_soft_base = ((size_t)ID_RH) * ((size_t)N_soft_eff);
 
         if (use_R_H_profile_extrapolation != 0) {
-
-            if (comp_id != INTABS_COMP_CORONA){
-                if (distance_blob_from_seed_field_geom_center <= R_seed) {
-                    scale = 1.0;
-                } else {
-                    denom = sqrt(distance_blob_from_seed_field_geom_center * distance_blob_from_seed_field_geom_center + R_seed *R_seed);
-                    if (denom > 0.0){
-                        mu = distance_blob_from_seed_field_geom_center / denom;
-                    }
-                    else{
-                        mu = 0.0;
-                    }
-                    scale = (1-mu);
-                    }
-            }else{
-                denom = sqrt(distance_blob_from_seed_field_geom_center * distance_blob_from_seed_field_geom_center + R_seed *R_seed);
-                if (denom > 0.0){
-                    mu = distance_blob_from_seed_field_geom_center / denom;
-                }
-                else{
-                    mu = 0.0;
-                }
-                scale = (1-mu)*pi;
-            }
-            
+            scale = compute_seed_scale_extrapolated(comp_id,
+                                                    distance_blob_from_seed_field_geom_center,
+                                                    geom_ctx.R_seed);
 
             for (ID_SOFT = 0; ID_SOFT < N_soft_eff; ++ID_SOFT) {
                 idx_soft = rh_soft_base + (size_t)ID_SOFT;
@@ -1713,18 +1722,7 @@ int eval_internal_abs_tau(struct blob *pt,
         }
 
         mu_max = 1.0;
-        if (distance_blob_from_seed_field_geom_center < R_seed) {
-            mu_min = -1.0;
-        } else {
-            ratio = R_seed / distance_blob_from_seed_field_geom_center;
-            if (ratio > 1.0) {
-                ratio = 1.0;
-            }
-            if (ratio < 0.0) {
-                ratio = 0.0;
-            }
-            mu_min = sqrt(1.0 - ratio * ratio);
-        }
+        mu_min = compute_mu_min_for_geometry(distance_blob_from_seed_field_geom_center, geom_ctx.R_seed);
 
         rh_mu_base = ((size_t)ID_RH) * ((size_t)N_theta);
         if (N_theta == 1U) {
@@ -1826,20 +1824,14 @@ int eval_internal_abs_tau(struct blob *pt,
 }
 
 /*
- * Recompute one combined tau table from all currently enabled components.
- * The solver first sums soft-photon fields and then runs a single integral.
+ * Recompute tau tables for all components currently marked as enabled,
+ * preserving per-component numerical settings whenever available.
  */
 void recompute_internal_absorption_tau(struct blob *pt) {
     struct internal_abs_component *comp_blr;
     struct internal_abs_component *comp_dt;
     struct internal_abs_component *comp_corona;
     double nu_src_max;
-    double nu_min_total;
-    unsigned int N_soft_total;
-    unsigned int N_hard_total;
-    unsigned int N_R_H_total;
-    unsigned int N_theta_total;
-    int any_enabled;
     int status;
 
     if (pt == NULL) {
@@ -1852,124 +1844,66 @@ void recompute_internal_absorption_tau(struct blob *pt) {
     }
 
     comp_blr = &(pt->core.internal_abs.BLR);
-    comp_dt = &(pt->core.internal_abs.DT);
-    comp_corona = &(pt->core.internal_abs.Corona);
-
-    any_enabled = 0;
-    nu_min_total = 0.0;
-    N_soft_total = 0U;
-    N_hard_total = 0U;
-    N_R_H_total = 0U;
-    N_theta_total = 0U;
-
     if (comp_blr->is_enabled != 0) {
-        any_enabled = 1;
-        if (sanitize_grid_size(comp_blr->N_soft, 50U) > N_soft_total) {
-            N_soft_total = sanitize_grid_size(comp_blr->N_soft, 50U);
+        status = eval_internal_abs_tau(pt,
+                                       "BLR",
+                                       comp_blr->nu_min,
+                                       sanitize_grid_size(comp_blr->N_soft, 50U),
+                                       sanitize_grid_size(comp_blr->N_hard, 50U),
+                                       sanitize_grid_size(comp_blr->N_R_H, 50U),
+                                       sanitize_grid_size(comp_blr->N_theta, 50U),
+                                       comp_blr->use_R_H_profile_extrapolation,
+                                       comp_blr->peak_mode,
+                                       nu_src_max);
+        if (status < 0) {
+            comp_blr->is_valid = 0;
         }
-        if (sanitize_grid_size(comp_blr->N_hard, 50U) > N_hard_total) {
-            N_hard_total = sanitize_grid_size(comp_blr->N_hard, 50U);
-        }
-        if (sanitize_grid_size(comp_blr->N_R_H, 50U) > N_R_H_total) {
-            N_R_H_total = sanitize_grid_size(comp_blr->N_R_H, 50U);
-        }
-        if (sanitize_grid_size(comp_blr->N_theta, 50U) > N_theta_total) {
-            N_theta_total = sanitize_grid_size(comp_blr->N_theta, 50U);
-        }
-        if ((comp_blr->nu_min > 0.0) && ((nu_min_total <= 0.0) || (comp_blr->nu_min < nu_min_total))) {
-            nu_min_total = comp_blr->nu_min;
-        }
-        comp_blr->is_valid = 0;
     }
+
+    comp_dt = &(pt->core.internal_abs.DT);
     if (comp_dt->is_enabled != 0) {
-        any_enabled = 1;
-        if (sanitize_grid_size(comp_dt->N_soft, 50U) > N_soft_total) {
-            N_soft_total = sanitize_grid_size(comp_dt->N_soft, 50U);
+        status = eval_internal_abs_tau(pt,
+                                       "DT",
+                                       comp_dt->nu_min,
+                                       sanitize_grid_size(comp_dt->N_soft, 50U),
+                                       sanitize_grid_size(comp_dt->N_hard, 50U),
+                                       sanitize_grid_size(comp_dt->N_R_H, 50U),
+                                       sanitize_grid_size(comp_dt->N_theta, 50U),
+                                       comp_dt->use_R_H_profile_extrapolation,
+                                       comp_dt->peak_mode,
+                                       nu_src_max);
+        if (status < 0) {
+            comp_dt->is_valid = 0;
         }
-        if (sanitize_grid_size(comp_dt->N_hard, 50U) > N_hard_total) {
-            N_hard_total = sanitize_grid_size(comp_dt->N_hard, 50U);
-        }
-        if (sanitize_grid_size(comp_dt->N_R_H, 50U) > N_R_H_total) {
-            N_R_H_total = sanitize_grid_size(comp_dt->N_R_H, 50U);
-        }
-        if (sanitize_grid_size(comp_dt->N_theta, 50U) > N_theta_total) {
-            N_theta_total = sanitize_grid_size(comp_dt->N_theta, 50U);
-        }
-        if ((comp_dt->nu_min > 0.0) && ((nu_min_total <= 0.0) || (comp_dt->nu_min < nu_min_total))) {
-            nu_min_total = comp_dt->nu_min;
-        }
-        comp_dt->is_valid = 0;
     }
+
+    comp_corona = &(pt->core.internal_abs.Corona);
     if (comp_corona->is_enabled != 0) {
-        any_enabled = 1;
-        if (sanitize_grid_size(comp_corona->N_soft, 50U) > N_soft_total) {
-            N_soft_total = sanitize_grid_size(comp_corona->N_soft, 50U);
+        status = eval_internal_abs_tau(pt,
+                                       "Corona",
+                                       comp_corona->nu_min,
+                                       sanitize_grid_size(comp_corona->N_soft, 50U),
+                                       sanitize_grid_size(comp_corona->N_hard, 50U),
+                                       sanitize_grid_size(comp_corona->N_R_H, 50U),
+                                       sanitize_grid_size(comp_corona->N_theta, 50U),
+                                       comp_corona->use_R_H_profile_extrapolation,
+                                       comp_corona->peak_mode,
+                                       nu_src_max);
+        if (status < 0) {
+            comp_corona->is_valid = 0;
         }
-        if (sanitize_grid_size(comp_corona->N_hard, 50U) > N_hard_total) {
-            N_hard_total = sanitize_grid_size(comp_corona->N_hard, 50U);
-        }
-        if (sanitize_grid_size(comp_corona->N_R_H, 50U) > N_R_H_total) {
-            N_R_H_total = sanitize_grid_size(comp_corona->N_R_H, 50U);
-        }
-        if (sanitize_grid_size(comp_corona->N_theta, 50U) > N_theta_total) {
-            N_theta_total = sanitize_grid_size(comp_corona->N_theta, 50U);
-        }
-        if ((comp_corona->nu_min > 0.0) && ((nu_min_total <= 0.0) || (comp_corona->nu_min < nu_min_total))) {
-            nu_min_total = comp_corona->nu_min;
-        }
-        comp_corona->is_valid = 0;
-    }
-
-    if (any_enabled == 0) {
-        pt->core.internal_abs.Total.is_enabled = 0;
-        pt->core.internal_abs.Total.is_valid = 0;
-        return;
-    }
-
-    if (N_soft_total == 0U) {
-        N_soft_total = 50U;
-    }
-    if (N_hard_total == 0U) {
-        N_hard_total = 50U;
-    }
-    if (N_R_H_total == 0U) {
-        N_R_H_total = 50U;
-    }
-    if (N_theta_total == 0U) {
-        N_theta_total = 50U;
-    }
-
-    status = eval_internal_abs_tau_total(pt,
-                                         nu_min_total,
-                                         N_soft_total,
-                                         N_hard_total,
-                                         N_R_H_total,
-                                         N_theta_total,
-                                         nu_src_max);
-    if (status < 0) {
-        pt->core.internal_abs.Total.is_valid = 0;
-        pt->core.internal_abs.Total.is_enabled = 0;
     }
 }
 
 /*
- * Return total internal opacity at `nu_obs`.
- * If a combined cache is available, use it directly; otherwise fallback to
- * BLR/DT/Corona interpolation and sum. Invalid totals are clamped to 0.
+ * Return total internal opacity at `nu_obs` by summing BLR/DT/Corona
+ * interpolated tau contributions. Invalid/non-finite totals are clamped to 0.
  */
 double get_internal_abs_tau_at_nu(struct blob *pt, double nu_obs) {
     double tau_tot;
 
     if (pt == NULL) {
         return 0.0;
-    }
-
-    if ((pt->core.internal_abs.Total.is_enabled != 0) && (pt->core.internal_abs.Total.is_valid != 0)) {
-        tau_tot = interp_tau_component(&(pt->core.internal_abs.Total), nu_obs);
-        if (!isfinite(tau_tot) || (tau_tot < 0.0)) {
-            return 0.0;
-        }
-        return tau_tot;
     }
 
     tau_tot = 0.0;
