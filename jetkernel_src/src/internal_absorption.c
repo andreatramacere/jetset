@@ -5,6 +5,26 @@
 
 #include "Blazar_SED.h"
 
+/*
+ * Internal gamma-gamma absorption workflow
+ * ---------------------------------------
+ * 1) `reset_internal_abs_store`/`free_internal_abs_store` initialize and release
+ *    per-component caches for BLR, DT, and Corona.
+ * 2) `eval_internal_abs_tau` computes tau(nu) for one component:
+ *    - resolve the target component and geometry,
+ *    - sample the soft-photon seed field (`sample_seed_field`),
+ *    - build integration grids in path length (R_H), angle (mu), and seed frequency,
+ *    - integrate sigma_gg * n_soft over (nu_soft, mu, R_H) with trapezoids.
+ * 3) Results are stored in `pt->core.internal_abs.<component>` (`nu_tau`, `tau`,
+ *    flags, and numeric setup) and can be recomputed by
+ *    `recompute_internal_absorption_tau`.
+ * 4) `get_internal_abs_tau_at_nu` interpolates each enabled component in log-log
+ *    space and returns the summed opacity at a requested observed frequency.
+ *
+ * Implementation note: during evaluation the solver temporarily changes
+ * `pt->core.R_H` to sample geometry-dependent fields and always restores it.
+ */
+
 #define INTABS_MIN_Y 1.0e-200
 #define INTABS_MIN_ONE_MINUS_MU 1.0e-20
 
@@ -15,6 +35,7 @@ typedef enum {
     INTABS_COMP_CORONA = 3
 } intabs_comp_t;
 
+/* Reset one component bookkeeping and cached tau pointers to a known empty state. */
 static void init_internal_abs_component(struct internal_abs_component *comp) {
     if (comp == NULL) {
         return;
@@ -35,6 +56,7 @@ static void init_internal_abs_component(struct internal_abs_component *comp) {
     comp->tau = NULL;
 }
 
+/* Free one component tau cache (if allocated) and mark the cache as invalid. */
 static void free_internal_abs_component(struct internal_abs_component *comp) {
     if (comp == NULL) {
         return;
@@ -52,6 +74,10 @@ static void free_internal_abs_component(struct internal_abs_component *comp) {
     comp->is_valid = 0;
 }
 
+/*
+ * Reset all internal-absorption component slots on a blob.
+ * This does not free memory; it zeroes the component metadata/handles.
+ */
 void reset_internal_abs_store(struct blob *pt) {
     if (pt == NULL) {
         return;
@@ -61,6 +87,7 @@ void reset_internal_abs_store(struct blob *pt) {
     init_internal_abs_component(&(pt->core.internal_abs.Corona));
 }
 
+/* Release all per-component tau caches stored in the blob. */
 void free_internal_abs_store(struct blob *pt) {
     if (pt == NULL) {
         return;
@@ -70,6 +97,7 @@ void free_internal_abs_store(struct blob *pt) {
     free_internal_abs_component(&(pt->core.internal_abs.Corona));
 }
 
+/* Map the user-facing seed field name to the internal component identifier. */
 static intabs_comp_t parse_internal_abs_component(const char *seed_photons_name) {
     if (seed_photons_name == NULL) {
         return INTABS_COMP_INVALID;
@@ -86,6 +114,7 @@ static intabs_comp_t parse_internal_abs_component(const char *seed_photons_name)
     return INTABS_COMP_INVALID;
 }
 
+/* Return the selected internal-absorption component struct inside `pt`. */
 static struct internal_abs_component *get_internal_abs_component_ptr(struct blob *pt, intabs_comp_t comp_id) {
     if (pt == NULL) {
         return NULL;
@@ -104,6 +133,10 @@ static struct internal_abs_component *get_internal_abs_component_ptr(struct blob
     return NULL;
 }
 
+/*
+ * Ensure `comp->nu_tau` and `comp->tau` exist with the requested size.
+ * Reallocates if size changed; zeroes existing arrays if size is unchanged.
+ */
 static int ensure_tau_arrays(struct internal_abs_component *comp, unsigned int tau_size) {
     if (comp == NULL) {
         return -1;
@@ -163,6 +196,7 @@ struct internal_abs_eval_workspace {
     double *n_soft_tmp;
 };
 
+/* Initialize all workspace pointers to NULL so cleanup is always safe. */
 static void init_internal_abs_eval_workspace(struct internal_abs_eval_workspace *ws) {
     if (ws == NULL) {
         return;
@@ -170,6 +204,7 @@ static void init_internal_abs_eval_workspace(struct internal_abs_eval_workspace 
     memset(ws, 0, sizeof(*ws));
 }
 
+/* Free every temporary array used by the internal-absorption integration. */
 static void free_internal_abs_eval_workspace(struct internal_abs_eval_workspace *ws) {
     if (ws == NULL) {
         return;
@@ -228,6 +263,10 @@ static void free_internal_abs_eval_workspace(struct internal_abs_eval_workspace 
     }
 }
 
+/*
+ * Shared solver exit path: restore `pt->core.R_H`, free temporaries,
+ * and invalidate component cache on errors.
+ */
 static int finalize_internal_abs_eval(struct blob *pt,
                                       struct internal_abs_component *comp,
                                       double R_H_saved,
@@ -243,6 +282,10 @@ static int finalize_internal_abs_eval(struct blob *pt,
     return status;
 }
 
+/*
+ * Build the target seed-photon intensity field and expose the sampled DRF
+ * arrays plus active frequency bounds for the requested component.
+ */
 static void build_seed_spectrum(struct blob *pt,
                                 intabs_comp_t comp_id,
                                 double **nu_grid,
@@ -272,6 +315,15 @@ static void build_seed_spectrum(struct blob *pt,
     }
 }
 
+/*
+ * Sample the current seed field on a compact positive-frequency grid.
+ *
+ * Modes:
+ * - `peak != 0`: return a one-point representation around the peak frequency
+ *   with a normalization derived from the integrated spectrum.
+ * - `peak == 0`: filter very weak tails, then log-resample to `N_soft` points
+ *   using log-log interpolation.
+ */
 static int sample_seed_field(struct blob *pt,
                              intabs_comp_t comp_id,
                              unsigned int N_soft,
@@ -484,6 +536,7 @@ static int sample_seed_field(struct blob *pt,
     return 0;
 }
 
+/* Pair-production cross section sigma_{gamma-gamma}(s) for center-of-mass energy `s`. */
 static double sigma_gamma_gamma(double s) {
     double beta;
     double beta2;
@@ -502,6 +555,7 @@ static double sigma_gamma_gamma(double s) {
     return (0.75 * SIGTH * 0.5) * (1.0 - beta2) * term;
 }
 
+/* Replace a zero/undefined saved grid size with a conservative default value. */
 static unsigned int sanitize_grid_size(unsigned int value, unsigned int fallback_value) {
     if (value == 0U) {
         return fallback_value;
@@ -509,6 +563,10 @@ static unsigned int sanitize_grid_size(unsigned int value, unsigned int fallback
     return value;
 }
 
+/*
+ * Interpolate one component tau table at `nu_obs` in log-log space.
+ * Returns a tiny positive floor outside the low-energy side to avoid zeros.
+ */
 static double interp_tau_component(const struct internal_abs_component *comp, double nu_obs) {
     const double eps_tau = 1.0e-300;
     unsigned int ID;
@@ -553,16 +611,26 @@ static double interp_tau_component(const struct internal_abs_component *comp, do
 }
 
 /*
- * Core internal-absorption integration routine.
+ * Core internal-absorption integration routine for one seed component.
  *
- * This low-level solver updates pt->core.internal_abs.<component> in place
- * (nu_tau/tau/is_valid/config). During integration it temporarily changes
- * pt->core.R_H to sample the seed field along the path, then restores the
- * original R_H before returning.
+ * Inputs control the quadrature grids:
+ * - `N_soft`: soft-photon frequency samples (or one sample in peak mode),
+ * - `N_hard`: number of gamma-ray frequencies where tau is stored,
+ * - `N_R_H`: samples along propagation distance,
+ * - `N_theta`: angular samples in cos(theta)=mu.
  *
- * Public IA evaluation paths are isolated at higher level (PyInterface.c):
- * they run this solver on a worker blob and merge only IA outputs back to
- * the live blob.
+ * Integration flow:
+ * 1) validate arguments, select component, and prepare work arrays;
+ * 2) build a reference soft field and derive `nu_min` if needed;
+ * 3) build gamma-ray grid `comp->nu_tau` from `nu_min` to `nu_src_max`;
+ * 4) for each R_H sample, obtain seed spectra (resampled or extrapolated),
+ *    convert to dimensionless energies, and build mu-grid geometry;
+ * 5) for each gamma frequency, integrate trapezoidally over
+ *    nu_soft -> mu -> R_H, using `sigma_gamma_gamma(s)`;
+ * 6) store tau and cache setup into `pt->core.internal_abs.<component>`.
+ *
+ * During evaluation `pt->core.R_H` is temporarily changed for sampling and
+ * restored on every return path by `finalize_internal_abs_eval`.
  */
 int eval_internal_abs_tau(struct blob *pt,
                           const char *seed_photons_name,
@@ -621,6 +689,7 @@ int eval_internal_abs_tau(struct blob *pt,
     status = -1;
     init_internal_abs_eval_workspace(&ws);
 
+    /* Basic pointer/component checks. */
     if (pt == NULL) {
         return -1;
     }
@@ -631,21 +700,25 @@ int eval_internal_abs_tau(struct blob *pt,
         return -1;
     }
 
+    /* All integration dimensions must be strictly positive. */
     if ((N_soft == 0U) || (N_hard == 0U) || (N_R_H == 0U) || (N_theta == 0U)) {
         return -1;
     }
 
+    /* In peak mode the soft field is collapsed to one representative point. */
     N_soft_eff = (peak != 0) ? 1U : N_soft;
     if (N_soft_eff == 0U) {
         N_soft_eff = 1U;
     }
 
+    /* Save original position; keep a positive fallback for geometric scales. */
     R_H_saved_input = pt->core.R_H;
     R_H_saved = R_H_saved_input;
     if (R_H_saved <= 0.0) {
         R_H_saved = 1.0;
     }
 
+    /* Select characteristic size of the target photon field. */
     if (comp_id == INTABS_COMP_BLR) {
         R_seed = pt->BLR.R_BLR_out;
     } else if (comp_id == INTABS_COMP_DT) {
@@ -657,6 +730,10 @@ int eval_internal_abs_tau(struct blob *pt,
         R_seed = R_H_saved;
     }
 
+    /*
+     * Corona integration is done in distance from the corona center and keeps
+     * track of which side of the corona the blob is located on.
+     */
     if (comp_id == INTABS_COMP_CORONA) {
         R_H_saved_eval = fabs(R_H_saved - pt->Corona.R_H_Corona);
         if (R_H_saved_input >= pt->Corona.R_H_Corona) {
@@ -672,6 +749,7 @@ int eval_internal_abs_tau(struct blob *pt,
         R_H_saved_eval = 1.0;
     }
 
+    /* Allocate all temporary grids used by the 3D trapezoidal integration. */
     ws.nu_soft = (double *)calloc((size_t)N_R_H * (size_t)N_soft_eff, sizeof(double));
     ws.n_soft = (double *)calloc((size_t)N_R_H * (size_t)N_soft_eff, sizeof(double));
     ws.eps_soft = (double *)calloc((size_t)N_R_H * (size_t)N_soft_eff, sizeof(double));
@@ -693,6 +771,7 @@ int eval_internal_abs_tau(struct blob *pt,
         return finalize_internal_abs_eval(pt, comp, R_H_saved_input, -1, &ws);
     }
 
+    /* Build one reference seed spectrum close to the source field scale. */
     R_blob_seed = R_seed / 1000.0;
     if (comp_id == INTABS_COMP_CORONA) {
         R_H_sample = pt->Corona.R_H_Corona + corona_side * R_blob_seed;
@@ -704,8 +783,13 @@ int eval_internal_abs_tau(struct blob *pt,
         return finalize_internal_abs_eval(pt, comp, R_H_saved_input, -1, &ws);
     }
 
+    /* Conversion nu -> dimensionless epsilon = h nu / (m_e c^2). */
     nu_to_eps = HPLANCK / MEC2;
 
+    /*
+     * If caller did not provide nu_min, estimate it from the highest soft
+     * frequency so the pair-production threshold can be reached.
+     */
     if (nu_min > 0.0) {
         nu_min_eff = nu_min;
     } else {
@@ -725,6 +809,7 @@ int eval_internal_abs_tau(struct blob *pt,
         nu_min_eff = 1.0e20;
     }
 
+    /* Ensure hard-photon range is valid; collapse to one point if inverted. */
     nu_src_max_eff = nu_src_max;
     if (nu_src_max_eff <= 0.0) {
         nu_src_max_eff = nu_min_eff;
@@ -736,10 +821,12 @@ int eval_internal_abs_tau(struct blob *pt,
         tau_size = N_hard;
     }
 
+    /* Allocate/resize component output arrays nu_tau and tau. */
     if (ensure_tau_arrays(comp, tau_size) < 0) {
         return finalize_internal_abs_eval(pt, comp, R_H_saved_input, -1, &ws);
     }
 
+    /* Build the hard-photon grid where tau will be stored (log-spaced). */
     if (tau_size == 1U) {
         comp->nu_tau[0] = nu_min_eff;
     } else {
@@ -750,6 +837,7 @@ int eval_internal_abs_tau(struct blob *pt,
         }
     }
 
+    /* Build propagation-distance grid (R_H) over up to 3 decades. */
     R_H_ref = R_H_saved_eval;
     if (N_R_H == 1U) {
         ws.R_H_grid[0] = R_H_ref;
@@ -759,6 +847,12 @@ int eval_internal_abs_tau(struct blob *pt,
         }
     }
 
+    /*
+     * For each R_H:
+     * - get soft field (either full resampling or 1/R^2 extrapolation),
+     * - convert soft photons to epsilon and dnu bins,
+     * - build angular grid limits from source geometry.
+     */
     for (ID_RH = 0; ID_RH < N_R_H; ++ID_RH) {
         R_blob_seed = ws.R_H_grid[ID_RH];
         if (comp_id == INTABS_COMP_CORONA) {
@@ -837,11 +931,18 @@ int eval_internal_abs_tau(struct blob *pt,
         }
     }
 
+    /* Precompute R_H bin widths for trapezoidal integration along the path. */
     ws.d_rh_grid[0] = 0.0;
     for (ID_RH = 1; ID_RH < N_R_H; ++ID_RH) {
         ws.d_rh_grid[ID_RH] = ws.R_H_grid[ID_RH] - ws.R_H_grid[ID_RH - 1U];
     }
 
+    /*
+     * Nested integration order for each gamma energy:
+     * 1) integrate over soft frequency,
+     * 2) integrate over angle mu,
+     * 3) integrate over path length R_H.
+     */
     for (ID_GAMMA = 0; ID_GAMMA < tau_size; ++ID_GAMMA) {
         eps_gamma = comp->nu_tau[ID_GAMMA] * nu_to_eps;
         tau_gamma = 0.0;
@@ -889,6 +990,7 @@ int eval_internal_abs_tau(struct blob *pt,
         comp->tau[ID_GAMMA] = 2.0 * pi * tau_gamma;
     }
 
+    /* Persist computed tau table and the settings used to produce it. */
     comp->is_enabled = 1;
     comp->is_valid = 1;
     comp->use_R_H_profile_extrapolation = use_R_H_profile_extrapolation;
@@ -904,6 +1006,10 @@ int eval_internal_abs_tau(struct blob *pt,
     return finalize_internal_abs_eval(pt, comp, R_H_saved_input, status, &ws);
 }
 
+/*
+ * Recompute tau tables for all components currently marked as enabled,
+ * preserving per-component numerical settings whenever available.
+ */
 void recompute_internal_absorption_tau(struct blob *pt) {
     struct internal_abs_component *comp_blr;
     struct internal_abs_component *comp_dt;
@@ -972,6 +1078,10 @@ void recompute_internal_absorption_tau(struct blob *pt) {
     }
 }
 
+/*
+ * Return total internal opacity at `nu_obs` by summing BLR/DT/Corona
+ * interpolated tau contributions. Invalid/non-finite totals are clamped to 0.
+ */
 double get_internal_abs_tau_at_nu(struct blob *pt, double nu_obs) {
     double tau_tot;
 
