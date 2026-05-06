@@ -748,7 +748,7 @@ void init_sigma_gamma_gamma_table(struct blob *pt);
  *   and merges only IA outputs back to the live blob.
  *   This is the path used by current Python APIs and Run_SED.
  */
-int eval_internal_abs_tau(struct blob *pt,
+int eval_internal_abs_tau(struct blob *pt_cloned,
                           const char *seed_photons_name,
                           double nu_min,
                           unsigned int N_soft,

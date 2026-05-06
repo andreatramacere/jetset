@@ -1429,11 +1429,11 @@ class JetBase(Model):
 
     def enable_internal_absorption(self,
                                 comp,
-                                nu_min=1E20,
+                                nu_min=None,
                                 N_soft=50,
-                                N_hard=50,
-                                N_R_H=50,
-                                N_theta=50,
+                                N_hard=20,
+                                N_R_H=20,
+                                N_theta=30,
                                 use_R_H_profile_extrapolation=False,
                                 use_sigma_gamma_gamma_fast=False):
         

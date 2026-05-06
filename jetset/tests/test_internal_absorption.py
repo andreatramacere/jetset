@@ -51,6 +51,12 @@ class TestInternalAbsorption(TestBase):
         tau_dt, nu_dt = j.eval_internal_absorption(comp='DT', peak=False)
         tau_blr, nu_blr = j.eval_internal_absorption(comp='BLR', peak=False)
         tau_corona, nu_corona = j.eval_internal_absorption(comp='Corona', peak=False)
+        raw_tau_blr_peak, _ = j._internal_absorption_comp['BLR']['obj'].eval_tau_photons(
+            nu_src=np.logspace(20, 29, 80),
+            R_H=j.parameters.R_H.val,
+            peak=True,
+            use_R_H_profile_extrapolation=j._internal_absorption_comp['BLR']['pars']['use_R_H_profile_extrapolation'],
+        )
 
         for tau_arr, nu_arr in ((tau_dt, nu_dt), (tau_blr, nu_blr), (tau_corona, nu_corona)):
             tau_arr = np.asarray(tau_arr, dtype=float)
@@ -62,6 +68,13 @@ class TestInternalAbsorption(TestBase):
             assert np.all(np.isfinite(tau_arr))
             assert np.all(np.isfinite(nu_arr))
             assert np.all(tau_arr >= 0.0)
+        raw_tau_blr_peak = np.asarray(raw_tau_blr_peak, dtype=float)
+        assert raw_tau_blr_peak.size > 0
+        assert np.all(np.isfinite(raw_tau_blr_peak))
+        assert np.any(raw_tau_blr_peak > 0.0)
+        c_blr_peak = j._get_internal_abs_component_on_blob('BLR')
+        assert int(c_blr_peak.peak_mode) == 1
+        assert int(c_blr_peak.N_soft) == 1
 
         y_ia = np.asarray(j.eval(nu=nu, get_model=True), dtype=float)
         assert np.all(np.isfinite(y_ia))
