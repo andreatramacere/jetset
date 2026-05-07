@@ -857,11 +857,6 @@ void Init(struct blob *pt_base, double luminosity_distance) {
     //set file number counter
     pt_base->core.OUT_FILE = 1;
 
-
-    InitRadiative(pt_base,1);
-    pt_base->Disk.R_Sw = eval_R_Sw(pt_base->Disk.M_BH);
-    pt_base->Disk.R_ext = pt_base->Disk.R_ext_Sw * pt_base->Disk.R_Sw;
-
     if (luminosity_distance<0){
 
         pt_base->core.dist = dist_lum_cm(pt_base->core.z_cosm);
@@ -869,6 +864,11 @@ void Init(struct blob *pt_base, double luminosity_distance) {
     else{
         pt_base->core.dist = luminosity_distance;
     }
+    InitRadiative(pt_base,1);
+    pt_base->Disk.R_Sw = eval_R_Sw(pt_base->Disk.M_BH);
+    pt_base->Disk.R_ext = pt_base->Disk.R_ext_Sw * pt_base->Disk.R_Sw;
+
+   
 
     if (pt_base->core.verbose) {
         printf("Distanza rigorosa=%e in Mpc \n", pt_base->core.dist/(1.0e6*1.0e2));
