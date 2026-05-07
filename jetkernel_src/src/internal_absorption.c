@@ -762,77 +762,149 @@ static double get_component_seed_radius(const struct blob *pt_cloned, intabs_com
 
 struct internal_abs_geometry_ctx {
     double R_seed;
-    double R_H_ref;
+    double R_H_ref_for_scaling;
     double corona_side;
 };
 
 static void resolve_component_geometry_ctx(const struct blob *pt_cloned,
                                            intabs_comp_t comp_id,
-                                           double R_H_saved_input,
-                                           double R_H_saved_fallback,
+                                           double R_H_grid_start,
                                            struct internal_abs_geometry_ctx *ctx) {
     if (ctx == NULL) {
         return;
     }
 
-    ctx->R_seed = get_component_seed_radius(pt_cloned, comp_id, R_H_saved_fallback);
+    ctx->R_seed = get_component_seed_radius(pt_cloned, comp_id, R_H_grid_start);
 
     if ((pt_cloned != NULL) && (comp_id == INTABS_COMP_CORONA)) {
-        ctx->R_H_ref = fabs(R_H_saved_fallback - pt_cloned->Corona.R_H_Corona);
-        if (R_H_saved_input >= pt_cloned->Corona.R_H_Corona) {
+        double _check_side_val;
+        _check_side_val = fabs(R_H_grid_start - pt_cloned->Corona.R_H_Corona);
+        ctx->R_H_ref_for_scaling=ctx->R_seed;
+        if (_check_side_val >= pt_cloned->Corona.R_H_Corona) {
             ctx->corona_side = 1.0;
         } else {
             ctx->corona_side = -1.0;
         }
     } else {
-        ctx->R_H_ref = R_H_saved_fallback;
-        ctx->corona_side = 1.0;
+        ctx->R_H_ref_for_scaling = ctx->R_seed/1000000;
+        ctx->corona_side = 0;
     }
 
-    if (ctx->R_H_ref <= 0.0) {
-        ctx->R_H_ref = 1.0;
+    if (ctx->R_H_ref_for_scaling <= 0.0) {
+        ctx->R_H_ref_for_scaling = R_H_grid_start;
     }
 }
 
-static double get_seed_reference_distance(intabs_comp_t comp_id, const struct internal_abs_geometry_ctx *ctx) {
-    double distance_ref;
+/*
+   Dilogarithm Li_2(x) for -1 <= x <= 1.
 
-    if (ctx == NULL) {
-        return 1.0;
+   Uses:
+     Li_2(x) = sum_{k=1}^inf x^k / k^2
+
+   and the identity near x = 1:
+     Li_2(x) = pi^2/6 - ln(x) ln(1-x) - Li_2(1-x)
+
+   This is sufficient because F(x) below only calls Li_2
+   with arguments in [-1, 1].
+*/
+double dilog_unit(double x)
+{
+    const double tol = 1e-14;
+    double sum = 0.0;
+    double term;
+    double xk = x;
+
+    if (x < -1.0 || x > 1.0) {
+        fprintf(stderr, "dilog_unit: x must be in [-1, 1]\n");
+        return NAN;
     }
 
-    if (comp_id == INTABS_COMP_CORONA) {
-        distance_ref = ctx->R_seed;
-    } else {
-        distance_ref = 1;
+    if (x == 1.0) {
+        return pi * pi / 6.0;
     }
 
-    if (distance_ref <= 0.0) {
-        distance_ref = ctx->R_H_ref;
-    }
-    if (distance_ref <= 0.0) {
-        distance_ref = 1.0;
+    if (x == -1.0) {
+        return -pi * pi / 12.0;
     }
 
-    return distance_ref;
+    /*
+       Improve convergence close to x = 1.
+    */
+    if (x > 0.7) {
+        return pi * pi / 6.0
+             - log(x) * log(1.0 - x)
+             - dilog_unit(1.0 - x);
+    }
+
+    for (int k = 1; k < 100000; k++) {
+        term = xk / ((double)k * (double)k);
+        sum += term;
+
+        if (fabs(term) < tol) {
+            break;
+        }
+
+        xk *= x;
+    }
+
+    return sum;
 }
 
-static void set_component_sampling_position(struct blob *pt_cloned,
-                                            intabs_comp_t comp_id,
-                                            double distance_from_center,
-                                            double corona_side) {
-    double R_H_sample;
 
-    if (pt_cloned == NULL) {
-        return;
+/*
+   Real-valued F(x):
+
+     F(x) = Re[Li_2(x) - Li_2(-x)]
+
+   Piecewise form:
+     x <= 1:
+       F(x) = Li_2(x) - Li_2(-x)
+
+     x > 1:
+       F(x) = pi^2/2 - Li_2(1/x) + Li_2(-1/x)
+*/
+double F_BLR(double x)
+{
+    if (x < 0.0) {
+        fprintf(stderr, "F_BLR: x must be non-negative\n");
+        return NAN;
     }
 
-    if (comp_id == INTABS_COMP_CORONA) {
-        R_H_sample = pt_cloned->Corona.R_H_Corona + corona_side * distance_from_center;
-        pt_cloned->core.R_H = fmax(R_H_sample, 0.0);
+    if (x <= 1.0) {
+        return dilog_unit(x) - dilog_unit(-x);
     } else {
-        pt_cloned->core.R_H = distance_from_center;
+        double invx = 1.0 / x;
+        return pi * pi / 2.0
+             - dilog_unit(invx)
+             + dilog_unit(-invx);
     }
+}
+
+
+/*
+   Analytic BLR energy density for uniform BLR luminosity
+   per unit radius.
+
+   Inputs:
+     r      : distance from black hole [cm]
+     R_in   : inner BLR radius [cm]
+     R_out  : outer BLR radius [cm]
+     L_BLR  : total BLR luminosity [erg/s]
+
+   Output:
+     u_BLR  : radiation energy density [erg/cm^3]
+*/
+double scale_BLR_uniform(double r, double R_in, double R_out)
+{
+    double delta_R = R_out - R_in;
+    double f1,f2;
+
+    f1= 1/ (4.0 * pi  * delta_R)* (1.0 / R_in - 1.0 / R_out);
+    
+
+    f2= 1/ (8.0 * pi * r * delta_R) * (F_BLR(R_out / r) - F_BLR(R_in / r));
+
+    return f2/f1;
 }
 
 
@@ -864,14 +936,8 @@ static double compute_seed_scale_extrapolated(const struct blob *pt_cloned, inta
             return 1.0;
         }
 
-        denom = sqrt(distance_from_center * distance_from_center + R_seed * R_seed);
-        if (denom > 0.0) {
-            mu = distance_from_center / denom;
-        } else {
-            mu = 0.0;
-        }
-       
-        scale = (1.0 - mu);
+
+        scale=scale_BLR_uniform(distance_from_center,pt_cloned->BLR.R_BLR_in,pt_cloned->BLR.R_BLR_out);
         return (scale > 0.0) ? scale : INTABS_MIN_Y;
     }
     if (comp_id == INTABS_COMP_CORONA){
@@ -1197,473 +1263,7 @@ static double interp_tau_component(const struct internal_abs_component *comp, do
     return pow(10.0, log_tau);
 }
 
-/*
- * Build one combined internal-absorption tau table by summing all enabled
- * seed fields first, then running a single 3D integration.
- *
- * Integration flow:
- * 1) discover enabled components and gather one reference soft spectrum per
- *    component at a geometry-aware reference position;
- * 2) build the common hard-photon grid (nu_tau) and common soft grid;
- * 3) for each R_H and mu sample, combine component soft fields into one
- *    effective soft density grid;
- * 4) integrate with the shared nu_soft -> mu -> R_H kernel and store tau.
- */
-static int eval_internal_abs_tau_total(struct blob *pt_cloned,
-                                       double nu_min,
-                                       unsigned int N_soft,
-                                       unsigned int N_hard,
-                                       unsigned int N_R_H,
-                                       unsigned int N_theta,
-                                       double nu_src_max) {
-    int status;
-    unsigned int n_enabled;
-    unsigned int c;
-    unsigned int i;
-    unsigned int ID_RH;
-    unsigned int ID_THETA;
-    unsigned int ID_SOFT;
-    intabs_comp_t comp_ids[3];
-    struct internal_abs_component *comp_cfg[3];
-    struct internal_abs_component *comp_tot;
-    double comp_R_seed[3];
-    double comp_R_H_ref[3];
-    double comp_corona_side[3];
-    double comp_mu_min;
-    int comp_use_extrapolation[3];
-    int comp_peak_mode[3];
-    unsigned int comp_N_soft_eff[3];
-    double *nu_soft_ref[3];
-    double *n_soft_ref[3];
-    double *nu_soft_tmp[3];
-    double *n_soft_tmp[3];
-    double R_H_saved_input;
-    double R_H_saved;
-    double distance_ref;
-    double distance_from_center;
-    double nu_min_eff;
-    double nu_src_max_eff;
-    double nu_soft_min_common;
-    double nu_soft_max_common;
-    double nu_soft_max_ref;
-    double log_nu_min;
-    double log_nu_max;
-    int use_fast_sigma;
-    int use_extrapolation_all;
-    double mu_min_global;
-    double mu_max;
-    double sigma_val;
-    double nu_to_eps;
-    unsigned int tau_size;
-    size_t idx_mu;
-    size_t idx_sum_base;
-    size_t idx_comp_soft;
-    size_t idx_comp_mu;
-    const struct internal_abs_store *ia_store;
-    double *nu_soft_common;
-    double *eps_soft_common;
-    double *dnu_soft_common;
-    double *x_grid;
-    double *dx_grid;
-    double *mu_grid;
-    double *dmu_grid;
-    double *one_minus_mu_grid;
-    double *sum_soft_mu;
-    double *comp_soft_interp;
-    double *comp_mu_min_grid;
-    double *tmp_resampled;
-    struct internal_abs_geometry_ctx geom_ctx;
 
-    /* Step 0: initialize pointers/counters so every early return is safe. */
-    status = -1;
-    n_enabled = 0U;
-    ia_store = NULL;
-    nu_soft_common = NULL;
-    eps_soft_common = NULL;
-    dnu_soft_common = NULL;
-    x_grid = NULL;
-    dx_grid = NULL;
-    mu_grid = NULL;
-    dmu_grid = NULL;
-    one_minus_mu_grid = NULL;
-    sum_soft_mu = NULL;
-    comp_soft_interp = NULL;
-    comp_mu_min_grid = NULL;
-    tmp_resampled = NULL;
-
-    for (c = 0U; c < 3U; ++c) {
-        nu_soft_ref[c] = NULL;
-        n_soft_ref[c] = NULL;
-        nu_soft_tmp[c] = NULL;
-        n_soft_tmp[c] = NULL;
-    }
-
-    /* Step 1: validate basic inputs and clear the cached Total slot. */
-    if ((pt_cloned == NULL) || (N_soft == 0U) || (N_hard == 0U) || (N_R_H == 0U) || (N_theta == 0U)) {
-        return -1;
-    }
-    reset_intabs_seed_build_guard();
-
-    comp_tot = &(pt_cloned->core.internal_abs.Total);
-    comp_tot->is_enabled = 0;
-    comp_tot->is_valid = 0;
-
-    /* Step 2: collect the enabled seed components to be combined. */
-    if (pt_cloned->core.internal_abs.BLR.is_enabled) {
-        comp_ids[n_enabled] = INTABS_COMP_BLR;
-        comp_cfg[n_enabled] = &(pt_cloned->core.internal_abs.BLR);
-        n_enabled += 1U;
-    }
-    if (pt_cloned->core.internal_abs.DT.is_enabled) {
-        comp_ids[n_enabled] = INTABS_COMP_DT;
-        comp_cfg[n_enabled] = &(pt_cloned->core.internal_abs.DT);
-        n_enabled += 1U;
-    }
-    if (pt_cloned->core.internal_abs.Corona.is_enabled) {
-        comp_ids[n_enabled] = INTABS_COMP_CORONA;
-        comp_cfg[n_enabled] = &(pt_cloned->core.internal_abs.Corona);
-        n_enabled += 1U;
-    }
-
-    if (n_enabled == 0U) {
-        return 0;
-    }
-
-    ia_store = &(pt_cloned->core.internal_abs);
-
-    R_H_saved_input = pt_cloned->core.R_H;
-    R_H_saved = R_H_saved_input;
-    if (R_H_saved <= 0.0) {
-        R_H_saved = 1.0;
-    }
-
-    /* Aggregated flags: downgraded if any enabled component requests it. */
-    use_fast_sigma = 1;
-    use_extrapolation_all = 1;
-    nu_soft_min_common = 0.0;
-    nu_soft_max_common = 0.0;
-    nu_soft_max_ref = 0.0;
-
-    /* Step 3: prepare each component reference spectrum and geometry context. */
-    for (c = 0U; c < n_enabled; ++c) {
-        /* Keep each component's own sampling/extrapolation mode. */
-        comp_peak_mode[c] = (comp_cfg[c]->peak_mode != 0) ? 1 : 0;
-        comp_use_extrapolation[c] = (comp_cfg[c]->use_R_H_profile_extrapolation != 0) ? 1 : 0;
-        comp_N_soft_eff[c] = (comp_peak_mode[c] != 0) ? INTABS_PEAK_SAMPLES : N_soft;
-        if (comp_N_soft_eff[c] == 0U) {
-            comp_N_soft_eff[c] = 1U;
-        }
-
-        if (comp_cfg[c]->use_sigma_gamma_gamma_fast == 0) {
-            use_fast_sigma = 0;
-        }
-        if (comp_use_extrapolation[c] == 0) {
-            use_extrapolation_all = 0;
-        }
-
-        resolve_component_geometry_ctx(pt_cloned, comp_ids[c], R_H_saved_input, R_H_saved, &geom_ctx);
-        comp_R_seed[c] = geom_ctx.R_seed;
-        comp_R_H_ref[c] = geom_ctx.R_H_ref;
-        comp_corona_side[c] = geom_ctx.corona_side;
-
-        nu_soft_ref[c] = (double *)calloc((size_t)comp_N_soft_eff[c], sizeof(double));
-        n_soft_ref[c] = (double *)calloc((size_t)comp_N_soft_eff[c], sizeof(double));
-        nu_soft_tmp[c] = (double *)calloc((size_t)comp_N_soft_eff[c], sizeof(double));
-        n_soft_tmp[c] = (double *)calloc((size_t)comp_N_soft_eff[c], sizeof(double));
-        if ((nu_soft_ref[c] == NULL) || (n_soft_ref[c] == NULL) || (nu_soft_tmp[c] == NULL) || (n_soft_tmp[c] == NULL)) {
-            return finalize_internal_abs_total_eval(pt_cloned, comp_tot, R_H_saved_input, -1,
-                                                    nu_soft_ref, n_soft_ref, nu_soft_tmp, n_soft_tmp,
-                                                    nu_soft_common, eps_soft_common, dnu_soft_common,
-                                                    x_grid, dx_grid, mu_grid, dmu_grid, one_minus_mu_grid,
-                                                    sum_soft_mu, comp_soft_interp, comp_mu_min_grid, tmp_resampled);
-        }
-
-        distance_ref = get_seed_reference_distance(comp_ids[c], &geom_ctx);
-
-        set_component_sampling_position(pt_cloned, comp_ids[c], distance_ref, comp_corona_side[c]);
-        /*
-         * Reference spectrum at a representative distance:
-         * - defines common soft-grid bounds across components,
-         * - provides the base shape for optional R_H extrapolation.
-         */
-        if (sample_seed_field(pt_cloned, comp_ids[c], comp_N_soft_eff[c], comp_peak_mode[c], nu_soft_ref[c], n_soft_ref[c]) < 0) {
-            return finalize_internal_abs_total_eval(pt_cloned, comp_tot, R_H_saved_input, -1,
-                                                    nu_soft_ref, n_soft_ref, nu_soft_tmp, n_soft_tmp,
-                                                    nu_soft_common, eps_soft_common, dnu_soft_common,
-                                                    x_grid, dx_grid, mu_grid, dmu_grid, one_minus_mu_grid,
-                                                    sum_soft_mu, comp_soft_interp, comp_mu_min_grid, tmp_resampled);
-        }
-
-        for (i = 0U; i < comp_N_soft_eff[c]; ++i) {
-            if (nu_soft_ref[c][i] > 0.0) {
-                if ((nu_soft_min_common <= 0.0) || (nu_soft_ref[c][i] < nu_soft_min_common)) {
-                    nu_soft_min_common = nu_soft_ref[c][i];
-                }
-                if (nu_soft_ref[c][i] > nu_soft_max_common) {
-                    nu_soft_max_common = nu_soft_ref[c][i];
-                }
-                if (nu_soft_ref[c][i] > nu_soft_max_ref) {
-                    nu_soft_max_ref = nu_soft_ref[c][i];
-                }
-            }
-        }
-    }
-
-    if ((nu_soft_min_common <= 0.0) || (nu_soft_max_common <= 0.0)) {
-        return finalize_internal_abs_total_eval(pt_cloned, comp_tot, R_H_saved_input, -1,
-                                                nu_soft_ref, n_soft_ref, nu_soft_tmp, n_soft_tmp,
-                                                nu_soft_common, eps_soft_common, dnu_soft_common,
-                                                x_grid, dx_grid, mu_grid, dmu_grid, one_minus_mu_grid,
-                                                sum_soft_mu, comp_soft_interp, comp_mu_min_grid, tmp_resampled);
-    }
-
-    /* Step 4: define the hard-photon integration range and output grid size. */
-    /*
-     * If nu_min is not provided, infer it from the highest reference soft
-     * frequency so the gamma-gamma threshold region is reachable.
-     */
-    if (nu_min > 0.0) {
-        nu_min_eff = nu_min;
-    } else if (nu_soft_max_ref > 0.0) {
-        nu_min_eff = 1.0e40 / nu_soft_max_ref;
-    } else {
-        nu_min_eff = 1.0e20;
-    }
-    if (nu_min_eff <= 0.0) {
-        nu_min_eff = 1.0e20;
-    }
-
-    nu_src_max_eff = nu_src_max;
-    if (nu_src_max_eff <= 0.0) {
-        nu_src_max_eff = nu_min_eff;
-    }
-
-    if (nu_src_max_eff < nu_min_eff) {
-        tau_size = 1U;
-    } else {
-        tau_size = N_hard;
-    }
-
-    if (ensure_tau_arrays(comp_tot, tau_size) < 0) {
-        return finalize_internal_abs_total_eval(pt_cloned, comp_tot, R_H_saved_input, -1,
-                                                nu_soft_ref, n_soft_ref, nu_soft_tmp, n_soft_tmp,
-                                                nu_soft_common, eps_soft_common, dnu_soft_common,
-                                                x_grid, dx_grid, mu_grid, dmu_grid, one_minus_mu_grid,
-                                                sum_soft_mu, comp_soft_interp, comp_mu_min_grid, tmp_resampled);
-    }
-
-    /* Hard-photon grid where total tau is stored (log-spaced if size > 1). */
-    if (tau_size == 1U) {
-        comp_tot->nu_tau[0] = nu_min_eff;
-    } else {
-        for (i = 0U; i < tau_size; ++i) {
-            comp_tot->nu_tau[i] = pow(10.0,
-                                      log10(nu_min_eff) +
-                                          (log10(nu_src_max_eff) - log10(nu_min_eff)) * (double)i / (double)(tau_size - 1U));
-        }
-    }
-
-    /* Step 5: allocate shared grids used by the combined integration path. */
-    nu_soft_common = (double *)calloc((size_t)N_soft, sizeof(double));
-    eps_soft_common = (double *)calloc((size_t)N_soft, sizeof(double));
-    dnu_soft_common = (double *)calloc((size_t)N_soft, sizeof(double));
-    x_grid = (double *)calloc((size_t)N_R_H, sizeof(double));
-    dx_grid = (double *)calloc((size_t)N_R_H, sizeof(double));
-    mu_grid = (double *)calloc((size_t)N_R_H * (size_t)N_theta, sizeof(double));
-    dmu_grid = (double *)calloc((size_t)N_R_H * (size_t)N_theta, sizeof(double));
-    one_minus_mu_grid = (double *)calloc((size_t)N_R_H * (size_t)N_theta, sizeof(double));
-    sum_soft_mu = (double *)calloc((size_t)N_R_H * (size_t)N_theta * (size_t)N_soft, sizeof(double));
-    comp_soft_interp = (double *)calloc((size_t)n_enabled * (size_t)N_R_H * (size_t)N_soft, sizeof(double));
-    comp_mu_min_grid = (double *)calloc((size_t)n_enabled * (size_t)N_R_H, sizeof(double));
-    tmp_resampled = (double *)calloc((size_t)N_soft, sizeof(double));
-
-    if ((nu_soft_common == NULL) || (eps_soft_common == NULL) || (dnu_soft_common == NULL) || (x_grid == NULL) || (dx_grid == NULL) ||
-        (mu_grid == NULL) || (dmu_grid == NULL) || (one_minus_mu_grid == NULL) || (sum_soft_mu == NULL) ||
-        (comp_soft_interp == NULL) || (comp_mu_min_grid == NULL) || (tmp_resampled == NULL)) {
-        return finalize_internal_abs_total_eval(pt_cloned, comp_tot, R_H_saved_input, -1,
-                                                nu_soft_ref, n_soft_ref, nu_soft_tmp, n_soft_tmp,
-                                                nu_soft_common, eps_soft_common, dnu_soft_common,
-                                                x_grid, dx_grid, mu_grid, dmu_grid, one_minus_mu_grid,
-                                                sum_soft_mu, comp_soft_interp, comp_mu_min_grid, tmp_resampled);
-    }
-
-    /* Step 6: build the common soft-frequency grid and path-length grid. */
-    if (N_soft == 1U) {
-        nu_soft_common[0] = nu_soft_min_common;
-    } else if (nu_soft_max_common > nu_soft_min_common) {
-        log_nu_min = log10(nu_soft_min_common);
-        log_nu_max = log10(nu_soft_max_common);
-        for (ID_SOFT = 0U; ID_SOFT < N_soft; ++ID_SOFT) {
-            nu_soft_common[ID_SOFT] = pow(10.0,
-                                          log_nu_min + (log_nu_max - log_nu_min) * (double)ID_SOFT / (double)(N_soft - 1U));
-        }
-    } else {
-        for (ID_SOFT = 0U; ID_SOFT < N_soft; ++ID_SOFT) {
-            nu_soft_common[ID_SOFT] = nu_soft_min_common;
-        }
-    }
-
-    nu_to_eps = HPLANCK / MEC2;
-    build_soft_eps_dnu(nu_soft_common, N_soft, nu_to_eps, eps_soft_common, dnu_soft_common);
-
-    /*
-     * Path grid in normalized distance units x in [1, 1e3].
-     * Each component maps x -> physical distance via its own comp_R_H_ref[c].
-     */
-    if (N_R_H == 1U) {
-        x_grid[0] = 1.0;
-    } else {
-        for (ID_RH = 0U; ID_RH < N_R_H; ++ID_RH) {
-            x_grid[ID_RH] = pow(10.0, 3.0 * (double)ID_RH / (double)(N_R_H - 1U));
-        }
-    }
-    dx_grid[0] = 0.0;
-    for (ID_RH = 1U; ID_RH < N_R_H; ++ID_RH) {
-        dx_grid[ID_RH] = x_grid[ID_RH] - x_grid[ID_RH - 1U];
-    }
-
-    /*
-     * Step 7: for each (R_H, mu), combine component soft fields into a single
-     * effective soft density table `sum_soft_mu`.
-     */
-    for (ID_RH = 0U; ID_RH < N_R_H; ++ID_RH) {
-        for (c = 0U; c < n_enabled; ++c) {
-            distance_from_center = x_grid[ID_RH] * comp_R_H_ref[c];
-            set_component_sampling_position(pt_cloned, comp_ids[c], distance_from_center, comp_corona_side[c]);
-
-            if (comp_use_extrapolation[c] != 0) {
-                /* Reuse reference shape, only applying geometric scaling. */
-                sigma_val = compute_seed_scale_extrapolated(pt_cloned, comp_ids[c], distance_from_center, comp_R_seed[c]);
-                for (ID_SOFT = 0U; ID_SOFT < comp_N_soft_eff[c]; ++ID_SOFT) {
-                    nu_soft_tmp[c][ID_SOFT] = nu_soft_ref[c][ID_SOFT];
-                    n_soft_tmp[c][ID_SOFT] = n_soft_ref[c][ID_SOFT] * sigma_val;
-                }
-            } else {
-                /* Full local recomputation of the soft field at this R_H. */
-                if (sample_seed_field(pt_cloned, comp_ids[c], comp_N_soft_eff[c], comp_peak_mode[c], nu_soft_tmp[c], n_soft_tmp[c]) < 0) {
-                    return finalize_internal_abs_total_eval(pt_cloned, comp_tot, R_H_saved_input, -1,
-                                                            nu_soft_ref, n_soft_ref, nu_soft_tmp, n_soft_tmp,
-                                                            nu_soft_common, eps_soft_common, dnu_soft_common,
-                                                            x_grid, dx_grid, mu_grid, dmu_grid, one_minus_mu_grid,
-                                                            sum_soft_mu, comp_soft_interp, comp_mu_min_grid, tmp_resampled);
-                }
-            }
-
-            /*
-             * Resample each component on the shared nu grid so components can
-             * be added point-by-point before the final integration.
-             */
-            resample_soft_field_to_common_grid(nu_soft_tmp[c], n_soft_tmp[c], comp_N_soft_eff[c], nu_soft_common, N_soft, tmp_resampled);
-
-            idx_comp_soft = (((size_t)c) * ((size_t)N_R_H) + (size_t)ID_RH) * ((size_t)N_soft);
-            for (ID_SOFT = 0U; ID_SOFT < N_soft; ++ID_SOFT) {
-                comp_soft_interp[idx_comp_soft + (size_t)ID_SOFT] = tmp_resampled[ID_SOFT];
-            }
-
-            idx_comp_mu = ((size_t)c) * ((size_t)N_R_H) + (size_t)ID_RH;
-            comp_mu_min_grid[idx_comp_mu] = compute_mu_min_for_geometry(distance_from_center, comp_R_seed[c]);
-        }
-
-        /*
-         * Global mu-grid lower bound: most permissive acceptance among enabled
-         * components at this R_H (smaller mu_min means wider angular support).
-         */
-        mu_min_global = 1.0;
-        for (c = 0U; c < n_enabled; ++c) {
-            idx_comp_mu = ((size_t)c) * ((size_t)N_R_H) + (size_t)ID_RH;
-            comp_mu_min = comp_mu_min_grid[idx_comp_mu];
-            if (comp_mu_min < mu_min_global) {
-                mu_min_global = comp_mu_min;
-            }
-        }
-        if (mu_min_global < -1.0) {
-            mu_min_global = -1.0;
-        }
-        mu_max = 1.0;
-
-        for (ID_THETA = 0U; ID_THETA < N_theta; ++ID_THETA) {
-            idx_mu = ((size_t)ID_RH) * ((size_t)N_theta) + (size_t)ID_THETA;
-            if (N_theta == 1U) {
-                mu_grid[idx_mu] = mu_min_global;
-                dmu_grid[idx_mu] = 0.0;
-            } else {
-                mu_grid[idx_mu] = mu_min_global + (mu_max - mu_min_global) * (double)ID_THETA / (double)(N_theta - 1U);
-                if (ID_THETA == 0U) {
-                    dmu_grid[idx_mu] = 0.0;
-                } else {
-                    dmu_grid[idx_mu] = mu_grid[idx_mu] - mu_grid[idx_mu - 1U];
-                }
-            }
-            one_minus_mu_grid[idx_mu] = fmax(1.0 - mu_grid[idx_mu], INTABS_MIN_ONE_MINUS_MU);
-        }
-
-        for (ID_THETA = 0U; ID_THETA < N_theta; ++ID_THETA) {
-            idx_mu = ((size_t)ID_RH) * ((size_t)N_theta) + (size_t)ID_THETA;
-            idx_sum_base = (((size_t)ID_RH) * ((size_t)N_theta) + (size_t)ID_THETA) * ((size_t)N_soft);
-
-            for (ID_SOFT = 0U; ID_SOFT < N_soft; ++ID_SOFT) {
-                sum_soft_mu[idx_sum_base + (size_t)ID_SOFT] = 0.0;
-            }
-
-            /*
-             * Build the combined soft density at fixed (R_H, mu):
-             * only components visible at this mu contribute, then each
-             * contribution is weighted by its geometry-dependent R_H scale.
-             */
-            for (c = 0U; c < n_enabled; ++c) {
-                idx_comp_mu = ((size_t)c) * ((size_t)N_R_H) + (size_t)ID_RH;
-                if (mu_grid[idx_mu] < comp_mu_min_grid[idx_comp_mu]) {
-                    continue;
-                }
-
-                idx_comp_soft = (((size_t)c) * ((size_t)N_R_H) + (size_t)ID_RH) * ((size_t)N_soft);
-                for (ID_SOFT = 0U; ID_SOFT < N_soft; ++ID_SOFT) {
-                    sum_soft_mu[idx_sum_base + (size_t)ID_SOFT] +=
-                        comp_soft_interp[idx_comp_soft + (size_t)ID_SOFT] * comp_R_H_ref[c];
-                }
-            }
-        }
-    }
-
-    /* Step 8: run the shared nu_soft -> mu -> R_H integration kernel. */
-    integrate_tau_grid(ia_store,
-                       use_fast_sigma,
-                       comp_tot->nu_tau,
-                       tau_size,
-                       eps_soft_common,
-                       dnu_soft_common,
-                       0,
-                       NULL,
-                       sum_soft_mu,
-                       one_minus_mu_grid,
-                       dmu_grid,
-                       dx_grid,
-                       N_soft,
-                       N_theta,
-                       N_R_H,
-                       nu_to_eps,
-                       comp_tot->tau);
-
-    /* Step 9: persist outputs/settings in the Total component cache. */
-    comp_tot->is_enabled = 1;
-    comp_tot->is_valid = 1;
-    comp_tot->use_R_H_profile_extrapolation = (use_extrapolation_all != 0) ? 1 : 0;
-    comp_tot->use_sigma_gamma_gamma_fast = (use_fast_sigma != 0) ? 1 : 0;
-    comp_tot->peak_mode = 0;
-    comp_tot->N_soft = N_soft;
-    comp_tot->N_hard = N_hard;
-    comp_tot->N_R_H = N_R_H;
-    comp_tot->N_theta = N_theta;
-    comp_tot->nu_min = nu_min_eff;
-    comp_tot->nu_src_max = nu_src_max_eff;
-
-    status = (int)tau_size;
-    return finalize_internal_abs_total_eval(pt_cloned, comp_tot, R_H_saved_input, status,
-                                            nu_soft_ref, n_soft_ref, nu_soft_tmp, n_soft_tmp,
-                                            nu_soft_common, eps_soft_common, dnu_soft_common,
-                                            x_grid, dx_grid, mu_grid, dmu_grid, one_minus_mu_grid,
-                                            sum_soft_mu, comp_soft_interp, comp_mu_min_grid, tmp_resampled);
-}
 
 /*
  * Core internal-absorption integration routine for one seed component.
@@ -1700,10 +1300,8 @@ int eval_internal_abs_tau(struct blob *pt_cloned,
     int status;
     intabs_comp_t comp_id;
     struct internal_abs_component *comp;
-    double R_H_saved_input;
-    double R_H_saved;
-    double distance_blob_from_seed_field_geom_center;
-    double R_H_ref;
+    double R_H_grid_start;
+    //double distance_blob_from_seed_field_geom_center;
     double nu_min_eff;
     double nu_soft_max;
     double mu_min;
@@ -1767,13 +1365,9 @@ int eval_internal_abs_tau(struct blob *pt_cloned,
     }
 
     /* Save original position; keep a positive fallback for geometric scales. */
-    R_H_saved_input = pt_cloned->core.R_H;
-    R_H_saved = R_H_saved_input;
-    if (R_H_saved <= 0.0) {
-        R_H_saved = 1.0;
-    }
+    R_H_grid_start = pt_cloned->core.R_H;
 
-    resolve_component_geometry_ctx(pt_cloned, comp_id, R_H_saved_input, R_H_saved, &geom_ctx);
+    resolve_component_geometry_ctx(pt_cloned, comp_id, R_H_grid_start, &geom_ctx);
 
     /* Step 3: allocate temporary grids used by the 3D trapezoidal integration. */
     ws.nu_soft = (double *)calloc((size_t)N_R_H * (size_t)N_soft_eff, sizeof(double));
@@ -1794,16 +1388,17 @@ int eval_internal_abs_tau(struct blob *pt_cloned,
         (ws.mu_grid == NULL) || (ws.one_minus_mu == NULL) || (ws.dmu_grid == NULL) ||
         (ws.R_H_grid == NULL) || (ws.d_rh_grid == NULL) || (ws.nu_soft_ref == NULL) ||
         (ws.n_soft_ref == NULL) || (ws.nu_soft_tmp == NULL) || (ws.n_soft_tmp == NULL)) {
-        return finalize_internal_abs_eval(pt_cloned, comp, R_H_saved_input, -1, &ws);
+        return finalize_internal_abs_eval(pt_cloned, comp, R_H_grid_start, -1, &ws);
     }
 
     /* Step 4: build one reference seed spectrum near the source-field scale. */
-    distance_blob_from_seed_field_geom_center = get_seed_reference_distance(comp_id, &geom_ctx);
-    set_component_sampling_position(pt_cloned, comp_id, distance_blob_from_seed_field_geom_center, geom_ctx.corona_side);
+    //distance_blob_from_seed_field_geom_center = get_seed_reference_distance(comp_id, &geom_ctx);
+    //set_component_sampling_position(pt_cloned, comp_id, geom_ctx.R_H_ref_for_scaling, geom_ctx.corona_side);
+    pt_cloned->core.R_H =geom_ctx.R_H_ref_for_scaling;
     if (sample_seed_field(pt_cloned, comp_id, N_soft_eff, peak, ws.nu_soft_ref, ws.n_soft_ref) < 0) {
-        return finalize_internal_abs_eval(pt_cloned, comp, R_H_saved_input, -1, &ws);
+        return finalize_internal_abs_eval(pt_cloned, comp, R_H_grid_start, -1, &ws);
     }
-
+    pt_cloned->core.R_H=R_H_grid_start;
     /* Conversion nu -> dimensionless epsilon = h nu / (m_e c^2). */
     nu_to_eps = HPLANCK / MEC2;
 
@@ -1843,7 +1438,7 @@ int eval_internal_abs_tau(struct blob *pt_cloned,
     }
     /* Allocate/resize component output arrays nu_tau and tau. */
     if (ensure_tau_arrays(comp, tau_size) < 0) {
-        return finalize_internal_abs_eval(pt_cloned, comp, R_H_saved_input, -1, &ws);
+        return finalize_internal_abs_eval(pt_cloned, comp, R_H_grid_start, -1, &ws);
     }
 
     /* Build the hard-photon grid where tau will be stored (log-spaced). */
@@ -1857,13 +1452,13 @@ int eval_internal_abs_tau(struct blob *pt_cloned,
         }
     }
 
-    /* Step 6: build propagation grid in R_H (up to three decades). */
-    R_H_ref = geom_ctx.R_H_ref;
+    /* Step 6: build propagation grid in R_H_grid_start (up to three decades). */
+    
     if (N_R_H == 1U) {
-        ws.R_H_grid[0] = R_H_ref;
+        ws.R_H_grid[0] = R_H_grid_start;
     } else {
         for (ID_RH = 0; ID_RH < N_R_H; ++ID_RH) {
-            ws.R_H_grid[ID_RH] = pow(10.0, 3.0 * (double)ID_RH / (double)(N_R_H - 1U)) * R_H_ref;
+            ws.R_H_grid[ID_RH] = pow(10.0, 3.0 * (double)ID_RH / (double)(N_R_H - 1U)) * R_H_grid_start;
         }
     }
 
@@ -1872,14 +1467,15 @@ int eval_internal_abs_tau(struct blob *pt_cloned,
      * Soft fields come either from direct sampling or extrapolated scaling.
      */
     for (ID_RH = 0; ID_RH < N_R_H; ++ID_RH) {
-        distance_blob_from_seed_field_geom_center = ws.R_H_grid[ID_RH];
-        set_component_sampling_position(pt_cloned, comp_id, distance_blob_from_seed_field_geom_center, geom_ctx.corona_side);
+        //distance_blob_from_seed_field_geom_center = ws.R_H_grid[ID_RH];
+        //set_component_sampling_position(pt_cloned, comp_id, ws.R_H_grid[ID_RH], geom_ctx.corona_side);
+        pt_cloned->core.R_H = ws.R_H_grid[ID_RH];
         rh_soft_base = ((size_t)ID_RH) * ((size_t)N_soft_eff);
 
         if (use_R_H_profile_extrapolation != 0) {
             scale = compute_seed_scale_extrapolated(pt_cloned,
                                                     comp_id,
-                                                    distance_blob_from_seed_field_geom_center,
+                                                    ws.R_H_grid[ID_RH],
                                                     geom_ctx.R_seed);
 
             for (ID_SOFT = 0; ID_SOFT < N_soft_eff; ++ID_SOFT) {
@@ -1889,7 +1485,7 @@ int eval_internal_abs_tau(struct blob *pt_cloned,
             }
         } else {
             if (sample_seed_field(pt_cloned, comp_id, N_soft_eff, peak, ws.nu_soft_tmp, ws.n_soft_tmp) < 0) {
-                return finalize_internal_abs_eval(pt_cloned, comp, R_H_saved_input, -1, &ws);
+                return finalize_internal_abs_eval(pt_cloned, comp, R_H_grid_start, -1, &ws);
             }
 
             for (ID_SOFT = 0; ID_SOFT < N_soft_eff; ++ID_SOFT) {
@@ -1906,7 +1502,7 @@ int eval_internal_abs_tau(struct blob *pt_cloned,
                            ws.dnu_soft + rh_soft_base);
 
         mu_max = 1.0;
-        mu_min = compute_mu_min_for_geometry(distance_blob_from_seed_field_geom_center, geom_ctx.R_seed);
+        mu_min = compute_mu_min_for_geometry(ws.R_H_grid[ID_RH], geom_ctx.R_seed);
 
         rh_mu_base = ((size_t)ID_RH) * ((size_t)N_theta);
         if (N_theta == 1U) {
@@ -1965,7 +1561,7 @@ int eval_internal_abs_tau(struct blob *pt_cloned,
     comp->nu_src_max = nu_src_max_eff;
 
     status = (int)tau_size;
-    return finalize_internal_abs_eval(pt_cloned, comp, R_H_saved_input, status, &ws);
+    return finalize_internal_abs_eval(pt_cloned, comp, R_H_grid_start, status, &ws);
 }
 
 /*

@@ -2027,17 +2027,13 @@ class JetBase(Model):
         c_comp.N_R_H = new_n_r_h
         c_comp.N_theta = new_n_theta
         c_comp.nu_min = new_nu_min
-        if hasattr(self._blob.core.internal_abs, 'Total'):
-            self._blob.core.internal_abs.Total.is_valid = 0
-            self._blob.core.internal_abs.Total.is_enabled = 0
+        
 
     def _disable_internal_absorption_on_blob(self, comp):
         c_comp = self._get_internal_abs_component_on_blob(comp)
         c_comp.is_enabled = 0
         c_comp.is_valid = 0
-        if hasattr(self._blob.core.internal_abs, 'Total'):
-            self._blob.core.internal_abs.Total.is_valid = 0
-            self._blob.core.internal_abs.Total.is_enabled = 0
+   
 
     def lin_func(self, lin_nu, init, phys_output=False, update_emitters=True):
         """Evaluate model spectrum in linear units on ``lin_nu``.
