@@ -786,7 +786,7 @@ static void resolve_component_geometry_ctx(const struct blob *pt_cloned,
             ctx->corona_side = -1.0;
         }
     } else {
-        ctx->R_H_ref_for_scaling = ctx->R_seed/1000000;
+        ctx->R_H_ref_for_scaling = 1;
         ctx->corona_side = 0;
     }
 
@@ -932,7 +932,7 @@ static double compute_seed_scale_extrapolated(const struct blob *pt_cloned, inta
         return (scale > 0.0) ? scale : INTABS_MIN_Y;
     }
     if (comp_id == INTABS_COMP_BLR) {
-        if (distance_from_center <= R_seed) {
+        if (distance_from_center <= R_seed/1000) {
             return 1.0;
         }
 

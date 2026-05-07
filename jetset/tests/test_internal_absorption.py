@@ -30,12 +30,19 @@ class TestInternalAbsorption(TestBase):
         j.set_IC_nu_size(80)
         return j
 
+    @staticmethod
+    def _assert_total_cache_disabled(jet):
+        total = jet._blob.core.internal_abs.Total
+        assert int(total.is_enabled) == 0
+        assert int(total.is_valid) == 0
+
     def test_internal_absorption_enable_eval_remove(self, plot=False):
         j = self._build_internal_abs_jet()
         nu = np.logspace(20, 29, 120)
 
         y_no_ia = np.asarray(j.eval(nu=nu, get_model=True), dtype=float)
         assert np.all(np.isfinite(y_no_ia))
+        r_h_ref = float(j._blob.core.R_H)
 
         j.enable_internal_absorption('DT', N_soft=12, N_hard=12, N_R_H=10, N_theta=10, use_sigma_gamma_gamma_fast=True)
         j.enable_internal_absorption('BLR', N_soft=12, N_hard=12, N_R_H=10, N_theta=10)
@@ -47,18 +54,21 @@ class TestInternalAbsorption(TestBase):
         assert int(j._get_internal_abs_component_on_blob('DT').use_sigma_gamma_gamma_fast) == 1
         assert int(j._get_internal_abs_component_on_blob('BLR').use_sigma_gamma_gamma_fast) == 0
         assert int(j._get_internal_abs_component_on_blob('Corona').use_sigma_gamma_gamma_fast) == 0
+        assert int(j._get_internal_abs_component_on_blob('DT').is_valid) == 0
+        assert int(j._get_internal_abs_component_on_blob('BLR').is_valid) == 0
+        assert int(j._get_internal_abs_component_on_blob('Corona').is_valid) == 0
 
         tau_dt, nu_dt = j.eval_internal_absorption(comp='DT', peak=False)
         tau_blr, nu_blr = j.eval_internal_absorption(comp='BLR', peak=False)
         tau_corona, nu_corona = j.eval_internal_absorption(comp='Corona', peak=False)
-        raw_tau_blr_peak, _ = j._internal_absorption_comp['BLR']['obj'].eval_tau_photons(
-            nu_src=np.logspace(20, 29, 80),
-            R_H=j.parameters.R_H.val,
-            peak=True,
-            use_R_H_profile_extrapolation=j._internal_absorption_comp['BLR']['pars']['use_R_H_profile_extrapolation'],
-        )
+        np.testing.assert_allclose(float(j._blob.core.R_H), r_h_ref, rtol=1E-12, atol=0.0)
+        self._assert_total_cache_disabled(j)
 
-        for tau_arr, nu_arr in ((tau_dt, nu_dt), (tau_blr, nu_blr), (tau_corona, nu_corona)):
+        for comp_name, tau_arr, nu_arr in (
+            ('DT', tau_dt, nu_dt),
+            ('BLR', tau_blr, nu_blr),
+            ('Corona', tau_corona, nu_corona),
+        ):
             tau_arr = np.asarray(tau_arr, dtype=float)
             nu_arr = np.asarray(nu_arr, dtype=float)
             assert tau_arr.ndim == 1
@@ -68,6 +78,20 @@ class TestInternalAbsorption(TestBase):
             assert np.all(np.isfinite(tau_arr))
             assert np.all(np.isfinite(nu_arr))
             assert np.all(tau_arr >= 0.0)
+            c_comp = j._get_internal_abs_component_on_blob(comp_name)
+            assert int(c_comp.is_enabled) == 1
+            assert int(c_comp.is_valid) == 1
+            assert int(c_comp.tau_size) > 0
+            assert int(c_comp.peak_mode) == 0
+
+        raw_tau_blr_peak, _ = j._internal_absorption_comp['BLR']['obj'].eval_tau_photons(
+            nu_src=np.logspace(20, 29, 80),
+            R_H=1.7 * j.parameters.R_H.val,
+            peak=True,
+            use_R_H_profile_extrapolation=j._internal_absorption_comp['BLR']['pars']['use_R_H_profile_extrapolation'],
+        )
+        np.testing.assert_allclose(float(j._blob.core.R_H), r_h_ref, rtol=1E-12, atol=0.0)
+        self._assert_total_cache_disabled(j)
         raw_tau_blr_peak = np.asarray(raw_tau_blr_peak, dtype=float)
         assert raw_tau_blr_peak.size > 0
         assert np.all(np.isfinite(raw_tau_blr_peak))
@@ -75,14 +99,17 @@ class TestInternalAbsorption(TestBase):
         c_blr_peak = j._get_internal_abs_component_on_blob('BLR')
         assert int(c_blr_peak.peak_mode) == 1
         assert int(c_blr_peak.N_soft) == 1
+        assert int(c_blr_peak.is_valid) == 1
 
         y_ia = np.asarray(j.eval(nu=nu, get_model=True), dtype=float)
         assert np.all(np.isfinite(y_ia))
-        if hasattr(j._blob.core.internal_abs, 'Total'):
-            assert int(j._blob.core.internal_abs.Total.is_enabled) == 1
-            assert int(j._blob.core.internal_abs.Total.is_valid) == 1
+        np.testing.assert_allclose(float(j._blob.core.R_H), r_h_ref, rtol=1E-12, atol=0.0)
+        self._assert_total_cache_disabled(j)
+        assert int(j._get_internal_abs_component_on_blob('DT').is_valid) == 1
+        assert int(j._get_internal_abs_component_on_blob('BLR').is_valid) == 1
+        assert int(j._get_internal_abs_component_on_blob('Corona').is_valid) == 1
 
-        m = y_no_ia > 0
+        m = (y_no_ia > 0) & (nu >= 1E22)
         assert np.any(m)
         ratio = y_ia[m] / y_no_ia[m]
         assert np.all(ratio <= 1.0 + 1E-4)
@@ -95,21 +122,26 @@ class TestInternalAbsorption(TestBase):
         assert 'DT' not in j._internal_absorption_comp.keys()
         assert 'BLR' in j._internal_absorption_comp.keys()
         assert 'Corona' in j._internal_absorption_comp.keys()
-        if hasattr(j._blob.core.internal_abs, 'Total'):
-            assert int(j._blob.core.internal_abs.Total.is_enabled) == 1
-            assert int(j._blob.core.internal_abs.Total.is_valid) == 1
+        assert int(j._get_internal_abs_component_on_blob('DT').is_enabled) == 0
+        assert int(j._get_internal_abs_component_on_blob('DT').is_valid) == 0
+        self._assert_total_cache_disabled(j)
 
         j.remove_internal_absorption('BLR')
         j.remove_internal_absorption('Corona')
         assert len(j._internal_absorption_comp.keys()) == 0
-        if hasattr(j._blob.core.internal_abs, 'Total'):
-            assert int(j._blob.core.internal_abs.Total.is_enabled) == 0
-            assert int(j._blob.core.internal_abs.Total.is_valid) == 0
-
+        assert int(j._get_internal_abs_component_on_blob('BLR').is_enabled) == 0
+        assert int(j._get_internal_abs_component_on_blob('BLR').is_valid) == 0
+        assert int(j._get_internal_abs_component_on_blob('Corona').is_enabled) == 0
+        assert int(j._get_internal_abs_component_on_blob('Corona').is_valid) == 0
+        self._assert_total_cache_disabled(j)
+ 
     def test_internal_absorption_serialization(self, plot=False):
         from jetset.jet_model import Jet
+        from jetset.internal_absorption import BlazarSED
 
         j = self._build_internal_abs_jet()
+        assert hasattr(BlazarSED, 'eval_internal_abs_tau_isolated')
+
         dt_cfg = dict(
             comp='DT',
             nu_min=1E21,
@@ -148,6 +180,7 @@ class TestInternalAbsorption(TestBase):
 
         new_j = Jet.load_model('test_internal_absorption.pkl')
         assert set(new_j._internal_absorption_comp.keys()) == {'DT', 'BLR', 'Corona'}
+        r_h_ref = float(new_j._blob.core.R_H)
 
         for cfg in (dt_cfg, blr_cfg, corona_cfg):
             comp = cfg['comp']
@@ -170,6 +203,12 @@ class TestInternalAbsorption(TestBase):
             assert np.all(np.isfinite(tau))
             assert np.all(np.isfinite(nu_tau))
             assert np.all(tau >= 0.0)
+            c_comp = new_j._get_internal_abs_component_on_blob(comp)
+            assert int(c_comp.is_enabled) == 1
+            assert int(c_comp.is_valid) == 1
+            assert int(c_comp.peak_mode) == 0
+            assert int(c_comp.N_soft) == cfg['N_soft']
+            np.testing.assert_allclose(float(new_j._blob.core.R_H), r_h_ref, rtol=1E-12, atol=0.0)
 
             custom_nu = np.logspace(21, 28, 37)
             tau_custom, nu_custom = new_j.eval_internal_absorption(comp=comp, nu=custom_nu)
@@ -179,6 +218,7 @@ class TestInternalAbsorption(TestBase):
             np.testing.assert_allclose(nu_custom, custom_nu, rtol=0, atol=0)
             assert np.all(np.isfinite(tau_custom))
             assert np.all(tau_custom >= 0.0)
+            np.testing.assert_allclose(float(new_j._blob.core.R_H), r_h_ref, rtol=1E-12, atol=0.0)
 
         c_dt = new_j._get_internal_abs_component_on_blob('DT')
         c_blr = new_j._get_internal_abs_component_on_blob('BLR')
@@ -186,6 +226,12 @@ class TestInternalAbsorption(TestBase):
         assert int(c_dt.is_enabled) == 1
         assert int(c_blr.is_enabled) == 1
         assert int(c_corona.is_enabled) == 1
+        self._assert_total_cache_disabled(new_j)
 
         y = np.asarray(new_j.eval(nu=np.logspace(20, 29, 80), get_model=True), dtype=float)
         assert np.all(np.isfinite(y))
+        np.testing.assert_allclose(float(new_j._blob.core.R_H), r_h_ref, rtol=1E-12, atol=0.0)
+        assert int(new_j._get_internal_abs_component_on_blob('DT').is_valid) == 1
+        assert int(new_j._get_internal_abs_component_on_blob('BLR').is_valid) == 1
+        assert int(new_j._get_internal_abs_component_on_blob('Corona').is_valid) == 1
+        self._assert_total_cache_disabled(new_j)

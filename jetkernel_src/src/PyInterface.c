@@ -856,9 +856,7 @@ void Init(struct blob *pt_base, double luminosity_distance) {
 
     //set file number counter
     pt_base->core.OUT_FILE = 1;
-
     if (luminosity_distance<0){
-
         pt_base->core.dist = dist_lum_cm(pt_base->core.z_cosm);
     }
     else{
