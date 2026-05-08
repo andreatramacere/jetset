@@ -1063,40 +1063,40 @@ void Run_SED(struct blob *pt_base){
                 }
                 if (pt_base->core.do_EC_BLR == 1) {
                     pt_base->core.EC = 2;
-                    if (set_condition_EC_correction(pt_base, pt_base->BLR.R_BLR_out) > 0)
-                    {
-                        pt_base->core.R_H = max(1,pt_base->BLR.R_BLR_in/1E10);
-                        Build_I_nu_BLR(pt_base);
-                        spettro_EC(1, pt_base);
-                        nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->BLR.ec.spec.nuFnu_obs);
-                        pt_base->core.R_H = pt_base->core.R_H_orig;
-                        Build_I_nu_BLR(pt_base);
-                    }
+                    // if (set_condition_EC_correction(pt_base, pt_base->BLR.R_BLR_out) > 0)
+                    // {
+                    //     pt_base->core.R_H = max(1,pt_base->BLR.R_BLR_in/1E10);
+                    //     Build_I_nu_BLR(pt_base);
+                    //     spettro_EC(1, pt_base);
+                    //     nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->BLR.ec.spec.nuFnu_obs);
+                    //     pt_base->core.R_H = pt_base->core.R_H_orig;
+                    //     Build_I_nu_BLR(pt_base);
+                    // }
                     spettro_EC(1, pt_base);
-                    if (set_condition_EC_correction(pt_base, pt_base->BLR.R_BLR_out) > 0){
-                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->BLR.R_BLR_out, pt_base->core.nu_IC_size, pt_base->BLR.ec.spec.nuFnu_obs, pt_base->BLR.ec.spec.nu_obs);
-                    }
+                    // if (set_condition_EC_correction(pt_base, pt_base->BLR.R_BLR_out) > 0){
+                    //     update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->BLR.R_BLR_out, pt_base->core.nu_IC_size, pt_base->BLR.ec.spec.nuFnu_obs, pt_base->BLR.ec.spec.nu_obs);
+                    // }
                 }
                 if (pt_base->core.do_EC_DT == 1) {
                     pt_base->core.EC = 3;
                     //printf("RUN 1 R_H=%e c=%d , EC_stat=%d\n", pt_base->core.R_H, set_condition_EC_correction(pt_base, pt_base->DT.R_DT), pt_base->core.EC_stat);
-                    if (set_condition_EC_correction(pt_base, pt_base->DT.R_DT) > 0)
-                    {
-                        pt_base->core.R_H = 0;
-                        Build_I_nu_DT(pt_base);
-                        spettro_EC(1, pt_base);
-                        nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->DT.ec.spec.nuFnu_obs);
-                        pt_base->core.R_H = pt_base->core.R_H_orig;
-                        Build_I_nu_DT(pt_base);
-                    }
+                    // if (set_condition_EC_correction(pt_base, pt_base->DT.R_DT) > 0)
+                    // {
+                    //     pt_base->core.R_H = 0;
+                    //     Build_I_nu_DT(pt_base);
+                    //     spettro_EC(1, pt_base);
+                    //     nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->DT.ec.spec.nuFnu_obs);
+                    //     pt_base->core.R_H = pt_base->core.R_H_orig;
+                    //     Build_I_nu_DT(pt_base);
+                    // }
                     //printf("RUN 2 R_H=%e c=%d , EC_stat=%d\n", pt_base->core.R_H, set_condition_EC_correction(pt_base, pt_base->DT.R_DT), pt_base->core.EC_stat);
                     //printf("RUN 3 R_H=%e c=%d \n", pt_base->core.R_H, set_condition_EC_correction(pt_base, pt_base->DT.R_DT));
                     spettro_EC(1, pt_base);
                     //printf("RUN 4 R_H=%e c=%d \n", pt_base->core.R_H,set_condition_EC_correction(pt_base, pt_base->DT.R_DT) );
-                    if (set_condition_EC_correction(pt_base, pt_base->DT.R_DT) > 0)
-                    {
-                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->DT.R_DT, pt_base->core.nu_IC_size, pt_base->DT.ec.spec.nuFnu_obs, pt_base->DT.ec.spec.nu_obs);
-                    }
+                    // if (set_condition_EC_correction(pt_base, pt_base->DT.R_DT) > 0)
+                    // {
+                    //     update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->DT.R_DT, pt_base->core.nu_IC_size, pt_base->DT.ec.spec.nuFnu_obs, pt_base->DT.ec.spec.nu_obs);
+                    // }
                     //printf("RUN 4 R_H=%e c=%d \n", pt_base->core.R_H, set_condition_EC_correction(pt_base, pt_base->DT.R_DT));
                 }
                 if (pt_base->core.do_EC_CMB == 1) {

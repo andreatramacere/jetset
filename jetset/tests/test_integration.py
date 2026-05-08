@@ -13,6 +13,7 @@ from .test_temp_ev import TestTempEv
 from .test_galactic import TestGalactic
 from .test_set_normalization import TestSetNormalization, TestSetNormalizationLeptonicEquilibrium
 from .test_internal_absorption import TestInternalAbsorption
+from .test_ec_angle_dep_kernel import TestECAngleDepKernel
 
 @pytest.fixture
 def plot():
@@ -100,4 +101,8 @@ class TestIntegration(TestBase):
 
    def test_internal_absorption(self,plot=plot):
       t=TestInternalAbsorption()
+      t.integration_suite(plot=plot)
+
+   def test_ec_angle_dep_kernel(self,plot=plot):
+      t=TestECAngleDepKernel()
       t.integration_suite(plot=plot)
