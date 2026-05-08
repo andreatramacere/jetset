@@ -16,7 +16,7 @@ class TestCoronaComponent(TestBase):
         j.add_EC_component(['EC_Corona'])
 
         j.parameters.L_Corona.val = 5E44
-        j.parameters.R_Corona.val = 5E15
+        j.parameters.R_Corona.val = 5E14
         j.parameters.alpha_Corona.val = 1.1
         j.parameters.nu_cut_Corona.val = 1E20
 
