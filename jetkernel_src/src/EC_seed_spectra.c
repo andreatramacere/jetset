@@ -17,6 +17,149 @@
  *
  */
 
+static size_t angle_dep_flat_index(unsigned int nu_id, unsigned int angle_id, unsigned int angle_n_int)
+{
+	return ((size_t)nu_id) * ((size_t)angle_n_int) + ((size_t)angle_id);
+}
+
+void reset_external_spectrum_angle_dep(struct spectrum_external *spec)
+{
+	if (spec == NULL) {
+		return;
+	}
+	spec->angle_n_int = 0U;
+	spec->angle_nu_size = 0U;
+	spec->mu = NULL;
+	spec->theta = NULL;
+	spec->I_nu_theta = NULL;
+	spec->I_nu_theta_DRF = NULL;
+	spec->n_nu_theta = NULL;
+	spec->n_nu_theta_DRF = NULL;
+}
+
+void free_external_spectrum_angle_dep(struct spectrum_external *spec)
+{
+	if (spec == NULL) {
+		return;
+	}
+
+	if (spec->mu != NULL) {
+		free(spec->mu);
+		spec->mu = NULL;
+	}
+	if (spec->theta != NULL) {
+		free(spec->theta);
+		spec->theta = NULL;
+	}
+	if (spec->I_nu_theta != NULL) {
+		free(spec->I_nu_theta);
+		spec->I_nu_theta = NULL;
+	}
+	if (spec->I_nu_theta_DRF != NULL) {
+		free(spec->I_nu_theta_DRF);
+		spec->I_nu_theta_DRF = NULL;
+	}
+	if (spec->n_nu_theta != NULL) {
+		free(spec->n_nu_theta);
+		spec->n_nu_theta = NULL;
+	}
+	if (spec->n_nu_theta_DRF != NULL) {
+		free(spec->n_nu_theta_DRF);
+		spec->n_nu_theta_DRF = NULL;
+	}
+	spec->angle_n_int = 0U;
+	spec->angle_nu_size = 0U;
+}
+
+int ensure_external_spectrum_angle_dep(struct spectrum_external *spec, unsigned int nu_size, unsigned int angle_n_int)
+{
+	size_t angle_size;
+	size_t flat_size;
+	int alloc_needed;
+
+	if (spec == NULL) {
+		return -1;
+	}
+
+	if ((nu_size == 0U) || (angle_n_int == 0U)) {
+		free_external_spectrum_angle_dep(spec);
+		return 0;
+	}
+
+	alloc_needed = 0;
+	if ((spec->angle_n_int != angle_n_int) ||
+		(spec->angle_nu_size != nu_size) ||
+		(spec->mu == NULL) ||
+		(spec->theta == NULL) ||
+		(spec->I_nu_theta == NULL) ||
+		(spec->I_nu_theta_DRF == NULL) ||
+		(spec->n_nu_theta == NULL) ||
+		(spec->n_nu_theta_DRF == NULL)) {
+		alloc_needed = 1;
+	}
+
+	if (alloc_needed) {
+		free_external_spectrum_angle_dep(spec);
+
+		spec->mu = (double *)calloc((size_t)angle_n_int, sizeof(double));
+		spec->theta = (double *)calloc((size_t)angle_n_int, sizeof(double));
+		spec->I_nu_theta = (double *)calloc(((size_t)nu_size) * ((size_t)angle_n_int), sizeof(double));
+		spec->I_nu_theta_DRF = (double *)calloc(((size_t)nu_size) * ((size_t)angle_n_int), sizeof(double));
+		spec->n_nu_theta = (double *)calloc(((size_t)nu_size) * ((size_t)angle_n_int), sizeof(double));
+		spec->n_nu_theta_DRF = (double *)calloc(((size_t)nu_size) * ((size_t)angle_n_int), sizeof(double));
+
+		if ((spec->mu == NULL) ||
+			(spec->theta == NULL) ||
+			(spec->I_nu_theta == NULL) ||
+			(spec->I_nu_theta_DRF == NULL) ||
+			(spec->n_nu_theta == NULL) ||
+			(spec->n_nu_theta_DRF == NULL)) {
+			free_external_spectrum_angle_dep(spec);
+			return -1;
+		}
+
+		spec->angle_n_int = angle_n_int;
+		spec->angle_nu_size = nu_size;
+	}
+
+	angle_size = (size_t)spec->angle_n_int;
+	flat_size = ((size_t)spec->angle_n_int) * ((size_t)spec->angle_nu_size);
+	memset(spec->mu, 0, angle_size * sizeof(double));
+	memset(spec->theta, 0, angle_size * sizeof(double));
+	memset(spec->I_nu_theta, 0, flat_size * sizeof(double));
+	memset(spec->I_nu_theta_DRF, 0, flat_size * sizeof(double));
+	memset(spec->n_nu_theta, 0, flat_size * sizeof(double));
+	memset(spec->n_nu_theta_DRF, 0, flat_size * sizeof(double));
+
+	return 0;
+}
+
+void reset_blob_external_spectra_angle_dep(struct blob *pt)
+{
+	if (pt == NULL) {
+		return;
+	}
+	reset_external_spectrum_angle_dep(&(pt->Disk.spec));
+	reset_external_spectrum_angle_dep(&(pt->BLR.spec));
+	reset_external_spectrum_angle_dep(&(pt->DT.spec));
+	reset_external_spectrum_angle_dep(&(pt->Corona.spec));
+	reset_external_spectrum_angle_dep(&(pt->Star.spec));
+	reset_external_spectrum_angle_dep(&(pt->CMB.spec));
+}
+
+void free_blob_external_spectra_angle_dep(struct blob *pt)
+{
+	if (pt == NULL) {
+		return;
+	}
+	free_external_spectrum_angle_dep(&(pt->Disk.spec));
+	free_external_spectrum_angle_dep(&(pt->BLR.spec));
+	free_external_spectrum_angle_dep(&(pt->DT.spec));
+	free_external_spectrum_angle_dep(&(pt->Corona.spec));
+	free_external_spectrum_angle_dep(&(pt->Star.spec));
+	free_external_spectrum_angle_dep(&(pt->CMB.spec));
+}
+
 //===============================================================
 // Evaluation of external radiative fields
 //===============================================================
@@ -116,6 +259,10 @@ void Build_I_nu_Star(struct blob *pt){
 	//FILE *fp_SED_star;
 	double nu_peak_BB,nu_obs;
 	unsigned int NU_INT,NU_INT_MAX;
+	unsigned int ANGLE_INT, ANGLE_INT_MAX;
+	int have_angle_storage;
+	size_t angle_idx;
+	double d_mu, mu_grid;
 	double nu_start_disk_RF;
 	double nu_stop_disk_RF;
 	double nuL_nu_disk,F_nu_disk_obs;
@@ -153,6 +300,21 @@ void Build_I_nu_Star(struct blob *pt){
 
 	NU_INT_MAX=pt->core.nu_seed_size-1;
 	pt->Star.spec.NU_INT_MAX = NU_INT_MAX;
+	have_angle_storage = 0;
+	if (ensure_external_spectrum_angle_dep(&(pt->Star.spec), pt->core.nu_seed_size, pt->core.theta_n_int) == 0 &&
+		pt->Star.spec.angle_n_int > 0U) {
+		have_angle_storage = 1;
+		ANGLE_INT_MAX = pt->Star.spec.angle_n_int - 1U;
+		d_mu = (ANGLE_INT_MAX > 0U) ? (2.0 / (double)ANGLE_INT_MAX) : 0.0;
+		for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
+			mu_grid = -1.0 + d_mu * (double)ANGLE_INT;
+			if (mu_grid > 1.0) {
+				mu_grid = 1.0;
+			}
+			pt->Star.spec.mu[ANGLE_INT] = mu_grid;
+			pt->Star.spec.theta[ANGLE_INT] = acos(mu_grid);
+		}
+	}
 
 
 	pt->Star.spec.nu_min_obs=nu_disk_to_nu_obs_disk(nu_start_disk_RF , pt->core.z_cosm);
@@ -200,6 +362,15 @@ void Build_I_nu_Star(struct blob *pt){
 			pt->Star.spec.I_nu[NU_INT]=pt->core.emiss_lim;
 			pt->Star.spec.n_nu[NU_INT] =I_nu_to_n(pt->Star.spec.I_nu[NU_INT], pt->Star.spec.nu[NU_INT]);
 
+		}
+		if (have_angle_storage) {
+			for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
+				angle_idx = angle_dep_flat_index(NU_INT, ANGLE_INT, pt->Star.spec.angle_n_int);
+				pt->Star.spec.I_nu_theta_DRF[angle_idx] = pt->Star.spec.I_nu_DRF[NU_INT];
+				pt->Star.spec.I_nu_theta[angle_idx] = pt->Star.spec.I_nu[NU_INT];
+				pt->Star.spec.n_nu_theta_DRF[angle_idx] = pt->Star.spec.n_nu_DRF[NU_INT];
+				pt->Star.spec.n_nu_theta[angle_idx] = pt->Star.spec.n_nu[NU_INT];
+			}
 		}
 
 		nuL_nu_disk = eval_Star_L_nu(pt,pt->Star.spec.nu_DRF[NU_INT]) * pt->Star.spec.nu_DRF[NU_INT];
@@ -311,6 +482,11 @@ void Build_I_nu_CMB(struct blob *pt){
 	double T_CMB_z;
 	double nu_peak_CMB_z;
 	unsigned int NU_INT,NU_INT_MAX;
+	unsigned int ANGLE_INT, ANGLE_INT_MAX;
+	int have_angle_storage;
+	int i_mu;
+	size_t angle_idx;
+	double d_mu, mu_grid, nu_disk_RF, I_blob_theta;
 	double nu_start_disk_RF;
 	double nu_stop_disk_RF;
 
@@ -336,6 +512,21 @@ void Build_I_nu_CMB(struct blob *pt){
 
 	NU_INT_MAX=pt->core.nu_seed_size-1;
 	pt->CMB.spec.NU_INT_MAX = NU_INT_MAX;
+	have_angle_storage = 0;
+	if (ensure_external_spectrum_angle_dep(&(pt->CMB.spec), pt->core.nu_seed_size, pt->core.theta_n_int) == 0 &&
+		pt->CMB.spec.angle_n_int > 0U) {
+		have_angle_storage = 1;
+		ANGLE_INT_MAX = pt->CMB.spec.angle_n_int - 1U;
+		d_mu = (ANGLE_INT_MAX > 0U) ? (2.0 / (double)ANGLE_INT_MAX) : 0.0;
+		for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
+			mu_grid = -1.0 + d_mu * (double)ANGLE_INT;
+			if (mu_grid > 1.0) {
+				mu_grid = 1.0;
+			}
+			pt->CMB.spec.mu[ANGLE_INT] = mu_grid;
+			pt->CMB.spec.theta[ANGLE_INT] = acos(mu_grid);
+		}
+	}
 
 	build_log_grid( nu_start_disk_RF,  nu_stop_disk_RF, pt->core.nu_seed_size, pt->CMB.spec.nu_DRF);
 	
@@ -348,6 +539,29 @@ void Build_I_nu_CMB(struct blob *pt){
 		pt->CMB.spec.n_nu[NU_INT] =I_nu_to_n(pt->CMB.spec.I_nu[NU_INT], pt->CMB.spec.nu[NU_INT]);
 		//EC with n(gamma) transf
 		pt->CMB.spec.n_nu_DRF[NU_INT] = I_nu_to_n(pt->CMB.spec.I_nu_DRF[NU_INT], pt->CMB.spec.nu_DRF[NU_INT]);
+		if (have_angle_storage) {
+			for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
+				angle_idx = angle_dep_flat_index(NU_INT, ANGLE_INT, pt->CMB.spec.angle_n_int);
+				mu_grid = pt->CMB.spec.mu[ANGLE_INT];
+				pt->CMB.spec.I_nu_theta_DRF[angle_idx] = pt->CMB.spec.I_nu_DRF[NU_INT];
+				pt->CMB.spec.n_nu_theta_DRF[angle_idx] = pt->CMB.spec.n_nu_DRF[NU_INT];
+
+				nu_disk_RF = nu_blob_RF_to_nu_disk_RF(pt->CMB.spec.nu[NU_INT],
+				                                      pt->core.BulkFactor,
+				                                      pt->core.beta_Gamma,
+				                                      mu_grid);
+				i_mu = x_to_grid_index(pt->CMB.spec.nu_DRF, nu_disk_RF, pt->core.nu_seed_size);
+				if (i_mu > 0) {
+					I_blob_theta = pt->CMB.spec.I_nu_DRF[i_mu] * pt->core.BulkFactor * (1.0 - pt->core.beta_Gamma * mu_grid);
+				}
+				else{
+					I_blob_theta = 0.0;
+				}
+
+				pt->CMB.spec.I_nu_theta[angle_idx] = I_blob_theta;
+				pt->CMB.spec.n_nu_theta[angle_idx] = I_nu_to_n(I_blob_theta, pt->CMB.spec.nu[NU_INT]);
+			}
+		}
 	}
 	
 }
@@ -400,6 +614,12 @@ void Build_I_nu_Disk(struct blob *pt){
 	//FILE *fp_SED_disk;
 	double nu_peak_BB,nu_obs;
 	unsigned int NU_INT,NU_INT_MAX;
+	unsigned int ANGLE_INT, ANGLE_INT_MAX;
+	int have_angle_storage;
+	size_t angle_idx;
+	double d_mu, mu_grid;
+	double R_H_orig_angle, R_H_eval_angle, c_angle;
+	double I_theta_DRF, I_theta_blob;
 	double nu_start_disk_RF;
 	double nu_stop_disk_RF;
 	double nuL_nu_disk,F_nu_disk_obs;
@@ -475,6 +695,35 @@ void Build_I_nu_Disk(struct blob *pt){
 
 	NU_INT_MAX=pt->core.nu_seed_size-1;
 	pt->Disk.spec.NU_INT_MAX = NU_INT_MAX;
+	have_angle_storage = 0;
+	R_H_orig_angle = pt->core.R_H;
+	R_H_eval_angle = R_H_orig_angle;
+	c_angle = 1.0;
+	if (ensure_external_spectrum_angle_dep(&(pt->Disk.spec), pt->core.nu_seed_size, pt->core.theta_n_int) == 0 &&
+		pt->Disk.spec.angle_n_int > 0U) {
+		have_angle_storage = 1;
+		if (R_H_eval_angle > pt->Disk.R_Disk_interp) {
+			R_H_eval_angle = pt->Disk.R_Disk_interp;
+			c_angle = (pt->Disk.R_Disk_interp / R_H_orig_angle) * (pt->Disk.R_Disk_interp / R_H_orig_angle);
+		}
+		pt->core.R_H = R_H_eval_angle;
+		set_Disk_angles(pt);
+		ANGLE_INT_MAX = pt->Disk.spec.angle_n_int - 1U;
+		d_mu = (ANGLE_INT_MAX > 0U) ? ((pt->Disk.Disk_mu_2 - pt->Disk.Disk_mu_1) / (double)ANGLE_INT_MAX) : 0.0;
+		for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
+			mu_grid = pt->Disk.Disk_mu_1 + d_mu * (double)ANGLE_INT;
+			if (mu_grid < -1.0) {
+				mu_grid = -1.0;
+			}
+			else if (mu_grid > 1.0) {
+				mu_grid = 1.0;
+			}
+			pt->Disk.spec.mu[ANGLE_INT] = mu_grid;
+			pt->Disk.spec.theta[ANGLE_INT] = acos(mu_grid);
+		}
+		pt->core.R_H = R_H_orig_angle;
+		set_Disk_angles(pt);
+	}
 
 
 	pt->Disk.spec.nu_min_obs=nu_disk_to_nu_obs_disk(nu_start_disk_RF , pt->core.z_cosm);
@@ -533,6 +782,25 @@ void Build_I_nu_Disk(struct blob *pt){
 		*/
 
 
+	}
+	if (have_angle_storage) {
+		pt->core.R_H = R_H_eval_angle;
+		set_Disk_angles(pt);
+		for (NU_INT = 0; NU_INT <= NU_INT_MAX; NU_INT++) {
+			pt->core.nu_disk_RF = pt->Disk.spec.nu_DRF[NU_INT];
+			for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
+				mu_grid = pt->Disk.spec.mu[ANGLE_INT];
+				I_theta_DRF = c_angle * eval_I_nu_theta_Disk(pt, mu_grid);
+				I_theta_blob = I_theta_DRF * pt->core.BulkFactor * (1.0 - pt->core.beta_Gamma * mu_grid);
+				angle_idx = angle_dep_flat_index(NU_INT, ANGLE_INT, pt->Disk.spec.angle_n_int);
+				pt->Disk.spec.I_nu_theta_DRF[angle_idx] = I_theta_DRF;
+				pt->Disk.spec.I_nu_theta[angle_idx] = I_theta_blob;
+				pt->Disk.spec.n_nu_theta_DRF[angle_idx] = I_nu_to_n(I_theta_DRF, pt->Disk.spec.nu_DRF[NU_INT]);
+				pt->Disk.spec.n_nu_theta[angle_idx] = I_nu_to_n(I_theta_blob, pt->Disk.spec.nu[NU_INT]);
+			}
+		}
+		pt->core.R_H = R_H_orig_angle;
+		set_Disk_angles(pt);
 	}
 	pt->Disk.L_Disk_radiative = PowerPhotons_disk_rest_frame(pt, pt->Disk.spec.nu_DRF, pt->Disk.spec.nuFnu_obs, pt->Disk.spec.NU_INT_MAX);
 	
@@ -787,6 +1055,13 @@ void Build_I_nu_BLR(struct blob *pt){
 	//-------------------------------------
 	//double nu_stop_BLR_blob_RF;
 	unsigned int NU_INT,NU_INT_MAX;
+	unsigned int ANGLE_INT, ANGLE_INT_MAX;
+	int have_angle_storage;
+	size_t angle_idx;
+	double d_theta, theta_grid, mu_grid;
+	double R_H_orig_angle, R_H_eval_angle, c_angle;
+	double theta_max_angle;
+	double I_theta_DRF, I_theta_blob, geom_theta;
 	double I_nu_theta_disk_RF,I_nu_theta_blob_RF;
 	//char f_BLR_disk[static_file_name_max_legth];
 	//FILE *fp_BLR_disk;
@@ -849,6 +1124,29 @@ void Build_I_nu_BLR(struct blob *pt){
 
 	NU_INT_MAX = pt->core.nu_seed_size-1;
 	pt->BLR.spec.NU_INT_MAX=NU_INT_MAX;
+	have_angle_storage = 0;
+	R_H_orig_angle = pt->core.R_H;
+	R_H_eval_angle = R_H_orig_angle;
+	c_angle = 1.0;
+	if (ensure_external_spectrum_angle_dep(&(pt->BLR.spec), pt->core.nu_seed_size, pt->core.theta_n_int) == 0 &&
+		pt->BLR.spec.angle_n_int > 0U) {
+		have_angle_storage = 1;
+		if (R_H_eval_angle > pt->BLR.R_BLR_interp_start) {
+			R_H_eval_angle = pt->BLR.R_BLR_interp_val;
+			c_angle = (pt->BLR.R_BLR_interp_val / R_H_orig_angle) * (pt->BLR.R_BLR_interp_val / R_H_orig_angle);
+		}
+		pt->core.R_H = R_H_eval_angle;
+		theta_max_angle = eval_theta_max_BLR(pt);
+		ANGLE_INT_MAX = pt->BLR.spec.angle_n_int - 1U;
+		d_theta = (ANGLE_INT_MAX > 0U) ? (theta_max_angle / (double)ANGLE_INT_MAX) : 0.0;
+		for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
+			theta_grid = d_theta * (double)ANGLE_INT;
+			mu_grid = cos(theta_grid);
+			pt->BLR.spec.theta[ANGLE_INT] = theta_grid;
+			pt->BLR.spec.mu[ANGLE_INT] = mu_grid;
+		}
+		pt->core.R_H = R_H_orig_angle;
+	}
 	//This is evaluating the angular pattern
 	//It does not depends on frequency, because each region
 	//is emitting the same spectrum
@@ -901,6 +1199,23 @@ void Build_I_nu_BLR(struct blob *pt){
 		}
 		*/
 
+	}
+	if (have_angle_storage) {
+		pt->core.R_H = R_H_eval_angle;
+		for (NU_INT = 0; NU_INT <= NU_INT_MAX; NU_INT++) {
+			for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
+				mu_grid = pt->BLR.spec.mu[ANGLE_INT];
+				geom_theta = eval_I_nu_theta_BLR(pt, mu_grid);
+				I_theta_DRF = c_angle * geom_theta * pt->BLR.spec.L_nu_DRF[NU_INT];
+				I_theta_blob = I_theta_DRF * pt->core.BulkFactor * (1.0 - pt->core.beta_Gamma * mu_grid);
+				angle_idx = angle_dep_flat_index(NU_INT, ANGLE_INT, pt->BLR.spec.angle_n_int);
+				pt->BLR.spec.I_nu_theta_DRF[angle_idx] = I_theta_DRF;
+				pt->BLR.spec.I_nu_theta[angle_idx] = I_theta_blob;
+				pt->BLR.spec.n_nu_theta_DRF[angle_idx] = I_nu_to_n(I_theta_DRF, pt->BLR.spec.nu_DRF[NU_INT]);
+				pt->BLR.spec.n_nu_theta[angle_idx] = I_nu_to_n(I_theta_blob, pt->BLR.spec.nu[NU_INT]);
+			}
+		}
+		pt->core.R_H = R_H_orig_angle;
 	}
 	/*
 	if (pt->core.WRITE_TO_FILE == 1)
@@ -1148,6 +1463,13 @@ void Build_I_nu_DT(struct blob *pt){
 	//FILE *fp_SED_DT;
 	//char f_SED_DT[static_file_name_max_legth];
 	unsigned int NU_INT,NU_INT_MAX;
+	unsigned int ANGLE_INT, ANGLE_INT_MAX;
+	int have_angle_storage;
+	size_t angle_idx;
+	double d_theta, theta_grid, mu_grid;
+	double R_H_orig_angle, R_H_eval_angle, c_angle;
+	double theta_max_angle;
+	double I_theta_DRF, I_theta_blob, geom_theta;
 	double I_nu_theta_disk_RF, I_nu_theta_blob_RF;
 	double nu_peak_DT_disk_RF;
 	double nu_start_DT_disk_RF,nu_stop_DT_disk_RF;
@@ -1211,6 +1533,29 @@ void Build_I_nu_DT(struct blob *pt){
 
 	NU_INT_MAX = pt->core.nu_seed_size-1;
 	pt->DT.spec.NU_INT_MAX = NU_INT_MAX;
+	have_angle_storage = 0;
+	R_H_orig_angle = pt->core.R_H;
+	R_H_eval_angle = R_H_orig_angle;
+	c_angle = 1.0;
+	if (ensure_external_spectrum_angle_dep(&(pt->DT.spec), pt->core.nu_seed_size, pt->core.theta_n_int) == 0 &&
+		pt->DT.spec.angle_n_int > 0U) {
+		have_angle_storage = 1;
+		if (R_H_eval_angle > (pt->DT.R_DT * 50.0)) {
+			R_H_eval_angle = pt->DT.R_DT * 50.0;
+			c_angle = (R_H_eval_angle / R_H_orig_angle) * (R_H_eval_angle / R_H_orig_angle);
+		}
+		pt->core.R_H = R_H_eval_angle;
+		theta_max_angle = eval_theta_max_DT(pt);
+		ANGLE_INT_MAX = pt->DT.spec.angle_n_int - 1U;
+		d_theta = (ANGLE_INT_MAX > 0U) ? (theta_max_angle / (double)ANGLE_INT_MAX) : 0.0;
+		for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
+			theta_grid = d_theta * (double)ANGLE_INT;
+			mu_grid = cos(theta_grid);
+			pt->DT.spec.theta[ANGLE_INT] = theta_grid;
+			pt->DT.spec.mu[ANGLE_INT] = mu_grid;
+		}
+		pt->core.R_H = R_H_orig_angle;
+	}
 
 	pt->DT.R_DT_interp_val = pt->DT.R_DT* 50.0;
 	pt->DT.R_DT_interp_start = pt->DT.R_DT * 50.0;
@@ -1290,6 +1635,24 @@ void Build_I_nu_DT(struct blob *pt){
 	*/
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 		pt->DT.spec.n_nu[NU_INT] =I_nu_to_n(pt->DT.spec.I_nu[NU_INT], pt->DT.spec.nu[NU_INT]);
+	}
+	if (have_angle_storage) {
+		pt->core.R_H = R_H_eval_angle;
+		for (NU_INT = 0; NU_INT <= NU_INT_MAX; NU_INT++) {
+			for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
+				mu_grid = pt->DT.spec.mu[ANGLE_INT];
+				theta_grid = pt->DT.spec.theta[ANGLE_INT];
+				geom_theta = eval_I_nu_theta_DT(pt, mu_grid, theta_grid);
+				I_theta_DRF = c_angle * geom_theta * pt->DT.spec.L_nu_DRF[NU_INT];
+				I_theta_blob = I_theta_DRF * pt->core.BulkFactor * (1.0 - pt->core.beta_Gamma * mu_grid);
+				angle_idx = angle_dep_flat_index(NU_INT, ANGLE_INT, pt->DT.spec.angle_n_int);
+				pt->DT.spec.I_nu_theta_DRF[angle_idx] = I_theta_DRF;
+				pt->DT.spec.I_nu_theta[angle_idx] = I_theta_blob;
+				pt->DT.spec.n_nu_theta_DRF[angle_idx] = I_nu_to_n(I_theta_DRF, pt->DT.spec.nu_DRF[NU_INT]);
+				pt->DT.spec.n_nu_theta[angle_idx] = I_nu_to_n(I_theta_blob, pt->DT.spec.nu[NU_INT]);
+			}
+		}
+		pt->core.R_H = R_H_orig_angle;
 	}
 }
 
@@ -1479,11 +1842,18 @@ static double eval_dist_blob_corona(struct blob *pt)
 void Build_I_nu_Corona(struct blob *pt)
 {
 	unsigned int NU_INT, NU_INT_MAX;
+	unsigned int ANGLE_INT, ANGLE_INT_MAX;
+	int have_angle_storage;
+	size_t angle_idx;
 	double nu_start_Corona_disk_RF, nu_stop_Corona_disk_RF;
 	double nu_ref_low, nu_ref_high;
 	double nu_obs;
 	double nuL_nu_Corona, F_nu_Corona_obs;
 	double norm_int;
+	double d_mu, mu_grid;
+	double R_H_orig_angle, R_H_eval_angle, c_angle, R_H_test_angle;
+	double dist_blob_corona;
+	double I_theta_DRF, I_theta_blob;
 	double (*pf)(struct blob *, double x);
 
 	if (pt->core.verbose){
@@ -1522,6 +1892,43 @@ void Build_I_nu_Corona(struct blob *pt)
 	pt->Corona.spec.NU_INT_MAX = NU_INT_MAX;
 	pt->Corona.R_Corona_interp_val = pt->Corona.R_Corona * 50.0;
 	pt->Corona.R_Corona_interp_start = pt->Corona.R_Corona * 50.0;
+	have_angle_storage = 0;
+	R_H_orig_angle = pt->core.R_H;
+	R_H_eval_angle = R_H_orig_angle;
+	c_angle = 1.0;
+	if (ensure_external_spectrum_angle_dep(&(pt->Corona.spec), pt->core.nu_seed_size, pt->core.theta_n_int) == 0 &&
+		pt->Corona.spec.angle_n_int > 0U) {
+		have_angle_storage = 1;
+		dist_blob_corona = fabs(R_H_orig_angle - pt->Corona.R_H_Corona);
+		if ((dist_blob_corona > pt->Corona.R_Corona_interp_start) && (dist_blob_corona > 0.0)) {
+			if (R_H_orig_angle >= pt->Corona.R_H_Corona) {
+				R_H_test_angle = pt->Corona.R_H_Corona + pt->Corona.R_Corona_interp_val;
+			}
+			else{
+				R_H_test_angle = pt->Corona.R_H_Corona - pt->Corona.R_Corona_interp_val;
+			}
+			R_H_eval_angle = max(R_H_test_angle, 0.0);
+			c_angle = (pt->Corona.R_Corona_interp_val / dist_blob_corona) * (pt->Corona.R_Corona_interp_val / dist_blob_corona);
+		}
+
+		pt->core.R_H = R_H_eval_angle;
+		set_Corona_angles(pt);
+		ANGLE_INT_MAX = pt->Corona.spec.angle_n_int - 1U;
+		d_mu = (ANGLE_INT_MAX > 0U) ? ((pt->Corona.Corona_mu_2 - pt->Corona.Corona_mu_1) / (double)ANGLE_INT_MAX) : 0.0;
+		for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
+			mu_grid = pt->Corona.Corona_mu_1 + d_mu * (double)ANGLE_INT;
+			if (mu_grid < -1.0) {
+				mu_grid = -1.0;
+			}
+			else if (mu_grid > 1.0) {
+				mu_grid = 1.0;
+			}
+			pt->Corona.spec.mu[ANGLE_INT] = mu_grid;
+			pt->Corona.spec.theta[ANGLE_INT] = acos(mu_grid);
+		}
+		pt->core.R_H = R_H_orig_angle;
+		set_Corona_angles(pt);
+	}
 
 	pf = &integrand_f_nu_Corona_norm;
 	norm_int = integrale_trap_log_struct(pf, pt, nu_start_Corona_disk_RF, nu_stop_Corona_disk_RF, 400);
@@ -1558,6 +1965,25 @@ void Build_I_nu_Corona(struct blob *pt)
 		nuL_nu_Corona = pt->Corona.spec.L_nu_DRF[NU_INT] * pt->Corona.spec.nu_DRF[NU_INT];
 		F_nu_Corona_obs = L_nu_Disk_to_F_nu(nuL_nu_Corona / pt->Corona.spec.nu_DRF[NU_INT], pt->core.z_cosm, pt->core.dist);
 		pt->Corona.spec.nuFnu_obs[NU_INT] = F_nu_Corona_obs * nu_obs;
+	}
+	if (have_angle_storage) {
+		pt->core.R_H = R_H_eval_angle;
+		set_Corona_angles(pt);
+		for (NU_INT = 0; NU_INT <= NU_INT_MAX; NU_INT++) {
+			pt->core.nu_disk_RF = pt->Corona.spec.nu_DRF[NU_INT];
+			for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
+				mu_grid = pt->Corona.spec.mu[ANGLE_INT];
+				I_theta_DRF = c_angle * eval_I_nu_theta_Corona(pt, mu_grid);
+				I_theta_blob = I_theta_DRF * pt->core.BulkFactor * (1.0 - pt->core.beta_Gamma * mu_grid);
+				angle_idx = angle_dep_flat_index(NU_INT, ANGLE_INT, pt->Corona.spec.angle_n_int);
+				pt->Corona.spec.I_nu_theta_DRF[angle_idx] = I_theta_DRF;
+				pt->Corona.spec.I_nu_theta[angle_idx] = I_theta_blob;
+				pt->Corona.spec.n_nu_theta_DRF[angle_idx] = I_nu_to_n(I_theta_DRF, pt->Corona.spec.nu_DRF[NU_INT]);
+				pt->Corona.spec.n_nu_theta[angle_idx] = I_nu_to_n(I_theta_blob, pt->Corona.spec.nu[NU_INT]);
+			}
+		}
+		pt->core.R_H = R_H_orig_angle;
+		set_Corona_angles(pt);
 	}
 }
 

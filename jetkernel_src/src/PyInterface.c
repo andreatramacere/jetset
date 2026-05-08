@@ -220,6 +220,7 @@ static struct blob *make_internal_abs_worker_blob(const struct blob *src) {
     }
 
     *worker = *src;
+    reset_blob_external_spectra_angle_dep(worker);
     reset_internal_abs_store(worker);
     copy_internal_abs_component_config(&(worker->core.internal_abs.BLR), &(src->core.internal_abs.BLR));
     copy_internal_abs_component_config(&(worker->core.internal_abs.DT), &(src->core.internal_abs.DT));
@@ -309,6 +310,7 @@ int eval_internal_abs_tau_isolated(struct blob *pt,
     }
 
     free_internal_abs_store(worker);
+    free_blob_external_spectra_angle_dep(worker);
     free(worker);
 
     return status;
@@ -346,6 +348,8 @@ void show_blob(struct blob pt ) {
     printf("do_EC_BLR=%d\n", pt.core.do_EC_BLR);
     printf("do_EC_DT=%d\n", pt.core.do_EC_DT);
     printf("do_EC_Corona=%d\n", pt.core.do_EC_Corona);
+    printf("EC_kernel=%d\n", pt.core.EC_kernel);
+    printf("EC_angle_n_phi=%u\n", pt.core.EC_angle_n_phi);
     printf("disk type =%s\n", pt.core.disk_type);
     printf("nu_start_EC_BLR %e\n", pt.BLR.ec.spec.nu_min);
     printf("nu_stop_EC_BLR %e\n", pt.BLR.ec.spec.nu_max);
@@ -505,6 +509,8 @@ struct blob MakeBlob() {
     spettro_root.core.IC_adaptive_e_binning =0;
     spettro_root.core.do_IC_down_scattering =0;
     spettro_root.core.bulk_compton = 0;
+    spettro_root.core.EC_kernel = EC_KERNEL_ISOTROPIC;
+    spettro_root.core.EC_angle_n_phi = 32U;
     sprintf(spettro_root.core.MODE, "fast");
     //GRID SIZE FOR SEED
     spettro_root.core.nu_seed_size = 200;
@@ -645,6 +651,7 @@ struct blob MakeBlob() {
     spettro_root.emitters.Integrand_over_gamma_grid=NULL;
 
     reset_internal_abs_store(&spettro_root);
+    reset_blob_external_spectra_angle_dep(&spettro_root);
     init_sigma_gamma_gamma_table(&spettro_root);
     
     return spettro_root;
@@ -1146,6 +1153,7 @@ void Run_SED(struct blob *pt_base){
             }
 
             free_internal_abs_store(ia_worker_blob);
+            free_blob_external_spectra_angle_dep(ia_worker_blob);
             free(ia_worker_blob);
             ia_worker_blob = NULL;
         }

@@ -98,6 +98,11 @@ typedef enum {
     PARTICLE_PRIMARIES_EL = 3
 } particle_type_t;
 
+typedef enum {
+    EC_KERNEL_ISOTROPIC = 0,
+    EC_KERNEL_ANGLE_DEP_FULL = 1
+} ec_kernel_t;
+
 struct spectrum {
     double nu_min;
     double nu_max;
@@ -135,6 +140,14 @@ struct spectrum_external{
     double L_nu_DRF[static_spec_arr_size];
     double n_nu[static_spec_arr_size];
     double n_nu_DRF[static_spec_arr_size];
+    unsigned int angle_n_int;
+    unsigned int angle_nu_size;
+    double *mu;
+    double *theta;
+    double *I_nu_theta;
+    double *I_nu_theta_DRF;
+    double *n_nu_theta;
+    double *n_nu_theta_DRF;
     double nuFnu_obs[static_spec_arr_size];
     double nu[static_spec_arr_size];
     double nu_obs[static_spec_arr_size];
@@ -232,6 +245,8 @@ struct blob_core {
     int IC_adaptive_e_binning;
     int do_IC_down_scattering;
     int bulk_compton;
+    ec_kernel_t EC_kernel;
+    unsigned int EC_angle_n_phi;
     double COST_IC_K1, COST_IC_COOLING;
 
     //--- eq solution
@@ -1073,6 +1088,11 @@ void spettro_compton(int num_file, struct blob *);
 /********************* FUNZIONI EXTERNAL COMPOTON************************************/
 void spectra_External_Fields(int Num_file, struct blob *pt_d, int set_EC);
 void spettro_EC(int num_file, struct blob *);
+void reset_external_spectrum_angle_dep(struct spectrum_external *spec);
+int ensure_external_spectrum_angle_dep(struct spectrum_external *spec, unsigned int nu_size, unsigned int angle_n_int);
+void free_external_spectrum_angle_dep(struct spectrum_external *spec);
+void reset_blob_external_spectra_angle_dep(struct blob *pt);
+void free_blob_external_spectra_angle_dep(struct blob *pt);
 
 void set_EC_stat_pre(struct blob *pt, double R_lim);
 void set_EC_stat_post(struct blob *pt);
