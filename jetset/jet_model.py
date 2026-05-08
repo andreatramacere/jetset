@@ -616,8 +616,8 @@ class JetBase(Model):
         blob.Disk.L_Disk = 1E45
 
         blob.DT.L_DT = 1E45
-        blob.Corona.L_Corona = 1E45
-        blob.Corona.R_Corona = 1E15
+        blob.Corona.L_Corona = 1E44
+        blob.Corona.R_Corona = 1E13
         blob.Corona.R_H_Corona = 0.0
         blob.Corona.alpha_Corona = 1.0
         blob.Corona.nu_cut_low_Corona = 0.0
