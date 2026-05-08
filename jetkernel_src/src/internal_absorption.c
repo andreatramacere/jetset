@@ -779,7 +779,7 @@ static void resolve_component_geometry_ctx(const struct blob *pt_cloned,
     if ((pt_cloned != NULL) && (comp_id == INTABS_COMP_CORONA)) {
         double _check_side_val;
         _check_side_val = fabs(R_H_grid_start - pt_cloned->Corona.R_H_Corona);
-        ctx->R_H_ref_for_scaling=ctx->R_seed;
+        ctx->R_H_ref_for_scaling=pt_cloned->Corona.R_H_Corona;
         if (_check_side_val >= pt_cloned->Corona.R_H_Corona) {
             ctx->corona_side = 1.0;
         } else {
@@ -941,13 +941,14 @@ static double compute_seed_scale_extrapolated(const struct blob *pt_cloned, inta
         return (scale > 0.0) ? scale : INTABS_MIN_Y;
     }
     if (comp_id == INTABS_COMP_CORONA){
+        distance_from_center=fabs(distance_from_center - pt_cloned->Corona.R_H_Corona);
         denom = sqrt(distance_from_center * distance_from_center + R_seed * R_seed);
         if (denom > 0.0) {
             mu = distance_from_center / denom;
         } else {
             mu = 0.0;
         }
-        scale = (1.0 - mu) * pi;
+        scale = (1.0 - mu);
         return (scale > 0.0) ? scale : INTABS_MIN_Y;
     }
     return 1.0;
