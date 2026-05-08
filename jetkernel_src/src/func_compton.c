@@ -233,8 +233,10 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
     if (nu_seed_size == 0U || nu_seed_size > spec->angle_nu_size || spec->angle_n_int < 2U || spec->mu == NULL) {
         return 0.0;
     }
-
-    map_blob_from_drf = (use_drf == 0) ? 1 : 0;
+   if (use_drf == 0)
+        map_blob_from_drf = 1;
+    else
+        map_blob_from_drf = 0;
     if (map_blob_from_drf != 0) {
         if (spec->n_nu_theta_DRF == NULL || spec->nu_DRF == NULL) {
             return 0.0;
