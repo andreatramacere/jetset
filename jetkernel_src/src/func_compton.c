@@ -55,16 +55,16 @@ static int use_ec_angle_dep_full(const struct blob *pt,
     if (pt->core.EC_kernel != EC_KERNEL_ANGLE_DEP_FULL) {
         return 0;
     }
-    if (spec->mu == NULL || spec->angle_n_int < 2U || spec->angle_nu_size < nu_seed_size) {
+    if (spec->angle_n_int < 2U || spec->angle_nu_size < nu_seed_size) {
         return 0;
     }
 
     if (use_drf != 0) {
-        if (spec->n_nu_theta_DRF == NULL) {
+        if (spec->n_nu_theta_DRF == NULL || spec->mu_DRF == NULL) {
             return 0;
         }
     } else {
-        if (spec->n_nu_theta_DRF == NULL || spec->nu_DRF == NULL) {
+        if (spec->n_nu_theta == NULL || spec->mu == NULL) {
             return 0;
         }
     }
@@ -127,58 +127,6 @@ static double eval_ec_phi_integral_kernel(double gamma,
     return phi_sum * c_prefactor * dphi;
 }
 
-static double interp_external_angle_density_log(const double *nu_grid,
-                                                const double *n_theta,
-                                                unsigned int nu_size,
-                                                unsigned int angle_n_int,
-                                                unsigned int angle_id,
-                                                double nu_eval)
-{
-    unsigned int i_hi, i_lo;
-    double x, x1, x2, y1, y2, w;
-    double n1, n2;
-
-    if (nu_grid == NULL || n_theta == NULL || nu_size < 2U || angle_n_int < 1U || nu_eval <= 0.0) {
-        return 0.0;
-    }
-    if (nu_eval < nu_grid[0] || nu_eval > nu_grid[nu_size - 1U]) {
-        return 0.0;
-    }
-
-    i_hi = lower_bound_gamma_grid(nu_grid, nu_size, nu_eval);
-    if (i_hi == 0U) {
-        return n_theta[external_angle_flat_index(0U, angle_id, angle_n_int)];
-    }
-    if (i_hi >= nu_size) {
-        return n_theta[external_angle_flat_index(nu_size - 1U, angle_id, angle_n_int)];
-    }
-
-    i_lo = i_hi - 1U;
-    x1 = nu_grid[i_lo];
-    x2 = nu_grid[i_hi];
-    if (x2 <= x1) {
-        return n_theta[external_angle_flat_index(i_lo, angle_id, angle_n_int)];
-    }
-
-    n1 = n_theta[external_angle_flat_index(i_lo, angle_id, angle_n_int)];
-    n2 = n_theta[external_angle_flat_index(i_hi, angle_id, angle_n_int)];
-    if (n1 <= 0.0 || n2 <= 0.0) {
-        return 0.0;
-    }
-
-    x = log(nu_eval);
-    y1 = log(n1);
-    y2 = log(n2);
-    w = (x - log(x1)) / (log(x2) - log(x1));
-    if (w < 0.0) {
-        w = 0.0;
-    } else if (w > 1.0) {
-        w = 1.0;
-    }
-
-    return exp(y1 + w * (y2 - y1));
-}
-
 static double integrale_IC_angle_dep_full(struct blob *pt,
                                           const struct spectrum_external *spec,
                                           int use_drf,
@@ -198,43 +146,42 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
     double epsilon_s;
     double epsilon_in;
     double gamma_min_kin;
-    double mu, mu_drf, sin_mu, cos_psi, one_minus_cos_psi;
-    double D_mu, nu_in_drf, n_ph;
+    double mu, sin_mu, cos_psi, one_minus_cos_psi;
+    double n_ph;
     double sin_arg;
     double mu_integral, dmu;
     double kernel_phi;
     double nu_integral;
     double *mu_grid_eval;
     double *dmu_grid;
-    double *D_mu_grid;
     const double *n_theta_eval;
-    const double *n_theta_drf;
-    int map_blob_from_drf;
     double *Integrand_over_gamma_grid, *Ne_IC, *griglia_gamma_Ne_log_IC, *integr_nu, *integr_mu, *cos_phi, *A_grid;
     size_t mu_idx;
 
     if (pt == NULL || spec == NULL || nu_seed == NULL) {
         return 0.0;
     }
-    if (nu_seed_size == 0U || nu_seed_size > spec->angle_nu_size || spec->angle_n_int < 2U || spec->mu == NULL) {
+    if (nu_seed_size == 0U || nu_seed_size > spec->angle_nu_size || spec->angle_n_int < 2U) {
         return 0.0;
     }
-   if (use_drf == 0)
-        map_blob_from_drf = 1;
-    else
-        map_blob_from_drf = 0;
-    if (map_blob_from_drf != 0) {
-        if (spec->n_nu_theta_DRF == NULL || spec->nu_DRF == NULL) {
-            return 0.0;
-        }
-        n_theta_drf = spec->n_nu_theta_DRF;
-        n_theta_eval = NULL;
-    } else {
-        if (spec->n_nu_theta_DRF == NULL) {
-            return 0.0;
-        }
-        n_theta_drf = NULL;
+    if (use_drf != 0 && spec->mu_DRF == NULL) {
+        return 0.0;
+    }
+    if (use_drf == 0 && spec->mu == NULL) {
+        return 0.0;
+    }
+    /*
+     * Point-2 behavior:
+     * - blob-frame EC branch (use_drf==0): use n_nu_theta directly (no density mapping).
+     * - DRF EC branch  (use_drf!=0): use n_nu_theta_DRF directly.
+     */
+    if (use_drf != 0) {
         n_theta_eval = spec->n_nu_theta_DRF;
+    } else {
+        n_theta_eval = spec->n_nu_theta;
+    }
+    if (n_theta_eval == NULL) {
+        return 0.0;
     }
 
     gamma_grid_size = pt->emitters.gamma_grid_size;
@@ -252,7 +199,6 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
     integr_mu = (double *)calloc(angle_n_int, sizeof(double));
     mu_grid_eval = (double *)calloc(angle_n_int, sizeof(double));
     dmu_grid = (double *)calloc((angle_n_int > 1U) ? (angle_n_int - 1U) : 1U, sizeof(double));
-    D_mu_grid = (map_blob_from_drf != 0) ? (double *)calloc(angle_n_int, sizeof(double)) : NULL;
     cos_phi = (double *)calloc(n_phi, sizeof(double));
     A_grid = (double *)calloc((size_t)angle_n_int * (size_t)n_phi, sizeof(double));
     if (Integrand_over_gamma_grid == NULL ||
@@ -262,7 +208,6 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
         integr_mu == NULL ||
         mu_grid_eval == NULL ||
         dmu_grid == NULL ||
-        (map_blob_from_drf != 0 && D_mu_grid == NULL) ||
         cos_phi == NULL ||
         A_grid == NULL) {
         free(Integrand_over_gamma_grid);
@@ -272,7 +217,6 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
         free(integr_mu);
         free(mu_grid_eval);
         free(dmu_grid);
-        free(D_mu_grid);
         free(cos_phi);
         free(A_grid);
         return 0.0;
@@ -299,29 +243,22 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
         free(integr_mu);
         free(mu_grid_eval);
         free(dmu_grid);
-        free(D_mu_grid);
         free(cos_phi);
         free(A_grid);
         return 0.0;
     }
 
     for (ID_mu = 0U; ID_mu < angle_n_int; ID_mu++) {
-        mu_drf = clamp_to_interval(spec->mu[ID_mu], -1.0, 1.0);
-        mu = mu_drf;
-        if (map_blob_from_drf != 0) {
-            D_mu = pt->core.BulkFactor * (1.0 - pt->core.beta_Gamma * mu_drf);
-            D_mu_grid[ID_mu] = D_mu;
-            double denom = 1.0 - pt->core.beta_Gamma * mu;
-            if (fabs(denom) > 1.0e-15) {
-                mu = (mu - pt->core.beta_Gamma) / denom;
-            } else {
-                mu = (mu >= pt->core.beta_Gamma) ? 1.0 : -1.0;
-            }
+        if (use_drf != 0) {
+            mu = spec->mu_DRF[ID_mu];
+        } else {
+            /* spec->mu stores blob-frame angular bins. */
+            mu = spec->mu[ID_mu];
         }
         mu_grid_eval[ID_mu] = clamp_to_interval(mu, -1.0, 1.0);
     }
     for (ID_mu = 0U; ID_mu + 1U < angle_n_int; ID_mu++) {
-        dmu_grid[ID_mu] = fabs(spec->mu[ID_mu + 1U] - spec->mu[ID_mu]);
+        dmu_grid[ID_mu] = fabs(mu_grid_eval[ID_mu + 1U] - mu_grid_eval[ID_mu]);
     }
 
     for (ID_mu = 0U; ID_mu < angle_n_int; ID_mu++) {
@@ -367,65 +304,28 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
             Integrand_over_gamma_grid[ID_gamma] = 0.0;
         }
 
-        if (map_blob_from_drf != 0) {
-            for (ID_mu = 0U; ID_mu < angle_n_int; ID_mu++) {
-                D_mu = D_mu_grid[ID_mu];
-                if (D_mu <= 0.0) {
-                    integr_mu[ID_mu] = 0.0;
-                    continue;
-                }
-                nu_in_drf = nu_seed[ID] / D_mu;
-                n_ph = interp_external_angle_density_log(spec->nu_DRF,
-                                                         n_theta_drf,
-                                                         nu_seed_size,
-                                                         angle_n_int,
-                                                         ID_mu,
-                                                         nu_in_drf);
-
-                if (n_ph <= 0.0) {
-                    integr_mu[ID_mu] = 0.0;
-                    continue;
-                }
-
-                for (ID_gamma = gamma_start; ID_gamma < gamma_grid_size; ID_gamma++) {
-                    kernel_phi = eval_ec_phi_integral_kernel(griglia_gamma_Ne_log_IC[ID_gamma],
-                                                             epsilon_in,
-                                                             epsilon_s,
-                                                             &(A_grid[external_angle_flat_index(ID_mu, 0U, n_phi)]),
-                                                             n_phi,
-                                                             dphi);
-                    Integrand_over_gamma_grid[ID_gamma] = Ne_IC[ID_gamma] * kernel_phi;
-                }
-
-                integr_mu[ID_mu] = n_ph *
-                                   integr_simp_grid_equilog(griglia_gamma_Ne_log_IC,
-                                                            Integrand_over_gamma_grid,
-                                                            gamma_grid_size);
+        for (ID_mu = 0U; ID_mu < angle_n_int; ID_mu++) {
+            mu_idx = external_angle_flat_index(ID, ID_mu, angle_n_int);
+            n_ph = n_theta_eval[mu_idx];
+            if (n_ph <= 0.0) {
+                integr_mu[ID_mu] = 0.0;
+                continue;
             }
-        } else {
-            for (ID_mu = 0U; ID_mu < angle_n_int; ID_mu++) {
-                mu_idx = external_angle_flat_index(ID, ID_mu, angle_n_int);
-                n_ph = n_theta_eval[mu_idx];
-                if (n_ph <= 0.0) {
-                    integr_mu[ID_mu] = 0.0;
-                    continue;
-                }
 
-                for (ID_gamma = gamma_start; ID_gamma < gamma_grid_size; ID_gamma++) {
-                    kernel_phi = eval_ec_phi_integral_kernel(griglia_gamma_Ne_log_IC[ID_gamma],
-                                                             epsilon_in,
-                                                             epsilon_s,
-                                                             &(A_grid[external_angle_flat_index(ID_mu, 0U, n_phi)]),
-                                                             n_phi,
-                                                             dphi);
-                    Integrand_over_gamma_grid[ID_gamma] = Ne_IC[ID_gamma] * kernel_phi;
-                }
-
-                integr_mu[ID_mu] = n_ph *
-                                   integr_simp_grid_equilog(griglia_gamma_Ne_log_IC,
-                                                            Integrand_over_gamma_grid,
-                                                            gamma_grid_size);
+            for (ID_gamma = gamma_start; ID_gamma < gamma_grid_size; ID_gamma++) {
+                kernel_phi = eval_ec_phi_integral_kernel(griglia_gamma_Ne_log_IC[ID_gamma],
+                                                         epsilon_in,
+                                                         epsilon_s,
+                                                         &(A_grid[external_angle_flat_index(ID_mu, 0U, n_phi)]),
+                                                         n_phi,
+                                                         dphi);
+                Integrand_over_gamma_grid[ID_gamma] = Ne_IC[ID_gamma] * kernel_phi;
             }
+
+            integr_mu[ID_mu] = n_ph *
+                               integr_simp_grid_equilog(griglia_gamma_Ne_log_IC,
+                                                        Integrand_over_gamma_grid,
+                                                        gamma_grid_size);
         }
 
         mu_integral = 0.0;
@@ -448,7 +348,6 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
     free(integr_mu);
     free(mu_grid_eval);
     free(dmu_grid);
-    free(D_mu_grid);
     free(cos_phi);
     free(A_grid);
 

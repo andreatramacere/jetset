@@ -143,7 +143,7 @@ struct spectrum_external{
     unsigned int angle_n_int;
     unsigned int angle_nu_size;
     double *mu;
-    double *theta;
+    double *mu_DRF;
     double *I_nu_theta;
     double *I_nu_theta_DRF;
     double *n_nu_theta;
