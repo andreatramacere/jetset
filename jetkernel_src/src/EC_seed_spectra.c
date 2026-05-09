@@ -22,6 +22,41 @@ static size_t angle_dep_flat_index(unsigned int nu_id, unsigned int angle_id, un
 	return ((size_t)nu_id) * ((size_t)angle_n_int) + ((size_t)angle_id);
 }
 
+static double clamp_mu_for_aberration(double mu)
+{
+	if (mu > 1.0) {
+		return 1.0;
+	}
+	if (mu < -1.0) {
+		return -1.0;
+	}
+	return mu;
+}
+
+/*
+ * Evaluate photon direction in the blob frame from DRF cosine(mu).
+ * This is the single entry-point used in this file for angular aberration.
+ */
+static double eval_theta_blob_aberrated(struct blob *pt, double mu_drf)
+{
+	double denom, mu_blob;
+
+	mu_drf = clamp_mu_for_aberration(mu_drf);
+	denom = 1.0 - pt->core.beta_Gamma * mu_drf;
+	if (fabs(denom) <= 1.0e-15) {
+		mu_blob = (mu_drf >= 0.0) ? 1.0 : -1.0;
+	} else {
+		mu_blob = (mu_drf - pt->core.beta_Gamma) / denom;
+	}
+	mu_blob = clamp_mu_for_aberration(mu_blob);
+	return acos(mu_blob);
+}
+
+static double eval_I_nu_blob_from_drf(struct blob *pt, double I_nu_drf, double mu_drf)
+{
+	return I_nu_drf * pt->core.BulkFactor * (1.0 - pt->core.beta_Gamma * mu_drf);
+}
+
 void reset_external_spectrum_angle_dep(struct spectrum_external *spec)
 {
 	if (spec == NULL) {
@@ -301,7 +336,7 @@ void Build_I_nu_Star(struct blob *pt){
 	NU_INT_MAX=pt->core.nu_seed_size-1;
 	pt->Star.spec.NU_INT_MAX = NU_INT_MAX;
 	have_angle_storage = 0;
-	if (ensure_external_spectrum_angle_dep(&(pt->Star.spec), pt->core.nu_seed_size, pt->core.theta_n_int) == 0 &&
+	if (ensure_external_spectrum_angle_dep(&(pt->Star.spec), pt->core.nu_seed_size, pt->core.theta_size_seed_fields) == 0 &&
 		pt->Star.spec.angle_n_int > 0U) {
 		have_angle_storage = 1;
 		ANGLE_INT_MAX = pt->Star.spec.angle_n_int - 1U;
@@ -312,7 +347,7 @@ void Build_I_nu_Star(struct blob *pt){
 				mu_grid = 1.0;
 			}
 			pt->Star.spec.mu[ANGLE_INT] = mu_grid;
-			pt->Star.spec.theta[ANGLE_INT] = acos(mu_grid);
+			pt->Star.spec.theta[ANGLE_INT] = eval_theta_blob_aberrated(pt, mu_grid);
 		}
 	}
 
@@ -513,7 +548,7 @@ void Build_I_nu_CMB(struct blob *pt){
 	NU_INT_MAX=pt->core.nu_seed_size-1;
 	pt->CMB.spec.NU_INT_MAX = NU_INT_MAX;
 	have_angle_storage = 0;
-	if (ensure_external_spectrum_angle_dep(&(pt->CMB.spec), pt->core.nu_seed_size, pt->core.theta_n_int) == 0 &&
+	if (ensure_external_spectrum_angle_dep(&(pt->CMB.spec), pt->core.nu_seed_size, pt->core.theta_size_seed_fields) == 0 &&
 		pt->CMB.spec.angle_n_int > 0U) {
 		have_angle_storage = 1;
 		ANGLE_INT_MAX = pt->CMB.spec.angle_n_int - 1U;
@@ -524,7 +559,7 @@ void Build_I_nu_CMB(struct blob *pt){
 				mu_grid = 1.0;
 			}
 			pt->CMB.spec.mu[ANGLE_INT] = mu_grid;
-			pt->CMB.spec.theta[ANGLE_INT] = acos(mu_grid);
+			pt->CMB.spec.theta[ANGLE_INT] = eval_theta_blob_aberrated(pt, mu_grid);
 		}
 	}
 
@@ -552,7 +587,7 @@ void Build_I_nu_CMB(struct blob *pt){
 				                                      mu_grid);
 				i_mu = x_to_grid_index(pt->CMB.spec.nu_DRF, nu_disk_RF, pt->core.nu_seed_size);
 				if (i_mu > 0) {
-					I_blob_theta = pt->CMB.spec.I_nu_DRF[i_mu] * pt->core.BulkFactor * (1.0 - pt->core.beta_Gamma * mu_grid);
+					I_blob_theta = eval_I_nu_blob_from_drf(pt, pt->CMB.spec.I_nu_DRF[i_mu], mu_grid);
 				}
 				else{
 					I_blob_theta = 0.0;
@@ -584,7 +619,7 @@ double eval_I_nu_CMB_blob_RF(struct blob *pt, double nu_blob_RF){
 	double (*pf) (struct blob *, double x);
 	pf = &integrand_I_nu_CMB_blob_RF;
 	//0.5 comes from 2pi/(4pi)
-	return 0.5 * integrale_simp_struct(pf, pt, pt->CMB.CMB_mu_1, pt->CMB.CMB_mu_2, pt->core.theta_n_int);
+	return 0.5 * integrale_simp_struct(pf, pt, pt->CMB.CMB_mu_1, pt->CMB.CMB_mu_2, pt->core.theta_size_seed_fields);
 }
 
 double integrand_I_nu_CMB_blob_RF(struct blob *pt, double mu){
@@ -657,7 +692,7 @@ void Build_I_nu_Disk(struct blob *pt){
 		//double (*pf) (struct spettro *, double x);
 		//pf = &Disk_Spectrum;
 		//pt->Cost_Norm_disk_Mulit_BB= 1.0/
-		//		integrale_simp_struct(pf, pt,nu_start_disk_RF, nu_stop_disk_RF, pt->core.theta_n_int);
+		//		integrale_simp_struct(pf, pt,nu_start_disk_RF, nu_stop_disk_RF, pt->core.theta_size_seed_fields);
 		//printf( "%e\n",pt->Cost_Norm_disk_Mulit_BB);
 	 }
 	 else if (pt->core.disk == 3)
@@ -699,7 +734,7 @@ void Build_I_nu_Disk(struct blob *pt){
 	R_H_orig_angle = pt->core.R_H;
 	R_H_eval_angle = R_H_orig_angle;
 	c_angle = 1.0;
-	if (ensure_external_spectrum_angle_dep(&(pt->Disk.spec), pt->core.nu_seed_size, pt->core.theta_n_int) == 0 &&
+	if (ensure_external_spectrum_angle_dep(&(pt->Disk.spec), pt->core.nu_seed_size, pt->core.theta_size_seed_fields) == 0 &&
 		pt->Disk.spec.angle_n_int > 0U) {
 		have_angle_storage = 1;
 		if (R_H_eval_angle > pt->Disk.R_Disk_interp) {
@@ -719,7 +754,7 @@ void Build_I_nu_Disk(struct blob *pt){
 				mu_grid = 1.0;
 			}
 			pt->Disk.spec.mu[ANGLE_INT] = mu_grid;
-			pt->Disk.spec.theta[ANGLE_INT] = acos(mu_grid);
+			pt->Disk.spec.theta[ANGLE_INT] = eval_theta_blob_aberrated(pt, mu_grid);
 		}
 		pt->core.R_H = R_H_orig_angle;
 		set_Disk_angles(pt);
@@ -791,7 +826,7 @@ void Build_I_nu_Disk(struct blob *pt){
 			for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
 				mu_grid = pt->Disk.spec.mu[ANGLE_INT];
 				I_theta_DRF = c_angle * eval_I_nu_theta_Disk(pt, mu_grid);
-				I_theta_blob = I_theta_DRF * pt->core.BulkFactor * (1.0 - pt->core.beta_Gamma * mu_grid);
+				I_theta_blob = eval_I_nu_blob_from_drf(pt, I_theta_DRF, mu_grid);
 				angle_idx = angle_dep_flat_index(NU_INT, ANGLE_INT, pt->Disk.spec.angle_n_int);
 				pt->Disk.spec.I_nu_theta_DRF[angle_idx] = I_theta_DRF;
 				pt->Disk.spec.I_nu_theta[angle_idx] = I_theta_blob;
@@ -973,7 +1008,7 @@ double eval_I_nu_Disk_blob_RF(struct blob *pt, double nu_disk_RF)
 	}
 
 	set_Disk_angles(pt);
-	I = integrale_simp_struct(pf, pt, pt->Disk.Disk_mu_1, pt->Disk.Disk_mu_2, pt->core.theta_n_int);
+	I = integrale_simp_struct(pf, pt, pt->Disk.Disk_mu_1, pt->Disk.Disk_mu_2, pt->core.theta_size_seed_fields);
 	pt->core.R_H = R_H_orig;
 	set_Disk_angles(pt);
 	return I * one_by_four_pi * c;
@@ -997,7 +1032,7 @@ double eval_I_nu_Disk_disk_RF(struct blob *pt, double nu_disk_RF)
 		c = (pt->Disk.R_Disk_interp / R_H_orig) * (pt->Disk.R_Disk_interp / R_H_orig);
 	}
 	set_Disk_angles(pt);
-	I = integrale_simp_struct(pf, pt, pt->Disk.Disk_mu_1, pt->Disk.Disk_mu_2, pt->core.theta_n_int);
+	I = integrale_simp_struct(pf, pt, pt->Disk.Disk_mu_1, pt->Disk.Disk_mu_2, pt->core.theta_size_seed_fields);
 	pt->core.R_H = R_H_orig;
 	set_Disk_angles(pt);
 	//printf("=> R_DT_interp=%e R_H=%e Disk_mu_1=%e Disk_mu_2=%e i=%e \n", pt->R_DT_interp, pt->core.R_H, pt->Disk.Disk_mu_1, pt->Disk.Disk_mu_2, I);
@@ -1128,7 +1163,7 @@ void Build_I_nu_BLR(struct blob *pt){
 	R_H_orig_angle = pt->core.R_H;
 	R_H_eval_angle = R_H_orig_angle;
 	c_angle = 1.0;
-	if (ensure_external_spectrum_angle_dep(&(pt->BLR.spec), pt->core.nu_seed_size, pt->core.theta_n_int) == 0 &&
+	if (ensure_external_spectrum_angle_dep(&(pt->BLR.spec), pt->core.nu_seed_size, pt->core.theta_size_seed_fields) == 0 &&
 		pt->BLR.spec.angle_n_int > 0U) {
 		have_angle_storage = 1;
 		if (R_H_eval_angle > pt->BLR.R_BLR_interp_start) {
@@ -1142,7 +1177,7 @@ void Build_I_nu_BLR(struct blob *pt){
 		for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
 			theta_grid = d_theta * (double)ANGLE_INT;
 			mu_grid = cos(theta_grid);
-			pt->BLR.spec.theta[ANGLE_INT] = theta_grid;
+			pt->BLR.spec.theta[ANGLE_INT] = eval_theta_blob_aberrated(pt, mu_grid);
 			pt->BLR.spec.mu[ANGLE_INT] = mu_grid;
 		}
 		pt->core.R_H = R_H_orig_angle;
@@ -1207,7 +1242,7 @@ void Build_I_nu_BLR(struct blob *pt){
 				mu_grid = pt->BLR.spec.mu[ANGLE_INT];
 				geom_theta = eval_I_nu_theta_BLR(pt, mu_grid);
 				I_theta_DRF = c_angle * geom_theta * pt->BLR.spec.L_nu_DRF[NU_INT];
-				I_theta_blob = I_theta_DRF * pt->core.BulkFactor * (1.0 - pt->core.beta_Gamma * mu_grid);
+				I_theta_blob = eval_I_nu_blob_from_drf(pt, I_theta_DRF, mu_grid);
 				angle_idx = angle_dep_flat_index(NU_INT, ANGLE_INT, pt->BLR.spec.angle_n_int);
 				pt->BLR.spec.I_nu_theta_DRF[angle_idx] = I_theta_DRF;
 				pt->BLR.spec.I_nu_theta[angle_idx] = I_theta_blob;
@@ -1315,7 +1350,7 @@ double eval_I_nu_BLR_disk_RF(struct blob *pt)
 	theta_min=0.0;
 	theta_max = eval_theta_max_BLR(pt);
 
-	I = integrale_simp_struct(pf, pt, theta_min, theta_max, pt->core.theta_n_int);
+	I = integrale_simp_struct(pf, pt, theta_min, theta_max, pt->core.theta_size_seed_fields);
 	pt->core.R_H = R_H_orig;
 	//printf("=>R_H=%e R_BLR_inter=%e I=%e %e %e c=%e\n ",pt->core.R_H,pt->R_BLR_interp, I, theta_min, theta_max,c);
 	return I*one_by_four_pi*c;
@@ -1343,7 +1378,7 @@ double eval_I_nu_BLR_blob_RF(struct blob *pt)
 	theta_min = 0.0;
 	theta_max = eval_theta_max_BLR(pt);
 
-	I = integrale_simp_struct(pf, pt, theta_min, theta_max, pt->core.theta_n_int);
+	I = integrale_simp_struct(pf, pt, theta_min, theta_max, pt->core.theta_size_seed_fields);
 	pt->core.R_H = R_H_orig;
 	//printf("=>BLR R_H=%e R_B=%e I=%e %e %e c=%e\n ", pt->core.R_H, pt->BLR.R_BLR_out, I, theta_min, theta_max, c);
 	return I*one_by_four_pi*c;
@@ -1537,7 +1572,7 @@ void Build_I_nu_DT(struct blob *pt){
 	R_H_orig_angle = pt->core.R_H;
 	R_H_eval_angle = R_H_orig_angle;
 	c_angle = 1.0;
-	if (ensure_external_spectrum_angle_dep(&(pt->DT.spec), pt->core.nu_seed_size, pt->core.theta_n_int) == 0 &&
+	if (ensure_external_spectrum_angle_dep(&(pt->DT.spec), pt->core.nu_seed_size, pt->core.theta_size_seed_fields) == 0 &&
 		pt->DT.spec.angle_n_int > 0U) {
 		have_angle_storage = 1;
 		if (R_H_eval_angle > (pt->DT.R_DT * 50.0)) {
@@ -1551,7 +1586,7 @@ void Build_I_nu_DT(struct blob *pt){
 		for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
 			theta_grid = d_theta * (double)ANGLE_INT;
 			mu_grid = cos(theta_grid);
-			pt->DT.spec.theta[ANGLE_INT] = theta_grid;
+			pt->DT.spec.theta[ANGLE_INT] = eval_theta_blob_aberrated(pt, mu_grid);
 			pt->DT.spec.mu[ANGLE_INT] = mu_grid;
 		}
 		pt->core.R_H = R_H_orig_angle;
@@ -1641,10 +1676,10 @@ void Build_I_nu_DT(struct blob *pt){
 		for (NU_INT = 0; NU_INT <= NU_INT_MAX; NU_INT++) {
 			for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
 				mu_grid = pt->DT.spec.mu[ANGLE_INT];
-				theta_grid = pt->DT.spec.theta[ANGLE_INT];
+				theta_grid = acos(clamp_mu_for_aberration(mu_grid));
 				geom_theta = eval_I_nu_theta_DT(pt, mu_grid, theta_grid);
 				I_theta_DRF = c_angle * geom_theta * pt->DT.spec.L_nu_DRF[NU_INT];
-				I_theta_blob = I_theta_DRF * pt->core.BulkFactor * (1.0 - pt->core.beta_Gamma * mu_grid);
+				I_theta_blob = eval_I_nu_blob_from_drf(pt, I_theta_DRF, mu_grid);
 				angle_idx = angle_dep_flat_index(NU_INT, ANGLE_INT, pt->DT.spec.angle_n_int);
 				pt->DT.spec.I_nu_theta_DRF[angle_idx] = I_theta_DRF;
 				pt->DT.spec.I_nu_theta[angle_idx] = I_theta_blob;
@@ -1755,7 +1790,7 @@ double eval_I_nu_DT_disk_RF(struct blob *pt )
 	theta_min = 0.0;
 	theta_max = eval_theta_max_DT(pt);
 
-	I = integrale_simp_struct(pf, pt, theta_min, theta_max, pt->core.theta_n_int);
+	I = integrale_simp_struct(pf, pt, theta_min, theta_max, pt->core.theta_size_seed_fields);
 	pt->core.R_H = R_H_orig;
 	return I * one_by_four_pi * c;
 }
@@ -1782,7 +1817,7 @@ double eval_I_nu_DT_blob_RF(struct blob *pt )
 	theta_min = 0.0;
 	theta_max = eval_theta_max_DT(pt);
 
-	I = integrale_simp_struct(pf, pt, theta_min, theta_max, pt->core.theta_n_int);
+	I = integrale_simp_struct(pf, pt, theta_min, theta_max, pt->core.theta_size_seed_fields);
 	pt->core.R_H = R_H_orig;
 	//printf("=>DT  R_H=%e R_D=%e I=%e %e %e c=%e\n ", pt->core.R_H, pt->DT.R_DT, I, theta_min, theta_max, c);
 	return I * one_by_four_pi * c;
@@ -1896,7 +1931,7 @@ void Build_I_nu_Corona(struct blob *pt)
 	R_H_orig_angle = pt->core.R_H;
 	R_H_eval_angle = R_H_orig_angle;
 	c_angle = 1.0;
-	if (ensure_external_spectrum_angle_dep(&(pt->Corona.spec), pt->core.nu_seed_size, pt->core.theta_n_int) == 0 &&
+	if (ensure_external_spectrum_angle_dep(&(pt->Corona.spec), pt->core.nu_seed_size, pt->core.theta_size_seed_fields) == 0 &&
 		pt->Corona.spec.angle_n_int > 0U) {
 		have_angle_storage = 1;
 		dist_blob_corona = fabs(R_H_orig_angle - pt->Corona.R_H_Corona);
@@ -1924,7 +1959,7 @@ void Build_I_nu_Corona(struct blob *pt)
 				mu_grid = 1.0;
 			}
 			pt->Corona.spec.mu[ANGLE_INT] = mu_grid;
-			pt->Corona.spec.theta[ANGLE_INT] = acos(mu_grid);
+			pt->Corona.spec.theta[ANGLE_INT] = eval_theta_blob_aberrated(pt, mu_grid);
 		}
 		pt->core.R_H = R_H_orig_angle;
 		set_Corona_angles(pt);
@@ -1974,7 +2009,7 @@ void Build_I_nu_Corona(struct blob *pt)
 			for (ANGLE_INT = 0; ANGLE_INT <= ANGLE_INT_MAX; ANGLE_INT++) {
 				mu_grid = pt->Corona.spec.mu[ANGLE_INT];
 				I_theta_DRF = c_angle * eval_I_nu_theta_Corona(pt, mu_grid);
-				I_theta_blob = I_theta_DRF * pt->core.BulkFactor * (1.0 - pt->core.beta_Gamma * mu_grid);
+				I_theta_blob = eval_I_nu_blob_from_drf(pt, I_theta_DRF, mu_grid);
 				angle_idx = angle_dep_flat_index(NU_INT, ANGLE_INT, pt->Corona.spec.angle_n_int);
 				pt->Corona.spec.I_nu_theta_DRF[angle_idx] = I_theta_DRF;
 				pt->Corona.spec.I_nu_theta[angle_idx] = I_theta_blob;
@@ -2047,7 +2082,7 @@ double eval_I_nu_Corona_disk_RF(struct blob *pt, double nu_Corona_disk_RF)
 	}
 
 	set_Corona_angles(pt);
-	I = integrale_simp_struct(pf, pt, pt->Corona.Corona_mu_1, pt->Corona.Corona_mu_2, pt->core.theta_n_int);
+	I = integrale_simp_struct(pf, pt, pt->Corona.Corona_mu_1, pt->Corona.Corona_mu_2, pt->core.theta_size_seed_fields);
 	pt->core.R_H = R_H_orig;
 	set_Corona_angles(pt);
 
@@ -2078,7 +2113,7 @@ double eval_I_nu_Corona_blob_RF(struct blob *pt, double nu_Corona_disk_RF)
 	}
 
 	set_Corona_angles(pt);
-	I = integrale_simp_struct(pf, pt, pt->Corona.Corona_mu_1, pt->Corona.Corona_mu_2, pt->core.theta_n_int);
+	I = integrale_simp_struct(pf, pt, pt->Corona.Corona_mu_1, pt->Corona.Corona_mu_2, pt->core.theta_size_seed_fields);
 	pt->core.R_H = R_H_orig;
 	set_Corona_angles(pt);
 

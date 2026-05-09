@@ -586,7 +586,7 @@ struct blob MakeBlob() {
     //spettro_root.EC_theta_lim=5.0;
     spettro_root.Disk.M_BH = 1E9;
 
-    spettro_root.core.theta_n_int=50;
+    spettro_root.core.theta_size_seed_fields=50;
     spettro_root.core.l_n_int=50;
     spettro_root.Disk.ec.spec.nu_min = 1e13;
     spettro_root.Disk.ec.spec.nu_max = 1e26;

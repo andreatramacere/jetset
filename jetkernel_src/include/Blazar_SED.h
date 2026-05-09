@@ -265,7 +265,7 @@ struct blob_core {
     double nu_planck_max_factor;
     double mono_planck_min_factor;
     double mono_planck_max_factor;
-    unsigned int theta_n_int;
+    unsigned int theta_size_seed_fields;
     unsigned int l_n_int;
 
     double nu_blob_RF;
