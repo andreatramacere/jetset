@@ -140,7 +140,7 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
     unsigned int gamma_grid_size;
     unsigned int angle_n_int;
     unsigned int n_phi;
-    unsigned int ID, ID_mu, ID_gamma, gamma_start;
+    unsigned int ID, ID_mu, ID_gamma, ID_phi, gamma_start;
     double dphi;
     double mu_s, mu_s_prime, sin_mu_s_prime;
     double epsilon_s;
@@ -150,12 +150,18 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
     double n_ph;
     double sin_arg;
     double mu_integral, dmu;
-    double kernel_phi;
     double nu_integral;
     double *mu_grid_eval;
     double *dmu_grid;
     const double *n_theta_eval;
     double *Integrand_over_gamma_grid, *Ne_IC, *griglia_gamma_Ne_log_IC, *integr_nu, *integr_mu, *cos_phi, *A_grid;
+    double *A_inv_grid, *A_max_grid;
+    double *gamma_base_xi, *gamma_k0, *gamma_prefactor, *gamma_a_min;
+    unsigned char *gamma_valid;
+    const double *A_row, *A_inv_row;
+    double A_max;
+    double y, one_by_y, g2e, c_prefactor, gamma_eval;
+    double phi_sum, k0, base_xi, a_min, a_phi, k, xi;
     size_t mu_idx;
 
     if (pt == NULL || spec == NULL || nu_seed == NULL) {
@@ -201,6 +207,13 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
     dmu_grid = (double *)calloc((angle_n_int > 1U) ? (angle_n_int - 1U) : 1U, sizeof(double));
     cos_phi = (double *)calloc(n_phi, sizeof(double));
     A_grid = (double *)calloc((size_t)angle_n_int * (size_t)n_phi, sizeof(double));
+    A_inv_grid = (double *)calloc((size_t)angle_n_int * (size_t)n_phi, sizeof(double));
+    A_max_grid = (double *)calloc(angle_n_int, sizeof(double));
+    gamma_base_xi = (double *)calloc(gamma_grid_size, sizeof(double));
+    gamma_k0 = (double *)calloc(gamma_grid_size, sizeof(double));
+    gamma_prefactor = (double *)calloc(gamma_grid_size, sizeof(double));
+    gamma_a_min = (double *)calloc(gamma_grid_size, sizeof(double));
+    gamma_valid = (unsigned char *)calloc(gamma_grid_size, sizeof(unsigned char));
     if (Integrand_over_gamma_grid == NULL ||
         griglia_gamma_Ne_log_IC == NULL ||
         Ne_IC == NULL ||
@@ -209,7 +222,14 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
         mu_grid_eval == NULL ||
         dmu_grid == NULL ||
         cos_phi == NULL ||
-        A_grid == NULL) {
+        A_grid == NULL ||
+        A_inv_grid == NULL ||
+        A_max_grid == NULL ||
+        gamma_base_xi == NULL ||
+        gamma_k0 == NULL ||
+        gamma_prefactor == NULL ||
+        gamma_a_min == NULL ||
+        gamma_valid == NULL) {
         free(Integrand_over_gamma_grid);
         free(griglia_gamma_Ne_log_IC);
         free(Ne_IC);
@@ -219,6 +239,13 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
         free(dmu_grid);
         free(cos_phi);
         free(A_grid);
+        free(A_inv_grid);
+        free(A_max_grid);
+        free(gamma_base_xi);
+        free(gamma_k0);
+        free(gamma_prefactor);
+        free(gamma_a_min);
+        free(gamma_valid);
         return 0.0;
     }
 
@@ -245,6 +272,13 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
         free(dmu_grid);
         free(cos_phi);
         free(A_grid);
+        free(A_inv_grid);
+        free(A_max_grid);
+        free(gamma_base_xi);
+        free(gamma_k0);
+        free(gamma_prefactor);
+        free(gamma_a_min);
+        free(gamma_valid);
         return 0.0;
     }
 
@@ -268,6 +302,7 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
             sin_arg = 0.0;
         }
         sin_mu = sqrt(sin_arg);
+        A_max_grid[ID_mu] = 0.0;
         for (ID = 0U; ID < n_phi; ID++) {
             cos_psi = mu * mu_s_prime + sin_mu * sin_mu_s_prime * cos_phi[ID];
             cos_psi = clamp_to_interval(cos_psi, -1.0, 1.0);
@@ -275,7 +310,16 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
             if (one_minus_cos_psi < 0.0) {
                 one_minus_cos_psi = 0.0;
             }
-            A_grid[external_angle_flat_index(ID_mu, ID, n_phi)] = one_minus_cos_psi;
+            mu_idx = external_angle_flat_index(ID_mu, ID, n_phi);
+            A_grid[mu_idx] = one_minus_cos_psi;
+            if (one_minus_cos_psi > A_max_grid[ID_mu]) {
+                A_max_grid[ID_mu] = one_minus_cos_psi;
+            }
+            if (one_minus_cos_psi > 0.0) {
+                A_inv_grid[mu_idx] = 1.0 / one_minus_cos_psi;
+            } else {
+                A_inv_grid[mu_idx] = 0.0;
+            }
         }
     }
 
@@ -303,6 +347,41 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
         for (ID_gamma = 0U; ID_gamma < gamma_start; ID_gamma++) {
             Integrand_over_gamma_grid[ID_gamma] = 0.0;
         }
+        for (ID_gamma = gamma_start; ID_gamma < gamma_grid_size; ID_gamma++) {
+            gamma_eval = griglia_gamma_Ne_log_IC[ID_gamma];
+            if (gamma_eval <= epsilon_s) {
+                gamma_valid[ID_gamma] = 0U;
+                continue;
+            }
+            y = 1.0 - (epsilon_s / gamma_eval);
+            if (y <= 0.0) {
+                gamma_valid[ID_gamma] = 0U;
+                continue;
+            }
+
+            one_by_y = 1.0 / y;
+            g2e = gamma_eval * gamma_eval * epsilon_in;
+            if (g2e <= 0.0) {
+                gamma_valid[ID_gamma] = 0U;
+                continue;
+            }
+
+            gamma_base_xi[ID_gamma] = y + one_by_y;
+            gamma_k0[ID_gamma] = epsilon_s / (g2e * y);
+            c_prefactor = (3.0 * SIGTH) / (8.0 * g2e);
+            gamma_prefactor[ID_gamma] = c_prefactor * dphi;
+            gamma_a_min[ID_gamma] = epsilon_s / (2.0 * epsilon_in * gamma_eval * (gamma_eval - epsilon_s));
+
+            if (!isfinite(gamma_base_xi[ID_gamma]) ||
+                !isfinite(gamma_k0[ID_gamma]) ||
+                !isfinite(gamma_prefactor[ID_gamma]) ||
+                !isfinite(gamma_a_min[ID_gamma]) ||
+                gamma_a_min[ID_gamma] <= 0.0) {
+                gamma_valid[ID_gamma] = 0U;
+            } else {
+                gamma_valid[ID_gamma] = 1U;
+            }
+        }
 
         for (ID_mu = 0U; ID_mu < angle_n_int; ID_mu++) {
             mu_idx = external_angle_flat_index(ID, ID_mu, angle_n_int);
@@ -311,15 +390,38 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
                 integr_mu[ID_mu] = 0.0;
                 continue;
             }
+            A_row = &(A_grid[external_angle_flat_index(ID_mu, 0U, n_phi)]);
+            A_inv_row = &(A_inv_grid[external_angle_flat_index(ID_mu, 0U, n_phi)]);
+            A_max = A_max_grid[ID_mu];
+            if (A_max <= 0.0) {
+                integr_mu[ID_mu] = 0.0;
+                continue;
+            }
 
             for (ID_gamma = gamma_start; ID_gamma < gamma_grid_size; ID_gamma++) {
-                kernel_phi = eval_ec_phi_integral_kernel(griglia_gamma_Ne_log_IC[ID_gamma],
-                                                         epsilon_in,
-                                                         epsilon_s,
-                                                         &(A_grid[external_angle_flat_index(ID_mu, 0U, n_phi)]),
-                                                         n_phi,
-                                                         dphi);
-                Integrand_over_gamma_grid[ID_gamma] = Ne_IC[ID_gamma] * kernel_phi;
+                if (gamma_valid[ID_gamma] == 0U || gamma_a_min[ID_gamma] >= A_max) {
+                    Integrand_over_gamma_grid[ID_gamma] = 0.0;
+                    continue;
+                }
+
+                base_xi = gamma_base_xi[ID_gamma];
+                k0 = gamma_k0[ID_gamma];
+                a_min = gamma_a_min[ID_gamma];
+                phi_sum = 0.0;
+
+                for (ID_phi = 0U; ID_phi < n_phi; ID_phi++) {
+                    a_phi = A_row[ID_phi];
+                    if (a_phi <= a_min) {
+                        continue;
+                    }
+                    k = k0 * A_inv_row[ID_phi];
+                    xi = base_xi - (2.0 * k) + (k * k);
+                    if (xi > 0.0) {
+                        phi_sum += xi;
+                    }
+                }
+
+                Integrand_over_gamma_grid[ID_gamma] = Ne_IC[ID_gamma] * (phi_sum * gamma_prefactor[ID_gamma]);
             }
 
             integr_mu[ID_mu] = n_ph *
@@ -350,6 +452,13 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
     free(dmu_grid);
     free(cos_phi);
     free(A_grid);
+    free(A_inv_grid);
+    free(A_max_grid);
+    free(gamma_base_xi);
+    free(gamma_k0);
+    free(gamma_prefactor);
+    free(gamma_a_min);
+    free(gamma_valid);
 
     return nu_integral;
 }
