@@ -72,61 +72,6 @@ static int use_ec_angle_dep_full(const struct blob *pt,
     return 1;
 }
 
-static double eval_ec_phi_integral_kernel(double gamma,
-                                          double epsilon,
-                                          double epsilon_s,
-                                          const double *a_phi,
-                                          unsigned int n_phi,
-                                          double dphi)
-{
-    unsigned int i_phi;
-    double phi_sum;
-    double y, one_by_y, base_xi;
-    double g2e, k0, c_prefactor;
-    double a_min;
-
-    if (gamma <= 1.0 || epsilon <= 0.0 || epsilon_s <= 0.0 || epsilon_s >= gamma) {
-        return 0.0;
-    }
-
-    y = 1.0 - (epsilon_s / gamma);
-    if (y <= 0.0) {
-        return 0.0;
-    }
-    one_by_y = 1.0 / y;
-    base_xi = y + one_by_y;
-
-    g2e = gamma * gamma * epsilon;
-    if (g2e <= 0.0) {
-        return 0.0;
-    }
-    c_prefactor = (3.0 * SIGTH) / (8.0 * g2e);
-    k0 = epsilon_s / (g2e * y);
-
-    /*
-     * Kinematic lower bound in A = 1-cos(psi):
-     * epsilon >= epsilon_s / [2 A gamma (gamma-epsilon_s)]
-     *  -> A >= A_min
-     */
-    a_min = epsilon_s / (2.0 * epsilon * gamma * (gamma - epsilon_s));
-
-    phi_sum = 0.0;
-    for (i_phi = 0U; i_phi < n_phi; i_phi++) {
-        double a_val, k, xi;
-        a_val = a_phi[i_phi];
-        if (a_val <= a_min) {
-            continue;
-        }
-        k = k0 / a_val;
-        xi = base_xi - (2.0 * k) + (k * k);
-        if (xi > 0.0 && isfinite(xi)) {
-            phi_sum += xi;
-        }
-    }
-
-    return phi_sum * c_prefactor * dphi;
-}
-
 static double integrale_IC_angle_dep_full(struct blob *pt,
                                           const struct spectrum_external *spec,
                                           int use_drf,
