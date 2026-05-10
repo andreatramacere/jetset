@@ -72,6 +72,172 @@ static int use_ec_angle_dep_full(const struct blob *pt,
     return 1;
 }
 
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
+#define JETSET_THREAD_LOCAL _Thread_local
+#elif defined(__GNUC__) || defined(__clang__)
+#define JETSET_THREAD_LOCAL __thread
+#else
+#define JETSET_THREAD_LOCAL
+#endif
+
+struct ec_angle_dep_scratch {
+    unsigned int gamma_cap;
+    unsigned int nu_cap;
+    unsigned int angle_cap;
+    unsigned int phi_cap;
+    size_t angle_phi_cap;
+    size_t angle_phi_suffix_cap;
+    double *Integrand_over_gamma_grid;
+    double *griglia_gamma_Ne_log_IC;
+    double *Ne_IC;
+    double *integr_nu;
+    double *integr_mu;
+    double *mu_grid_eval;
+    double *dmu_grid;
+    double *cos_phi;
+    double *A_sorted_grid;
+    double *A_max_grid;
+    double *A_suffix_inv;
+    double *A_suffix_inv2;
+    double *gamma_base_xi;
+    double *gamma_k0;
+    double *gamma_prefactor;
+    double *gamma_a_min;
+    unsigned char *gamma_valid;
+};
+
+static JETSET_THREAD_LOCAL struct ec_angle_dep_scratch g_ec_angle_dep_scratch = {0};
+
+static int ensure_double_buffer(double **buffer, size_t n_elem)
+{
+    void *tmp;
+    if (n_elem == 0U) {
+        n_elem = 1U;
+    }
+    tmp = realloc(*buffer, n_elem * sizeof(double));
+    if (tmp == NULL) {
+        return -1;
+    }
+    *buffer = (double *)tmp;
+    return 0;
+}
+
+static int ensure_uchar_buffer(unsigned char **buffer, size_t n_elem)
+{
+    void *tmp;
+    if (n_elem == 0U) {
+        n_elem = 1U;
+    }
+    tmp = realloc(*buffer, n_elem * sizeof(unsigned char));
+    if (tmp == NULL) {
+        return -1;
+    }
+    *buffer = (unsigned char *)tmp;
+    return 0;
+}
+
+static int ensure_ec_angle_dep_scratch(struct ec_angle_dep_scratch *ws,
+                                       unsigned int gamma_grid_size,
+                                       unsigned int nu_seed_size,
+                                       unsigned int angle_n_int,
+                                       unsigned int n_phi)
+{
+    size_t angle_phi_size, angle_phi_suffix_size;
+    size_t dmu_size;
+
+    if (ws == NULL) {
+        return -1;
+    }
+
+    if (ws->gamma_cap < gamma_grid_size) {
+        if (ensure_double_buffer(&(ws->Integrand_over_gamma_grid), gamma_grid_size) != 0 ||
+            ensure_double_buffer(&(ws->griglia_gamma_Ne_log_IC), gamma_grid_size) != 0 ||
+            ensure_double_buffer(&(ws->Ne_IC), gamma_grid_size) != 0 ||
+            ensure_double_buffer(&(ws->gamma_base_xi), gamma_grid_size) != 0 ||
+            ensure_double_buffer(&(ws->gamma_k0), gamma_grid_size) != 0 ||
+            ensure_double_buffer(&(ws->gamma_prefactor), gamma_grid_size) != 0 ||
+            ensure_double_buffer(&(ws->gamma_a_min), gamma_grid_size) != 0 ||
+            ensure_uchar_buffer(&(ws->gamma_valid), gamma_grid_size) != 0) {
+            return -1;
+        }
+        ws->gamma_cap = gamma_grid_size;
+    }
+
+    if (ws->nu_cap < nu_seed_size) {
+        if (ensure_double_buffer(&(ws->integr_nu), nu_seed_size) != 0) {
+            return -1;
+        }
+        ws->nu_cap = nu_seed_size;
+    }
+
+    if (ws->angle_cap < angle_n_int) {
+        dmu_size = (angle_n_int > 1U) ? (size_t)(angle_n_int - 1U) : 1U;
+        if (ensure_double_buffer(&(ws->integr_mu), angle_n_int) != 0 ||
+            ensure_double_buffer(&(ws->mu_grid_eval), angle_n_int) != 0 ||
+            ensure_double_buffer(&(ws->dmu_grid), dmu_size) != 0 ||
+            ensure_double_buffer(&(ws->A_max_grid), angle_n_int) != 0) {
+            return -1;
+        }
+        ws->angle_cap = angle_n_int;
+    }
+
+    if (ws->phi_cap < n_phi) {
+        if (ensure_double_buffer(&(ws->cos_phi), n_phi) != 0) {
+            return -1;
+        }
+        ws->phi_cap = n_phi;
+    }
+
+    angle_phi_size = ((size_t)angle_n_int) * ((size_t)n_phi);
+    if (ws->angle_phi_cap < angle_phi_size) {
+        if (ensure_double_buffer(&(ws->A_sorted_grid), angle_phi_size) != 0) {
+            return -1;
+        }
+        ws->angle_phi_cap = angle_phi_size;
+    }
+
+    angle_phi_suffix_size = ((size_t)angle_n_int) * ((size_t)(n_phi + 1U));
+    if (ws->angle_phi_suffix_cap < angle_phi_suffix_size) {
+        if (ensure_double_buffer(&(ws->A_suffix_inv), angle_phi_suffix_size) != 0 ||
+            ensure_double_buffer(&(ws->A_suffix_inv2), angle_phi_suffix_size) != 0) {
+            return -1;
+        }
+        ws->angle_phi_suffix_cap = angle_phi_suffix_size;
+    }
+
+    return 0;
+}
+
+static unsigned int upper_bound_strict(const double *arr, unsigned int size, double value)
+{
+    unsigned int lo, hi, mid;
+    lo = 0U;
+    hi = size;
+    while (lo < hi) {
+        mid = lo + (hi - lo) / 2U;
+        if (arr[mid] <= value) {
+            lo = mid + 1U;
+        } else {
+            hi = mid;
+        }
+    }
+    return lo;
+}
+
+static void insertion_sort_double(double *arr, unsigned int size)
+{
+    unsigned int i;
+    for (i = 1U; i < size; i++) {
+        unsigned int j = i;
+        double key = arr[i];
+        while (j > 0U && arr[j - 1U] > key) {
+            arr[j] = arr[j - 1U];
+            j--;
+        }
+        arr[j] = key;
+    }
+}
+
 static double integrale_IC_angle_dep_full(struct blob *pt,
                                           const struct spectrum_external *spec,
                                           int use_drf,
@@ -82,32 +248,26 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
                                           int stat_frame,
                                           double nu_IC_out)
 {
-    unsigned int gamma_grid_size;
-    unsigned int angle_n_int;
-    unsigned int n_phi;
-    unsigned int ID, ID_mu, ID_gamma, ID_phi, gamma_start;
+    unsigned int gamma_grid_size, angle_n_int, n_phi;
+    unsigned int ID, ID_mu, ID_gamma, gamma_start;
+    unsigned int idx_phi, count_phi;
     double dphi;
     double mu_s, mu_s_prime, sin_mu_s_prime;
-    double epsilon_s;
-    double epsilon_in;
-    double gamma_min_kin;
+    double epsilon_s, epsilon_in, gamma_min_kin;
     double mu, sin_mu, cos_psi, one_minus_cos_psi;
-    double n_ph;
-    double sin_arg;
-    double mu_integral, dmu;
+    double n_ph, sin_arg, mu_integral, dmu;
     double nu_integral;
-    double *mu_grid_eval;
-    double *dmu_grid;
-    const double *n_theta_eval;
-    double *Integrand_over_gamma_grid, *Ne_IC, *griglia_gamma_Ne_log_IC, *integr_nu, *integr_mu, *cos_phi, *A_grid;
-    double *A_inv_grid, *A_max_grid;
+    double *Integrand_over_gamma_grid, *Ne_IC, *griglia_gamma_Ne_log_IC, *integr_nu, *integr_mu, *mu_grid_eval, *dmu_grid, *cos_phi;
+    double *A_sorted_grid, *A_max_grid, *A_suffix_inv, *A_suffix_inv2;
     double *gamma_base_xi, *gamma_k0, *gamma_prefactor, *gamma_a_min;
     unsigned char *gamma_valid;
-    const double *A_row, *A_inv_row;
+    const double *n_theta_eval;
+    const double *A_sorted_row, *A_suffix_inv_row, *A_suffix_inv2_row;
     double A_max;
     double y, one_by_y, g2e, c_prefactor, gamma_eval;
-    double phi_sum, k0, base_xi, a_min, a_phi, k, xi;
-    size_t mu_idx;
+    double phi_sum, k0, base_xi, a_min;
+    struct ec_angle_dep_scratch *ws;
+    size_t mu_idx, row_offset, row_suffix_offset;
 
     if (pt == NULL || spec == NULL || nu_seed == NULL) {
         return 0.0;
@@ -143,56 +303,27 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
     }
     dphi = (2.0 * pi) / (double)n_phi;
 
-    Integrand_over_gamma_grid = (double *)calloc(gamma_grid_size, sizeof(double));
-    griglia_gamma_Ne_log_IC = (double *)calloc(gamma_grid_size, sizeof(double));
-    Ne_IC = (double *)calloc(gamma_grid_size, sizeof(double));
-    integr_nu = (double *)calloc(nu_seed_size, sizeof(double));
-    integr_mu = (double *)calloc(angle_n_int, sizeof(double));
-    mu_grid_eval = (double *)calloc(angle_n_int, sizeof(double));
-    dmu_grid = (double *)calloc((angle_n_int > 1U) ? (angle_n_int - 1U) : 1U, sizeof(double));
-    cos_phi = (double *)calloc(n_phi, sizeof(double));
-    A_grid = (double *)calloc((size_t)angle_n_int * (size_t)n_phi, sizeof(double));
-    A_inv_grid = (double *)calloc((size_t)angle_n_int * (size_t)n_phi, sizeof(double));
-    A_max_grid = (double *)calloc(angle_n_int, sizeof(double));
-    gamma_base_xi = (double *)calloc(gamma_grid_size, sizeof(double));
-    gamma_k0 = (double *)calloc(gamma_grid_size, sizeof(double));
-    gamma_prefactor = (double *)calloc(gamma_grid_size, sizeof(double));
-    gamma_a_min = (double *)calloc(gamma_grid_size, sizeof(double));
-    gamma_valid = (unsigned char *)calloc(gamma_grid_size, sizeof(unsigned char));
-    if (Integrand_over_gamma_grid == NULL ||
-        griglia_gamma_Ne_log_IC == NULL ||
-        Ne_IC == NULL ||
-        integr_nu == NULL ||
-        integr_mu == NULL ||
-        mu_grid_eval == NULL ||
-        dmu_grid == NULL ||
-        cos_phi == NULL ||
-        A_grid == NULL ||
-        A_inv_grid == NULL ||
-        A_max_grid == NULL ||
-        gamma_base_xi == NULL ||
-        gamma_k0 == NULL ||
-        gamma_prefactor == NULL ||
-        gamma_a_min == NULL ||
-        gamma_valid == NULL) {
-        free(Integrand_over_gamma_grid);
-        free(griglia_gamma_Ne_log_IC);
-        free(Ne_IC);
-        free(integr_nu);
-        free(integr_mu);
-        free(mu_grid_eval);
-        free(dmu_grid);
-        free(cos_phi);
-        free(A_grid);
-        free(A_inv_grid);
-        free(A_max_grid);
-        free(gamma_base_xi);
-        free(gamma_k0);
-        free(gamma_prefactor);
-        free(gamma_a_min);
-        free(gamma_valid);
+    ws = &g_ec_angle_dep_scratch;
+    if (ensure_ec_angle_dep_scratch(ws, gamma_grid_size, nu_seed_size, angle_n_int, n_phi) != 0) {
         return 0.0;
     }
+    Integrand_over_gamma_grid = ws->Integrand_over_gamma_grid;
+    griglia_gamma_Ne_log_IC = ws->griglia_gamma_Ne_log_IC;
+    Ne_IC = ws->Ne_IC;
+    integr_nu = ws->integr_nu;
+    integr_mu = ws->integr_mu;
+    mu_grid_eval = ws->mu_grid_eval;
+    dmu_grid = ws->dmu_grid;
+    cos_phi = ws->cos_phi;
+    A_sorted_grid = ws->A_sorted_grid;
+    A_max_grid = ws->A_max_grid;
+    A_suffix_inv = ws->A_suffix_inv;
+    A_suffix_inv2 = ws->A_suffix_inv2;
+    gamma_base_xi = ws->gamma_base_xi;
+    gamma_k0 = ws->gamma_k0;
+    gamma_prefactor = ws->gamma_prefactor;
+    gamma_a_min = ws->gamma_a_min;
+    gamma_valid = ws->gamma_valid;
 
     for (ID = 0U; ID < n_phi; ID++) {
         cos_phi[ID] = cos(((double)ID + 0.5) * dphi);
@@ -208,22 +339,6 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
     sin_mu_s_prime = sqrt(sin_arg);
     epsilon_s = HPLANCK * nu_IC_out * one_by_MEC2;
     if (epsilon_s <= 0.0) {
-        free(Integrand_over_gamma_grid);
-        free(griglia_gamma_Ne_log_IC);
-        free(Ne_IC);
-        free(integr_nu);
-        free(integr_mu);
-        free(mu_grid_eval);
-        free(dmu_grid);
-        free(cos_phi);
-        free(A_grid);
-        free(A_inv_grid);
-        free(A_max_grid);
-        free(gamma_base_xi);
-        free(gamma_k0);
-        free(gamma_prefactor);
-        free(gamma_a_min);
-        free(gamma_valid);
         return 0.0;
     }
 
@@ -248,6 +363,7 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
         }
         sin_mu = sqrt(sin_arg);
         A_max_grid[ID_mu] = 0.0;
+        row_offset = ((size_t)ID_mu) * ((size_t)n_phi);
         for (ID = 0U; ID < n_phi; ID++) {
             cos_psi = mu * mu_s_prime + sin_mu * sin_mu_s_prime * cos_phi[ID];
             cos_psi = clamp_to_interval(cos_psi, -1.0, 1.0);
@@ -255,16 +371,26 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
             if (one_minus_cos_psi < 0.0) {
                 one_minus_cos_psi = 0.0;
             }
-            mu_idx = external_angle_flat_index(ID_mu, ID, n_phi);
-            A_grid[mu_idx] = one_minus_cos_psi;
+            A_sorted_grid[row_offset + (size_t)ID] = one_minus_cos_psi;
             if (one_minus_cos_psi > A_max_grid[ID_mu]) {
                 A_max_grid[ID_mu] = one_minus_cos_psi;
             }
-            if (one_minus_cos_psi > 0.0) {
-                A_inv_grid[mu_idx] = 1.0 / one_minus_cos_psi;
+        }
+
+        insertion_sort_double(&(A_sorted_grid[row_offset]), n_phi);
+        row_suffix_offset = ((size_t)ID_mu) * ((size_t)(n_phi + 1U));
+        A_suffix_inv[row_suffix_offset + (size_t)n_phi] = 0.0;
+        A_suffix_inv2[row_suffix_offset + (size_t)n_phi] = 0.0;
+        for (ID = n_phi; ID > 0U; ID--) {
+            double a_val, inv_val;
+            a_val = A_sorted_grid[row_offset + (size_t)(ID - 1U)];
+            if (a_val > 0.0) {
+                inv_val = 1.0 / a_val;
             } else {
-                A_inv_grid[mu_idx] = 0.0;
+                inv_val = 0.0;
             }
+            A_suffix_inv[row_suffix_offset + (size_t)(ID - 1U)] = A_suffix_inv[row_suffix_offset + (size_t)ID] + inv_val;
+            A_suffix_inv2[row_suffix_offset + (size_t)(ID - 1U)] = A_suffix_inv2[row_suffix_offset + (size_t)ID] + (inv_val * inv_val);
         }
     }
 
@@ -335,8 +461,11 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
                 integr_mu[ID_mu] = 0.0;
                 continue;
             }
-            A_row = &(A_grid[external_angle_flat_index(ID_mu, 0U, n_phi)]);
-            A_inv_row = &(A_inv_grid[external_angle_flat_index(ID_mu, 0U, n_phi)]);
+            row_offset = ((size_t)ID_mu) * ((size_t)n_phi);
+            row_suffix_offset = ((size_t)ID_mu) * ((size_t)(n_phi + 1U));
+            A_sorted_row = &(A_sorted_grid[row_offset]);
+            A_suffix_inv_row = &(A_suffix_inv[row_suffix_offset]);
+            A_suffix_inv2_row = &(A_suffix_inv2[row_suffix_offset]);
             A_max = A_max_grid[ID_mu];
             if (A_max <= 0.0) {
                 integr_mu[ID_mu] = 0.0;
@@ -352,18 +481,18 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
                 base_xi = gamma_base_xi[ID_gamma];
                 k0 = gamma_k0[ID_gamma];
                 a_min = gamma_a_min[ID_gamma];
-                phi_sum = 0.0;
-
-                for (ID_phi = 0U; ID_phi < n_phi; ID_phi++) {
-                    a_phi = A_row[ID_phi];
-                    if (a_phi <= a_min) {
-                        continue;
-                    }
-                    k = k0 * A_inv_row[ID_phi];
-                    xi = base_xi - (2.0 * k) + (k * k);
-                    if (xi > 0.0) {
-                        phi_sum += xi;
-                    }
+                idx_phi = upper_bound_strict(A_sorted_row, n_phi, a_min);
+                count_phi = n_phi - idx_phi;
+                if (count_phi == 0U) {
+                    Integrand_over_gamma_grid[ID_gamma] = 0.0;
+                    continue;
+                }
+                phi_sum = ((double)count_phi) * base_xi;
+                phi_sum -= (2.0 * k0) * A_suffix_inv_row[idx_phi];
+                phi_sum += (k0 * k0) * A_suffix_inv2_row[idx_phi];
+                if (!(phi_sum > 0.0) || !isfinite(phi_sum)) {
+                    Integrand_over_gamma_grid[ID_gamma] = 0.0;
+                    continue;
                 }
 
                 Integrand_over_gamma_grid[ID_gamma] = Ne_IC[ID_gamma] * (phi_sum * gamma_prefactor[ID_gamma]);
@@ -387,23 +516,6 @@ static double integrale_IC_angle_dep_full(struct blob *pt,
     nu_integral = trapzd_array_arbritary_grid((double *)nu_seed, integr_nu, nu_seed_size);
     /* Convert dN/dt/d(epsilon_s) to dN/dt/d(nu_s) and match legacy n_nu normalization (per sr). */
     nu_integral *= (HPLANCK * one_by_MEC2) * one_by_four_pi;
-
-    free(Integrand_over_gamma_grid);
-    free(griglia_gamma_Ne_log_IC);
-    free(Ne_IC);
-    free(integr_nu);
-    free(integr_mu);
-    free(mu_grid_eval);
-    free(dmu_grid);
-    free(cos_phi);
-    free(A_grid);
-    free(A_inv_grid);
-    free(A_max_grid);
-    free(gamma_base_xi);
-    free(gamma_k0);
-    free(gamma_prefactor);
-    free(gamma_a_min);
-    free(gamma_valid);
 
     return nu_integral;
 }
