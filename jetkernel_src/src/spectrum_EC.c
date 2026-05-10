@@ -167,7 +167,7 @@ int set_condition_EC_correction(struct blob *pt,double R_ext_emit)
 	double R_H_eval;
 	int do_EC_correction =0;
 	R_H_eval = eval_R_H_EC(pt, pt->core.R_H);
-	if ((R_H_eval > (R_ext_emit * pt->core.R_ext_emit_factor)) && (pt->core.EC_stat == 1) && R_ext_emit > 0){
+	if ((R_H_eval > (R_ext_emit * pt->core.R_ext_emit_factor)) && (pt->core.EC_stat == 1) &&(pt->core.EC_kernel==0) && R_ext_emit > 0){
 		do_EC_correction =1;
 	}
 	//printf("do_EC_correction=%d \n",do_EC_correction);
