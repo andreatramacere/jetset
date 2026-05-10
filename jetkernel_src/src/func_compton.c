@@ -192,7 +192,7 @@ double rate_compton_GR(struct blob *pt_GR, double nu_IC_out) {
                                          nu_seed,
                                          n_seed,
                                          nu_seed_size,
-                                         pt_GR->DT.spec.nu_min,
+                                         pt_GR->DT.spec.nu_min_DRF,
                                          pt_GR->DT.spec.nu_max_DRF,
                                          pt_GR->core.EC_stat,
                                          nu_IC_out_stat);
