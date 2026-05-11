@@ -390,7 +390,8 @@ class UltraNestSampler(McmcSampler):
 
 
 
-def run_open_mpi(sampler,n_proc=8,
+def run_open_mpi(sampler,
+                 n_proc=8,
                  out_dir='sampler_output',
                  min_num_live_points=64,
                  nsteps=1,
