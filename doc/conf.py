@@ -29,6 +29,7 @@ autodoc_mock_imports = ["jetkernel"]
 autodoc_mock_imports.append('_jetkernel')
 autodoc_mock_imports.append('gammapy')
 autodoc_mock_imports.append('sherpa')
+autodoc_mock_imports.append('ultranest')
 
 for mod_name in autodoc_mock_imports:
     sys.modules[mod_name] = mock.Mock()
@@ -62,6 +63,10 @@ extensions = [
 #   'sphinxcontrib.bibtex',
     'sphinx.ext.mathjax',
 ]
+
+# Ensure autosummary pages are generated during sphinx-build so API objects
+# added via automodapi/autosummary (e.g. UltraNestSampler) are materialized.
+autosummary_generate = True
 
 # Avoid duplicate section labels (e.g. "Functions", "Classes") across files.
 autosectionlabel_prefix_document = True
@@ -216,4 +221,3 @@ epub_copyright = u'2016, andrea tramacere'
 
 
 epub_exclude_files = ['search.html']
-
