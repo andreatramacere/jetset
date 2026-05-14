@@ -139,7 +139,7 @@ class TestEmcee(TestBase):
             raise RuntimeError("please, provide either fit_dict, or both  sed_data and model_minimizer")
         else:
             pass
-        from jetset.ultranest_plugin import UltraNestSampler
+        from jetset.mcmc_ultranest import UltraNestSampler
         mcmc = UltraNestSampler(model_minimizer)
 
           # Check freeze/free workflow on sampler parameters.

@@ -1,4 +1,4 @@
-"""UltraNest plugin built on top of the JetSeT MCMC sampler interface."""
+"""UltraNest backend built on top of the JetSeT MCMC sampler interface."""
 
 __author__ = "Andrea Tramacere"
 
@@ -24,7 +24,7 @@ except Exception:
 
 from .mcmc import McmcSampler, emcee_log_like
 
-__all__ = ['UltraNestSampler']
+__all__ = ['UltraNestSampler', 'run_open_mpi']
 
 
 class UltraNestSampler(McmcSampler):
@@ -464,7 +464,7 @@ mcmc.run_sampler(
             )
     """
 
-        script = "from jetset.ultranest_plugin import UltraNestSampler\n"
+        script = "from jetset.mcmc_ultranest import UltraNestSampler\n"
         script += "mcmc=UltraNestSampler.load('sampler.pkl')\n"
         script += f"{sampler_run}\n"
         script += "mcmc.save('sampler.pkl')\n"

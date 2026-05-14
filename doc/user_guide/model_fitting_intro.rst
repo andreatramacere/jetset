@@ -183,7 +183,7 @@ Bayesian model fitting with emcee and ultranest
 JetSeT provides two Bayesian samplers with a common workflow:
 
 - :class:`.McmcSampler` (backend: `emcee <https://emcee.readthedocs.io/en/stable/>`_)
-- ``UltraNestSampler`` from :mod:`jetset.ultranest_plugin` (backend: `UltraNest <https://johannesbuchner.github.io/UltraNest/index.html>`_)
+- ``UltraNestSampler`` from :mod:`jetset.mcmc_ultranest` (backend: `UltraNest <https://johannesbuchner.github.io/UltraNest/index.html>`_)
 
 Both samplers start from a :class:`.ModelMinimizer`, use the same parameter/bounds setup, and share the same post-processing helpers
 (``sampler_parameters``, ``plot_chain``, ``corner_plot``, ``plot_model``, ``save``/``load``).
@@ -209,7 +209,7 @@ Starting from a frequentist best-fit result:
 
   .. code:: ipython3
 
-      from jetset.ultranest_plugin import UltraNestSampler
+      from jetset.mcmc_ultranest import UltraNestSampler
       mcmc = UltraNestSampler(model_minimizer)
 
 
@@ -239,7 +239,7 @@ This plain-model workflow is suggested mainly for ``UltraNestSampler``.
                                 nu_fit_stop=1E29,
                                 use_UL=True)
 
-    from jetset.ultranest_plugin import UltraNestSampler
+    from jetset.mcmc_ultranest import UltraNestSampler
     mcmc = UltraNestSampler(model_minimizer)
 
 
