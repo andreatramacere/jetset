@@ -1,11 +1,18 @@
 .. _model_fitting_intro:
 
+.. _least_squares:  https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.least_squares.html
+.. _iminuit: https://scikit-hep.org/iminuit/ 
+.. _emcee: https://emcee.readthedocs.io/en/stable/   
+.. _ultranest: https://johannesbuchner.github.io/UltraNest/index.html
+.. _astropy: https://www.astropy.org/
+.. _gammapy: https://gammapy.org/
+.. _scipy: https://scipy.org/
+.. _numpy: https://numpy.org/
+.. _matplotlib: https://matplotlib.org/stable/
 
 Model Fitting Introduction
 ==========================
-In this section we provide some guidelines and caveats for mode fitting and minimizers in JetSeT.  In general to perform a model fitting to data,
-
-you can use the :class:`.ModelMinimizer` class from the :mod:`.minimizer` module, or you can use specific plugins as for the case of sherpa and gammapy,  documented here:
+In this section we provide some guidelines and caveats for mode fitting and minimizers in JetSeT.  In general to perform a model fitting to data, you can use the :class:`.ModelMinimizer` class from the :mod:`.minimizer` module, or you can use specific plugins as for the case of sherpa and gammapy,  documented here:
 
 - :ref:`sherpa_minimizer_plugin`
 
@@ -13,15 +20,13 @@ you can use the :class:`.ModelMinimizer` class from the :mod:`.minimizer` module
 
 - :ref:`gammapy_plugin`
 
-Frequentist
-.. _least_squares:  https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.least_squares.html
-.. _iminuit: https://scikit-hep.org/iminuit/ 
+   
 
-Bayesian
-.. _emcee: https://emcee.readthedocs.io/en/stable/   
-.. _ultranest: https://johannesbuchner.github.io/UltraNest/index.html   
-In the following we will describe the frequentist model fitting using the :class:`.ModelMinimizer`  using the ``minuit``  minimizer (wrapping the `iminuit`_ package ) and the ``lsb`` minimizer (wrapping the scipy `least_squares`_
-package),  and the Bayesian approach using the :class:`.McmcSampler` interface to ecee `emcee`_ package. 
+In the following we will describe the 
+
+- frequentist model fitting using the :class:`.ModelMinimizer`  using the ``minuit``  minimizer (wrapping the `iminuit`_ package ) and the ``lsb`` minimizer (wrapping the scipy `least_squares`_ package),
+
+- the Bayesian approach using :class:`.McmcSampler` (backend: `emcee`_) and ``UltraNestSampler`` (backend: `ultranest`_).
 
 
 
@@ -171,115 +176,186 @@ See the examples in :ref:`model_fitting_examples`  to inspect the output for eac
 
 
 
-Bayesian model fitting with emcee
----------------------------------
+Bayesian model fitting with emcee and ultranest
+------------------------------------------------
 .. _bayesian_model_fitting:
 
-Building the mcmc object
-^^^^^^^^^^^^^^^^^^^^^^^^
-The  :class:`.McmcSampler` interface to emcee `emcee`_ and `ultranest`_ package, in the following we show how to perform a sampling of the
-model parameter space, starting from a frequentist best fit result.
+JetSeT provides two Bayesian samplers with a common workflow:
 
-it could either a:
+- :class:`.McmcSampler` (backend: `emcee <https://emcee.readthedocs.io/en/stable/>`_)
+- ``UltraNestSampler`` from :mod:`jetset.ultranest_plugin` (backend: `UltraNest <https://johannesbuchner.github.io/UltraNest/index.html>`_)
 
--  previously saved instance of a model minimizer 
-   
-   .. code:: ipython3
-   
-        from jetset.mcmc import McmcSampler
-        model_minimizer = ModelMinimizer.load_model('model_minimizer_minuit.pkl')
-        mcmc=McmcSampler(model_minimizer)
+Both samplers start from a :class:`.ModelMinimizer`, use the same parameter/bounds setup, and share the same post-processing helpers
+(``sampler_parameters``, ``plot_chain``, ``corner_plot``, ``plot_model``, ``save``/``load``).
 
+Building the sampler object
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Starting from a frequentist best-fit result:
+""""""""""""""""""""""""""""""""""""""""""""
+.. code:: ipython3
 
-- or  any model minimizer instance created in your notebook/script. We create the ``mcmc`` object
-   
-  .. code:: ipython3
-   
-        from jetset.mcmc import McmcSampler
-        mcmc=McmcSampler(model_minimizer)
+    from jetset.minimizer import ModelMinimizer
+    model_minimizer = ModelMinimizer.load_model('model_minimizer_minuit.pkl')
 
 
-
-Setting the labels
-^^^^^^^^^^^^^^^^^^
-Now we need to set the parameters to perform the sample: 
-
-- we can use the same free parameters used in the frequentist minimizer object
+- emcee backend:
 
   .. code:: ipython3
 
-        mcmc.set_labels()
+      from jetset.mcmc import McmcSampler
+      mcmc = McmcSampler(model_minimizer)
 
-
-- or define a different sample (or a subsample), defining a dictionary where each key correspond to  the name of the model component, and the value of the key to the list of parameters name for that component.
-  For example, assuming that the  :class:`.FitModel` member of the :class:`.ModelMinimizer` object has the ``jet_leptonic`` component  
+- ultranest backend:
 
   .. code:: ipython3
+
+      from jetset.ultranest_plugin import UltraNestSampler
+      mcmc = UltraNestSampler(model_minimizer)
+
+
+As default, the mcmc sampler will inherit ``nu_fit_start``, ``nu_fit_stop``, and ``use_UL`` from the ``model_minimizer`` object. To change these values, you can use the following code, setting the values according to your choice.
+
+.. code:: ipython3
     
-    labels=['N','B','beam_obj','s','gamma0_log_parab']
-    model_name='jet_leptonic'
-    use_labels_dict={model_name:labels}
-
-    mcmc.set_labels(use_labels_dict=use_labels_dict)
-
-  in this case the sampler will use only the ``['N','B','beam_obj','s','gamma0_log_parab']`` par from `model_minimizer.fit_model.jet_leptonic` component
+    model_minimizer.prepare_fit(fit_model,
+                                sed_data,
+                                nu_fit_start=1E7,
+                                nu_fit_stop=1E29,
+                                use_UL=True)
 
 
-Setting the priors
-^^^^^^^^^^^^^^^^^^
-Now we need to set the priors. For the current release we are using flat priors centered on the best fit values. 
+starting from a plain model
+"""""""""""""""""""""""""""
+It is also possible to run Bayesian sampling starting from a plain model (without a previous frequentist minimization) by creating a ``ModelMinimizer('mcmc')`` and calling ``prepare_fit``.
+This plain-model workflow is suggested mainly for ``UltraNestSampler``.
 
-We provide three different approaches 
+.. code:: ipython3
 
-- Relative bounds: 
- 
+    from jetset.minimizer import ModelMinimizer
+    model_minimizer = ModelMinimizer('mcmc')
+    model_minimizer.prepare_fit(fit_model,
+                                sed_data,
+                                nu_fit_start=1E7,
+                                nu_fit_stop=1E29,
+                                use_UL=True)
+
+    from jetset.ultranest_plugin import UltraNestSampler
+    mcmc = UltraNestSampler(model_minimizer)
+
+
+New interface after the MCMC refactoring
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. important::
+   Starting from v1.4.0, :class:`.McmcSampler` does not use ``labels`` and ``use_labels_dict`` anymore.
+   All the ``free`` parameters are sampled. To include/exclude parameters, ``freeze/free`` them.
+
+You can inspect sampler parameters with:
+
+.. code:: ipython3
+
+    mcmc.sampler_parameters
+
+To exclude/include parameters from the sampler:
+
+.. code:: ipython3
+
+    mcmc.model.radio_spectrum.parameters.nu_ssa.freeze()
+    mcmc.model.radio_spectrum.parameters.nu_ssa.free()
+
+
+Setting the priors/bounds
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Priors are uniform within the bounds set for each sampled parameter.
+
+- Global bounds for all currently free parameters:
+
   .. code:: ipython3
 
-    mcmc.set_bounds(bound=5.0,bound_rel=True)
+      mcmc.set_bounds(bound=5.0, bound_rel=True)
 
+- Custom bounds for specific parameters:
 
-  setting ``bound=5.0`` and ``bound_rel=True`` means that: 
-  
-  - the prior interval will be defined as  ``[best_fit_val - delta_m , best_fit_val + delta_p]``
-
-  - with ``delta_p=delta_m=best_fit_val*bound``
-
-  It is possible to define asymmetric boundaries e.g. ``bound=[2.0,5.0]`` meaning that: 
-
-  - ``delta_p = min(par.best_fit_val*bound[1], par.fit_range_max)``
- 
-  - ``delta_m = max(par.best_fit_val*bound[0], par.fit_range_min)``
-
-- Absolute bounds:
-  
   .. code:: ipython3
-    
-     mcmc.set_bounds(bound=5.0,bound_rel=False)
 
+      mcmc.set_bounds(comp_name='jet_leptonic', par_name='N', par_bounds=[1E-5,10])
+      mcmc.set_bounds(comp_name='radio_spectrum', par_name='alpha_radio', par_bounds=[0,1])
 
-  setting ``bound=5.0`` and ``bound_rel=False`` means that: 
-  
-  - the prior interval will be defined as  ``[best_fit_val - delta_m , best_fit_val + delta_p]``
+By default ``preserve_fit_range=True``; this keeps MCMC bounds consistent with the fit ranges set in the frequentist stage.
 
-  - with ``delta_p = delta_m = best_fit_err*bound``
-
-  It is possible to define asymmetric boundaries e.g. ``bound=[2.0,5.0]`` meaning that:
- 
-  - ``delta_p = par.best_fit_err*bound[1]``
-  
-  -  ``delta_m = par.best_fit_err*bound[0]``
-
+.. warning::
+   For ``UltraNestSampler`` all sampled parameters must have finite and valid ``[min,max]`` bounds; otherwise a ``RuntimeError`` is raised.
 
 
 Running the sampler
 ^^^^^^^^^^^^^^^^^^^
+- emcee:
 
-.. code:: ipython3
+  .. code:: ipython3
 
-    mcmc.run_sampler(nwalkers=20, burnin=50,steps=500,progress='notebook')
+      mcmc.run_sampler(nwalkers=20, burnin=50, steps=500, progress='notebook')
 
-The number of walkers ``nwalkers``, if not specified, is set to :math:`4 \times` (``number of sampled parameters``), if you pass a lower than :math:`2 \times` (``number of sampled parameters``), a ``RuntimeError`` will be raised.
-Anyhow,  ``nwalkers``, ``burnin`` and ``steps``, should be chosen depending on the particular analysis, and is strongly advised to read the  `emcee`_  documentation.
+- ultranest:
+
+  .. code:: ipython3
+
+      mcmc.run_sampler(min_num_live_points=400, dlogz=0.5, frac_remain=0.01)
 
 
-Please, read the MCMC section of  examples in :ref:`model_fitting_examples` for a showcase of the usage and features of the   :class:`.McmcSampler`.
+Corner plot for composite models
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+For composite models, ``corner_plot`` can be used in two modes:
+
+- ``per_component=True`` (default): one corner plot per model component.
+
+  .. code:: ipython3
+
+      f = mcmc.corner_plot(per_component=True)
+
+- ``per_component=False``: a single global corner plot including parameters from all sampled components.
+
+  .. code:: ipython3
+
+      f = mcmc.corner_plot(per_component=False)
+
+
+Caveats and differences: emcee vs ultranest
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- Common caveat:
+
+  In all cases, the quality of parameter bounds is critical for convergence and for physically meaningful posteriors.
+
+- emcee specific caveats:
+
+  - It is strongly recommended to start from a converged frequentist best-fit.
+  - ``nwalkers`` default is :math:`4 \times` (number of sampled parameters).
+  - ``nwalkers`` must be at least :math:`2 \times` (number of sampled parameters), otherwise a ``RuntimeError`` is raised.
+  - ``burnin`` and ``steps`` must be tuned case by case.
+  - After the run, you can retune burn-in using autocorrelation time:
+
+    .. code:: ipython3
+
+        mcmc.tune_burnin()
+
+    This recomputes the posterior samples after updating ``burnin`` from ``sampler.get_autocorr_time``.
+  - ``tune_burnin`` is meaningful only after ``mcmc.run_sampler(...)`` has been executed.
+  - Autocorrelation-time estimates can be unstable for short or non-converged chains; if needed, increase ``steps`` and rerun before trusting the tuned burn-in.
+  - Always inspect chains (e.g. with ``mcmc.plot_chain()``) before and after ``tune_burnin()``.
+  - For advanced usage and diagnostics, see the emcee autocorrelation documentation:
+    `https://emcee.readthedocs.io/en/stable/tutorials/autocorr/ <https://emcee.readthedocs.io/en/stable/tutorials/autocorr/>`_.
+
+- ultranest specific caveats:
+
+  - Starting from a minimized model is not mandatory; a plain-model workflow is supported and can be effective.
+  - If you start from a plain model, use physically motivated finite bounds and robust sampling settings (e.g. not quick-test values for ``min_num_live_points``, ``nsteps``, ``min_ess``).
+  - There is no burn-in phase (internally ``burnin=0``); ``tune_burnin`` is not part of the ultranest workflow.
+  - ``acceptance_fraction`` is not used as a diagnostic (set to ``nan``).
+  - UltraNest provides Bayesian evidence estimates:
+
+    .. code:: ipython3
+
+        print(mcmc.logz, mcmc.logzerr)
+
+  - Notebook configurations such as very low ``min_num_live_points``/``nsteps`` are quick-test setups only; for robust analyses use stricter/default settings.
+
+
+Please, read the Bayesian sections in :ref:`model_fitting_examples` for end-to-end workflows with both backends.

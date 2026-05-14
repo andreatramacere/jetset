@@ -28,7 +28,7 @@ MCMC functionalities
     # NOTE: preserve_fit_range=True preserves the model fit range for each parameter used in the MCMC
     mcmc.set_bounds(bound=5.0,bound_rel=True,preserve_fit_range=True)
 
-- A complete example is available in the MCMC section of :ref:`model_fitting_1`
+- A complete example is available in the MCMC section of :ref:`model_fitting_ssc_plus_radio_compmp`
 
 
 Radio component in composite models
@@ -48,7 +48,7 @@ Radio component in composite models
     fit_model.add_component(RadioSpectrum())
     fit_model.composite_expr = '(jet_leptonic+radio_spectrum)'
 
-- A complete fitting workflow (SSC + extended radio component, minuit and MCMC) is available in :ref:`model_fitting_1`
+- A complete fitting workflow (SSC + extended radio component, minuit and MCMC) is available in :ref:`model_fitting_ssc_plus_radio_compmp`
 
 
 Leptonic equilibrium

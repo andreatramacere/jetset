@@ -61,7 +61,7 @@ to clean .rst and .png under under documentation_notebooks/notebooks/dir-name: `
 argument to add:
  - `-c` will clean rst/png prods
  - `-e` the notebook will be executed
- - `-d` will build the doc
+ - `-b` will build the doc
 
 to build without executing:
 - `./scripts/build.sh  -cb`

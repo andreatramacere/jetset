@@ -13,6 +13,7 @@
 .. _least_squares:  https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.least_squares.html
 .. _iminuit: https://scikit-hep.org/iminuit/ 
 .. _emcee: https://emcee.readthedocs.io/en/stable/   
+.. _ultranest: https://johannesbuchner.github.io/UltraNest/index.html
 .. _astropy: https://www.astropy.org/
 .. _gammapy: https://gammapy.org/
 .. _scipy: https://scipy.org/
@@ -27,7 +28,7 @@ allowing to fit the numerical models to observed data. The main features of this
 * Constraining of the model in the pre-fitting stage, based on accurate  and already published phenomenological trends. In particular, starting from phenomenological parameters, such as spectral indices, peak fluxes and frequencies, and
   spectral  curvatures, that the code evaluates automatically, the pre-fitting algorithm is able to provide a good
   starting model,following the phenomenological trends that I have implemented. fitting of multiwavelength SEDs using
-  both frequentist approach (`iminuit`_, scipy `least_squares`_) and bayesian MCMC sampling (`emcee`_)
+  both frequentist approach (`iminuit`_, scipy `least_squares`_) and bayesian MCMC sampling (`emcee`_, `ultranest`_)
 
 * Self-consistent temporal evolution of the plasma under the effect of radiative, accelerative processes, and adiabatic expansion. Both first order and second order (stochastic acceleration) processes are implemented.
 
@@ -38,7 +39,7 @@ allowing to fit the numerical models to observed data. The main features of this
     * `Tramacere A. et al. 2011 <http://adsabs.harvard.edu/abs/2011ApJ...739...66T>`_
     * `Tramacere A. et al. 2009 <http://adsabs.harvard.edu/abs/2009A%26A...501..879T>`_
 
-    Please, consider also citing `astropy`_, `gammapy`_, `scipy`_, `iminuit`_, `emcee`_, and `matplotlib`_, if you use functionalities involving the corresponding package 
+    Please, consider also citing `astropy`_, `gammapy`_, `scipy`_, `iminuit`_, `emcee`_, `ultranest`_, and `matplotlib`_, if you use functionalities involving the corresponding package 
 
 .. _user-docs:
 
@@ -84,7 +85,6 @@ License:
 
 JetSeT is released under a 3-clause BSD  license - for details see the
 `License <https://github.com/andreatramacere/jetset/blob/master/LICENSE.txt>`_ file
-
 
 
 
