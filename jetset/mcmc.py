@@ -554,6 +554,28 @@ class McmcSampler(object):
       
 
     def tune_burnin(self, tau_coeff=None):
+        """Tune burn-in length from the sampler autocorrelation time.
+
+        Parameters
+        ----------
+        tau_coeff : float, optional
+            Multiplicative factor applied to the maximum integrated
+            autocorrelation time. The burn-in is set to
+            ``int(tau_coeff * max(tau))``. If ``None``, an internal value is
+            computed to keep burn-in below the total chain length.
+
+        Notes
+        -----
+        This method uses ``emcee`` integrated autocorrelation times computed
+        through ``sampler.get_autocorr_time(tol=0)`` and then updates
+        ``self.burnin`` and all post-run cached products (samples, log-prob,
+        best-fit and quantiles) via :meth:`_set_samples_post_run`.
+
+        See emcee documentation for details:
+
+        - https://emcee.readthedocs.io/en/stable/tutorials/autocorr/
+        - https://emcee.readthedocs.io/en/stable/user/sampler/#emcee.EnsembleSampler.get_autocorr_time
+        """
         tau = np.asarray(self.sampler.get_autocorr_time(tol=0), dtype=float)
         tau_max = float(np.max(tau))
         if tau_coeff is None:
