@@ -1095,6 +1095,7 @@ double f_planck_norm(double temperatura, double nu);
 
 /***  DISK ACCRETION POWER FUNCTIONS  **********/
 double eval_R_Sw(double M_BH);
+double eval_R_g(double M_BH);
 double eval_M_BH(double R_S);
 double eval_accr_rate(double L_disk,double accr_eff);
 double eval_L_Edd(double M_BH);

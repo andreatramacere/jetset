@@ -1703,6 +1703,10 @@ void set_Corona_geometry(struct blob *pt)
 //	a= pow(0.140836,4) * L_Disk / (pi * sigma_steph_boltz * accr_eff * T_disk_max_4);
 //	return pow(a, 0.5);
 //}
+double eval_R_g(double M_BH)
+{
+	return 0.5*eval_R_Sw(M_BH);
+}
 
 double eval_R_Sw(double M_BH)
 {

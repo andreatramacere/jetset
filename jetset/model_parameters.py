@@ -662,6 +662,8 @@ class ModelParameter(object):
                             raise RuntimeError('parameter  %s' %(self.name), 'the value', keywords[kw] , 'is not in the allowed list',self.allowed_values)
 
                     self._val.val = keywords[kw]
+                    if type(self._val.val)!=str:
+                        print("===> setting par",self.name,f"to {self._val.val:.2e}")
                     if self._depending_pars is not []:
                         for p in self._depending_pars:
                             #print("===> intro",p)

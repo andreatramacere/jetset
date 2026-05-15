@@ -1099,28 +1099,28 @@ void Run_SED(struct blob *pt_base){
                 }
                 if (pt_base->core.do_EC_Corona == 1) {
                     pt_base->core.EC = 6;
-                    // if (set_condition_EC_correction(pt_base, pt_base->Corona.R_Corona) > 0)
-                    // {
-                    //     double R_blob_Corona_ref, R_H_Corona_ref;
-                    //     R_blob_Corona_ref = max(1, pt_base->Corona.R_Corona / 1E10);
-                    //     if (pt_base->core.R_H >= pt_base->Corona.R_H_Corona){
-                    //         R_H_Corona_ref = pt_base->Corona.R_H_Corona + R_blob_Corona_ref;
-                    //     }
-                    //     else{
-                    //         R_H_Corona_ref = pt_base->Corona.R_H_Corona - R_blob_Corona_ref;
-                    //     }
-                    //     pt_base->core.R_H = max(R_H_Corona_ref, 0.0);
-                    //     Build_I_nu_Corona(pt_base);
-                    //     spettro_EC(1, pt_base);
-                    //     nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->Corona.ec.spec.nuFnu_obs);
-                    //     pt_base->core.R_H = pt_base->core.R_H_orig;
-                    //     Build_I_nu_Corona(pt_base);
-                    // }
+                    if (set_condition_EC_correction(pt_base, pt_base->Corona.R_Corona) > 0)
+                    {
+                        double R_blob_Corona_ref, R_H_Corona_ref;
+                        R_blob_Corona_ref = max(1, pt_base->Corona.R_Corona / 1E10);
+                        if (pt_base->core.R_H >= pt_base->Corona.R_H_Corona){
+                            R_H_Corona_ref = pt_base->Corona.R_H_Corona + R_blob_Corona_ref;
+                        }
+                        else{
+                            R_H_Corona_ref = pt_base->Corona.R_H_Corona - R_blob_Corona_ref;
+                        }
+                        pt_base->core.R_H = max(R_H_Corona_ref, 0.0);
+                        Build_I_nu_Corona(pt_base);
+                        spettro_EC(1, pt_base);
+                        nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->Corona.ec.spec.nuFnu_obs);
+                        pt_base->core.R_H = pt_base->core.R_H_orig;
+                        Build_I_nu_Corona(pt_base);
+                    }
                     spettro_EC(1, pt_base);
-                    // if (set_condition_EC_correction(pt_base, pt_base->Corona.R_Corona) > 0)
-                    // {
-                    //     update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->Corona.R_Corona, pt_base->core.nu_IC_size, pt_base->Corona.ec.spec.nuFnu_obs, pt_base->Corona.ec.spec.nu_obs);
-                    // }
+                    if (set_condition_EC_correction(pt_base, pt_base->Corona.R_Corona) > 0)
+                    {
+                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->Corona.R_Corona, pt_base->core.nu_IC_size, pt_base->Corona.ec.spec.nuFnu_obs, pt_base->Corona.ec.spec.nu_obs);
+                    }
                 }
               
             }
