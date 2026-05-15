@@ -177,7 +177,7 @@ class FitModel(Model):
     def __init__(self,
                  elec_distr=None,
                  jet=None,
-                 name='no-name',
+                 name='no_name',
                  out_dir=None,
                  flag=None,
                  template=None,

@@ -744,7 +744,7 @@ class Model(object):
 class MultiplicativeModel(Model):
 
     """Model subclass for multiplicative spectral components."""
-    def __init__(self, name='no-name', nu_size=100, model_type='multiplicative_model', scale='lin-lin'):
+    def __init__(self, name='no_name', nu_size=100, model_type='multiplicative_model', scale='lin-lin'):
         """Initialize a multiplicative model.
 
         Parameters
