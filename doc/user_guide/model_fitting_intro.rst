@@ -298,7 +298,31 @@ Running the sampler
 
   .. code:: ipython3
 
-      mcmc.run_sampler(min_num_live_points=400, dlogz=0.5, frac_remain=0.01)
+      mcmc.run_sampler(min_num_live_points=400,
+                       dlogz=0.5,
+                       frac_remain=0.01,
+                       ultranest_output_dir='ultranest_runs/mrk421_plain')
+
+  ``ultranest_output_dir`` controls where UltraNest writes its run files.
+
+  - ultranest with  Open MPI helper:
+  
+    .. important::
+ 
+      To run ultranest via openmpi, you have to install
+        - mpi4py (pip/mamba install mpi4py)
+        - OpenMPI (https://docs.open-mpi.org/en/main/installing-open-mpi/quickstart.html#binary-packages)
+
+    .. code:: ipython3
+
+      from jetset.mcmc_ultranest import run_open_mpi
+      mcmc = run_open_mpi(mcmc,
+                          n_proc=8,
+                          ultranest_output_dir='ultranest_runs/mrk421_openmpi')
+      
+    
+    ``ultranest_output_dir`` controls where UltraNest writes its run files, and will be placed under the ``run_mpi`` directory.
+
 
 
 Corner plot for composite models
@@ -356,6 +380,10 @@ Caveats and differences: emcee vs ultranest
         print(mcmc.logz, mcmc.logzerr)
 
   - Notebook configurations such as very low ``min_num_live_points``/``nsteps`` are quick-test setups only; for robust analyses use stricter/default settings.
-
+ 
+    .. important::
+    To run ultranest via openmpi, you have to install
+        - mpi4py (pip/mamba install mpi4py)
+        - OpenMPI (https://docs.open-mpi.org/en/main/installing-open-mpi/quickstart.html#binary-packages)
 
 Please, read the Bayesian sections in :ref:`model_fitting_examples` for end-to-end workflows with both backends.
