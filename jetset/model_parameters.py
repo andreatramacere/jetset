@@ -561,12 +561,13 @@ class ModelParameter(object):
             try:
                 _par_expr_text=inspect.getsource(self.par_expr)
             except Exception as e:
-                print('the source code of the function was not accessible due to the following error: ',e)
+                print('the source code of the function was not accessible due to the following exception: ',e)
+                print('trying to recover the saved code textual expression' )
                 if hasattr(self,'_par_expr_text'):
-                    print('recovering saved code')
+                    print('recovering saved code was successful,  OK')
                     _par_expr_text=self._par_expr_text
                 else:
-                    _par_expr_text=None
+                    raise RuntimeError('missing textual expression')
                     
         self.set(_par_expr_text=_par_expr_text,skip_dep_par_warning=True)
 
