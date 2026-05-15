@@ -10,17 +10,17 @@ but before I suggest to through the tutorials below. You can also run the quick 
  :target: https://mybinder.org/v2/gh/andreatramacere/jetset/master
 
 .. note::
-   Items with the  *New (v1.3.0)*  flag refer to new api or improved features for  v1.3.0, and it is warmly advised to read the section also for experienced users
+   Items with the  *New (v1.4.0)*  flag refer to new api or improved features for  v1.3.x, and it is warmly advised to read the section also for experienced users
 
 .. toctree::
    :maxdepth: 1
 
-   model basic features  *New (v1.3.0)* <model_basic.rst>
-   model advanced features   *New (v1.3.0)* <model_advanced.rst>
+   model basic features  *New (v1.4.0)* <model_basic.rst>
+   model advanced features   *New (v1.4.0)* <model_advanced.rst>
    data and phenomenology <data_and_phenomenology.rst>
-   model fitting  *New (v1.3.0)* <model_fitting.rst>
-   temporal evolution <temp_ev.rst>
-   plugins  *New (v1.3.0)* <plugins.rst>
+   model fitting  *New (v1.4.0)* <model_fitting.rst>
+   temporal evolution *New (v1.4.0)* <temp_ev.rst>
+   plugins  *New (v1.4.0)* <plugins.rst>
 
 
 
