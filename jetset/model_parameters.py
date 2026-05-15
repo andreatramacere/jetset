@@ -532,7 +532,7 @@ class ModelParameter(object):
     def _add_depending_par(self,par):
         if par not in self._depending_pars:
             self._depending_pars.append(par)
-
+      
     def _add_master_par(self,par,verbose=False):
         if par not in self._master_pars :
             if verbose:
@@ -553,7 +553,6 @@ class ModelParameter(object):
         else:
             self._set_par_expr_source_code()
         print('==> par', self.name, 'is depending on', [_p.name for _p in self._master_pars],  f'according to expr:   {self.name} =\n{self._par_expr_text}'.format(self.name,self._par_expr_text))
-
 
     def _set_par_expr_source_code(self):
         if isinstance(self.par_expr,str):
@@ -598,6 +597,7 @@ class ModelParameter(object):
         #print('working on ',self.name)
         #TODO:THIS HOLDS ONLY FOR NUMPY <1.22, should be removed
         warnings.filterwarnings('ignore', message='invalid value encountered in reciprocal*')
+       
         if type(self._depending_par_expr) == str:
             _par_values = {}
             for _user_par_ in self._master_pars:
@@ -627,12 +627,8 @@ class ModelParameter(object):
         if self.islog is True:
             res=np.log10(res)
        
-        #if _unit is not None:
-        #    print('units,',self.units,_unit)
-        #    assert(self.units==_unit)
-            
+
         return res
-        #return eval(self.par_expr)
 
 
     def set(self, *args, skip_dep_par_warning=False, **keywords):
@@ -662,14 +658,13 @@ class ModelParameter(object):
                             raise RuntimeError('parameter  %s' %(self.name), 'the value', keywords[kw] , 'is not in the allowed list',self.allowed_values)
 
                     self._val.val = keywords[kw]
-                    if type(self._val.val)!=str:
-                        print("===> setting par",self.name,f"to {self._val.val:.2e}")
-                    if self._depending_pars is not []:
+                    #excluding both [] and None
+                    if self._depending_pars:
                         for p in self._depending_pars:
-                            #print("===> intro",p)
-                            #print("===> name",p.val)
-                            p.set(val=p._func(),skip_dep_par_warning=True)
-
+                            _dep_func = p._func
+                            if callable(_dep_func) is False:
+                                raise RuntimeError('depending parameter', p.name, 'has no callable _func')
+                            p.set(val=_dep_func(),skip_dep_par_warning=True)
                 elif kw == 'log':
                     self._val.islog = keywords[kw]
 
@@ -959,35 +954,6 @@ class ModelParameter(object):
         else:
             return np.log10(v)
 
-# NOTE: obsolete, not used anymore
-# def compositr_parameter_setter(method):
-#     @wraps(method)
-#     def func_wrapper(self, model_name, *args, **kwargs):
-#         print('--> model_name',args,kwargs)
-#         try:
-#             if isinstance(model_name,str):
-#                 pass
-#             else:
-#                 model_name=model_name.name
-#             print('--> model_name', model_name, args,kwargs)
-#             return method(self, *args, **kwargs)
-#         except Exception as e:
-#            message = str(e)
-#            message += '\n'
-#            message += 'Starting from veriosn 1.2.0, FitModel is a CompositeModel, hence to set parameters ' \
-#                       'you have to pass as first paramter the model name or model object of the corresponing parameter e.g. \n' \
-#                       '''   
-#                             fit_model.set_par('model-name',value) 
-#                             OR 
-#                             fit_model.set_par(jet,value) 
-#                       '''
-
-
-
-
-#            raise RuntimeError(message)
-
-#     return func_wrapper
 
 def create_a_function( **kwargs):
 
@@ -1064,18 +1030,14 @@ class CompositeModelParameterArray(object):
             if dep_model is not None:
                 dep_par = dep_model.get_par_by_name(par_name)
                 if dep_par is not None:
-                    #print('==> par:',dep_par.name, 'from model:',  dep_model.name, 'linked to same parameter in model', m_root.name )
                     if p_root == dep_par:
                         raise RuntimeError(" root and linked parameter can't be the same")
                     if dep_par.immutable is True:
                         raise RuntimeError(" this parameter is already linked or dependent ")
                     if m_root==dep_par.model:
                         raise RuntimeError(" linked and root model must be different")
-                    #p_root._linked_models.append(dep_model)
-                    #exec(dep_par.name+'= dep_par')
-                    #identity_func=lambda p_root=p_root: p_root.val_lin
+                    
                     dep_par._root_par = p_root
-                    #dep_par.make_dependent_par(dep_par.identity_func)
                     dep_par._func=dep_par.identity_func
                     dep_par._linked = True
                     dep_par._is_dependent = True
@@ -1083,12 +1045,9 @@ class CompositeModelParameterArray(object):
                     dep_par._add_master_par(p_root)
                     p_root._add_depending_par(dep_par)
                     dep_par.freeze()
-                    #try:
-                        #print('p_root',p_root.name,'jet comp',m_root.name)
+                     
                     p_root.set(val=p_root.val,skip_dep_par_warning=True)
-                    #except Exception as e:
-                        #print('problem with p_root',p_root.name,'jet comp',m_root.name)
-                        #print(e)
+
             else:
                  self._handle_missing_component_error(m_name)
 
@@ -1219,11 +1178,8 @@ class CompositeModelParameterArray(object):
         for ID, mc in enumerate(self._model_comp):
             self._parameters[ID]._build_par_table()
             if len(self._parameters[ID]._par_table) >= 1:
-                #t=copy.copy(self._parameters[ID]._par_table)
-                #for c in t.columns:
-                 #   t[c] = t[c].astype(np.object)
+     
                 _l.append(self._parameters[ID]._par_table)
-        #print('--> _l',_l)
         self._par_table=vstack(_l)
 
     def _build_best_fit_par_table(self):
@@ -1231,9 +1187,7 @@ class CompositeModelParameterArray(object):
         for ID, mc in enumerate(self._model_comp):
             self._parameters[ID]._build_best_fit_par_table()
             if len(self._parameters[ID]._best_fit_par_table) >= 1:
-                #t = copy.copy(self._parameters[ID]._best_fit_par_table)
-                #for c in t.columns:
-                #    t[c] = t[c].astype(np.object)
+                
                 _l.append(self._parameters[ID]._best_fit_par_table)
         self._best_fit_par_table = vstack(_l)
 

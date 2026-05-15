@@ -216,9 +216,6 @@ class Model(object):
             if self.get_par_by_type('redshift') is not None:
                 sed_data.z = self.get_par_by_type('redshift').val
 
-        #if sed_data is not None:
-        #    plot_obj.add_data_plot(sed_data)
-
 
         if frame == 'src' and z_sed_data is not None:
             sed_data.z = z_sed_data
@@ -429,16 +426,30 @@ class Model(object):
             raise RuntimeError(e)
 
     def _fix_par_dep_on_load(self,verbose=True):
-        #print("\n \n ========> fix dep on load START")
+        for p in self.parameters.par_array:
+            _depending_pars_names_list=[]
+            _master_par_names_list=[]
+            if hasattr(p,'_depending_pars'):
+                for _p in p._depending_pars:
+                    if _p.name not in _depending_pars_names_list:
+                        _depending_pars_names_list.append(_p.name)
+                p._depending_pars=[]
+                p._depending_pars_names_list=_depending_pars_names_list
+            if hasattr(p,'_master_pars'):
+                for _p in p._master_pars:
+                    if _p.name not in _master_par_names_list:
+                        _master_par_names_list.append(_p.name)
+                p._master_pars=[]
+                p._master_par_list=[]
+                p._master_par_names_list=_master_par_names_list
+
         for p in self.parameters.par_array:
             if p._is_dependent is True and p._linked is False:
-                #print('==> _master_par_list',p._master_par_list, " for", p.name)
-                #print('==> _depending_par_expr',p._depending_par_expr, " for", p.name)
-                _master_par_list=[p for p in p._master_par_list]
                 _depending_par_expr=copy.deepcopy(p._depending_par_expr)
-                p.reset_dependencies()    
-                self.make_dependent_par(p.name, _master_par_list, _depending_par_expr,set_par_expr_source_code=True,verbose=verbose)
+                self.make_dependent_par(p.name, depends_on=p._master_par_names_list, par_expr=_depending_par_expr,set_par_expr_source_code=True,verbose=verbose)
+            
         
+            
     @staticmethod
     def _load_pickle(file_name_or_obj,from_string=False):
         if from_string:
@@ -617,6 +628,7 @@ class Model(object):
         dep_par.par_expr = par_expr
         dep_par._func = dep_par._eval_par_func
         dep_par._master_par_list=master_par_list
+    
         for p in master_par_list:
             try:
                 m = self.parameters.get_par_by_name(p)
