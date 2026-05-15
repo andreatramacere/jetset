@@ -189,7 +189,7 @@ class UltraNestSampler(McmcSampler):
         use_UL=False,
         loglog=False,
         resume='subfolder',
-        log_dir=None,
+        ultranest_output_dir=None,
         show_status=True,
         posterior_samples_size=None,
         rnd_seed=0,
@@ -217,8 +217,9 @@ class UltraNestSampler(McmcSampler):
             If ``True``, evaluate model and data in log10 space.
         resume : str, optional
             UltraNest resume mode.
-        log_dir : str, optional
-            UltraNest output directory.
+        ultranest_output_dir : str, optional
+            This is where UltraNest writes its run files. 
+            If ``None`` ultranest_output_dir = f'ultranest_{self.model.name}'
         show_status : bool, optional
             If ``True``, show UltraNest progress/status.
         posterior_samples_size : int, optional
@@ -246,8 +247,8 @@ class UltraNestSampler(McmcSampler):
         self.use_UL = use_UL
         self.ndim = len(self._par_array_sampler)
 
-        if log_dir is None:
-            log_dir = f'ultranest_{self.model.name}'
+        if ultranest_output_dir is None:
+            ultranest_output_dir = f'ultranest_{self.model.name}'
 
         calls_counter = {'count': 0}
 
@@ -267,7 +268,7 @@ class UltraNestSampler(McmcSampler):
             self._ultranest_param_names,
             _loglike,
             self._prior_transform,
-            log_dir=log_dir,
+            log_dir=ultranest_output_dir,
             resume=resume,
         )
         
@@ -392,7 +393,7 @@ class UltraNestSampler(McmcSampler):
 
 def run_open_mpi(sampler,
                  n_proc=8,
-                 out_dir='sampler_output',
+                 ultranest_output_dir=None,
                  min_num_live_points=64,
                  nsteps=1,
                  max_num_improvement_loops=1,
@@ -408,8 +409,8 @@ def run_open_mpi(sampler,
         Configured sampler instance to serialize and execute.
     n_proc : int, optional
         Number of MPI ranks passed to ``mpirun -np``. Default is ``8``.
-    out_dir : str, optional
-        Name of an output subdirectory created inside ``run_mpi``.
+    ultranest_output_dir : str, optional
+        Name passed to ``run_sampler``, and resolved within run_mpi/ directory
     min_num_live_points : int, optional
         Minimum live points forwarded to ``run_sampler``.
     nsteps : int, optional
@@ -444,6 +445,9 @@ def run_open_mpi(sampler,
     os.environ["OMP_NUM_THREADS"] = "%s"%str(int(n_proc))
 
     command = f"mpirun {extra_mpirun_args} -np {n_proc} python {script_name}"
+
+    if ultranest_output_dir is None:
+            ultranest_output_dir = f'ultranest_{sampler.model.name}'
     try:
         if run_dir.exists():
             shutil.rmtree(run_dir)
@@ -451,7 +455,7 @@ def run_open_mpi(sampler,
 
         sampler_path = run_dir / 'sampler.pkl'
         sampler.save(str(sampler_path))
-        (run_dir / out_dir).mkdir(parents=True, exist_ok=True)
+        #(run_dir / out_dir).mkdir(parents=True, exist_ok=True)
     
         sampler_run = f"""
 mcmc.model.set_num_c_threads({int(num_c_threads)})
@@ -461,6 +465,7 @@ mcmc.run_sampler(
                 nsteps={int(nsteps)},
                 max_num_improvement_loops={int(max_num_improvement_loops)},
                 min_ess={float(min_ess)},
+                ultranest_output_dir={repr(str(ultranest_output_dir))},
             )
     """
 
