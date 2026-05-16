@@ -5,6 +5,7 @@ while getopts "h?e" opt; do
     case "$opt" in
     h|\?)
         echo "Usage: ./scripts/build_rst_files.sh [-e] [dir-name]"
+        echo "  -e  execute notebooks and save outputs in-place before rst conversion"
         exit 0
         ;;
     e)
@@ -36,12 +37,13 @@ echo "----> $execute"
 find "$search_dir" -name '*.ipynb' -not -path '*/\.*' | while IFS= read -r file; do
     echo "$file"
     if [ "$execute" -eq 1 ]; then
-        echo 'execute'
-        jupyter nbconvert --execute "$file" --to rst
+        echo 'execute and save notebook'
+        jupyter nbconvert --to notebook --execute --inplace "$file" || exit 1
     else
         echo 'non execute'
-        jupyter nbconvert "$file" --to rst
     fi
+
+    jupyter nbconvert "$file" --to rst || exit 1
 
     rst_file="${file%.ipynb}.rst"
     if [ -f "$rst_file" ]; then
