@@ -262,7 +262,7 @@ class TestDependingParameters(TestBase):
 
         def eval_R_g(M_BH):
             from astropy.constants import M_sun,c,G
-            return M_BH*(G.cgs.value*M_sun.value/(c.cgs.value**2))
+            return M_BH*(G.cgs.value*M_sun.cgs.value/(c.cgs.value**2))
 
         j.make_dependent_par('R_g',depends_on=['M_BH'],par_expr=eval_R_g)
 
