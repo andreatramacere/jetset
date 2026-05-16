@@ -11,6 +11,7 @@ import warnings
 import inspect
 import numbers
 from astropy.table import Table
+import warnings
 
 from .model_parameters import ModelParameterArray, ModelParameter
 from .spectral_shapes import SED
@@ -427,18 +428,16 @@ class Model(object):
 
     def _fix_par_dep_on_load(self,verbose=True):
         for p in self.parameters.par_array:
-            _depending_pars_names_list=[]
             _master_par_names_list=[]
             if hasattr(p,'_depending_pars'):
-                for _p in p._depending_pars:
-                    if _p.name not in _depending_pars_names_list:
-                        _depending_pars_names_list.append(_p.name)
                 p._depending_pars=[]
-                p._depending_pars_names_list=_depending_pars_names_list
             if hasattr(p,'_master_pars'):
                 for _p in p._master_pars:
-                    if _p.name not in _master_par_names_list:
-                        _master_par_names_list.append(_p.name)
+                    if hasattr(_p,'name'):
+                        if _p.name not in _master_par_names_list:
+                            _master_par_names_list.append(_p.name)
+                    else:
+                        warnings.warn('found master par without name')
                 p._master_pars=[]
                 p._master_par_list=[]
                 p._master_par_names_list=_master_par_names_list
@@ -447,8 +446,9 @@ class Model(object):
             if p._is_dependent is True and p._linked is False:
                 _depending_par_expr=copy.deepcopy(p._depending_par_expr)
                 self.make_dependent_par(p.name, depends_on=p._master_par_names_list, par_expr=_depending_par_expr,set_par_expr_source_code=True,verbose=verbose)
-            
-        
+                if hasattr(p,'_master_par_names_list'):
+                    delattr(p,'_master_par_names_list')
+
             
     @staticmethod
     def _load_pickle(file_name_or_obj,from_string=False):

@@ -203,9 +203,7 @@ class TestDependingParameters(TestBase):
 
         j.eval()
         
-        R_H_val=1E21
-        j.parameters.R_H.val=R_H_val
-        R_val=j.parameters.R.val
+        
 
         j.save_model('test_jet_EC.pkl')
 
@@ -217,6 +215,9 @@ class TestDependingParameters(TestBase):
         new_jet.eval()
         print("units of theta_open",new_jet.parameters.theta_open.units)
 
+        R_H_val=1E21
+        j.parameters.R_H.val=R_H_val
+        R_val=j.parameters.R.val
 
         new_jet.parameters.R_H.val=R_H_val
         
@@ -233,3 +234,71 @@ class TestDependingParameters(TestBase):
         
         assert(new_fit_model.jet_leptonic.parameters.R.val==R_val)
         new_fit_model.show_model()
+    
+    def test_dep_par_with_func_and_astropy_units(self,plot=False):
+        from jetset.jet_model import Jet
+        import numpy as np
+
+
+        j = Jet(name='test_corona_component', emitters_distribution='bkn',beaming_expr='bulk_theta',verbose=False)
+        j.add_EC_component(['EC_Corona','DT','EC_DT','EC_Disk'],disk_type="MultiBB")
+        j.add_user_par('L_DC_ratio',val=1,val_min=0,val_max=100)
+        j.make_dependent_par('L_Corona',depends_on=['L_DC_ratio','L_Disk'],par_expr='L_Disk*L_DC_ratio')
+        j.parameters.alpha_Corona.val_min=-2
+        j.parameters.alpha_Corona.val = 1
+        j.parameters.nu_cut_Corona.val = 1.5E18
+        j.parameters.nu_cut_low_Corona.val = 1E14
+
+        j.parameters.L_Disk.val = 1E43
+        j.parameters.L_DC_ratio.val = .8
+        j.parameters.N.val = 10000
+        j.parameters.gmax.val = 1E4
+        j.parameters.gamma_break.val = 100
+
+        j.parameters.B.val = 30
+        j.add_user_par('R_H_Corona_ratio',val=1,val_min=1,val_max=100)
+        j.add_user_par('R_Corona_ratio',val=1,val_min=1,val_max=100)
+        j.add_user_par('R_g',val=1E13,val_min=1,val_max=1E20)
+
+        def eval_R_g(M_BH):
+            from astropy.constants import M_sun,c,G
+            return M_BH*(G.cgs.value*M_sun.value/(c.cgs.value**2))
+
+        j.make_dependent_par('R_g',depends_on=['M_BH'],par_expr=eval_R_g)
+
+        def eval_R_H_corona(R_g,R_H_Corona_ratio):
+            return R_H_Corona_ratio*R_g
+
+        j.make_dependent_par('R_H_Corona',depends_on=['R_g','R_H_Corona_ratio'],par_expr="R_H_Corona_ratio*R_g")
+
+
+        def eval_R_corona(R_g,R_Corona_ratio):
+            return R_Corona_ratio*R_g
+
+        j.make_dependent_par('R_Corona',depends_on=['R_g','R_Corona_ratio'],par_expr="R_Corona_ratio*R_g")
+
+
+        j.parameters.R_H_Corona_ratio.val = 10
+        j.parameters.R_Corona_ratio.val = 1
+        j.parameters.R_H.val = j.parameters.R_H_Corona.val*1.5
+        j.parameters.R.val = eval_R_g(j.parameters.M_BH.val)*10
+
+
+
+        j.parameters.BulkFactor.val=1
+        j.set_external_field_transf('disk')
+        j.eval()
+        
+        j.save_model('test.pkl')
+
+        j1=Jet.load_model('test.pkl')
+        j1.eval()
+        j.parameters.M_BH.val=1E6
+        j1.parameters.M_BH.val=1E6
+        assert(j.parameters.R_g.val==j1.parameters.R_g.val)
+        assert(j.parameters.R_Corona.val==j1.parameters.R_Corona.val)
+
+        j.parameters.M_BH.val=1E9
+        j1.parameters.M_BH.val=1E9
+        assert(j.parameters.R_g.val==j1.parameters.R_g.val)
+        assert(j.parameters.R_Corona.val==j1.parameters.R_Corona.val)
