@@ -927,60 +927,35 @@ class ModelParameter(object):
 
     def make_log(self):
         if self.islog:
-            pass
-        else:
-            
-            if self.val_max is not None:
-               self.val_max=self._handle_zero_in_log_pars(self.val_max)
-            if self.val_min is not None:
-                self.val_min=self._handle_zero_in_log_pars(self.val_min)
-           
-            
-            if self.val_start is not None:
-                self.val_start=self._handle_zero_in_log_pars(self.val_start)
-            if self.val_last_call is not None:
-                self.val_last_call=self._handle_zero_in_log_pars(self.val_last_call)
-            if self.fit_range_min is not None:
-                self.fit_range_min=self._handle_zero_in_log_pars(self.fit_range_min)
-            if self.fit_range_max is not None:
-                self.fit_range_max=self._handle_zero_in_log_pars(self.fit_range_max)
-
-            lin_val=self.val_lin
-            #NOTE: get lin val before setting par log
-            self._val.islog=True
-            self.set(val=self._handle_zero_in_log_pars(lin_val))
-    def _handle_zero_in_log_pars(self,v):
-        if v<=0:
-            return -200
-        else:
-            return np.log10(v)
-
-
-def create_a_function( **kwargs):
-
-    """Create a function.
-    
-    Parameters
-    ----------
-    **kwargs : dict
-        Additional keyword arguments.
-    
-    Returns
-    -------
-    object
-        Computed result.
-    """
-    def function_template(**kwargs):
-        """Function template.
+            return
         
-        Parameters
-        ----------
-        **kwargs : dict
-            Additional keyword arguments.
-        """
-        return
+        if self.val_max<0:
+            raise RuntimeError(f'parameter {self.name}, has .val_max<=0: {self.val_max}, update .val_max>0')
 
-    return function_template
+        if self.val_min<0:
+            raise RuntimeError(f'parameter {self.name}, has .val_min<=0: {self.val_min}, update .val_min>0') 
+        
+        if self.val_max is not None:
+            self.val_max=self._handle_log_pars(self.val_max)
+        if self.val_min is not None:
+            self.val_min=self._handle_log_pars(self.val_min)
+        
+        if self.val_start is not None:
+            self.val_start=self._handle_log_pars(self.val_start)
+        if self.val_last_call is not None:
+            self.val_last_call=self._handle_log_pars(self.val_last_call)
+        if self.fit_range_min is not None:
+            self.fit_range_min=self._handle_log_pars(self.fit_range_min)
+        if self.fit_range_max is not None:
+            self.fit_range_max=self._handle_log_pars(self.fit_range_max)
+
+        lin_val=self.val_lin
+        #NOTE: get lin val before setting par log
+        self._val.islog=True
+        self.set(val=self._handle_log_pars(lin_val))
+    
+    def _handle_log_pars(self,v):
+            return np.log10(v)
 
 
 class CompositeModelParameterArray(object):
