@@ -462,18 +462,43 @@ class BaseEmittersDistribution(object):
                 self._jet.eval()
         #NOTE: commented until is fixed the setting to zero of Ne_jetset for protons
         #self.update()
+        if hasattr(p, '_ax_inj') is False:
+            p._ax_inj = None
+
+        if self.emitters_type not in ('electrons', 'protons') and p._ax_inj is not None:
+            p.fig.clf()
+            p.ax = p.fig.add_subplot(111)
+            p._ax_inj = None
+
         if self.emitters_type == 'electrons':
+            has_primary_inj = getattr(self, '_primaries_done', False) is True and hasattr(self, 'gamma_e_inj') and hasattr(self, 'n_gamma_e_inj')
+            has_inj_panel = p._ax_inj is not None and p._ax_inj in p.fig.axes
+
+            if has_primary_inj and has_inj_panel is False:
+                p.fig.clf()
+                gs = p.fig.add_gridspec(2, 1, height_ratios=[3, 2], hspace=0.05)
+                p.ax = p.fig.add_subplot(gs[0])
+                p._ax_inj = p.fig.add_subplot(gs[1], sharex=p.ax)
+                p.ax.tick_params(labelbottom=False)
+            elif has_primary_inj is False and has_inj_panel is True:
+                p.fig.clf()
+                p.ax = p.fig.add_subplot(111)
+                p._ax_inj = None
+
             if label is None:
-                label = 'electrons'
+                if has_primary_inj:
+                    label = 'electrons eq.'
+                else:
+                    label = 'electrons'
             m(self.gamma_e,
-                         self.n_gamma_e,
-                         y_min=y_min,
-                         y_max=y_max,
-                         x_min=x_min,
-                         x_max=x_max,
-                         particle='electrons',
-                         energy_unit=energy_unit,
-                         label=label)
+              self.n_gamma_e,
+              y_min=y_min,
+              y_max=y_max,
+              x_min=x_min,
+              x_max=x_max,
+              particle='electrons',
+              energy_unit=energy_unit,
+              label=label)
             if getattr(self, '_primaries_done', False) is True:
                 if self.gamma_cooling_eq is not None:
                     if energy_unit != 'gamma':
@@ -484,7 +509,40 @@ class BaseEmittersDistribution(object):
                         eq = np.log10(eq)
                     p.ax.axvline(eq, ls='--', label='cooling eq. primary', lw=0.5, c='r')
 
-                if hasattr(self, 'gamma_e_inj') and hasattr(self, 'n_gamma_e_inj'):
+                if has_primary_inj and p._ax_inj is not None and hasattr(p, '_set_variable') and hasattr(p, '_set_xy_label') and hasattr(p, 'loglog'):
+                    pow_map = {'plot_distr': None, 'plot_distr2p': 2, 'plot_distr3p': 3}
+                    pow_val = pow_map.get(getattr(m, '__name__', ''), None)
+
+                    x_inj, y_inj, energy_name, energy_units = p._set_variable(
+                        self.gamma_e_inj,
+                        self.n_gamma_e_inj,
+                        particle='electrons',
+                        energy_unit=energy_unit,
+                        pow=pow_val
+                    )
+
+                    ax_inj = p._ax_inj
+                    ax_inj.cla()
+                    if p.loglog is True:
+                        ax_inj.plot(x_inj, y_inj, ls='--', lw=1.2, c='tab:orange', label='electrons (inj)')
+                    else:
+                        ax_inj.loglog(x_inj, y_inj, ls='--', lw=1.2, c='tab:orange', label='electrons (inj)')
+
+                    old_ax = p.ax
+                    old_injection = getattr(p, 'injection', False)
+                    p.ax = ax_inj
+                    p.injection = True
+                    p._set_xy_label(energy_name, energy_units, pow=pow_val)
+                    p.injection = old_injection
+                    p.ax = old_ax
+
+                    ax_inj.set_xlim(p.ax.get_xlim())
+                    ax_inj.relim()
+                    ax_inj.autoscale(axis='y')
+                    ax_inj.legend()
+                    p.fig.tight_layout()
+                    p.fig.canvas.draw()
+                elif hasattr(self, 'gamma_e_inj') and hasattr(self, 'n_gamma_e_inj'):
                     m(self.gamma_e_inj,
                       self.n_gamma_e_inj,
                       y_min=y_min,
@@ -496,6 +554,20 @@ class BaseEmittersDistribution(object):
                       label='electrons (inj)')
 
         if self.emitters_type == 'protons':
+            has_secondary_inj = getattr(self, '_secondaries_done', False) is True and hasattr(self, 'gamma_e_second_inj') and hasattr(self, 'n_gamma_e_second_inj')
+            has_inj_panel = p._ax_inj is not None and p._ax_inj in p.fig.axes
+
+            if has_secondary_inj and has_inj_panel is False:
+                p.fig.clf()
+                gs = p.fig.add_gridspec(2, 1, height_ratios=[3, 2], hspace=0.05)
+                p.ax = p.fig.add_subplot(gs[0])
+                p._ax_inj = p.fig.add_subplot(gs[1], sharex=p.ax)
+                p.ax.tick_params(labelbottom=False)
+            elif has_secondary_inj is False and has_inj_panel is True:
+                p.fig.clf()
+                p.ax = p.fig.add_subplot(111)
+                p._ax_inj = None
+
             if label is None:
                 label = 'protons'
             m(self.gamma_p,
@@ -517,7 +589,7 @@ class BaseEmittersDistribution(object):
                                  x_max=x_max,
                                  particle='electrons',
                                  energy_unit=energy_unit,
-                                 label='electrons sec.')
+                                 label='electrons sec. eq.')
                     if energy_unit != 'gamma':
 
                         eq= self.gamma_cooling_eq_second* (m_e * c * c).to(energy_unit).value
@@ -527,7 +599,40 @@ class BaseEmittersDistribution(object):
                         eq = np.log10(eq)
                     p.ax.axvline(eq, ls='--', label='cooling. eq. second.', lw=0.5, c='r')
                 
-                if hasattr(self, 'gamma_e_second_inj'):
+                if has_secondary_inj and p._ax_inj is not None and hasattr(p, '_set_variable') and hasattr(p, '_set_xy_label') and hasattr(p, 'loglog'):
+                    pow_map = {'plot_distr': None, 'plot_distr2p': 2, 'plot_distr3p': 3}
+                    pow_val = pow_map.get(getattr(m, '__name__', ''), None)
+
+                    x_inj, y_inj, energy_name, energy_units = p._set_variable(
+                        self.gamma_e_second_inj,
+                        self.n_gamma_e_second_inj,
+                        particle='electrons',
+                        energy_unit=energy_unit,
+                        pow=pow_val
+                    )
+
+                    ax_inj = p._ax_inj
+                    ax_inj.cla()
+                    if p.loglog is True:
+                        ax_inj.plot(x_inj, y_inj, ls='--', lw=1.2, c='tab:orange', label='electrons sec. (inj)')
+                    else:
+                        ax_inj.loglog(x_inj, y_inj, ls='--', lw=1.2, c='tab:orange', label='electrons sec. (inj)')
+
+                    old_ax = p.ax
+                    old_injection = getattr(p, 'injection', False)
+                    p.ax = ax_inj
+                    p.injection = True
+                    p._set_xy_label(energy_name, energy_units, pow=pow_val)
+                    p.injection = old_injection
+                    p.ax = old_ax
+
+                    ax_inj.set_xlim(p.ax.get_xlim())
+                    ax_inj.relim()
+                    ax_inj.autoscale(axis='y')
+                    ax_inj.legend()
+                    p.fig.tight_layout()
+                    p.fig.canvas.draw()
+                elif hasattr(self, 'gamma_e_second_inj'):
                     m(self.gamma_e_second_inj,
                       self.n_gamma_e_second_inj,
                       y_min=y_min,
