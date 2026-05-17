@@ -1,3 +1,4 @@
+
 .. _model_fitting_intro:
 
 .. _least_squares:  https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.least_squares.html

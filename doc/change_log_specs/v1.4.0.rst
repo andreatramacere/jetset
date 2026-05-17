@@ -1,54 +1,62 @@
 Version 1.4.0
 =============
 
+
+Breaking interface changes
+--------------------------
+- .. important::
+   Starting from v1.4.0, the :class:`.McmcSampler` class does not use anymore ``labels`` and ``use_labels_dict``, 
+   to select the parameters used by the sampler. Starting from this version, all the ``free`` parameters will be sampled. 
+   To select sampled parameters, please ``free/freeze`` them.    
+   Please read the caveats :ref:`for the Bayesian model fitting <bayesian_model_fitting>` for further details.
+
 New features
 ------------
 
 MCMC functionalities
 ^^^^^^^^^^^^^^^^^^^^
 
-- mcmc can now return and plot the mcmc best-fit model according to the maximum of the log-like:
+- ``UltraNest`` support has been added. Please read the caveats :ref:`for the Bayesian model fitting <bayesian_model_fitting>`, for further details. 
+  Complete examples are available in:
+
+   - :ref:`model_fitting_ssc_only_ultranest` 
+
+   - :ref:`model_fitting_ssc_only_ultranest_openmpi`
+   
+- A complete example for the ``emcee`` backend is available in the MCMC section of :ref:`model_fitting_ssc_plus_radio_comp`. 
+
+- ``UltraNest`` and ``emcee`` share the same interface, except a few differences. Please read the caveats :ref:`for the Bayesian model fitting <bayesian_model_fitting>` for further details.
+  
+- The :meth:`.McmcSampler.plot_model` method, by default, will plot the  mcmc best-fit model. 
+  To plot the frequentist  best-fit  model, use (``plot_mcmc_best_fit_model==False``)
+ 
 
   .. code-block:: python
 
     # NOTE: plot_mcmc_best_fit_model=True gets the parameters corresponding to the max log-like
-    p=mcmc.plot_model(sed_data=sed_data,fit_range=[1E11, 2E27],size=1000,quantiles=[0.01,0.99],plot_mcmc_best_fit_model=True)
+    p=mcmc.plot_model(sed_data=sed_data,fit_range=[1E11, 2E27],size=1000,quantiles=[0.01,0.99],plot_mcmc_best_fit_model=False)
     p.setlim(y_min=1E-14,x_min=1E6,x_max=2E28)
 
-- the mcmc best-fit model can be easily restored:
+- The mcmc best-fit model can be easily restored:
 
   .. code-block:: python
 
     mcmc.reset_to_mcmc_best_fit()
 
-- :meth:`.McmcSampler.set_bounds` method can preserve or not fit boundaries
+- The method:meth:`.McmcSampler.set_bounds` now can be also used for individual parameters:
 
   .. code-block:: python
 
-    # NOTE: preserve_fit_range=True preserves the model fit range for each parameter used in the MCMC
-    mcmc.set_bounds(bound=5.0,bound_rel=True,preserve_fit_range=True)
-
-- A complete example is available in the MCMC section of :ref:`model_fitting_ssc_plus_radio_compmp`
+    mcmc.set_bounds(comp_name='jet_leptonic',par_name='N',par_bounds=[1E-5,10])
 
 
-Radio component in composite models
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-- Added a new analytical radio component, :class:`.RadioSpectrum`, for extended jet radio emission
-  with self-absorption turnover and high-frequency cutoff. See :ref:`jet_radio_component`
-
-- :class:`.RadioSpectrum` can be combined with a jet model in :class:`.FitModel`:
-
+- After running the mcmc sample, the input ``burnin`` value can be updated by using the autocorrelation time of emcee. 
+  This method, is not implemented and is not needed for UltraNest.
+   
   .. code-block:: python
 
-    from jetset.jet_radio_component import RadioSpectrum
-    from jetset.model_manager import FitModel
+      mcmc.tune_burnin()
 
-    fit_model = FitModel(jet=prefit_jet, name='SSC-best-fit-lsb', template=None)
-    fit_model.add_component(RadioSpectrum())
-    fit_model.composite_expr = '(jet_leptonic+radio_spectrum)'
-
-- A complete fitting workflow (SSC + extended radio component, minuit and MCMC) is available in :ref:`model_fitting_ssc_plus_radio_compmp`
 
 
 Leptonic equilibrium
@@ -71,18 +79,42 @@ Leptonic equilibrium
   :ref:`leptonic_equilibrium_jet_validation_guide`
 
 - End-to-end model fitting workflow with MCMC for leptonic equilibrium models:
-  :ref:`model_fitting_4`
+  :ref:`model_fitting_lept_eq_SSC`
 
+Radio component in composite models
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Added a new analytical radio component, :class:`.RadioSpectrum`, for extended jet radio emission
+  with self-absorption turnover and high-frequency cutoff. See :ref:`jet_radio_component`
+
+- :class:`.RadioSpectrum` can be combined with a jet model in :class:`.FitModel`:
+
+  .. code-block:: python
+
+    from jetset.jet_radio_component import RadioSpectrum
+    from jetset.model_manager import FitModel
+
+    fit_model = FitModel(jet=prefit_jet, name='SSC-best-fit-lsb', template=None)
+    fit_model.add_component(RadioSpectrum())
+    fit_model.composite_expr = '(jet_leptonic+radio_spectrum)'
+
+- A complete fitting workflow (SSC + extended radio component, minuit and MCMC) is available in :ref:`model_fitting_ssc_plus_radio_comp`
+
+
+Corona
+^^^^^^
+Added EC support for Corona, see: :ref:`jet_physical_guide_EC_Corona`.
 
 data handling
 ^^^^^^^^^^^^^
 - UL are handled when rebinning SED data
 - added nu min/max to rebin
+- ASI ssdc sedbuilder
 
-EC emission
-^^^^^^^^^^^
+Pair production for external fields
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- added pair production absorption for Dusty Torus and Broad Line Region
+- added pair production absorption for Dusty Torus, Broad Line Region and Corona.
 - internal absorption can be enabled for EC components (DT/BLR) and used in fitting workflows.
   See :ref:`int_abs_guide` and :ref:`model_fitting_ec`
 
@@ -92,15 +124,15 @@ EC emission
 
     jetset_model.enable_internal_absorption('DT', use_R_H_profile_extrapolation=True)
 
-- To enable internal absorption for model fitting see the ``How to enable Internal absorption`` section of
-  :ref:`model_fitting_ec`
+- A complete fitting workflow with EC and internal absorption see: :ref:`model_fitting_ec`
 
 
 bug fixing
 ----------
 
 - minor bug fixes
-- fixed some typo in variable names
+- fixed typos in variable names
+- fixed a bug in serialization of depending parameter.
 
 C codebase
 ----------

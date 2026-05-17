@@ -92,8 +92,8 @@ Install binaries from GitHub
 To use the git release binaries, follow the instructions here: :ref:`install_pre_file`
 
 
-Install the JetSeT from source
-------------------------------
+Install  JetSeT from source
+---------------------------
 As for the other cases, I suggest creating a specific virtual environment
 
 Download the code

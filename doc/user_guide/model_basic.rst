@@ -6,7 +6,11 @@ basic features
 
     jet model physical setup 1 (basic features and SSC) -  *New (v1.3.0)* <documentation_notebooks_rst/notebooks/jet_model_phys_SSC/Jet_example_phys_SSC.rst>
 
-    jet model physical setup 2 (EC and Equipartition) -  *New (v1.3.0)* <documentation_notebooks_rst/notebooks/jet_model_phys_EC/Jet_example_phys_EC.rst>
+    jet model physical setup 2 (EC and Equipartition) -  *New (v1.4.0)* <documentation_notebooks_rst/notebooks/jet_model_phys_EC/Jet_example_phys_EC.rst>
+
+    jet model physical setup 3 (EC Corona) -  *New (v1.4.0)* <documentation_notebooks_rst/notebooks/jet_model_phys_EC/Jet_exmple_corona.rst>
+   
+    Internal abs - *New (v1.4.0)*   <documentation_notebooks_rst/notebooks/internal_abs/int_abs.rst>
 
     jet leptonic synchrotron polarization -  *New (v1.3.0)* <documentation_notebooks_rst/notebooks/synchrotron_polarization/Jet_example_synch_pol.rst>
 
