@@ -45,6 +45,45 @@ else:
 __all__=['Jet','JetBase','GalacticBeamed','GalacticUnbeamed']
 
 
+class _JetEmittersDistributionProxy(object):
+    """Proxy used by Jet equilibrium mode to hide carrier parameters."""
+
+    def __init__(self, target):
+        object.__setattr__(self, '_target', target)
+
+    def _parameters_access_error(self):
+        return AttributeError(
+            'jet.emitters_distribution.parameters is not available when using '
+            'leptonic equilibrium on Jet; use jet.parameters '
+
+        )
+
+    def unwrap(self):
+        """Return the wrapped distribution object."""
+        return self._target
+
+    def __getattr__(self, name):
+        if name == 'parameters':
+            raise self._parameters_access_error()
+        return getattr(self._target, name)
+
+    def __setattr__(self, name, value):
+        if name == 'parameters':
+            raise self._parameters_access_error()
+        setattr(self._target, name, value)
+
+    def __dir__(self):
+        names = set(dir(self._target))
+        names.discard('parameters')
+        return sorted(names)
+
+    def __repr__(self):
+        return repr(self._target)
+
+    def __str__(self):
+        return str(self._target)
+
+
 class JetBase(Model):
     """Base jet model wrapping the jetkernel backend.
 
@@ -163,7 +202,7 @@ class JetBase(Model):
         self._electron_distribution_dic= None
         self._external_photon_fields_dic= None
         self._original_inj_emitters_distr = None
-        self.inj_emitters_distribution = None
+        self._inj_emitters_distribution = None
         self._leptonic_equilibrium = False
         self._energetic = None
         self._setup(emitters_distribution,emitters_distribution_log_values,beaming_expr,emitters_type)
@@ -337,7 +376,7 @@ class JetBase(Model):
         _model['name'] = self.name
         _model['emitters_type'] = self.emitters_distribution.emitters_type
        
-        if self.inj_emitters_distribution is None:
+        if self._inj_emitters_distribution is None:
             if isinstance(self.emitters_distribution,EmittersDistribution):
                 _model['custom_emitters_distribution'] = self._build_serializable_emitters_distribution()
                 clean_numba(_model['custom_emitters_distribution'])
@@ -346,12 +385,12 @@ class JetBase(Model):
                 raise RuntimeError('emitters distribution type not valid', type(self.emitters_distribution))
 
         else:
-            if isinstance(self.inj_emitters_distribution ,InjEmittersDistribution):
-                _model['custom_emitters_distribution']=self.inj_emitters_distribution
+            if isinstance(self._inj_emitters_distribution ,InjEmittersDistribution):
+                _model['custom_emitters_distribution']=self._inj_emitters_distribution
                 clean_numba(_model['custom_emitters_distribution'])
                 _model['emitters_distribution_class'] = 'InjEmittersDistribution'
             else:
-                raise  RuntimeError('inj_emitters_distribution distribution type not valid',type(self.inj_emitters_distribution))
+                raise  RuntimeError('inj_emitters_distribution distribution type not valid',type(self._inj_emitters_distribution))
         
         if hasattr(self,'geometry'):
             _model['geometry']=self.geometry
@@ -817,7 +856,7 @@ class JetBase(Model):
 
     def _disable_leptonic_equilibrium(self, remove_parameters=False):
         self._leptonic_equilibrium = False
-        self.inj_emitters_distribution = None
+        self._inj_emitters_distribution = None
         self._original_inj_emitters_distr = None
         self._blob.emitters.do_equilibrium = 0
         if remove_parameters is True:
@@ -841,35 +880,35 @@ class JetBase(Model):
        
 
     def _sync_inj_emitters_distribution_from_jet_parameters(self):
-        if self.inj_emitters_distribution is None:
+        if self._inj_emitters_distribution is None:
             return
-        for inj_par in self.inj_emitters_distribution.parameters.par_array:
+        for inj_par in self._inj_emitters_distribution.parameters.par_array:
             jet_par = self.parameters.get_par_by_name(inj_par.name)
             if jet_par is not None:
                 inj_par.set(val=jet_par.val, skip_dep_par_warning=True)
 
     def _sync_jet_parameters_from_inj_emitters_distribution(self):
-        if self.inj_emitters_distribution is None:
+        if self._inj_emitters_distribution is None:
             return
-        for inj_par in self.inj_emitters_distribution.parameters.par_array:
+        for inj_par in self._inj_emitters_distribution.parameters.par_array:
             jet_par = self.parameters.get_par_by_name(inj_par.name)
             if jet_par is not None:
                 jet_par.set(val=inj_par.val, skip_dep_par_warning=True)
 
     def _build_equilibrium_carrier_distribution(self):
-        size = int(self.inj_emitters_distribution._gamma_grid_size)
-        gmax = self.inj_emitters_distribution.parameters.get_par_by_name('gmax').val_lin
+        size = int(self._inj_emitters_distribution._gamma_grid_size)
+        gmax = self._inj_emitters_distribution.parameters.get_par_by_name('gmax').val_lin
         gmax = max(gmax, 1.0)
         gamma_array = np.logspace(0.0, np.log10(gmax), size)
         n_gamma_array = np.zeros(gamma_array.size, dtype=np.float64)
-        return EmittersArrayDistribution(name=f'{self.inj_emitters_distribution.name}_eq_carrier',
+        return EmittersArrayDistribution(name=f'{self._inj_emitters_distribution.name}_eq_carrier',
                                          emitters_type='electrons',
                                          gamma_array=gamma_array,
                                          n_gamma_array=n_gamma_array,
                                          normalize=False)
 
     def _set_equilibrium_injection_on_blob(self):
-        if self.inj_emitters_distribution is None:
+        if self._inj_emitters_distribution is None:
             raise RuntimeError('leptonic equilibrium mode requires an InjEmittersDistribution')
 
         self._sync_inj_emitters_distribution_from_jet_parameters()
@@ -882,7 +921,7 @@ class JetBase(Model):
         self._blob.emitters.gmin = 1
         #NOTE: safe boundary for eq. evolution
         self._blob.emitters.gmax = p_gmax.val_lin*2
-        self._blob.emitters.gamma_grid_size = int(self.inj_emitters_distribution._gamma_grid_size)
+        self._blob.emitters.gamma_grid_size = int(self._inj_emitters_distribution._gamma_grid_size)
 
         set_str_attr(self._blob, 'core.DISTR', 'jetset')
         set_particle_attr(self._blob, 'electrons')
@@ -894,30 +933,30 @@ class JetBase(Model):
         ne_ptr = get_nested_attr(self._blob, 'emitters.Ne_jetset')
         gamma_blob, _ = get_emitters(gamma_ptr, ne_ptr, self._blob, size)
 
-        self.inj_emitters_distribution._gamma_grid_size = size
-        self.inj_emitters_distribution._gamma_grid = np.asarray(gamma_blob, dtype=np.float64)
-        f = self.inj_emitters_distribution._eval_func(gamma=self.inj_emitters_distribution._gamma_grid)
-        gmin_inj = self.inj_emitters_distribution.parameters.get_par_by_name('gmin').val_lin
-        gmax_inj = self.inj_emitters_distribution.parameters.get_par_by_name('gmax').val_lin
+        self._inj_emitters_distribution._gamma_grid_size = size
+        self._inj_emitters_distribution._gamma_grid = np.asarray(gamma_blob, dtype=np.float64)
+        f = self._inj_emitters_distribution._eval_func(gamma=self._inj_emitters_distribution._gamma_grid)
+        gmin_inj = self._inj_emitters_distribution.parameters.get_par_by_name('gmin').val_lin
+        gmax_inj = self._inj_emitters_distribution.parameters.get_par_by_name('gmax').val_lin
         f = np.asarray(f, dtype=np.float64)
-        f[self.inj_emitters_distribution._gamma_grid < gmin_inj] = 0.0
-        f[self.inj_emitters_distribution._gamma_grid > gmax_inj] = 0.0
+        f[self._inj_emitters_distribution._gamma_grid < gmin_inj] = 0.0
+        f[self._inj_emitters_distribution._gamma_grid > gmax_inj] = 0.0
         norm = 1.0
-        if self.inj_emitters_distribution.normalize is True:
-            integ = np.trapezoid(f, self.inj_emitters_distribution._gamma_grid)
+        if self._inj_emitters_distribution.normalize is True:
+            integ = np.trapezoid(f, self._inj_emitters_distribution._gamma_grid)
             if integ > 0:
                 norm = 1.0 / integ
         BlazarSED.InitRadiative(self._blob,0)
         volume=self._blob.core.Vol_region
-        self.inj_emitters_distribution._set_L_inj(self.parameters.get_par_by_name('L_inj').val,volume )
-        q_inj = f * norm * self.inj_emitters_distribution.parameters.get_par_by_name('Q').val
+        self._inj_emitters_distribution._set_L_inj(self.parameters.get_par_by_name('L_inj').val,volume )
+        q_inj = f * norm * self._inj_emitters_distribution.parameters.get_par_by_name('Q').val
         q_inj = np.asarray(q_inj, dtype=np.float64)
         q_inj[np.isnan(q_inj)] = 0
         q_inj[np.isinf(q_inj)] = 0
 
-        self.inj_emitters_distribution.f = q_inj
-        self.inj_emitters_distribution.gamma_e = self.inj_emitters_distribution._gamma_grid.copy()
-        self.inj_emitters_distribution.n_gamma_e = q_inj.copy()
+        self._inj_emitters_distribution.f = q_inj
+        self._inj_emitters_distribution.gamma_e = self._inj_emitters_distribution._gamma_grid.copy()
+        self._inj_emitters_distribution.n_gamma_e = q_inj.copy()
 
         # Safety/clarity: clear transport buffer before writing q_inj.
         set_emitters(ne_ptr, self._blob, size, np.zeros(size, dtype=np.float64))
@@ -958,10 +997,10 @@ class JetBase(Model):
 
             self._leptonic_equilibrium = True
             self._blob.emitters.do_equilibrium = 1
-            self.inj_emitters_distribution = copy.deepcopy(q_inj)
+            self._inj_emitters_distribution = copy.deepcopy(q_inj)
             self._original_inj_emitters_distr = copy.deepcopy(q_inj)
 
-            self._emitters_distribution_dic = copy.deepcopy(self.inj_emitters_distribution._parameters_dict)
+            self._emitters_distribution_dic = copy.deepcopy(self._inj_emitters_distribution._parameters_dict)
             if 'gmin' in self._emitters_distribution_dic:
                 # gmin drives only q_inj in equilibrium mode, not the solved Ne grid.
                 self._emitters_distribution_dic['gmin'].is_in_jetkernel = False
@@ -2475,6 +2514,17 @@ class Jet(JetBase):
         if self.emitters_distribution.emitters_type == 'protons':
             self.protons_distribution=self.emitters_distribution
 
+    def set_emitters_distribution(self, distr=None, log_values=False, emitters_type='electrons', init=True):
+        """Set emitters distribution and hide carrier parameters in Jet equilibrium mode."""
+        super(Jet, self).set_emitters_distribution(distr=distr,
+                                                   log_values=log_values,
+                                                   emitters_type=emitters_type,
+                                                   init=init)
+        if isinstance(distr, InjEmittersDistribution):
+            self.emitters_distribution = _JetEmittersDistributionProxy(self.emitters_distribution)
+        elif isinstance(self.emitters_distribution, _JetEmittersDistributionProxy):
+            self.emitters_distribution = self.emitters_distribution.unwrap()
+
     @staticmethod
     def available_electron_distributions():
         """Print available electron-distribution names."""
@@ -2520,7 +2570,7 @@ class Jet(JetBase):
 
 
     def set_N_from_U_emitters(self,U, gmin=None, gmax=None):
-        """Set normalization to match target emitter energy density.
+        """Set the normalization  of N or L_inj (leptonic eq.), to match target emitter energy density.
 
         Parameters
         ----------
@@ -2543,7 +2593,7 @@ class Jet(JetBase):
             self.set_blob()
 
     def set_N_from_U_vol_emitters(self, U_vol, gmin=None, gmax=None):
-        """Set normalization to match target integrated emitter energy.
+        """Set the normalization  of N or L_inj (leptonic eq.), to match target integrated emitter energy.
 
         Parameters
         ----------
@@ -2557,7 +2607,7 @@ class Jet(JetBase):
 
 
     def set_N_from_L_sync(self,L_sync):
-        """Set normalization to match target integrated synchrotron luminosity.
+        """Set the normalization  of N or L_inj (leptonic eq.), to match target integrated synchrotron luminosity.
 
         Parameters
         ----------
@@ -2581,7 +2631,7 @@ class Jet(JetBase):
             self.set_par('N', val=ratio)
        
     def set_N_from_F_sync(self, F_sync):
-        """Set normalization to match target observed integrated synchrotron flux.
+        """Set the normalization  of N or L_inj (leptonic eq.), to match target observed integrated synchrotron flux.
 
         Parameters
         ----------
@@ -2593,7 +2643,7 @@ class Jet(JetBase):
         self.set_N_from_L_sync(L)
 
     def set_N_from_nuLnu(self,nuLnu_src, nu_src):
-        """Set normalization to match target source-frame ``nuLnu`` at ``nu_src``.
+        """Set the normalization  of N or L_inj (leptonic eq.), to match target source-frame ``nuLnu`` at ``nu_src``.
 
         Parameters
         ----------
@@ -2623,7 +2673,7 @@ class Jet(JetBase):
 
 
     def set_N_from_nuFnu(self, nuFnu_obs, nu_obs):
-        """Set normalization to match target observed ``nuFnu`` at ``nu_obs``.
+        """Set the normalization  of N or L_inj (leptonic eq.), to match target observed ``nuFnu`` at ``nu_obs``.
 
         Parameters
         ----------

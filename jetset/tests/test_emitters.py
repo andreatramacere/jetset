@@ -175,9 +175,9 @@ class TestEmitters(TestBase):
         j.parameters.L_inj.val = 1E39
  
         j.eval()
-        L_inj=j.inj_emitters_distribution.eval_U_q()*j.parameters.R.val**3*4*np.pi/3
+        L_inj=j._inj_emitters_distribution.eval_U_q()*j.parameters.R.val**3*4*np.pi/3
         np.testing.assert_allclose(L_inj, j.parameters.L_inj.val, rtol=1E-3)
-        assert j.inj_emitters_distribution.parameters.Q.val > 0
+        assert j._inj_emitters_distribution.parameters.Q.val > 0
         assert j._blob.emitters.do_equilibrium == 1
         assert j.emitters_distribution._primaries_done is True
         assert hasattr(j.emitters_distribution, 'gamma_e_inj')
@@ -207,10 +207,10 @@ class TestEmitters(TestBase):
         j.parameters.L_inj.val = 1E39
  
         j.eval()
-        L_inj=j.inj_emitters_distribution.eval_U_q()*j.parameters.R.val**3*4*np.pi/3
-        np.testing.assert_allclose(j.inj_emitters_distribution.parameters.p.val, 2.5, rtol=1E-12)
+        L_inj=j._inj_emitters_distribution.eval_U_q()*j.parameters.R.val**3*4*np.pi/3
+        np.testing.assert_allclose(j._inj_emitters_distribution.parameters.p.val, 2.5, rtol=1E-12)
         np.testing.assert_allclose(L_inj, j.parameters.L_inj.val, rtol=1E-3)
-        assert j.inj_emitters_distribution.parameters.Q.val > 0
+        assert j._inj_emitters_distribution.parameters.Q.val > 0
         assert j._blob.emitters.do_equilibrium == 1
         assert j.emitters_distribution._primaries_done is True
         assert hasattr(j.emitters_distribution, 'gamma_e_inj')
@@ -222,3 +222,16 @@ class TestEmitters(TestBase):
         j._disable_leptonic_equilibrium(remove_parameters=True)
         assert j.parameters.get_par_by_name('L_inj') is  None
 
+    def test_jet_hides_equilibrium_carrier_parameters(self, plot=True):
+        from jetset.jet_model import Jet
+        from jetset.jet_emitters_factory import InjEmittersFactory
+
+        q_inj = InjEmittersFactory().create_inj_emitters('pl',
+                                                         emitters_type='electrons',
+                                                         normalize=False)
+        j = Jet(emitters_distribution=q_inj, emitters_type='electrons', verbose=False)
+
+        with pytest.raises(AttributeError, match='jet.emitters_distribution.parameters'):
+            _ = j.emitters_distribution.parameters
+
+        assert j._inj_emitters_distribution.parameters.get_par_by_name('Q') is not None

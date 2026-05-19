@@ -928,25 +928,47 @@ class ModelParameter(object):
     def make_log(self):
         if self.islog:
             return
-        
-        if self.val_max<0:
-            raise RuntimeError(f'parameter {self.name}, has .val_max<=0: {self.val_max}, update .val_max>0')
+               
+        if self.val_lin is not None:
+            if self.val_lin<0:
+                raise RuntimeError(f'parameter {self.name}, has .val_lin<=0: {self.val_lin}, update .val_lin>0')
 
-        if self.val_min<0:
-            raise RuntimeError(f'parameter {self.name}, has .val_min<=0: {self.val_min}, update .val_min>0') 
-        
         if self.val_max is not None:
-            self.val_max=self._handle_log_pars(self.val_max)
-        if self.val_min is not None:
-            self.val_min=self._handle_log_pars(self.val_min)
+            if self.val_max<0:
+                raise RuntimeError(f'parameter {self.name}, has .val_max<=0: {self.val_max}, update .val_max>0')
         
+            self.val_max=self._handle_log_pars(self.val_max)
+
+        
+        if self.val_min is not None:
+            if self.val_min<0:
+                raise RuntimeError(f'parameter {self.name}, has .val_min<=0: {self.val_min}, update .val_min>0') 
+            
+            self.val_min=self._handle_log_pars(self.val_min)
+     
+
         if self.val_start is not None:
+            if self.val_start<0:
+                raise RuntimeError(f'parameter {self.name}, has .valval_start_min<=0: {self.val_min}, update .val_start>0') 
+            
             self.val_start=self._handle_log_pars(self.val_start)
+
         if self.val_last_call is not None:
+            if self.val_last_call<0:
+                raise RuntimeError(f'parameter {self.name}, has .val_last_call<=0: {self.val_min}, update .val_last_call>0') 
+            
             self.val_last_call=self._handle_log_pars(self.val_last_call)
+
         if self.fit_range_min is not None:
+            if self.fit_range_min<0:
+                raise RuntimeError(f'parameter {self.name}, has .fit_range_min<=0: {self.val_min}, update .fit_range_min>0') 
+            
             self.fit_range_min=self._handle_log_pars(self.fit_range_min)
+
         if self.fit_range_max is not None:
+            if self.fit_range_max<0:
+                raise RuntimeError(f'parameter {self.name}, has .fit_range_max<=0: {self.val_min}, update .fit_range_max>0') 
+
             self.fit_range_max=self._handle_log_pars(self.fit_range_max)
 
         lin_val=self.val_lin
