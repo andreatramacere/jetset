@@ -132,6 +132,12 @@ jobs:
           pip install wheel
           pipx run build --sdist
           pip install dist/*.tar.gz
+
+      - name: 'Install UltraNest (optional)'
+        id: ultranest_install
+        continue-on-error: true
+        run: |
+          python -m pip install "ultranest>=4.0"
       
       - name: 'test sdist'
         if: github.event.inputs.tags != null
@@ -186,6 +192,18 @@ jobs:
           pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic
           pytest  --pyargs -vvv -s  jetset.tests.test_gammapy_plugin      
           pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
+
+      - name: 'test ultranest'
+        if: github.event.inputs.skip_test != 'yes' && steps.ultranest_install.outcome == 'success'
+        working-directory: .github/action_test/
+        run: |
+          echo $(running ultranest tests!)
+          pytest --pyargs -vvv jetset.tests.test_mcmc::TestMCMC::test
+
+      - name: 'skip ultranest tests'
+        if: github.event.inputs.skip_test != 'yes' && steps.ultranest_install.outcome != 'success'
+        run: |
+          echo "Skipping UltraNest tests: ultranest>=4.0 is not available for this OS/Python combination."
   
       - name: 'Upload Binary Release Asset'
         uses: softprops/action-gh-release@v2
