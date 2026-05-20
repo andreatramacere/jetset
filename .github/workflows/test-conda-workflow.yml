@@ -138,6 +138,7 @@ jobs:
           source ~/.bash_profile
           micromamba activate test-env
           micromamba install -c astropy -c conda-forge --file requirements.txt
+          micromamba install --yes --channel conda-forge ultranest
          
           
   
