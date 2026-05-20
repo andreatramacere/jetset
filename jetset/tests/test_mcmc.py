@@ -14,11 +14,12 @@ class TestMCMC(TestBase):
             raise RecursionError("please provide either fit_dict or sed_number")
         self.run_emcee(fit_dict,plot=plot)
 
-    def test(self,plot=False):
+    def test(self,plot=False,run_ultranest=True):
         from .test_model_fit import prepare_asset
         fit_dict=prepare_asset(plot=plot,sed_number=1,skip_minuit=True)
         self.run_emcee(fit_dict=fit_dict,plot=plot)
-        self.run_ultranest(fit_dict=fit_dict,plot=plot)
+        if self.run_ultranest:
+            self.run_ultranest(fit_dict=fit_dict,plot=plot)
 
     def run_emcee(self,fit_dict=None,model_minimizer=None,sed_data=None,plot=False):
 
