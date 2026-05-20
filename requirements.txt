@@ -19,4 +19,4 @@ ipython
 dill
 swig>=4
 gammapy==2.*
-ultranest>=4.2
+ultranest>=4.4
