@@ -10,7 +10,7 @@ six
 emcee>=3.0.0,<=3.2
 pyyaml
 pytest
-pytest-cov 
+pytest-cov
 coverage
 numba >=0.60,<0.65
 tqdm<5
