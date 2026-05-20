@@ -17,7 +17,7 @@ class TestEmcee(TestBase):
     def test(self,plot=False):
         from .test_model_fit import prepare_asset
         fit_dict=prepare_asset(plot=plot,sed_number=1,skip_minuit=True)
-        #sself.run_emcee(fit_dict=fit_dict,plot=plot)
+        self.run_emcee(fit_dict=fit_dict,plot=plot)
         self.run_ultranest(fit_dict=fit_dict,plot=plot)
 
     def run_emcee(self,fit_dict=None,model_minimizer=None,sed_data=None,plot=False):
