@@ -46,12 +46,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - os: macos-15-intel
-          name:  macOS-x86_64
-          cpython-version: 311
-          python-version: "3.11"
-          platform_id: macosx_x86_64
-          cibw_arch:  x86_64
+        #- os: macos-15-intel
+        #  name:  macOS-x86_64
+        #  cpython-version: 311
+        #  python-version: "3.11"
+        #  platform_id: macosx_x86_64
+        #  cibw_arch:  x86_64
         - os: ubuntu-latest
           name: x86_64
           cpython-version: 311
@@ -59,19 +59,19 @@ jobs:
           platform_id: manylinux_x86_64
           cibw_manylinux: manylinux2014
           cibw_arch:  x86_64
-        - os: macos-14
+        - os: macos-15
           name: MAC_ARM
           cpython-version: 311
           python-version: "3.11"
           platform_id: macosx_arm64
           cibw_manylinux:  macosx_arm64
         
-        - os: macos-15-intel
-          name:  macOS-x86_64
-          cpython-version: 312
-          python-version: "3.12"
-          platform_id: macosx_x86_64
-          cibw_arch:  x86_64
+        #- os: macos-15-intel
+        #  name:  macOS-x86_64
+        #  cpython-version: 312
+        # python-version: "3.12"
+        #  platform_id: macosx_x86_64
+        #  cibw_arch:  x86_64
         - os: ubuntu-latest
           name: x86_64
           cpython-version: 312
@@ -79,18 +79,18 @@ jobs:
           platform_id: manylinux_x86_64
           cibw_manylinux: manylinux2014
           cibw_arch:  x86_64
-        - os: macos-14
+        - os: macos-15
           name: MAC_ARM
           cpython-version: 312
           python-version: "3.12"
           platform_id: macosx_arm64
           cibw_manylinux:  macosx_arm64
-        - os: macos-15-intel
-          name:  macOS-x86_64
-          cpython-version: 313
-          python-version: "3.13"
-          platform_id: macosx_x86_64
-          cibw_arch:  x86_64
+        #- os: macos-15-intel
+        #  name:  macOS-x86_64
+        #  cpython-version: 313
+        #  python-version: "3.13"
+        #  platform_id: macosx_x86_64
+        #  cibw_arch:  x86_64
         - os: ubuntu-latest
           name: x86_64
           cpython-version: 313
@@ -98,7 +98,7 @@ jobs:
           platform_id: manylinux_x86_64
           cibw_manylinux: manylinux2014
           cibw_arch:  x86_64
-        - os: macos-14
+        - os: macos-15
           name: MAC_ARM
           cpython-version: 313
           python-version: "3.13"
