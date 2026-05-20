@@ -5,6 +5,22 @@ from .base_class import TestBase
 
 class TestCoronaComponent(TestBase):
 
+    @staticmethod
+    def _get_corona_src_sed_arrays(jet):
+        corona = jet.get_spectral_component_by_name('Corona', verbose=False)
+        assert corona is not None
+
+        # Read source-frame luminosity arrays through the public spectral-component API.
+        corona.fill_SED(skip_zeros=True)
+        nu_src = np.asarray(corona.SED.nu_src.value, dtype=float)
+        nu_lnu_src = np.asarray(corona.SED.nuLnu_src.value, dtype=float)
+
+        m = np.isfinite(nu_src) & np.isfinite(nu_lnu_src) & (nu_src > 0.0) & (nu_lnu_src > 0.0)
+        nu_src = nu_src[m]
+        nu_lnu_src = nu_lnu_src[m]
+        assert nu_src.size > 1
+        return nu_src, nu_lnu_src
+
     def integration_suite(self, plot=False):
         self.test_corona_component(plot=plot)
         self.test_corona_low_energy_cutoff_parameter()
@@ -36,11 +52,10 @@ class TestCoronaComponent(TestBase):
         assert j.get_spectral_component_by_name('Corona', verbose=False) is not None
         assert j.get_spectral_component_by_name('EC_Corona', verbose=False) is not None
 
-        n_max = int(j._blob.Corona.spec.NU_INT_MAX) + 1
-        nu_drf = np.asarray(j._blob.Corona.spec.nu_DRF, dtype=float)[:n_max]
-        l_nu_drf = np.asarray(j._blob.Corona.spec.L_nu_DRF, dtype=float)[:n_max]
-        f_nu = l_nu_drf / j.parameters.L_Corona.val
-        area = np.trapezoid(f_nu, nu_drf)
+        nu_src, nu_lnu_src = self._get_corona_src_sed_arrays(j)
+        l_nu_src = nu_lnu_src / nu_src
+        f_nu = l_nu_src / j.parameters.L_Corona.val
+        area = np.trapezoid(f_nu, nu_src)
         np.testing.assert_allclose(area, 1.0, rtol=5E-2, atol=1E-3)
 
     def test_corona_low_energy_cutoff_parameter(self):
@@ -58,15 +73,13 @@ class TestCoronaComponent(TestBase):
 
         j.parameters.nu_cut_low_Corona.val = 0.0
         j.eval(nu=np.logspace(12, 30, 120), get_model=True)
-        n_max = int(j._blob.Corona.spec.NU_INT_MAX) + 1
-        nu_no_cut = np.asarray(j._blob.Corona.spec.nu_DRF, dtype=float)[:n_max]
-        l_no_cut = np.asarray(j._blob.Corona.spec.L_nu_DRF, dtype=float)[:n_max]
+        nu_no_cut, nu_lnu_no_cut = self._get_corona_src_sed_arrays(j)
+        l_no_cut = nu_lnu_no_cut / nu_no_cut
 
         j.parameters.nu_cut_low_Corona.val = 1E18
         j.eval(nu=np.logspace(12, 30, 120), get_model=True)
-        n_max = int(j._blob.Corona.spec.NU_INT_MAX) + 1
-        nu_with_cut = np.asarray(j._blob.Corona.spec.nu_DRF, dtype=float)[:n_max]
-        l_with_cut = np.asarray(j._blob.Corona.spec.L_nu_DRF, dtype=float)[:n_max]
+        nu_with_cut, nu_lnu_with_cut = self._get_corona_src_sed_arrays(j)
+        l_with_cut = nu_lnu_with_cut / nu_with_cut
 
         low_nu = 1E16
         high_nu = 1E19

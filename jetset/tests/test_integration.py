@@ -67,7 +67,7 @@ class TestIntegration(TestBase):
       t=TestModelFit()
       t.integration_suite(sed_number=None,phenom_dict=phenom_dict,use_ebl=False,use_dep_pars=False,skip_minuit=True,plot=plot)
    
-   def test_emcee(self,fit_dict=None,plot=plot):
+   def test_mcmc(self,fit_dict=None,plot=plot):
       t=TestMCMC()
       if fit_dict is None:
          sed_number=1
