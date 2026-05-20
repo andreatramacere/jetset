@@ -1,7 +1,8 @@
 import pytest
 from .base_class import TestBase
 
-from .test_mcmc import TestMCMC
+from .test_emcee import TestEmcee
+from .test_ultranest import TestUltranest
 from .test_jet_model import TestJets,hadronic_func
 from .test_model_fit import TestModelFit
 from .test_emitters import TestEmitters
@@ -67,8 +68,16 @@ class TestIntegration(TestBase):
       t=TestModelFit()
       t.integration_suite(sed_number=None,phenom_dict=phenom_dict,use_ebl=False,use_dep_pars=False,skip_minuit=True,plot=plot)
    
-   def test_mcmc(self,fit_dict=None,plot=plot):
-      t=TestMCMC()
+   def test_emcee(self,fit_dict=None,plot=plot):
+      t=TestEmcee()
+      if fit_dict is None:
+         sed_number=1
+      else:
+         sed_number=None
+      t.integration_suite(fit_dict=fit_dict,sed_number=sed_number,plot=plot)
+
+   def test_ultranest(self,fit_dict=None,plot=plot):
+      t=TestUltranest()
       if fit_dict is None:
          sed_number=1
       else:

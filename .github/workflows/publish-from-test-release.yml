@@ -1,0 +1,138 @@
+name: publish from test release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: release tag created by test workflows (assets source)
+        required: true
+      publish_pypi:
+        description: publish Python artifacts to PyPI (yes/no)
+        required: false
+        default: "yes"
+      publish_conda:
+        description: publish Conda artifacts to Anaconda (yes/no)
+        required: false
+        default: "yes"
+      pypi_repository:
+        description: pypi or testpypi
+        required: false
+        default: "pypi"
+      conda_owner:
+        description: Anaconda owner/channel (e.g. andreatramacere)
+        required: true
+      conda_label:
+        description: Anaconda label (e.g. main, dev, rc)
+        required: false
+        default: "main"
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+      ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_API_TOKEN }}
+      ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+    steps:
+      - name: Validate inputs
+        run: |
+          if [ -z "${{ github.event.inputs.release_tag }}" ]; then
+            echo "release_tag is required."
+            exit 1
+          fi
+          if [ "${{ github.event.inputs.publish_pypi }}" != "yes" ] && [ "${{ github.event.inputs.publish_pypi }}" != "no" ]; then
+            echo "publish_pypi must be yes or no."
+            exit 1
+          fi
+          if [ "${{ github.event.inputs.publish_conda }}" != "yes" ] && [ "${{ github.event.inputs.publish_conda }}" != "no" ]; then
+            echo "publish_conda must be yes or no."
+            exit 1
+          fi
+          if [ "${{ github.event.inputs.publish_pypi }}" = "no" ] && [ "${{ github.event.inputs.publish_conda }}" = "no" ]; then
+            echo "Nothing to do: both publish flags are no."
+            exit 1
+          fi
+          if [ "${{ github.event.inputs.pypi_repository }}" != "pypi" ] && [ "${{ github.event.inputs.pypi_repository }}" != "testpypi" ]; then
+            echo "pypi_repository must be pypi or testpypi."
+            exit 1
+          fi
+
+      - name: Ensure release exists
+        run: |
+          gh release view "${{ github.event.inputs.release_tag }}" --json tagName,name,isDraft,url
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download release assets
+        run: |
+          rm -rf release_assets
+          mkdir -p release_assets
+          gh release download "${{ github.event.inputs.release_tag }}" --dir release_assets --clobber
+          ls -lh release_assets
+          if ! ls release_assets/* >/dev/null 2>&1; then
+            echo "No assets found on release ${{ github.event.inputs.release_tag }}."
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to PyPI
+        if: github.event.inputs.publish_pypi == 'yes'
+        run: |
+          EFFECTIVE_PYPI_TOKEN="${PYPI_API_TOKEN:-$PYPI_TOKEN}"
+          if [ -z "${EFFECTIVE_PYPI_TOKEN}" ]; then
+            echo "Missing PyPI token. Set PYPI_API_TOKEN (or PYPI_TOKEN)."
+            exit 1
+          fi
+
+          python -m pip install --upgrade pip
+          python -m pip install twine
+
+          mapfile -t PYPI_FILES < <(find release_assets -maxdepth 1 -type f \( -name "*.whl" -o -name "*.tar.gz" \) | sort)
+          if [ "${#PYPI_FILES[@]}" -eq 0 ]; then
+            echo "No .whl or .tar.gz files found in release assets."
+            exit 1
+          fi
+
+          echo "PyPI artifacts:"
+          printf ' - %s\n' "${PYPI_FILES[@]}"
+
+          if [ "${{ github.event.inputs.pypi_repository }}" = "testpypi" ]; then
+            python -m twine upload --non-interactive --skip-existing \
+              --repository-url https://test.pypi.org/legacy/ \
+              -u __token__ -p "${EFFECTIVE_PYPI_TOKEN}" "${PYPI_FILES[@]}"
+          else
+            python -m twine upload --non-interactive --skip-existing \
+              -u __token__ -p "${EFFECTIVE_PYPI_TOKEN}" "${PYPI_FILES[@]}"
+          fi
+
+      - name: Publish to Anaconda
+        if: github.event.inputs.publish_conda == 'yes'
+        run: |
+          EFFECTIVE_ANACONDA_TOKEN="${ANACONDA_API_TOKEN:-$ANACONDA_TOKEN}"
+          if [ -z "${EFFECTIVE_ANACONDA_TOKEN}" ]; then
+            echo "Missing Anaconda token. Set ANACONDA_API_TOKEN (or ANACONDA_TOKEN)."
+            exit 1
+          fi
+
+          python -m pip install --upgrade pip
+          python -m pip install anaconda-client
+
+          mapfile -t CONDA_FILES < <(find release_assets -maxdepth 1 -type f \( -name "*.conda" -o -name "*.tar.bz2" \) | sort)
+          if [ "${#CONDA_FILES[@]}" -eq 0 ]; then
+            echo "No conda package files (.conda or .tar.bz2) found in release assets."
+            exit 1
+          fi
+
+          echo "Conda artifacts:"
+          printf ' - %s\n' "${CONDA_FILES[@]}"
+
+          anaconda -t "${EFFECTIVE_ANACONDA_TOKEN}" upload \
+            --user "${{ github.event.inputs.conda_owner }}" \
+            --label "${{ github.event.inputs.conda_label }}" \
+            --skip-existing \
+            "${CONDA_FILES[@]}"

@@ -228,23 +228,23 @@ jobs:
           pytest  --pyargs -vvv jetset.tests.test_jet_model
           pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic
           pytest  --pyargs -vvv -s  jetset.tests.test_gammapy_plugin 
-          pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
+          pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration -k "not test_ultranest"
         env:
           WF_ENV: CONDA
 
-      - name: 'test ultranest'
+      - name: 'test mcmc (conditional ultranest)'
         if: github.event.inputs.skip_test != 'yes' && steps.ultranest_install.outcome == 'success'
         working-directory: .github/action_test/
         run: |
-          echo $(running ultranest tests!)
+          echo "Running UltraNest-only MCMC test path"
           source ~/.bash_profile
           micromamba activate test-env
-          pytest --pyargs -vvv jetset.tests.test_mcmc::TestMCMC::test
+          pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration -k "test_ultranest"
 
-      - name: 'skip ultranest tests'
+      - name: 'skip ultranest mcmc test'
         if: github.event.inputs.skip_test != 'yes' && steps.ultranest_install.outcome != 'success'
         run: |
-          echo "Skipping UltraNest tests: ultranest>=4.0 is not available for this OS/Python combination."
+          echo "Skipping UltraNest-only MCMC test: ultranest install failed for this runner."
           
       
       - name: 'prepare asset'
