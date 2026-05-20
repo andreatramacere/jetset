@@ -51,8 +51,10 @@ class UltraNestSampler(McmcSampler):
         """
         if ultranest_installed is not True:
             raise ImportError(
-                'to use UltraNest plugin you need to install ultranest: '
-                'https://johannesbuchner.github.io/UltraNest/'
+                'IMPORTANT: UltraNest support requires ultranest>=4.0.\n'
+                'Install with pip: pip install "ultranest>=4.0"\n'
+                'Install with conda: conda install -c conda-forge "ultranest>=4.0"\n'
+                'More info: https://johannesbuchner.github.io/UltraNest/'
             )
 
         super(UltraNestSampler, self).__init__(
