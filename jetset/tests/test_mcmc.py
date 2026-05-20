@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 from .base_class import TestBase
 
-class TestEmcee(TestBase):
+class TestMCMC(TestBase):
 
     def integration_suite(self,fit_dict=None,sed_number=None,plot=False):
         if sed_number is not None and fit_dict is None:

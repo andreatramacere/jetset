@@ -1,7 +1,7 @@
 import pytest
 from .base_class import TestBase
 
-from .test_mcmc import TestEmcee
+from .test_mcmc import TestMCMC
 from .test_jet_model import TestJets,hadronic_func
 from .test_model_fit import TestModelFit
 from .test_emitters import TestEmitters
@@ -68,7 +68,7 @@ class TestIntegration(TestBase):
       t.integration_suite(sed_number=None,phenom_dict=phenom_dict,use_ebl=False,use_dep_pars=False,skip_minuit=True,plot=plot)
    
    def test_emcee(self,fit_dict=None,plot=plot):
-      t=TestEmcee()
+      t=TestMCMC()
       if fit_dict is None:
          sed_number=1
       else:
