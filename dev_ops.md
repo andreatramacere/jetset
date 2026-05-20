@@ -43,6 +43,13 @@
 - test a specificmethod:
  - `pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration::tets_method`
 
+- with coverage:
+  - `pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration --cov=jetset --cov-branch --cov-report=term-missing --cov-report=html --cov-config= ../.coveragerc`
+  
+  if `.coverage` already generated:
+  - `python -m coverage report -m`
+  - `python -m coverage html`
+  - `python -m coverage xml`
 ## Installation 
 - installing from source without setup.py install
    - `rm -rf ./build`

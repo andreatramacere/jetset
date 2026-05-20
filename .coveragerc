@@ -1,0 +1,10 @@
+[run]
+omit =
+    */jetset/tests/*
+    */build/*
+    */jetset/jetkernel/*
+[report]
+omit =
+    */jetset/tests/*
+    */build/*
+    */jetset/jetkernel/*

@@ -10,6 +10,8 @@ six
 emcee>=3.0.0,<=3.2
 pyyaml
 pytest
+pytest-cov 
+coverage
 numba >=0.60,<0.65
 tqdm<5
 jupyter
@@ -17,3 +19,4 @@ ipython
 dill
 swig>=4
 gammapy==2.*
+ultranest==4.4.*
