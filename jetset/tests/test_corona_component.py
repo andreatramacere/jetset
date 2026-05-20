@@ -40,7 +40,7 @@ class TestCoronaComponent(TestBase):
         nu_drf = np.asarray(j._blob.Corona.spec.nu_DRF, dtype=float)[:n_max]
         l_nu_drf = np.asarray(j._blob.Corona.spec.L_nu_DRF, dtype=float)[:n_max]
         f_nu = l_nu_drf / j.parameters.L_Corona.val
-        area = np.trapz(f_nu, nu_drf)
+        area = np.trapezoid(f_nu, nu_drf)
         np.testing.assert_allclose(area, 1.0, rtol=5E-2, atol=1E-3)
 
     def test_corona_low_energy_cutoff_parameter(self):
