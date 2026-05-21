@@ -52,8 +52,9 @@ class UltraNestSampler(McmcSampler):
         if ultranest_installed is not True:
             raise ImportError(
                 'IMPORTANT: UltraNest support requires ultranest>=4.0.\n'
-                'Install with pip: pip install "ultranest>=4.0"\n'
-                'Install with conda: conda install -c conda-forge "ultranest>=4.0"\n'
+                'IMPORTANT: h5py is also required.\n'
+                'Install with pip: pip install "ultranest>=4.0" h5py\n'
+                'Install with conda: conda install -c conda-forge "ultranest>=4.0" h5py\n'
                 'More info: https://johannesbuchner.github.io/UltraNest/'
             )
 
