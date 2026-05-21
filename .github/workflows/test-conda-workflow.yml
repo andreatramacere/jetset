@@ -216,7 +216,7 @@ jobs:
         run: |
           source ~/.bash_profile
           micromamba activate test-env
-          micromamba install --yes -c conda-forge "ultranest>=4.0"
+          micromamba install --yes -c conda-forge "ultranest>=4.0" h5py
 
       - name: 'test'
         if: github.event.inputs.skip_test != 'yes'

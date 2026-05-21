@@ -137,7 +137,7 @@ jobs:
         id: ultranest_install
         continue-on-error: true
         run: |
-          python -m pip install "ultranest>=4.0"
+          python -m pip install "ultranest>=4.0" h5py
       
       - name: 'test sdist'
         if: github.event.inputs.tags != null
