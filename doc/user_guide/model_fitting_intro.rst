@@ -1,6 +1,4 @@
 
-.. _model_fitting_intro:
-
 .. _least_squares:  https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.least_squares.html
 .. _iminuit: https://scikit-hep.org/iminuit/ 
 .. _emcee: https://emcee.readthedocs.io/en/stable/   
@@ -10,6 +8,8 @@
 .. _scipy: https://scipy.org/
 .. _numpy: https://numpy.org/
 .. _matplotlib: https://matplotlib.org/stable/
+
+.. _model_fitting_intro:
 
 Model Fitting Introduction
 ==========================
