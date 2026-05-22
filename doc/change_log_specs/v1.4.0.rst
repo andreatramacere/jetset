@@ -109,7 +109,8 @@ data handling
 ^^^^^^^^^^^^^
 - UL are handled when rebinning SED data
 - added nu min/max to rebin
-- ASI ssdc sedbuilder
+- importing to Data object from a generic astropy table mapping columns
+- ASI ssdc sedbuilder: :ref:`accessing_data_ssdc_sedbuilder`
 
 Pair production for external fields
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
