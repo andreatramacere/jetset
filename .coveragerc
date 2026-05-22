@@ -3,6 +3,8 @@ omit =
     */jetset/tests/*
     */build/*
     */jetset/jetkernel/*
+patch = subprocess
+parallel = True
 [report]
 omit =
     */jetset/tests/*
