@@ -15,4 +15,4 @@ This is preliminary documentation for the temporal evolution. A more detailed ve
 
     Temporal evolution, validation of the hadronic pp secondaries evolution *New (v1.2.0)* <documentation_notebooks_rst/notebooks/hadronic_pp_jet/hadronic_validate_temp_ev.rst>
 
-    Temporal evolution, validation of the leptonic equilibrim *New (v1.5.0)* <documentation_notebooks_rst/notebooks/jet_leptonic_equilibrium/leptonic_validate_temp_ev.rst>
+    Temporal evolution, validation of the leptonic equilibrim *New (v1.4.0)* <documentation_notebooks_rst/notebooks/jet_leptonic_equilibrium/leptonic_validate_temp_ev.rst>
