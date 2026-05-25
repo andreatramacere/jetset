@@ -40,6 +40,14 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "-cv",
+        "--convert",
+        action="store_true",
+        help=(
+            "Convert Notebooks"
+        ),
+    )
+    parser.add_argument(
         "-b",
         "--build",
         action="store_true",
@@ -232,15 +240,18 @@ def run_workflow(args: argparse.Namespace) -> None:
         print(f"No notebooks found in {search_dir}")
         return
 
+    clean_api_dir_keep_gitkeep()
     run_cmd(["python", "make_apidoc_and_uml_graphs.py"])
 
-    clean_cmd = ["./scripts/clean_rst_and_images.sh"]
-    if args.dir_name:
-        clean_cmd.append(args.dir_name)
-    run_cmd(clean_cmd)
-    clean_api_dir_keep_gitkeep()
+    if args.clean:
 
-    convert_notebooks(notebooks, execute=args.execute, jobs=args.jobs)
+        clean_cmd = ["./scripts/clean_rst_and_images.sh"]
+        if args.dir_name:
+            clean_cmd.append(args.dir_name)
+        run_cmd(clean_cmd)
+
+    if args.convert or args.clean:
+        convert_notebooks(notebooks, execute=args.execute, jobs=args.jobs)
 
     update_cmd = ["./scripts/update_rts_images.sh"]
     if args.dir_name:

@@ -5,7 +5,7 @@ Version 1.4.0
 Breaking interface changes
 --------------------------
 - .. important::
-   Starting from v1.4.0, the :class:`.McmcSampler` class does not use anymore ``labels`` and ``use_labels_dict``, 
+   Starting from v1.4.0, the :class:`.mcmc.McmcSampler` class does not use anymore ``labels`` and ``use_labels_dict``, 
    to select the parameters used by the sampler. Starting from this version, all the ``free`` parameters will be sampled. 
    To select sampled parameters, please ``free/freeze`` them.    
    Please read the caveats :ref:`for the Bayesian model fitting <bayesian_model_fitting>` for further details.
@@ -65,7 +65,7 @@ Leptonic equilibrium
 - Added support for leptonic equilibrium jet models using injected emitters distributions.
   See :ref:`jet_leptonic_equilibrium`
 
-- The model can be created by passing an :class:`.InjEmittersFactory` distribution to :class:`.Jet`:
+- The model can be created by passing an instance of the class :class:`~jetset.jet_emitters_factory.InjEmittersFactory` to the :class:`.Jet` class constructor:
 
   .. code-block:: python
 
