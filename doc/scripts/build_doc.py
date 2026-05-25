@@ -40,8 +40,8 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
-        "-cv",
-        "--convert",
+        "-ncv",
+        "--notebook-convert",
         action="store_true",
         help=(
             "Convert Notebooks"
@@ -242,7 +242,6 @@ def run_workflow(args: argparse.Namespace) -> None:
 
     clean_api_dir_keep_gitkeep()
     run_cmd(["python", "make_apidoc_and_uml_graphs.py"])
-
     if args.clean:
 
         clean_cmd = ["./scripts/clean_rst_and_images.sh"]
@@ -250,7 +249,7 @@ def run_workflow(args: argparse.Namespace) -> None:
             clean_cmd.append(args.dir_name)
         run_cmd(clean_cmd)
 
-    if args.convert or args.clean:
+    if args.notebook_convert or args.clean:
         convert_notebooks(notebooks, execute=args.execute, jobs=args.jobs)
 
     update_cmd = ["./scripts/update_rts_images.sh"]
