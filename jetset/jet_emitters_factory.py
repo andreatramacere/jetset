@@ -3,7 +3,7 @@ __author__ = "Andrea Tramacere"
 import numpy as np
 import pprint
 from jetset.jet_emitters import EmittersDistribution, InjEmittersDistribution
-__all__=['EmittersFactory']
+__all__=['EmittersFactory', 'InjEmittersFactory']
 
 _available_dict = {'lp': 'log-parabola',
                    'pl': 'powerlaw',

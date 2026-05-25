@@ -343,7 +343,7 @@ struct rad_sync {
     double C1_Sync_K_AVE, C2_Sync_K_AVE;
     double COST_Sync_COOLING;
 
-    double sin_psi; /*pitch angle*/
+    double sin_psi; /*pitch/viewing angle*/
     double UB;
     double nu_B;
 

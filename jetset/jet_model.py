@@ -2769,7 +2769,7 @@ class Jet(JetBase):
         print ('setting N to ',N[ID_min])
         return b_grid[ID_min],b_grid,U_B,U_e
 
-    def eval_synch_pol(self,nu_range_obs):
+    def eval_synch_pol(self,nu_range_obs,sin_theta_B_prime=None):
         """Evaluate synchrotron polarization in the observer frame.
 
         Returns
@@ -2777,8 +2777,13 @@ class Jet(JetBase):
         tuple of ndarray
             Polarization degree and corresponding ``nuFnu`` values.
         """
+        Sync_kernel_initial=self._blob.core.Sync_kernel
+        self._blob.core.Sync_kernel=0
+        if sin_theta_B_prime is not None:
+            self._blob.Sync.sin_psi=sin_theta_B_prime
+            #BlazarSED.InitRadiative(self._blob,0)
         nuF_nu=self.eval(get_model=True,nu=nu_range_obs)
-   
+    
         pol_nu=np.zeros(nu_range_obs.size)
         #TODO: this will be removed when eval_Sync_polarization will follow the same pattern of synch flux
         nu_range_pol_blob=nu_range_obs/self.get_beaming()*(1+self.parameters.z_cosm.val)
@@ -2788,9 +2793,11 @@ class Jet(JetBase):
         m=np.logical_or(nuF_nu<=0,np.isnan(pol_nu))
         pol_nu[m]=0
         nuF_nu[m]=0
+
+        Sync_kernel_initial=Sync_kernel_initial
         return pol_nu,nuF_nu
     
-    def eval_synch_pol_blob(self,nu_range_blob):
+    def eval_synch_pol_blob(self,nu_range_blob,sin_theta_B_prime=None):
         """Evaluate synchrotron polarization in the blob frame.
 
         Parameters
@@ -2807,6 +2814,9 @@ class Jet(JetBase):
             Synchrotron ``nuLnu`` values in the blob frame at the same
             frequencies.
         """
+        Sync_kernel_initial=self._blob.core.Sync_kernel
+        if sin_theta_B_prime is not None:
+            self._blob.Sync.sin_psi=sin_theta_B_prime
         #TODO: this will be removed when eval_Sync_polarization will follow the same pattern of synch flux
         nu_range_blob = np.atleast_1d(np.asarray(nu_range_blob, dtype=np.float64))
         nu_range_obs=nu_range_blob*self.get_beaming()/(1+self.parameters.z_cosm.val)
@@ -2821,6 +2831,8 @@ class Jet(JetBase):
         m=np.logical_or(nuLnu_blob<=0,~np.isfinite(pol_nu_blob))
         pol_nu_blob[m]=0
         nuLnu_blob[m]=0
+
+        Sync_kernel_initial=Sync_kernel_initial
         return pol_nu_blob,nuLnu_blob
 
 
