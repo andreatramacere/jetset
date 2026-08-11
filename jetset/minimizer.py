@@ -601,7 +601,7 @@ class ModelMinimizer(object):
                         silent=silent,
                         get_conf_int=get_conf_int,
                         use_fake_err=use_fake_err,
-                        use_UL=False)
+                        use_UL=use_UL)
         self.corr=[]
         self.covar=[]
         if silent == False:
