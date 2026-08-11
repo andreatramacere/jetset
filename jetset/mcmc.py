@@ -548,7 +548,7 @@ class McmcSampler(object):
 
         end = time.time()
         comp_time = end - start
-        print("mcmc run done, with %d threads took %2.2f seconds"%(threads,comp_time))
+        print("mcmc run done, took %2.2f seconds"%(comp_time))
         self._set_samples_post_run()
         
       
