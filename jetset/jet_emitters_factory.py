@@ -199,7 +199,7 @@ def distr_func_lppl_pileup(gamma, gamma0_log_parab,  gamma_inj, r,  s, gamma_eq,
     b = np.zeros(gamma.shape)
     a = np.zeros(gamma.shape)
     m = gamma < gamma_inj
-    s1=s+0.5
+    s1=s+1.0
     b[m] = np.power(gamma[m]/gamma0_log_parab, s1)
     
     
