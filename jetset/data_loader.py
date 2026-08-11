@@ -1114,12 +1114,14 @@ class ObsData(object):
         dx_bin=(bin_grid[1:]-bin_grid[:-1])*0.5
         x_bin=(bin_grid[1:]+bin_grid[:-1])*0.5
         y_bin=np.zeros(x_bin.size)
+        ids_bin_UL_warning=[]
         dy_bin=np.zeros(x_bin.size)    
         x_UL=np.zeros(0)
         dx_UL=np.zeros(0)   
         dy_UL=np.zeros(0)   
         y_UL=np.zeros(0)   
-        print ("***  binning data  ***")
+
+        print (f"***  binning data in [{xmin},{xmax}] Hz  *** ")
         print ("---> N bins=",N_bin)
         print ("---> bin_width=",bin_width)
       
@@ -1131,34 +1133,39 @@ class ObsData(object):
             
             if msk_bin.sum()>0:               
                 msk_UL=np.invert(self.data['UL'])
-                msk=np.logical_and(msk_bin,msk_UL)
-                if msk.sum()>1:
-                    sample_size=len(self.data['dnuFnu_data'][msk])
-                    sigma_2_i=self.data['dnuFnu_data'][msk]**2
+                msk_det=np.logical_and(msk_bin,msk_UL)
+                msk_only_ul = np.logical_and(msk_bin, self.data['UL'])
+                if msk_det.sum()>1:
+                    sample_size=len(self.data['dnuFnu_data'][msk_det])
+                    sigma_2_i=self.data['dnuFnu_data'][msk_det]**2
                     w=1.0/sigma_2_i
                     
                     w_prime=w/(w.sum())
                     #https://en.wikipedia.org/wiki/Weighted_arithmetic_mean#Correcting_for_over-_or_under-dispersion
-                    y_bin[id],sum_w=np.average(self.data['nuFnu_data'][msk], axis=0, weights=w, returned=True)
+                    y_bin[id],sum_w=np.average(self.data['nuFnu_data'][msk_det], axis=0, weights=w, returned=True)
                     sigma_y_2_bar= np.sum(w_prime**2*sigma_2_i)
                     if sample_size <2:
                         sample_size=2
                     if correct_dispersions is True:
-                        corr_term=np.sum(w * (self.data['nuFnu_data'][msk] - y_bin[id]) * (self.data['nuFnu_data'][msk] - y_bin[id]))/(sample_size-1)
+                        corr_term=np.sum(w * (self.data['nuFnu_data'][msk_det] - y_bin[id]) * (self.data['nuFnu_data'][msk_det] - y_bin[id]))/(sample_size-1)
                     else:
                         corr_term=1
             
                     dy_bin[id]=np.sqrt(sigma_y_2_bar*corr_term)
     
-                elif msk.sum()==1 :
-                    y_bin[id]=self.data['nuFnu_data'][msk][0]
-                    dy_bin[id]=self.data['dnuFnu_data'][msk][0]
-                elif np.invert(msk_UL).sum()>0:
-                    x_UL=np.append(x_UL,self.data['nu_data'][ np.invert(msk_UL)])
-                    dx_UL=np.append(dx_UL,self.data['dnu_data'][ np.invert(msk_UL)])
-                    y_UL=np.append(y_UL,self.data['nuFnu_data'][ np.invert(msk_UL)])
-                    dy_UL=np.append(dy_UL,self.data['dnuFnu_data'][ np.invert(msk_UL)])
-            
+                elif msk_det.sum()==1 :
+                    y_bin[id]=self.data['nuFnu_data'][msk_det][0]
+                    dy_bin[id]=self.data['dnuFnu_data'][msk_det][0]
+                    x_bin[id]= self.data['nu_data'][msk_det][0]
+                    dx_bin[id]= self.data['dnu_data'][msk_det][0]
+                
+                if msk_only_ul.sum()>0:
+                    x_UL=np.append(x_UL,self.data['nu_data'][ msk_only_ul])
+                    dx_UL=np.append(dx_UL,self.data['dnu_data'][ msk_only_ul])
+                    y_UL=np.append(y_UL,self.data['nuFnu_data'][ msk_only_ul])
+                    dy_UL=np.append(dy_UL,self.data['dnuFnu_data'][ msk_only_ul])
+                    if id not in ids_bin_UL_warning:
+                        ids_bin_UL_warning.append(id)
             else:
                 y_bin[id]=-1.
                     
@@ -1202,7 +1209,15 @@ class ObsData(object):
         self.set_fake_error(self.fake_error)
 
         self.data.sort('nu_data')
-       
+
+        if len(ids_bin_UL_warning)>0:
+            msg='\n'
+            msg+=f'The following bins were including ULs:\n'
+            for id_ul in ids_bin_UL_warning:
+                msg+=f' nu bin: { x_bin[id_ul]}\n'
+            msg+=f'The ULs have been removed from the average and added to the dataset with their original values and states.\n'
+            msg+=f'Please, consider to review these data, and find the best strategy for dealing with those ULs for data grouping.\n'
+            warnings.warn(msg)
         print (section_separator)
     
     def add_systematics(self,syst,nu_range=None,dataset=None):
