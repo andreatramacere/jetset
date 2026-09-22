@@ -2739,8 +2739,9 @@ class Jet(JetBase):
                 N[ID]=self.get_par_by_name('N').val
             self.set_blob()
             #
-            U_e[ID] = self._blob.emitters.U_e
-            U_B[ID] = self._blob.Sync.UB
+            self.energetic_report(verbose=False)
+            U_e[ID] = self.energetic_dict['U_e']
+            U_B[ID] = self.energetic_dict['U_B']
             # delta=Jet.get_beaming()
             # print "check L_in=%4.4e L_out=%4.4e"%(L_0,(L_0/delta**4)/BlazarSED.Power_Sync_Electron(Jet._Jet__blob))
 
