@@ -77,9 +77,9 @@ sync_conda_pins() {
         skip==0 { print }
       ' "$pin_file"
     fi
-    echo "# >>> jetset constraints >>>"
+    #echo "# >>> jetset constraints >>>"
     cat "$tmp_specs"
-    echo "# <<< jetset constraints <<<"
+    #echo "# <<< jetset constraints <<<"
   } > "$tmp_pin"
 
   mv "$tmp_pin" "$pin_file"
