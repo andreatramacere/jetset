@@ -2,6 +2,7 @@
 """Install JetSeT from source using the current Python environment."""
 
 import argparse
+import json
 import os
 from pathlib import Path
 import shutil
@@ -11,12 +12,24 @@ import tempfile
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-PIN_START = "# >>> jetset constraints >>>"
-PIN_END = "# <<< jetset constraints <<<"
+
+
+def atomic_write(path, content):
+    """Replace a file only after its new contents have been written."""
+    temporary_path = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8",
+                                         dir=path.parent, delete=False) as temporary:
+            temporary_path = Path(temporary.name)
+            temporary.write(content)
+        temporary_path.replace(path)
+    finally:
+        if temporary_path is not None and temporary_path.exists():
+            temporary_path.unlink()
 
 
 def sync_conda_pins(prefix):
-    """Replace JetSeT's marked constraints, preserving other Conda pins."""
+    """Track our constraints in separate metadata, never in pin comments."""
     specs = []
     for line in (SCRIPT_DIR / "requirements.txt").read_text().splitlines():
         if not line.strip() or line.lstrip().startswith("#"):
@@ -25,36 +38,58 @@ def sync_conda_pins(prefix):
         # Match the original installer's filtering of pip-only entries.
         if spec.startswith("-") or "://" in spec or "@" in spec:
             continue
-        specs.append(spec)
-
-    if not specs:
-        print("No conda-compatible constraints found in requirements.txt; skipping pin sync.")
-        return
+        if spec not in specs:
+            specs.append(spec)
 
     pin_file = prefix / "conda-meta" / "pinned"
-    retained = []
-    skip = False
-    if pin_file.is_file():
-        for line in pin_file.read_text().splitlines():
-            if line == PIN_START:
-                skip = True
-            elif line.startswith(PIN_END):
-                skip = False
-            elif not skip:
-                retained.append(line)
+    metadata_file = prefix / ".jetset" / "conda-pins.json"
+    original = pin_file.read_text() if pin_file.is_file() else ""
+    managed = []
+    if metadata_file.is_file():
+        metadata = json.loads(metadata_file.read_text())
+        if (not isinstance(metadata, dict) or metadata.get("version") != 1
+                or not isinstance(metadata.get("managed_specs"), list)
+                or not all(isinstance(spec, str) for spec in metadata["managed_specs"])):
+            raise ValueError("Invalid JetSeT pin metadata: {}".format(metadata_file))
+        # Recover if a previous run stopped between the two file replacements.
+        if "pending" in metadata:
+            pending = metadata["pending"]
+            if (not isinstance(pending, dict)
+                    or not isinstance(pending.get("before"), str)
+                    or not isinstance(pending.get("after"), str)
+                    or not isinstance(pending.get("managed_specs"), list)
+                    or not all(isinstance(spec, str) for spec in pending["managed_specs"])):
+                raise ValueError("Invalid pending JetSeT pin metadata")
+            if original == pending["after"]:
+                metadata["managed_specs"] = pending["managed_specs"]
+            elif original != pending["before"]:
+                raise ValueError("Pins changed during an interrupted JetSeT update; "
+                                 "inspect {} before retrying".format(metadata_file))
+        managed = metadata["managed_specs"]
 
-    content = "\n".join(retained + [PIN_START] + specs + [PIN_END]) + "\n"
-    # Write beside the destination so replacement is atomic on its filesystem.
-    temporary_path = None
-    try:
-        with tempfile.NamedTemporaryFile(mode="w", dir=pin_file.parent,
-                                         delete=False) as temporary:
-            temporary_path = Path(temporary.name)
-            temporary.write(content)
-        temporary_path.replace(pin_file)
-    finally:
-        if temporary_path is not None and temporary_path.exists():
-            temporary_path.unlink()
+    retained = original.splitlines()
+    # Remove one occurrence for each pin we added, working from the end where
+    # we append our pins. Identical pre-existing user pins are never adopted.
+    for spec in reversed(managed):
+        for index in range(len(retained) - 1, -1, -1):
+            if retained[index] == spec:
+                del retained[index]
+                break
+
+    existing = {"".join(line.split()) for line in retained}
+    added = [spec for spec in specs if spec not in existing]
+    lines = retained + added
+    content = "\n".join(lines) + ("\n" if lines else "")
+
+    metadata_file.parent.mkdir(parents=True, exist_ok=True)
+    # Journal the transition so a failed write cannot lose pin ownership.
+    pending = {"version": 1, "managed_specs": managed,
+               "pending": {"before": original, "after": content,
+                           "managed_specs": added}}
+    atomic_write(metadata_file, json.dumps(pending, indent=2) + "\n")
+    atomic_write(pin_file, content)
+    atomic_write(metadata_file, json.dumps(
+        {"version": 1, "managed_specs": added}, indent=2) + "\n")
     print("Synced JetSeT constraints to: {}".format(pin_file))
 
 
@@ -76,10 +111,23 @@ def install(skip_dependencies=False):
                       for path in [shutil.which(name)] if path), None)
         if active_conda and conda:
             print("Detected active conda env: {}".format(prefix), flush=True)
+            command = [conda, "install", "--yes", "--prefix", str(prefix),
+                       "-c", "astropy", "-c", "conda-forge",
+                       "--file", "requirements.txt"]
+            # Solve against the real environment and its existing pins before
+            # touching either the pinned file or our ownership metadata.
+            print("Checking JetSeT requirements against existing pins and installed "
+                  "Conda packages (dry run). The plan may include package changes.",
+                  flush=True)
+            try:
+                run(command + ["--dry-run"])
+            except subprocess.CalledProcessError:
+                print("Dependency check failed; pins and JetSeT metadata were not changed.",
+                      file=sys.stderr)
+                raise
             sync_conda_pins(prefix)
             print("Using {} for requirements.".format(conda), flush=True)
-            run([conda, "install", "--yes", "-c", "astropy", "-c", "conda-forge",
-                 "--file", "requirements.txt"])
+            run(command)
         else:
             print("Using pip for requirements (no active Conda environment or frontend).",
                   flush=True)
@@ -114,7 +162,7 @@ def main():
     args = parser.parse_args()
     try:
         install(skip_dependencies=args.skip_dep)
-    except (OSError, subprocess.CalledProcessError) as error:
+    except (OSError, ValueError, subprocess.CalledProcessError) as error:
         print("Error while installing JetSeT: {}".format(error), file=sys.stderr)
         return 1
     return 0

@@ -128,6 +128,10 @@ To use existing dependencies and build tools, run ``python install.py --skip-dep
 The original ``-skip-dep`` option is also supported. ``install.sh`` remains a
 compatibility launcher for the Python script.
 
+For Conda environments, JetSeT pins the dependencies to the Conda (mamba/micromamba) environment,
+this is necessary since the installation in Conda goes through pip, then the pins ensure consistency
+with the used environment 
+
 
 - run the test (optional, **run all the examples outside the installation directory**)
 
@@ -160,7 +164,5 @@ Installation from source without using the `install.py` script
 - install the code:
 
   ``pip install .``
-
-
 
 
