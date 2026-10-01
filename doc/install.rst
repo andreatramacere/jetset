@@ -111,16 +111,22 @@ To install from source a C compiler is also necessary, plus the SWIG wrapper gen
 
       cd jetset-stable
 
-Installation from source using the `install.sh` script (recommended)
+Installation from source using the `install.py` script (recommended)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 - run on the command line:
 
 
   .. code-block:: bash
 
-      ./install.sh
+      python install.py
 
-The `install.sh` script will take care of everything from installing dependencies to compile and install jetset.
+The `install.py` script installs dependencies, compiles and installs JetSeT,
+and checks that the installed modules can be imported. Run it with the Python
+interpreter from your intended environment.
+
+To use existing dependencies and build tools, run ``python install.py --skip-dep``.
+The original ``-skip-dep`` option is also supported. ``install.sh`` remains a
+compatibility launcher for the Python script.
 
 
 - run the test (optional, **run all the examples outside the installation directory**)
@@ -139,7 +145,7 @@ The `install.sh` script will take care of everything from installing dependencie
     if pip or conda fails to install swig, you can try one of the following alternative :ref:`swig` 
 
 
-Installation from source without using the `install.sh` script
+Installation from source without using the `install.py` script
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - install the dependencies:

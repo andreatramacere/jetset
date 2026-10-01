@@ -27,7 +27,7 @@ MCMC functionalities
 
 - ``UltraNest`` and ``emcee`` share the same interface, except a few differences. Please read the caveats :ref:`for the Bayesian model fitting <bayesian_model_fitting>` for further details.
   
-- The :meth:`.McmcSampler.plot_model` method, by default, will plot the  mcmc best-fit model. 
+- The :meth:`.mcmc.McmcSampler.plot_model` method, by default, will plot the  mcmc best-fit model. 
   To plot the frequentist  best-fit  model, use (``plot_mcmc_best_fit_model==False``)
  
 
@@ -43,7 +43,7 @@ MCMC functionalities
 
     mcmc.reset_to_mcmc_best_fit()
 
-- The method:meth:`.McmcSampler.set_bounds` now can be also used for individual parameters:
+- The method :meth:`.mcmc.McmcSampler.set_bounds` now can be also used for individual parameters:
 
   .. code-block:: python
 
@@ -107,10 +107,10 @@ Added EC support for Corona, see: :ref:`jet_physical_guide_EC_Corona`.
 
 data handling
 ^^^^^^^^^^^^^
-- UL are handled when rebinning SED data
-- added nu min/max to rebin
-- importing to Data object from a generic astropy table mapping columns
-- ASI ssdc sedbuilder: :ref:`accessing_data_ssdc_sedbuilder`
+- When using  :meth:`.ObsData.group_data` for data grouping, if ULs fall within a bin of grouped data, a warning is raised with a specific messages. By default, UL will not be averaged with detections, and will be preserved.
+- Added nu ``nu_min`` and ``nu_max`` to the signature of to :meth:`.ObsData.group_data`, to select specific ranges for data grouping.
+- Importing to Data object from a generic astropy table mapping columns: :ref:`importing_data_from_astropy_generic_table_file`.
+- Importing data from ASI ssdc using the  ``ssdc-sedbuilder`` package: :ref:`accessing_data_ssdc_sedbuilder`
 
 Pair production for external fields
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -143,11 +143,11 @@ C codebase
 installation
 ------------
 
-- Added source installation via ``./install.sh``.
+- Added source installation via ``python install.py``.
 
 - Detects if you are in a conda/mamba/micromamba evn or a pip evn, and install JetSeT from source, together with the dependencies 
 
-- When run inside an active conda/mamba environment, ``./install.sh`` syncs JetSeT constraints
+- When run inside an active conda/mamba environment, ``python install.py`` syncs JetSeT constraints
   from ``requirements.txt`` into ``$CONDA_PREFIX/conda-meta/pinned``. This pins JetSeT
   requirements in that environment and helps prevent later conda/mamba installs of other packages
   from overriding them. For pip virtual env, the problem 
@@ -158,13 +158,13 @@ installation
 
   .. code-block:: bash
 
-      ./install.sh
+      python install.py
 
 - If you want to skip the installation of dependencies
 
   .. code-block:: bash
 
-      ./install.sh -skip-dep
+      python install.py -skip-dep
 
 - If you want to experiment with different requirements (do it on your own risk): 
   
@@ -172,7 +172,7 @@ installation
     
   .. code-block:: bash
 
-      ./install.sh
+      python install.py
 
 - Verify the installation with, optional (not within the code repo dir):
 
