@@ -1,0 +1,32 @@
+# %ECSV 1.0
+# ---
+# datatype:
+# - {name: x, unit: GeV, datatype: float64}
+# - {name: y, unit: TeV / (cm2 s), datatype: float64}
+# - {name: dy, unit: TeV / (cm2 s), datatype: float64}
+# meta: !!omap
+# - __serialized_columns__:
+#     dy:
+#       __class__: astropy.units.quantity.Quantity
+#       unit: !astropy.units.Unit {unit: TeV / (cm2 s)}
+#       value: !astropy.table.SerializedColumn {name: dy}
+#     x:
+#       __class__: astropy.units.quantity.Quantity
+#       unit: !astropy.units.Unit {unit: GeV}
+#       value: !astropy.table.SerializedColumn {name: x}
+#     y:
+#       __class__: astropy.units.quantity.Quantity
+#       unit: !astropy.units.Unit {unit: TeV / (cm2 s)}
+#       value: !astropy.table.SerializedColumn {name: y}
+# meta: !!omap
+# - {z: 0.0}
+# - {restframe: obs}
+# - {data_scale: lin-lin}
+# - {obj_name: 'RS Ophiuchi'}
+# schema: astropy-2.0
+x y dy
+60.3518 3.03851e-11 1.05998e-11
+97.0423 1.09573e-11 3.33483e-12
+156.14 9.35795e-12 1.95665e-12
+252.266 1.90026e-12 1.26464e-12
+391.19 1.43751e-12 8.49166e-13

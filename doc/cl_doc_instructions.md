@@ -1,79 +1,107 @@
-# Instruction to build sphinx doc
+# Building the Sphinx documentation
 
+Run the commands below from `doc`, using the Python environment with JetSeT and the documentation dependencies installed. Update the source notebooks under `documentation_notebooks/notebooks` before building.
 
+## Prerequisites
 
-Notebooks are built in the `documentation_notebooks/user_guide`, update them before building doc!
+Generate and install the documentation requirements:
 
-To avoid to import the jetkernel module otherwise the build will crash: `export READTHEDOCS='True'`
+```sh
+python build_rtd_requirements.py
+python -m pip install -r requirements.txt
+```
 
+Notebook conversion also requires `jupyter nbconvert` and Pandoc. Cleaning and copying use Python and require no shell utilities.
 
-## Prerequisites 
-1) build the requirements file: `python build_rtd_requirements.py`
+## Main workflow
 
-2) and install the requirements
+`scripts/build_doc.py` coordinates API documentation generation, optional notebook cleaning and conversion, copying generated files, and optional Sphinx HTML generation.
 
-3) to build proper api strucutre: `python make_apidoc_and_uml_graphs.py`
- 
-   
-## Building doc in separate steps: 
+Convert all notebooks using their saved outputs, copy the generated files, and build HTML:
 
-### Cleaning
+```sh
+python scripts/build_doc.py -ncv -b
+```
 
-to clean .rst and .png under documentation_notebooks/notebooks: `./scripts/clean_rst_and_images.sh` 
+Execute the notebooks before converting and building:
 
-to clean .rst and .png under under documentation_notebooks/notebooks/dir-name: `./scripts/clean_rst_and_images.sh dir-name`
+```sh
+python scripts/build_doc.py -ncv -e -b
+```
 
+To clean generated notebook files first, use `-c`. This also enables conversion:
 
-### Building notebooks rst
-3) run step a or b
- 
-    a) run all notebooks and build .rst files and .png images with script:
-      - run all notebooks found in documentation_notebooks/notebooks  :`./scripts/build_rst_files.sh -e`
+```sh
+python scripts/build_doc.py -c -b
+python scripts/build_doc.py -c -e -b
+```
 
-        OR     
+Append a directory name to limit notebook operations to `documentation_notebooks/notebooks/dir-name`:
 
-      - dir-name, runs only documentation_notebooks/notebooks/dir-name: `./scripts/build_rst_files.sh -e`  
+```sh
+python scripts/build_doc.py -ncv -b dir-name
+```
 
+API documentation is regenerated and the Sphinx build covers the whole documentation even when a notebook directory is selected.
 
+| Option | Behavior |
+| --- | --- |
+| `-ncv`, `--notebook-convert` | Convert notebooks to `.rst` using saved outputs. |
+| `-c`, `--clean` | Delete generated notebook `.rst` and `.png` files in the source and destination, then convert notebooks. |
+| `-e`, `--execute` | Execute notebooks in place before conversion; requires `-ncv` or `-c` to enable conversion. |
+| `-b`, `--build` | Build Sphinx HTML in `build/`. |
+| `-j N`, `--jobs N` | Use N notebook conversion workers; defaults to 1 with execution, otherwise up to 10. |
+| `--sphinx-jobs N` | Use N Sphinx workers; defaults to 10. |
+| `--clean-only` | Only clean generated notebook files; skip API generation, conversion, copying, and HTML generation. |
+| `--copy-only` | Only copy existing generated files and shared images. |
+| `dir-name` | Restrict notebook operations to the given subdirectory. |
 
-    b) only build rst file with script
-      - `./scripts/build_rst_files.sh` 
+`--clean-only` and `--copy-only` are standalone actions and cannot be combined with each other or with `-c`, `-ncv`, `-e`, or `-b`. Both accept an optional notebook directory.
 
-        OR
-      
-      - `./scripts/build_rst_files.sh dir-name`
+With no options, the workflow regenerates API documentation and copies existing generated files. It does **not** convert notebooks or build HTML. `-b` alone also does not enable notebook conversion.
 
+The workflow clears `api/` except for `.gitkeep` before regenerating API documentation. It automatically sets `READTHEDOCS=True` for its Sphinx build to avoid importing the jetkernel module.
 
+## Individual steps
 
-### Update the .rst files and .png images in user_guide from the notebooks in documentation_notebooks
-  - `./scripts/update_rts_images.sh`
+Convert notebooks and copy their generated files without building HTML:
 
-### builds the sphinx docs
- - `sphinx-build -b html ./ build`
- 
- OR
+```sh
+python scripts/build_doc.py -ncv
+# Or limit conversion to one notebook directory:
+python scripts/build_doc.py -ncv dir-name
+```
 
- - `sphinx-build -j 10 -b html ./ build`   to use 10 parallel jobs
+These conversion commands also regenerate API documentation. Add `-e` to execute notebooks before conversion.
 
+Clean generated notebook `.rst` and `.png` files without converting:
 
-## Building doc in separate steps: 
+```sh
+python scripts/build_doc.py --clean-only
+# Or clean one notebook directory:
+python scripts/build_doc.py --clean-only dir-name
+```
 
-argument to add:
- - `-c` will clean rst/png prods
- - `-e` the notebook will be executed
- - `-b` will build the doc
+Copy existing notebook `.rst` and `.png` files to `user_guide/documentation_notebooks_rst/notebooks/`, preserving subdirectories:
 
-to build without executing:
-- `./scripts/build.sh  -cb`
+```sh
+python scripts/build_doc.py --copy-only
+# Or copy one notebook directory:
+python scripts/build_doc.py --copy-only dir-name
+```
 
-OR
+The copy action creates the destination directory if necessary and also copies PNGs from `documentation_notebooks/slides` and `documentation_notebooks/images`. It does not generate `.rst` files; conversion must run first.
 
-- ./scripts/build.sh  -cb dir-name
+Regenerate API documentation separately:
 
-to build executing:
+```sh
+python make_apidoc_and_uml_graphs.py
+```
 
-- `./scripts/build.sh -cbe` 
+Build HTML directly from existing documentation sources:
 
-OR
+```sh
+READTHEDOCS=True sphinx-build -j 10 -b html ./ build
+```
 
-- `./scripts/build.sh -cbe dir-name`
+Use `python scripts/build_doc.py --help` for the available workflow options.

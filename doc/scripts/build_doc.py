@@ -16,6 +16,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 DOC_ROOT = SCRIPT_DIR.parent
 NOTEBOOKS_ROOT = DOC_ROOT / "documentation_notebooks" / "notebooks"
 API_ROOT = DOC_ROOT / "api"
+DEST_ROOT = DOC_ROOT / "user_guide" / "documentation_notebooks_rst"
 
 
 def parse_args() -> argparse.Namespace:
@@ -36,7 +37,7 @@ def parse_args() -> argparse.Namespace:
         "--clean",
         action="store_true",
         help=(
-            "Retained for CLI compatibility. Cleaning is always performed before conversion."
+            "Clean generated notebook .rst/.png files, then convert notebooks."
         ),
     )
     parser.add_argument(
@@ -70,12 +71,26 @@ def parse_args() -> argparse.Namespace:
         help="Parallel jobs passed to sphinx-build when --build is enabled (default: 10).",
     )
     parser.add_argument(
+        "--clean-only", action="store_true",
+        help="Only clean generated notebook .rst/.png files.",
+    )
+    parser.add_argument(
+        "--copy-only", action="store_true",
+        help="Only copy existing notebook .rst/.png files and shared PNG images.",
+    )
+    parser.add_argument(
         "dir_name",
         nargs="?",
         default="",
         help="Optional subdirectory under documentation_notebooks/notebooks.",
     )
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.clean_only or args.copy_only:
+        if (args.clean_only and args.copy_only) or any(
+            (args.clean, args.notebook_convert, args.execute, args.build)
+        ):
+            parser.error("--clean-only and --copy-only cannot be combined with other workflow actions")
+    return args
 
 
 def run_cmd(cmd: list[str], env: dict[str, str] | None = None) -> None:
@@ -89,6 +104,9 @@ def validate_search_dir(dir_name: str) -> Path:
     else:
         search_dir = NOTEBOOKS_ROOT
 
+    search_dir = search_dir.resolve()
+    if not search_dir.is_relative_to(NOTEBOOKS_ROOT.resolve()):
+        raise ValueError("Notebook directory must be inside documentation_notebooks/notebooks")
     if not search_dir.is_dir():
         raise FileNotFoundError(f"Directory not found: {search_dir}")
 
@@ -109,6 +127,32 @@ def collect_notebooks(search_dir: Path) -> list[Path]:
             continue
         notebooks.append(nb_path)
     return notebooks
+
+
+def clean_notebook_files(search_dir: Path) -> None:
+    destination = DEST_ROOT / "notebooks" / search_dir.relative_to(NOTEBOOKS_ROOT.resolve())
+    for root in (search_dir, destination):
+        if root.is_dir():
+            for path in root.rglob("*"):
+                if path.is_file() and path.suffix in (".rst", ".png"):
+                    path.unlink()
+
+
+def copy_generated_files(search_dir: Path) -> None:
+    source_root = (DOC_ROOT / "documentation_notebooks").resolve()
+    DEST_ROOT.mkdir(parents=True, exist_ok=True)
+    for root, suffixes in (
+        (search_dir, (".rst", ".png")),
+        (source_root / "slides", (".png",)),
+        (source_root / "images", (".png",)),
+    ):
+        if not root.is_dir():
+            continue
+        for path in root.rglob("*"):
+            if path.is_file() and path.suffix in suffixes:
+                destination = DEST_ROOT / path.relative_to(source_root)
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(path, destination)
 
 
 def clean_api_dir_keep_gitkeep() -> None:
@@ -235,27 +279,26 @@ def convert_notebooks(notebooks: list[Path], execute: bool, jobs: int | None) ->
 
 def run_workflow(args: argparse.Namespace) -> None:
     search_dir = validate_search_dir(args.dir_name)
+    if args.clean_only:
+        clean_notebook_files(search_dir)
+        return
+    if args.copy_only:
+        copy_generated_files(search_dir)
+        return
     notebooks = collect_notebooks(search_dir)
     if not notebooks:
         print(f"No notebooks found in {search_dir}")
         return
 
     clean_api_dir_keep_gitkeep()
-    run_cmd(["python", "make_apidoc_and_uml_graphs.py"])
+    run_cmd([sys.executable, "make_apidoc_and_uml_graphs.py"])
     if args.clean:
-
-        clean_cmd = ["./scripts/clean_rst_and_images.sh"]
-        if args.dir_name:
-            clean_cmd.append(args.dir_name)
-        run_cmd(clean_cmd)
+        clean_notebook_files(search_dir)
 
     if args.notebook_convert or args.clean:
         convert_notebooks(notebooks, execute=args.execute, jobs=args.jobs)
 
-    update_cmd = ["./scripts/update_rts_images.sh"]
-    if args.dir_name:
-        update_cmd.append(args.dir_name)
-    run_cmd(update_cmd)
+    copy_generated_files(search_dir)
 
     if args.build:
         if args.sphinx_jobs < 1:
@@ -263,15 +306,16 @@ def run_workflow(args: argparse.Namespace) -> None:
         if shutil_which("sphinx-build") is None:
             raise RuntimeError("sphinx-build command not found")
 
-        run_cmd([
-            "sphinx-build",
-            "-j",
-            str(args.sphinx_jobs),
-            "-b",
-            "html",
-            "./",
-            "build",
-        ])
+        with readthedocs_env_true():
+            run_cmd([
+                "sphinx-build",
+                "-j",
+                str(args.sphinx_jobs),
+                "-b",
+                "html",
+                "./",
+                "build",
+            ])
 
 
 def shutil_which(command: str) -> str | None:
@@ -296,8 +340,7 @@ def readthedocs_env_true():
 def main() -> int:
     args = parse_args()
     try:
-        with readthedocs_env_true():
-            run_workflow(args)
+        run_workflow(args)
     except Exception as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1

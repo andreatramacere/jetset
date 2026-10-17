@@ -1,0 +1,17 @@
+# %ECSV 1.0
+# ---
+# datatype:
+# - {name: x, unit: GeV, datatype: float64}
+# - {name: y, unit: TeV / (cm2 s), datatype: float64}
+# - {name: dy, unit: TeV / (cm2 s), datatype: float64}
+# meta: !!omap
+# - {z: 0.0}
+# - {restframe: obs}
+# - {data_scale: lin-lin}
+# - {obj_name: ‘RS Ophiuchi’}
+# schema: astropy-2.0
+x y dy
+57.0299 4.08653e-11 7.77113e-12
+93.7289 1.50586e-11 2.07695e-12
+152.034 6.97852e-12 1.13503e-12
+245.264 2.11483e-12 7.43228e-13
