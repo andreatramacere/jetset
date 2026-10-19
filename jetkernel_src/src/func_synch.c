@@ -132,6 +132,39 @@ double Sync_self_abs_int(struct blob *pt,unsigned int  ID, double nu_sync){
 }
 //=========================================================================================
 
+static double Sync_self_abs_int_parallel(struct blob *pt,unsigned int  ID, double nu_sync){
+    double a,g, y, x1, x2, y1, y2, delta;
+
+    //----------derivative-----------------
+    //if i=0 forward
+    //if i>0 back
+    //-----------------------------------
+    if(ID==0){
+        x1=pt->emitters.griglia_gamma_Ne_log[ID];
+        x2=pt->emitters.griglia_gamma_Ne_log[ID+1];
+        y1=pt->emitters.Ne[ID]/(x1*x1);
+        y2=pt->emitters.Ne[ID+1]/(x2*x2);
+    }
+    else{
+        x1=pt->emitters.griglia_gamma_Ne_log[ID-1];
+        x2=pt->emitters.griglia_gamma_Ne_log[ID];
+        y1=pt->emitters.Ne[ID-1]/(x1*x1);
+        y2=pt->emitters.Ne[ID]/(x2*x2);
+    }
+    delta=x2-x1;
+    a=(y2-y1)/delta;
+    g=pt->emitters.griglia_gamma_Ne_log[ID];
+    y=(nu_sync/(g*g))*pt->Sync.C2_Sync_K53;
+    a*=(g*g)*F_K_23(pt, y);
+
+    //This is fixing numerical instabilities
+    if( a>0.0){
+        a=0.0;
+    }
+    return a;
+}
+//=========================================================================================
+
 
 
 
@@ -254,7 +287,6 @@ void set_R_Sync(struct blob * pt){
 double j_nu_Sync(struct blob * f, double nu_sync){
     double a;
     double (*pf_fint) (struct blob * ,unsigned int  ID, double nu_sync);
-    /*** segli in base al kernel ***/
     if (f->core.Sync_kernel==0){
 		pf_fint=&F_int_fix;
 		a=integrale_Sync(pf_fint, f,  nu_sync);
@@ -270,7 +302,11 @@ double j_nu_Sync(struct blob * f, double nu_sync){
 
 double eval_Sync_polarization(struct blob * f, double nu_sync){
     double p_num,p_den,pol;
+    double j_F, j_G, j_ort, j_parallel;
+    double alpha_F, alpha_G, alpha_ort, alpha_parallel;
+    double S_ort, S_parallel;
     pol=0;
+    int Sync_kernel_orig;
     double (*pf_fint) (struct blob * ,unsigned int  ID, double nu_sync);
     //EQ 6.37 R&L, for integration over N(gamma)
     //Since The integral is additive, 6.37 holds
@@ -282,8 +318,46 @@ double eval_Sync_polarization(struct blob * f, double nu_sync){
         p_num=integrale_Sync(pf_fint, f,  nu_sync);
         pf_fint=&F_int_fix;
         p_den=integrale_Sync(pf_fint, f,  nu_sync);
+
+        if (p_den <= 0.0) {
+            return 0.0;
+        }
+
         pol=(p_num)/(p_den);
-  
+
+        if (f->core.do_Sync == 2) {
+            j_F=p_den*f->Sync.C1_Sync_K53;
+            j_G=p_num*f->Sync.C1_Sync_K53;
+            j_ort=0.5*(j_F+j_G);
+            j_parallel=0.5*(j_F-j_G);
+            
+
+
+            Sync_kernel_orig = f->core.Sync_kernel;
+            f->core.Sync_kernel=0;
+
+            pf_fint=&Sync_self_abs_int;            
+            alpha_F=integrale_Sync(pf_fint, f, nu_sync);
+            alpha_F*=f->Sync.C3_Sync_K53*(f->core.B)/(nu_sync*nu_sync);
+
+            pf_fint=&Sync_self_abs_int_parallel;
+            alpha_G=integrale_Sync(pf_fint, f, nu_sync);
+            alpha_G*=f->Sync.C3_Sync_K53*(f->core.B)/(nu_sync*nu_sync);
+
+            alpha_ort=0.5*(alpha_F+alpha_G);
+            alpha_parallel=0.5*(alpha_F-alpha_G);
+
+            S_ort=eval_S_nu_Sync(f, j_ort, alpha_ort);
+            S_parallel=eval_S_nu_Sync(f, j_parallel, alpha_parallel);
+
+            if ((S_ort+S_parallel) > 0.0) {
+                pol=(S_ort-S_parallel)/(S_ort+S_parallel);
+            }
+            else {
+                pol=0.0;
+            }
+        }
+    f->core.Sync_kernel=Sync_kernel_orig;
     return pol;
 }
 
