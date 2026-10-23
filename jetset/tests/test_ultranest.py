@@ -19,6 +19,119 @@ class TestUltranest(TestBase):
         fit_dict=prepare_asset(plot=plot,sed_number=1,skip_minuit=True)
         self.run_ultranest(fit_dict=fit_dict,plot=plot)
 
+    def test_open_mpi(self, tmp_path, monkeypatch):
+        """Opt-in real MPI regression: JETSET_TEST_MPI=1 pytest -k test_open_mpi."""
+        import os
+        import shutil
+        import subprocess
+        import sys
+        from pathlib import Path
+
+        if os.environ.get('JETSET_TEST_MPI') != '1':
+            pytest.skip('set JETSET_TEST_MPI=1 to run the MPI integration test')
+        pytest.importorskip('ultranest')
+        pytest.importorskip('mpi4py.MPI')
+        launcher = shutil.which('mpirun')
+        if launcher is None:
+            pytest.skip('mpirun is not installed')
+
+        # Fail an explicitly enabled test if ranks cannot communicate.
+        probe = subprocess.run(
+            [launcher, '-np', '2', sys.executable, '-c',
+             'from mpi4py import MPI; '
+             'assert MPI.COMM_WORLD.Get_size() == 2'],
+            capture_output=True, text=True, timeout=30,
+        )
+        assert probe.returncode == 0, probe.stdout + probe.stderr
+
+        from jetset import mcmc_ultranest
+        from .test_model_fit import prepare_asset
+
+        monkeypatch.chdir(tmp_path)
+        fit_dict = prepare_asset(plot=False, sed_number=1, skip_minuit=True)
+        sampler = mcmc_ultranest.UltraNestSampler(fit_dict['model_minimizer'])
+        sampler.model.freeze_all()
+        sampler.model.parameters.par_array[0].free()
+        sampler.set_bounds(bound=5.0, bound_rel=True)
+        ndim = len(sampler._par_array_sampler)
+        real_run = subprocess.run
+        run_dirs = []
+
+        def run_with_instrumentation(command, **kwargs):
+            run_dir = Path(kwargs['cwd'])
+            run_dirs.append(run_dir)
+            script_path = run_dir / 'run_jetset_ultranest.py'
+            # Instrument actual worker saves, without changing their rank guard.
+            # Each rank has its own marker, so recording cannot hide a write race.
+            instrumentation = r"""
+from pathlib import Path
+import numpy as np
+from mpi4py import MPI
+from jetset.mcmc_ultranest import UltraNestSampler
+assert MPI.COMM_WORLD.Get_size() == 2
+np.random.seed(42 + MPI.COMM_WORLD.Get_rank())
+_original_save = UltraNestSampler.save
+_original_run_sampler = UltraNestSampler.run_sampler
+
+def _record_save(self, name):
+    marker = Path('save-rank-%d.txt' % MPI.COMM_WORLD.Get_rank())
+    with marker.open('a') as stream:
+        stream.write(str(name) + '\n')
+    return _original_save(self, name)
+
+def _bounded_run(self, **kwargs):
+    kwargs.update(max_ncalls=256, show_status=False)
+    return _original_run_sampler(self, **kwargs)
+
+UltraNestSampler.save = _record_save
+UltraNestSampler.run_sampler = _bounded_run
+"""
+            script_path.write_text(instrumentation + script_path.read_text())
+            kwargs.update(timeout=180, capture_output=True, text=True)
+            try:
+                return real_run(command, **kwargs)
+            except subprocess.CalledProcessError as error:
+                pytest.fail('MPI worker failed:\n' + error.stdout + error.stderr)
+
+        monkeypatch.setattr(mcmc_ultranest.subprocess, 'run', run_with_instrumentation)
+        environment_before = dict(os.environ)
+        first_run_files = None
+        for _ in range(2):
+            result = mcmc_ultranest.run_open_mpi(
+                sampler, n_proc=2, min_num_live_points=64, nsteps=1,
+                max_num_improvement_loops=0, min_ess=10,
+            )
+            run_dir = run_dirs[-1]
+            assert sorted(p.name for p in run_dir.glob('save-rank-*.txt')) == [
+                'save-rank-0.txt'
+            ]
+            assert (run_dir / 'save-rank-0.txt').read_text().splitlines() == [
+                'sampler.pkl'
+            ]
+            input_sampler = mcmc_ultranest.UltraNestSampler.load(
+                str(run_dir / 'sampler_input.pkl'))
+            assert input_sampler.result is None
+            reloaded = mcmc_ultranest.UltraNestSampler.load(str(run_dir / 'sampler.pkl'))
+            assert result.samples.ndim == 2
+            assert result.samples.shape[0] > 0
+            assert result.samples.shape[1] == ndim
+            assert np.all(np.isfinite(result.samples))
+            assert np.all(np.isfinite(result.samples_log_prob))
+            assert np.isfinite(result.logz)
+            assert np.isfinite(result.logzerr)
+            np.testing.assert_array_equal(reloaded.samples, result.samples)
+            assert reloaded.logz == result.logz
+            if first_run_files is None:
+                first_run_files = {
+                    path: path.read_bytes() for path in (
+                        run_dir / 'sampler_input.pkl', run_dir / 'sampler.pkl')
+                }
+            else:
+                assert run_dirs[0] != run_dir
+                for path, contents in first_run_files.items():
+                    assert path.read_bytes() == contents
+        assert dict(os.environ) == environment_before
+
     def run_ultranest(self,fit_dict=None,model_minimizer=None,sed_data=None,plot=False):
         if fit_dict is not None:
             model_minimizer = fit_dict['model_minimizer']

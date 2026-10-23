@@ -4,7 +4,7 @@ __author__ = "Andrea Tramacere"
 
 import os
 import time
-import shutil
+import tempfile
 import subprocess
 from pathlib import Path
 import numpy as np
@@ -413,7 +413,8 @@ def run_open_mpi(sampler,
     n_proc : int, optional
         Number of MPI ranks passed to ``mpirun -np``. Default is ``8``.
     ultranest_output_dir : str, optional
-        Name passed to ``run_sampler``, and resolved within run_mpi/ directory
+        Name passed to ``run_sampler``, resolved within a unique run_mpi/run-*
+        directory. Absolute paths are used as provided.
     min_num_live_points : int, optional
         Minimum live points forwarded to ``run_sampler``.
     nsteps : int, optional
@@ -432,32 +433,31 @@ def run_open_mpi(sampler,
     Returns
     -------
     UltraNestSampler
-        Sampler reloaded from ``run_mpi/sampler.pkl`` after MPI completion.
+        Sampler reloaded from the run directory after MPI completion.
 
     Notes
     -----
-    The function deletes and recreates ``./run_mpi`` in the current working
-    directory, writes a helper Python script there, and temporarily sets
-    ``OMP_NUM_THREADS`` to ``n_proc`` for the parent process while the MPI
-    command runs.
+    The function creates a unique directory under ``./run_mpi`` for each
+    invocation and preserves it for inspection. Only MPI rank 0 saves the
+    result. ``OMP_NUM_THREADS`` is set to ``n_proc`` in the child environment
+    without changing the parent environment. Concurrent runs must use distinct
+    output directories if absolute ``ultranest_output_dir`` paths are supplied.
     """
     CURRENT_DIR = Path.cwd().resolve()
-    run_dir = CURRENT_DIR / 'run_mpi'
+    run_root = CURRENT_DIR / 'run_mpi'
+    run_root.mkdir(parents=True, exist_ok=True)
+    run_dir = Path(tempfile.mkdtemp(prefix='run-', dir=str(run_root)))
     script_name = 'run_jetset_ultranest.py'
-    OMP_NUM_THREADS_INITIAL=os.getenv("OMP_NUM_THREADS")
-    os.environ["OMP_NUM_THREADS"] = "%s"%str(int(n_proc))
+    child_env = os.environ.copy()
+    child_env["OMP_NUM_THREADS"] = str(int(n_proc))
 
     command = f"mpirun {extra_mpirun_args} -np {n_proc} python {script_name}"
 
     if ultranest_output_dir is None:
             ultranest_output_dir = f'ultranest_{sampler.model.name}'
     try:
-        if run_dir.exists():
-            shutil.rmtree(run_dir)
-        run_dir.mkdir(parents=True, exist_ok=True)
-
         sampler_path = run_dir / 'sampler.pkl'
-        sampler.save(str(sampler_path))
+        sampler.save(str(run_dir / 'sampler_input.pkl'))
         #(run_dir / out_dir).mkdir(parents=True, exist_ok=True)
     
         sampler_run = f"""
@@ -472,10 +472,12 @@ mcmc.run_sampler(
             )
     """
 
-        script = "from jetset.mcmc_ultranest import UltraNestSampler\n"
-        script += "mcmc=UltraNestSampler.load('sampler.pkl')\n"
+        script = "from mpi4py import MPI\n"
+        script += "from jetset.mcmc_ultranest import UltraNestSampler\n"
+        script += "mcmc=UltraNestSampler.load('sampler_input.pkl')\n"
         script += f"{sampler_run}\n"
-        script += "mcmc.save('sampler.pkl')\n"
+        script += "if MPI.COMM_WORLD.Get_rank() == 0:\n"
+        script += "    mcmc.save('sampler.pkl')\n"
         print("====== ultranest script ========")
         print(script)
         script_path = run_dir / script_name
@@ -484,18 +486,10 @@ mcmc.run_sampler(
         print("================================")
 
         print("executing", command)
-        subprocess.run(command, shell=True, check=True, cwd=run_dir)
+        subprocess.run(command, shell=True, check=True, cwd=run_dir, env=child_env)
         mcmc= UltraNestSampler.load(str(sampler_path))
         
     except Exception as e:
         raise RuntimeError(e)
-
-    finally:
-
-        if OMP_NUM_THREADS_INITIAL is not None:
-            os.environ["OMP_NUM_THREADS"] = "%s"%str(int(OMP_NUM_THREADS_INITIAL))
-        else:
-            os.unsetenv("OMP_NUM_THREADS")
-
 
     return mcmc
